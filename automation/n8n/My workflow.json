@@ -1,0 +1,70 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "taims/alert/offline",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "0b2f5481-efba-4de5-841a-49261bd1d7db",
+      "name": "Webhook",
+      "webhookId": "bb3c108c-c0e8-457a-907d-b8a97b5a592e"
+    },
+    {
+      "parameters": {
+        "chatId": "7519456824",
+        "text": "=🚨 [ALERT OFFLINE T-AIMS] 🚨  Ada perangkat infrastruktur yang terputus! • Nama Perangkat: {{ $json.body.asset_name }} • Kode Perangkat: {{ $json.body.asset_code }} • Terakhir Terlihat: {{ $json.body.last_seen }}  Arik (Automation System) - Mohon tim shift segera mengecek lokasi!",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        224,
+        0
+      ],
+      "id": "e4bb201f-af56-41cf-b9c7-2d1dfdee643d",
+      "name": "Send a text message",
+      "webhookId": "bf7c4e7b-440e-4df3-8cc9-8f1669e13076",
+      "credentials": {
+        "telegramApi": {
+          "id": "mK3MeIgMk1Zb0Av0",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "c6e12925-8a49-4edf-ae79-5951147a8320",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "17b20559bac35831af97c0808218a55b13d58d23bb46687d151e78bcb2aa0dfd"
+  },
+  "nodeGroups": [],
+  "id": "Sl502fegNAWkgYTU",
+  "tags": []
+}
