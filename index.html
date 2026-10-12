@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>T-AIMS | Teknolab Asset & Infrastructure Monitoring System</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo-box">T</div>
+        <div class="logo-text">
+          <h2>T-AIMS</h2>
+          <span>Teknolab System</span>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <a class="nav-item active" href="#">Dashboard</a>
+        <a class="nav-item" href="#">Aset & Perangkat</a>
+        <a class="nav-item" href="#">Jaringan Wi-Fi</a>
+        <a class="nav-item" href="#">Peta Lokasi</a>
+        <a class="nav-item" href="#">Riwayat Log</a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="system-status">
+          <span class="status-indicator"></span>
+          <div>
+            <span class="status-title">STATUS SISTEM</span>
+            <span class="status-desc">Localhost :3000 Ready</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Topbar Header -->
+      <header class="topbar">
+        <div>
+          <h1 class="page-title">T-AIMS Operational Dashboard</h1>
+          <p class="page-subtitle">Monitoring Real-time Aset Infrastruktur PT Teknolab Caraka Internasional</p>
+        </div>
+        <div class="topbar-search">
+          <input type="text" id="search-input" placeholder="Cari nama, IP, atau kode aset...">
+        </div>
+      </header>
+
+      <!-- KPI Summary Cards -->
+      <section class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span class="kpi-title">TOTAL ASET</span>
+            <span class="kpi-tag blue">taims_db.sql</span>
+          </div>
+          <h2 id="kpi-total" class="kpi-value text-white">0</h2>
+          <span class="kpi-footer">Perangkat Terdata</span>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span class="kpi-title">PERANGKAT ONLINE</span>
+            <span class="kpi-tag green">Normal</span>
+          </div>
+          <h2 id="kpi-online" class="kpi-value text-green">0</h2>
+          <span class="kpi-footer text-green">Sinyal Aktif & Normal</span>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span class="kpi-title">PERANGKAT OFFLINE</span>
+            <span class="kpi-tag red">Terputus</span>
+          </div>
+          <h2 id="kpi-offline" class="kpi-value text-red">0</h2>
+          <span class="kpi-footer text-red">Memerlukan Pengecekan</span>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span class="kpi-title">PERINGATAN (WARNING)</span>
+            <span class="kpi-tag yellow">Perhatian</span>
+          </div>
+          <h2 id="kpi-warning" class="kpi-value text-yellow">0</h2>
+          <span class="kpi-footer text-yellow">Latensi / Beban Tinggi</span>
+        </div>
+      </section>
+
+      <!-- Table Section (9 Aset dari taims_db.sql) -->
+      <section class="table-card">
+        <div class="table-card-header">
+          <div>
+            <h3 class="table-title">Daftar Status Monitoring Perangkat</h3>
+            <span class="table-subtitle">Data Tabel Assets (9 Perangkat Terkoneksi Jaringan)</span>
+          </div>
+          <div class="filter-group">
+            <select id="category-filter" class="custom-select">
+              <option value="ALL">Semua Kategori</option>
+              <option value="Server">Server</option>
+              <option value="Network Device">Network Device</option>
+              <option value="IoT & Smart Device">IoT & Smart Device</option>
+              <option value="CCTV & Security">CCTV & Security</option>
+              <option value="Workstation & Media">Workstation & Media</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="custom-table">
+            <thead>
+              <tr>
+                <th>Kode Aset</th>
+                <th>Nama Perangkat</th>
+                <th>Kategori</th>
+                <th>IP Address</th>
+                <th>Lokasi</th>
+                <th>Status</th>
+                <th>Response Time</th>
+                <th>Terakhir Aktif</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="device-table-body">
+              <!-- Diinjeksi via app.js -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Modal Detail Perangkat -->
+  <div id="device-modal" class="modal-backdrop" style="display:none;">
+    <div class="modal-window">
+      <div class="modal-header">
+        <h3 class="modal-title">Detail Spesifikasi Perangkat</h3>
+        <button class="modal-close" onclick="closeDetailModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-grid">
+          <div><span class="field-label">Kode Aset:</span> <strong id="m-code" class="mono text-cyan"></strong></div>
+          <div><span class="field-label">Nama Perangkat:</span> <strong id="m-name" class="text-white"></strong></div>
+          <div><span class="field-label">Kategori:</span> <span id="m-cat"></span></div>
+          <div><span class="field-label">IP Address:</span> <span id="m-ip" class="mono"></span></div>
+          <div><span class="field-label">MAC Address:</span> <span id="m-mac" class="mono"></span></div>
+          <div><span class="field-label">Lokasi:</span> <span id="m-loc"></span></div>
+          <div><span class="field-label">PIC:</span> <span id="m-pic"></span></div>
+          <div><span class="field-label">Metode Monitor:</span> <span id="m-method" class="text-yellow"></span></div>
+          <div><span class="field-label">Status Sekarang:</span> <span id="m-status"></span></div>
+          <div><span class="field-label">Response Time:</span> <span id="m-ping" class="text-green mono"></span></div>
+        </div>
+        <div class="modal-footer-info">
+          <span class="field-label">Terakhir Dideteksi (Last Seen):</span>
+          <span id="m-seen" class="mono"></span>
+        </div>
+      </div>
+      <div class="modal-action">
+        <button class="btn-modal-close" onclick="closeDetailModal()">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
