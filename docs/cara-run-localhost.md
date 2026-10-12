@@ -26,7 +26,6 @@ git clone git@github.com:T-AIMS/T-AIMS.git
 ### 4. Setup Environment
 cd D:\xampp\htdocs\T-AIMS
 cp .env.example .env
-nano .env
 
 ### 5. Jalankan Backend
 cd backend
