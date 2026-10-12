@@ -60,3 +60,13 @@ npm start
 ## Yang Ditunggu
 - Kode backend dari Ahmad Reza
 - Update app.js untuk fetch dari API backend
+
+## Status Integrasi (12 Oktober 2026)
+- Frontend: Jalan dengan MOCK DATA
+- Fetch ke backend: BELUM ADA di app.js
+- Backend: BELUM JALAN (port 5000 kosong)
+- Database: SIAP (taims_db, 7 tabel, 14 aset)
+
+## Yang Ditunggu
+- Kode backend dari Ahmad Reza
+- Update app.js untuk fetch dari API backend
