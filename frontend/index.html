@@ -9,7 +9,6 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{
-  /* INDUSTRIAL ENGINEERING PALETTE */
   --space-0:#02030A;
   --space-1:#050918;
   --space-2:#0A1020;
@@ -24,19 +23,18 @@
   --stroke:rgba(100,220,255,.1);
   --stroke-hi:rgba(100,220,255,.2);
 
-  /* SAFETY / INDUSTRIAL COLORS */
-  --brand:#FF3B30;          /* Safety Red */
+  --brand:#FF3B30;
   --brand-glow:rgba(255,59,48,.5);
   --brand-light:#FF6B5B;
 
-  --cyan:#00E5FF;           /* Electric Cyan */
+  --cyan:#00E5FF;
   --cyan-glow:rgba(0,229,255,.55);
   --cyan-deep:#0099CC;
 
-  --emerald:#00FF88;        /* Signal Green */
+  --emerald:#00FF88;
   --emerald-glow:rgba(0,255,136,.5);
 
-  --amber:#FFB000;          /* Industrial Amber */
+  --amber:#FFB000;
   --amber-glow:rgba(255,176,0,.5);
 
   --cobalt:#3B82F6;
@@ -69,8 +67,6 @@ body{
   min-height:100vh;
   letter-spacing:-.01em;
 }
-
-/* Circuit grid background & ambient lighting */
 body::before{
   content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   background:
@@ -91,9 +87,7 @@ img{max-width:100%;height:auto;display:block;}
 
 .app{display:flex;min-height:100vh;position:relative;z-index:1;}
 
-/* ============================================================
-   SIDEBAR (FIXED VIEWPORT)
-============================================================ */
+/* SIDEBAR FIXED */
 .sidebar{
   width:var(--sidebar-w);
   flex-shrink:0;
@@ -134,9 +128,9 @@ img{max-width:100%;height:auto;display:block;}
 }
 .sb-logo img{
   max-width:170px;
-  max-height:78px;
+  max-height:80px;
   object-fit:contain;
-  filter:drop-shadow(0 4px 12px rgba(255,59,48,.25));
+  filter:drop-shadow(0 4px 14px rgba(255,59,48,.3));
 }
 .sb-logo-fallback{
   width:64px;height:64px;border-radius:14px;
@@ -146,7 +140,7 @@ img{max-width:100%;height:auto;display:block;}
   box-shadow:0 10px 28px rgba(255,59,48,.5);
 }
 
-.sb-nav{flex:1;padding:16px 12px;overflow-y:auto;}
+.sb-nav{flex:1;padding:18px 12px;overflow-y:auto;}
 
 .sb-section{
   font-size:9.5px;font-weight:700;
@@ -164,7 +158,7 @@ img{max-width:100%;height:auto;display:block;}
 
 .sb-item{
   display:flex;align-items:center;gap:12px;
-  padding:10.5px 12px;margin:2px 0;
+  padding:11px 12px;margin:2px 0;
   color:var(--t-2);
   font-size:12.5px;font-weight:500;
   border-radius:8px;cursor:pointer;
@@ -177,7 +171,9 @@ img{max-width:100%;height:auto;display:block;}
 }
 .sb-item i{
   width:18px;font-size:14px;
-  color:var(--t-3);text-align:center;transition:all .2s;
+  color:var(--t-3);
+  text-align:center;
+  transition:all .2s;
 }
 .sb-item:hover i{color:var(--cyan);}
 .sb-item.active{
@@ -195,7 +191,7 @@ img{max-width:100%;height:auto;display:block;}
 .sb-item .badge{
   margin-left:auto;
   background:linear-gradient(135deg,#FF3B30,#7F1010);
-  color:#fff;font-size:9px;font-weight:700;
+  color:#fff;font-size:9.5px;font-weight:700;
   padding:2px 7px;border-radius:10px;
   min-width:20px;text-align:center;
   box-shadow:0 2px 8px var(--brand-glow);
@@ -209,7 +205,9 @@ img{max-width:100%;height:auto;display:block;}
 .sb-status{
   display:flex;align-items:center;gap:12px;
   padding:12px 14px;
-  background:linear-gradient(135deg,rgba(0,255,136,.08),rgba(0,255,136,.02)),rgba(5,9,24,.6);
+  background:
+    linear-gradient(135deg,rgba(0,255,136,.08),rgba(0,255,136,.02)),
+    rgba(5,9,24,.6);
   border:1px solid rgba(0,255,136,.25);
   border-radius:10px;
   position:relative;overflow:hidden;
@@ -236,9 +234,7 @@ img{max-width:100%;height:auto;display:block;}
   text-shadow:0 0 12px var(--emerald-glow);
 }
 
-/* ============================================================
-   MAIN CONTENT AREA
-============================================================ */
+/* MAIN OFFSET */
 .main{
   flex:1;min-width:0;
   margin-left:var(--sidebar-w);
@@ -250,7 +246,8 @@ img{max-width:100%;height:auto;display:block;}
 /* TOPBAR */
 .topbar{
   display:flex;align-items:center;gap:16px;
-  margin-bottom:20px;padding:4px 0;
+  margin-bottom:20px;
+  padding:4px 0;
 }
 .mobile-toggle-btn{
   display:none;width:42px;height:42px;
@@ -308,7 +305,8 @@ img{max-width:100%;height:auto;display:block;}
   background:var(--surface-1);
   backdrop-filter:blur(20px);
   border:1px solid var(--stroke);
-  border-radius:10px;padding:8px 14px;
+  border-radius:10px;
+  padding:8px 14px;
 }
 .tb-clock i{color:var(--cyan);font-size:14px;}
 .tb-clock .dt{display:flex;flex-direction:column;line-height:1.25;gap:1px;}
@@ -336,7 +334,7 @@ img{max-width:100%;height:auto;display:block;}
 .tb-icon .nbadge{
   position:absolute;top:-4px;right:-4px;
   background:linear-gradient(135deg,#FF3B30,#7F1010);
-  color:#fff;font-size:9px;font-weight:700;
+  color:#fff;font-size:9.5px;font-weight:700;
   width:18px;height:18px;border-radius:50%;
   display:flex;align-items:center;justify-content:center;
   box-shadow:0 2px 10px var(--brand-glow),0 0 0 2px var(--space-0);
@@ -360,10 +358,10 @@ img{max-width:100%;height:auto;display:block;}
 }
 .tb-user .av::after{
   content:'';position:absolute;bottom:-1px;right:-1px;
-  width:9px;height:9px;border-radius:50%;
+  width:10px;height:10px;border-radius:50%;
   background:var(--emerald);
   border:2px solid var(--space-0);
-  box-shadow:0 0 8px var(--emerald);
+  box-shadow:0 0 10px var(--emerald);
 }
 .tb-user .info{display:flex;flex-direction:column;line-height:1.25;}
 .tb-user .info strong{font-size:12px;font-weight:600;}
@@ -390,11 +388,12 @@ img{max-width:100%;height:auto;display:block;}
   color:var(--emerald);
   font-size:10px;font-weight:700;letter-spacing:1px;
   text-transform:uppercase;font-family:var(--font-mono);
-  margin-bottom:12px;
+  margin-bottom:14px;
 }
 .banner .live-badge .dot{
   width:6px;height:6px;border-radius:50%;
-  background:var(--emerald);box-shadow:0 0 10px var(--emerald);
+  background:var(--emerald);
+  box-shadow:0 0 10px var(--emerald);
   animation:pulse-dot 1.5s ease-in-out infinite;
 }
 @keyframes pulse-dot{0%,100%{opacity:1;}50%{opacity:.3;}}
@@ -578,14 +577,24 @@ img{max-width:100%;height:auto;display:block;}
 .tbl td strong{color:var(--t-1);font-weight:600;}
 .tbl td small{font-size:9.5px;color:var(--t-3);display:block;}
 
+/* STATUS PILL (UKURAN LEBAR & TINGGI DIKUNCI SERAGAM) */
 .status{
-  display:inline-flex;align-items:center;gap:6px;
-  padding:4px 10px;border-radius:12px;
-  font-size:9.5px;font-weight:700;
-  letter-spacing:.5px;border:1px solid transparent;
-  text-transform:uppercase;font-family:var(--font-mono);
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+  width:64px;
+  height:22px;
+  padding:0;
+  border-radius:12px;
+  font-size:9.5px;
+  font-weight:700;
+  letter-spacing:.5px;
+  border:1px solid transparent;
+  text-transform:uppercase;
+  font-family:var(--font-mono);
 }
-.status .st-dot{width:6px;height:6px;border-radius:50%;background:currentColor;box-shadow:0 0 8px currentColor;}
+.status .st-dot{width:6px;height:6px;border-radius:50%;background:currentColor;box-shadow:0 0 8px currentColor;flex-shrink:0;}
 .status.online{background:rgba(0,255,136,.08);color:var(--emerald);border-color:rgba(0,255,136,.3);}
 .status.offline{background:rgba(255,71,87,.08);color:#FF4757;border-color:rgba(255,71,87,.3);}
 .status.warning{background:rgba(255,176,0,.08);color:var(--amber);border-color:rgba(255,176,0,.3);}
@@ -710,7 +719,6 @@ img{max-width:100%;height:auto;display:block;}
   <!-- ============ SIDEBAR ============ -->
   <aside class="sidebar" id="app-sidebar">
     <div class="sb-logo">
-      <!-- Menggunakan foto logo PNG Teknolab asli -->
       <img src="logo-teknolab.png" alt="PT Teknolab Caraka Internasional"
            onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
       <div class="sb-logo-fallback" style="display:none;">T</div>
@@ -758,7 +766,7 @@ img{max-width:100%;height:auto;display:block;}
       </div>
     </nav>
 
-    <!-- STATUS SISTEM POJOK KIRI BAWAH -->
+    <!-- STATUS SISTEM -->
     <div class="sb-footer">
       <div class="sb-status">
         <span class="dot"></span>
@@ -802,7 +810,6 @@ img{max-width:100%;height:auto;display:block;}
           <i class="fa-solid fa-bell"></i>
           <span class="nbadge">1</span>
         </div>
-        <!-- Identitas Profil Dika Yoga -->
         <div class="tb-user">
           <div class="av">D</div>
           <div class="info">
@@ -945,7 +952,6 @@ img{max-width:100%;height:auto;display:block;}
 
     <!-- CHARTS ROW -->
     <div class="charts-row">
-      <!-- Line Chart Glow -->
       <div class="card">
         <div class="card-head">
           <h4>
@@ -1006,7 +1012,6 @@ img{max-width:100%;height:auto;display:block;}
         </svg>
       </div>
 
-      <!-- Donut Chart Distribusi Kategori -->
       <div class="card">
         <div class="card-head">
           <h4>
@@ -1191,7 +1196,7 @@ img{max-width:100%;height:auto;display:block;}
           </div>
         </div>
         <div class="maint" style="color:var(--amber)">
-          <div class="ic yellow"><i class="fa-solid fa-gear fa-spin"></i></div>
+          <div class="ic yellow"><i class="fa-solid fa-gear"></i></div>
           <div class="info">
             <strong style="color:var(--amber)">1</strong>
             <small>Berlangsung</small>
@@ -1224,7 +1229,6 @@ img{max-width:100%;height:auto;display:block;}
 </div>
 
 <script>
-// Jam & Tanggal Otomatis Hari Ini
 function updateLiveClock() {
   const now = new Date();
   const days = ['MINGGU', 'SENIN', 'SELASA', 'RABU', 'KAMIS', 'JUMAT', 'SABTU'];
@@ -1242,7 +1246,6 @@ function updateLiveClock() {
 updateLiveClock();
 setInterval(updateLiveClock, 10000);
 
-// Kontrol Drawer Mobile Sidebar
 function toggleSidebar() {
   const sb = document.querySelector('.sidebar');
   const ov = document.querySelector('.sidebar-overlay');
