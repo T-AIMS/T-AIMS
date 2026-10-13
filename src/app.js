@@ -3,6 +3,17 @@ const cors = require('cors');
 require('dotenv').config();
 
 const authRoutes = require('./routes/auth');
+const assetsRoutes = require('./routes/assets');
+const locationsRoutes = require('./routes/locations');
+const usersRoutes = require('./routes/users');
+const monitoringRoutes = require('./routes/monitoring');
+const dashboardRoutes = require('./routes/dashboard');
+const incidentsRoutes = require('./routes/incidents');
+const maintenanceRoutes = require('./routes/maintenance');
+const notificationsRoutes = require('./routes/notifications');
+const heartbeatRoutes = require('./routes/heartbeat');
+const { startMqttHandler } = require('./services/mqtt-handler');
+const searchRoutes = require('./routes/search');
 
 const app = express();
 
@@ -23,6 +34,16 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/auth', authRoutes);
+app.use('/api/assets', assetsRoutes);
+app.use('/api/locations', locationsRoutes);
+app.use('/api/users', usersRoutes);
+app.use('/api/monitoring', monitoringRoutes);
+app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/incidents', incidentsRoutes);
+app.use('/api/maintenance', maintenanceRoutes);
+app.use('/api/notifications', notificationsRoutes);
+app.use('/api/heartbeat', heartbeatRoutes);
+app.use('/api/search', searchRoutes);
 
 app.use((req, res) => {
     res.status(404).json({ success: false, error: 'Endpoint tidak ditemukan' });
@@ -36,4 +57,7 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`🚀 Server running at http://localhost:${PORT}`);
+    
+    // Start MQTT handler
+    startMqttHandler();
 });
