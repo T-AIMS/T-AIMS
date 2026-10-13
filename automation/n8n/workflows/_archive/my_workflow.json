@@ -1,0 +1,179 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "taims/alert/offline",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "1b02eefd-9723-45dd-aeec-610e55a42fe2",
+      "name": "Webhook",
+      "webhookId": "8ca751ce-61fa-4375-8390-d0d7b48464fd"
+    },
+    {
+      "parameters": {
+        "chatId": "7519456824",
+        "text": "=🚨 [ALERT OFFLINE T-AIMS] 🚨  Infrastruktur Utama Mengalami Gangguan! • Nama Perangkat: {{ $json.body.asset_name }} • Kode Perangkat: {{ $json.body.asset_code }} • Kategori: {{ $json.body.category }} • Tingkat Keparahan: {{ $json.body.severity }} • Waktu Terputus: {{ $json.body.last_seen }}  Sistem Otomasi Arik — Mohon tim Shift 2 segera mengecek perangkat tersebut!",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        224,
+        0
+      ],
+      "id": "6ab18103-80c9-4d49-a795-0992f561bff6",
+      "name": "Send a text message",
+      "webhookId": "47dc26a0-3cec-4e94-8a08-925a31ade4b3",
+      "credentials": {
+        "telegramApi": {
+          "id": "F7AhuR30Qc1UYK8O",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "arickferdiansyah@gmail.com",
+        "toEmail": "arickferdiansyah@gmail.com",
+        "subject": "=🚨 [ALERT OFFLINE T-AIMS] Perangkat {{ $json.body.asset_name }} Terputus!",
+        "emailFormat": "text",
+        "text": "=🚨 [ALERT OFFLINE T-AIMS] 🚨\n\nInfrastruktur Utama Mengalami Gangguan!\n• Nama Perangkat: {{ $json.body.asset_name }}\n• Kode Perangkat: {{ $json.body.asset_code }}\n• Kategori: {{ $json.body.category }}\n• Tingkat Keparahan: {{ $json.body.severity }}\n• Waktu Terputus: {{ $json.body.last_seen }}\n\nSistem Otomasi Arik — Mohon tim Shift 2 segera mengecek perangkat tersebut!\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        240,
+        144
+      ],
+      "id": "e57e8c69-c68a-446e-a4d5-7ca3fd7ac175",
+      "name": "Send an Email",
+      "webhookId": "bf26edd3-27e8-49e4-b08f-17e4d8c179d8",
+      "credentials": {
+        "smtp": {
+          "id": "8DgsR51ESEeGZgNT",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "taims/alert/recovery",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.2,
+      "position": [
+        368,
+        -128
+      ],
+      "id": "4e8b19f5-d7b1-4e8f-8bd7-5a0ec9cedf27",
+      "name": "Webhook1",
+      "webhookId": "5bf78ec9-02a8-42ba-a192-916cc6bcc0a8"
+    },
+    {
+      "parameters": {
+        "chatId": "7519456824",
+        "text": "=✅ [RECOVERY ONLINE T-AIMS] ✅  Infrastruktur Jaringan Telah Kembali Normal! • Nama Perangkat: {{ $json.body.asset_name }} • Kode Perangkat: {{ $json.body.asset_code }} • Kategori: {{ $json.body.category }} • Waktu Pulih: {{ $json.body.recovered_at }}  Sistem Otomasi Arik — Perangkat telah aktif kembali dan terpantau stabil.",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        592,
+        -128
+      ],
+      "id": "da0a78e7-90ec-4ef7-ad31-6e5c5082ea42",
+      "name": "Send a text message1",
+      "webhookId": "8f464aa7-8dfd-4c8e-992e-80b5319cd2e0",
+      "credentials": {
+        "telegramApi": {
+          "id": "F7AhuR30Qc1UYK8O",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "arickferdiansyah@gmail.com",
+        "toEmail": "arickferdiansyah@gmail.com",
+        "subject": "=✅ [RECOVERY ONLINE T-AIMS] ✅  Infrastruktur Jaringan Telah Kembali Normal! • Nama Perangkat: {{ $json.body.asset_name }} • Kode Perangkat: {{ $json.body.asset_code }} • Kategori: {{ $json.body.category }} • Waktu Pulih: {{ $json.body.recovered_at }}  Sistem Otomasi Arik — Perangkat telah aktif kembali dan terpantau stabil.",
+        "emailFormat": "text",
+        "text": "=✅ [RECOVERY ONLINE T-AIMS] ✅\n\nInfrastruktur Jaringan Telah Kembali Normal!\n• Nama Perangkat: {{ $json.body.asset_name }}\n• Kode Perangkat: {{ $json.body.asset_code }}\n• Kategori: {{ $json.body.category }}\n• Waktu Pulih: {{ $json.body.recovered_at }}\n\nSistem Otomasi Arik — Perangkat telah aktif kembali dan terpantau stabil.\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        608,
+        16
+      ],
+      "id": "2f7e5880-e7aa-431f-abfc-844588144eb9",
+      "name": "Send an Email1",
+      "webhookId": "6c303e3a-14d4-405a-9cb1-a9ffc3805f38",
+      "credentials": {
+        "smtp": {
+          "id": "8DgsR51ESEeGZgNT",
+          "name": "SMTP account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send an Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook1": {
+      "main": [
+        [
+          {
+            "node": "Send a text message1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send an Email1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "405232b0-ea98-4726-9ed8-5fce3e716d4b",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "26205efa62bb3c47037ab0b5716919d73a3038de89a07ed09ed4313e3b685e9f"
+  },
+  "nodeGroups": [],
+  "id": "eZUswPEG7q1mZJmv",
+  "tags": []
+}
