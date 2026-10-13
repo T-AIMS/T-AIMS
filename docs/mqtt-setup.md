@@ -42,3 +42,18 @@ proses data, simpan ke database taims_db.
 - Mosquitto terinstall: ✅
 - Port 1883 listen: ✅
 - Service auto-start: ✅
+
+## Topik MQTT (Sesuai API Contract v0.6)
+
+### Device → Backend (Backend subscribe)
+- taims/heartbeat/IOT-ESP-01
+- taims/heartbeat/IOT-RPI-01
+
+### Backend → Automation (Backend publish)
+- taims/alert/offline/{asset_code}
+- taims/alert/recovery/{asset_code}
+
+### QoS
+- QoS: 1
+- Retain: false
+- LWT: {"status":"offline","reason":"connection_lost"}

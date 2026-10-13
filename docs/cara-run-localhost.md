@@ -70,3 +70,10 @@ npm start
 ## Yang Ditunggu
 - Kode backend dari Ahmad Reza
 - Update app.js untuk fetch dari API backend
+
+## Revisi Port - 13 Oktober 2026
+Sesuai API Contract Reza Fahmi v0.6:
+- Backend API: http://localhost:3000/api
+- Frontend: http://localhost:3001
+- MQTT: localhost:1883
+- MySQL: localhost:3306
