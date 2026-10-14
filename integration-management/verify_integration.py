@@ -6,14 +6,18 @@
 import requests
 import socket
 
+# IP Windows dari WSL (ganti kalau berubah)
+# Cek dengan: cat /etc/resolv.conf | grep nameserver
+WINDOWS_HOST = "10.255.255.254"
+
 # Port yang dicek
 PORTS = {
-    "Backend API": 3000,
-    "Frontend": 3001,
-    "MySQL": 3306,
-    "MQTT": 1883,
-    "phpMyAdmin": 80,
-    "n8n": 5678,
+    "Backend API": (WINDOWS_HOST, 3000),
+    "Frontend": (WINDOWS_HOST, 3001),
+    "MySQL": (WINDOWS_HOST, 3306),
+    "MQTT": ("localhost", 1883),
+    "phpMyAdmin": (WINDOWS_HOST, 80),
+    "n8n": ("localhost", 5678),
 }
 
 def check_port(host, port):
@@ -29,14 +33,14 @@ def check_port(host, port):
 
 def main():
     print("=== Verify Integration T-AIMS ===\n")
-    for name, port in PORTS.items():
-        status = check_port("localhost", port)
+    for name, (host, port) in PORTS.items():
+        status = check_port(host, port)
         emoji = "OK" if status else "TIDAK AKTIF"
-        print(f"[{emoji}] {name} (port {port})")
+        print(f"[{emoji}] {name} ({host}:{port})")
 
     print("\n=== Cek Endpoint Backend ===")
     try:
-        r = requests.get("http://localhost:3000/api", timeout=2)
+        r = requests.get(f"http://{WINDOWS_HOST}:3000/api", timeout=2)
         print(f"Backend API: HTTP {r.status_code}")
     except Exception as e:
         print(f"Backend API: {e}")
