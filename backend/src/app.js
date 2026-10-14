@@ -1,63 +1,83 @@
 const express = require('express');
 const cors = require('cors');
-require('dotenv').config();
+const dotenv = require('dotenv');
 
-const authRoutes = require('./routes/auth');
-const assetsRoutes = require('./routes/assets');
-const locationsRoutes = require('./routes/locations');
-const usersRoutes = require('./routes/users');
-const monitoringRoutes = require('./routes/monitoring');
-const dashboardRoutes = require('./routes/dashboard');
-const incidentsRoutes = require('./routes/incidents');
-const maintenanceRoutes = require('./routes/maintenance');
-const notificationsRoutes = require('./routes/notifications');
-const heartbeatRoutes = require('./routes/heartbeat');
-const { startMqttHandler } = require('./services/mqtt-handler');
-const searchRoutes = require('./routes/search');
+dotenv.config();
 
 const app = express();
+const PORT = process.env.PORT || 3000;
 
+// Middleware
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-app.use((req, res, next) => {
-    console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
-    next();
-});
+// Import routes
+const authRoutes = require('./routes/auth');
+const userRoutes = require('./routes/users');
+const assetRoutes = require('./routes/assets');
+const locationRoutes = require('./routes/locations');
+const monitoringRoutes = require('./routes/monitoring');
+const dashboardRoutes = require('./routes/dashboard');
+const incidentRoutes = require('./routes/incidents');
+const maintenanceRoutes = require('./routes/maintenance');
+const notificationRoutes = require('./routes/notifications');
+const heartbeatRoutes = require('./routes/heartbeat');
+const searchRoutes = require('./routes/search');
 
-app.get('/', (req, res) => {
+// Import services
+const { startMqttHandler } = require('./services/mqtt-handler');
+const { startOfflineChecker } = require('./services/offline-checker');
+
+// Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/assets', assetRoutes);
+app.use('/api/locations', locationRoutes);
+app.use('/api/monitoring', monitoringRoutes);
+app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/incidents', incidentRoutes);
+app.use('/api/maintenance', maintenanceRoutes);
+app.use('/api/notifications', notificationRoutes);
+app.use('/api/heartbeat', heartbeatRoutes);
+app.use('/api/search', searchRoutes);
+
+// Health check
+app.get('/api', (req, res) => {
     res.json({
-        message: '🚀 T-AIMS Backend is running!',
-        version: '0.5.0',
+        success: true,
+        message: 'T-AIMS Backend API',
+        version: '0.7',
         timestamp: new Date().toISOString()
     });
 });
 
-app.use('/api/auth', authRoutes);
-app.use('/api/assets', assetsRoutes);
-app.use('/api/locations', locationsRoutes);
-app.use('/api/users', usersRoutes);
-app.use('/api/monitoring', monitoringRoutes);
-app.use('/api/dashboard', dashboardRoutes);
-app.use('/api/incidents', incidentsRoutes);
-app.use('/api/maintenance', maintenanceRoutes);
-app.use('/api/notifications', notificationsRoutes);
-app.use('/api/heartbeat', heartbeatRoutes);
-app.use('/api/search', searchRoutes);
-
+// 404 handler
 app.use((req, res) => {
-    res.status(404).json({ success: false, error: 'Endpoint tidak ditemukan' });
+    res.status(404).json({
+        success: false,
+        error: 'Endpoint tidak ditemukan'
+    });
 });
 
+// Error handler
 app.use((err, req, res, next) => {
-    console.error('Unhandled error:', err);
-    res.status(500).json({ success: false, error: 'Internal server error' });
+    console.error(err.stack);
+    res.status(500).json({
+        success: false,
+        error: err.message || 'Internal server error'
+    });
 });
 
-const PORT = process.env.PORT || 3000;
+// Start server
 app.listen(PORT, () => {
     console.log(`🚀 Server running at http://localhost:${PORT}`);
-    
+
     // Start MQTT handler
     startMqttHandler();
+
+    // Start offline checker
+    startOfflineChecker();
 });
+
+module.exports = app;
