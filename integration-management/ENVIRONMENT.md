@@ -36,3 +36,16 @@ Diupdate: 14 Oktober 2026 (revisi versi & IP)
 - MySQL jalan di **XAMPP** (Windows)
 - MQTT & n8n jalan di **WSL** (Linux)
 - IP Windows dari WSL: `172.19.112.1`
+
+## Docker (Mosquitto & n8n)
+| Service | Container | Port | Image |
+|---|---|---|---|
+| Mosquitto | taims-mosquitto | 1883, 9001 | eclipse-mosquitto:2 |
+| n8n | taims-n8n | 5678 | n8nio/n8n |
+
+Network: `taims-net`
+Compose file: `automation/docker-compose.yml`
+
+## n8n Workflow
+- Workflow OFFLINE → Telegram (cooldown 10 menit)
+- Workflow RECOVERY → Telegram (cooldown 10 menit)
