@@ -23,4 +23,4 @@ Folder ini berisi dokumentasi QA oleh Reza Tri (QA & Documentation Engineer).
 
 ## Kontak QA
 
-Reza Tri — rezatriwardana@gmail.com
+Reza Tri — rezatriwardana7@gmail.com
