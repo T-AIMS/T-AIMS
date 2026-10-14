@@ -8,7 +8,9 @@ vendor/
 
 # Logs
 *.log
-logs/
+logs/*.log
+!logs/**/README.md
+!logs/collect-log.sh
 
 # Backup
 backup/

@@ -18,9 +18,12 @@ const pool = mysql.createPool({
         const conn = await pool.getConnection();
         console.log('✅ Database connected:', process.env.DB_NAME);
         conn.release();
-    } catch (err) {
-        console.error('❌ Database connection failed:', err.message);
-    }
+} catch (err) {
+    console.error('Database connection failed!');
+    console.error('Error Code   :', err.code);
+    console.error('Error Message:', err.message);
+    console.error('Full Error   :', err);
+}
 })();
 
 module.exports = pool;
