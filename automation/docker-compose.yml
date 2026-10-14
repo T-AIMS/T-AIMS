@@ -1,0 +1,37 @@
+services:
+  mosquitto:
+    image: eclipse-mosquitto:2
+    container_name: taims-mosquitto
+    restart: unless-stopped
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./mosquitto/config:/mosquitto/config
+      - ./mosquitto/data:/mosquitto/data
+    networks:
+      - taims-net
+
+  n8n:
+    image: n8nio/n8n
+    container_name: taims-n8n
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      - GENERIC_TIMEZONE=Asia/Jakarta
+      - N8N_HOST=localhost
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - N8N_DIAGNOSTICS_ENABLED=false
+    volumes:
+      - ./n8n-data:/home/node/.n8n
+    depends_on:
+      - mosquitto
+    networks:
+      - taims-net
+
+networks:
+  taims-net:
+    name: taims-net
+    driver: bridge

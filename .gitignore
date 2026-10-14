@@ -23,3 +23,7 @@ Thumbs.db
 .vscode/
 .idea/
 *.sql
+
+# n8n Data (lokal)
+automation/n8n-data/
+automation/mosquitto/data/

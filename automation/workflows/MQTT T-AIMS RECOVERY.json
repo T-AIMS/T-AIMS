@@ -1,0 +1,72 @@
+{
+  "name": "MQTT T-AIMS RECOVERY",
+  "nodes": [
+    {
+      "parameters": {
+        "topics": "taims/alert/recovery/#",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mqttTrigger",
+      "typeVersion": 1,
+      "position": [0, 0],
+      "id": "67d34239-1123-417a-8ffd-f83d22bcefa3",
+      "name": "MQTT T-AIMS recovery",
+      "credentials": {
+        "mqtt": {
+          "id": "2FJCO6Zj8x3fBLNi",
+          "name": "MQTT account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.first().json;\nconst payload = typeof raw.message === 'string' \n  ? JSON.parse(raw.message) \n  : raw.message;\n\nreturn [{\n  json: {\n    asset_code: payload.asset_code || '-',\n    asset_name: payload.asset_name || '-',\n    category: payload.category || '-',\n    recovered_at: payload.recovered_at || '-',\n    timestamp: payload.timestamp || new Date().toISOString(),\n    message: `🟢 RECOVERY\\n\\nAsset: ${payload.asset_name || '-'}\\nCode: ${payload.asset_code || '-'}\\nKategori: ${payload.category || '-'}\\nRecovered: ${payload.recovered_at || '-'}`\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [240, 0],
+      "id": "561a09e2-a71c-4806-8a6d-c2bc3f1d7674",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "chatId": "-5383419523",
+        "text": "={{ $json.message }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [448, 0],
+      "id": "e67fce92-d4c8-4a46-bd84-c3eea847d813",
+      "name": "Send a text message1",
+      "webhookId": "73c9d919-9c76-493f-8520-30d5b03f994b",
+      "credentials": {
+        "telegramApi": {
+          "id": "tI7uRQG2569tSNWn",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "MQTT T-AIMS recovery": {
+      "main": [[{"node": "Code in JavaScript1", "type": "main", "index": 0}]]
+    },
+    "Code in JavaScript1": {
+      "main": [[{"node": "Send a text message1", "type": "main", "index": 0}]]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "acd432bc-4fc3-46e2-acd7-1aacc3173f5e",
+  "meta": {
+    "instanceId": "60113387f61802f17dc2fd3f15b35737541fe36f121c623ede03d8255443795e"
+  },
+  "nodeGroups": [],
+  "id": "Rmum2R2J1fw3K4Rn",
+  "tags": []
+}

@@ -1,0 +1,74 @@
+{
+  "name": "MQTT T-AIMS OFFLINE",
+  "nodes": [
+    {
+      "parameters": {
+        "chatId": "-5383419523",
+        "text": "={{ $json.message }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [448, 0],
+      "id": "232400a7-53a1-4e9f-b576-249e2e7f6e70",
+      "name": "Send a text message",
+      "webhookId": "73c9d919-9c76-493f-8520-30d5b03f994b",
+      "credentials": {
+        "telegramApi": {
+          "id": "tI7uRQG2569tSNWn",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "topics": "taims/alert/offline/#",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mqttTrigger",
+      "typeVersion": 1,
+      "position": [0, 0],
+      "id": "d3471f54-e3af-4ac2-8082-ab0000ad5a2c",
+      "name": "MQTT T-AIMS OFFLINE",
+      "credentials": {
+        "mqtt": {
+          "id": "2FJCO6Zj8x3fBLNi",
+          "name": "MQTT account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.first().json;\nconst payload = typeof raw.message === 'string' \n  ? JSON.parse(raw.message) \n  : raw.message;\n\nreturn [{\n  json: {\n    asset_code: payload.asset_code || '-',\n    asset_name: payload.asset_name || '-',\n    category: payload.category || '-',\n    last_seen: payload.last_seen || '-',\n    severity: payload.severity || 'unknown',\n    priority: payload.priority || 2,\n    timestamp: payload.timestamp || new Date().toISOString(),\n    message: `🔴 OFFLINE ALERT\\n\\nAsset: ${payload.asset_name || '-'}\\nCode: ${payload.asset_code || '-'}\\nKategori: ${payload.category || '-'}\\nLast Seen: ${payload.last_seen || '-'}\\nSeverity: ${payload.severity || '-'}`\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [240, 0],
+      "id": "b1044d59-d6bb-404b-9227-44576e96c7e6",
+      "name": "Code in JavaScript"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "MQTT T-AIMS OFFLINE": {
+      "main": [[{"node": "Code in JavaScript", "type": "main", "index": 0}]]
+    },
+    "Send a text message": {"main": [[]]},
+    "Code in JavaScript": {
+      "main": [[{"node": "Send a text message", "type": "main", "index": 0}]]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "9afb5a17-6a7d-4cbf-8fd0-c1132f3fe053",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "60113387f61802f17dc2fd3f15b35737541fe36f121c623ede03d8255443795e"
+  },
+  "nodeGroups": [],
+  "id": "am8SlJl3ukufuIhy",
+  "tags": []
+}
