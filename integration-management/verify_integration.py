@@ -6,21 +6,22 @@ T-AIMS MASTER HEALTH CHECKER
 Nama File   : verify_integration.py
 Dibuat Oleh : Dzakwan (Shift Lead & System Integration)
 Untuk       : Tim Shift 2 - T-AIMS PKL Teknolab
-Tanggal     : 14 Oktober 2026
-Versi       : v1.2 (revisi: login JWT + fix endpoint)
+Tanggal     : 15 Oktober 2026
+Versi       : v1.3 (tambah cek Systemd & Docker)
 Deskripsi   : Script untuk memverifikasi seluruh titik integrasi T-AIMS
-              di localhost. Cek port, HTTP endpoint, MQTT, Database.
+              di localhost. Cek port, HTTP endpoint, MQTT, Database,
+              Systemd service, dan Docker container.
 =====================================================================
 """
 
 import socket
 import requests
 import sys
+import subprocess
 from datetime import datetime
 
 # =====================================================================
 # KONFIGURASI - SESUAIKAN DENGAN ENVIRONMENT LOKAL
-# IP Windows dari WSL: cek dengan `ip route | grep default`
 # =====================================================================
 WINDOWS_HOST = "172.19.112.1"
 LOGIN_EMAIL = "reza.fahmi@taims_db.local"
@@ -117,26 +118,6 @@ def check_http_endpoint(url: str, endpoint_name: str, expected_status: int = 200
         print_result(f"{endpoint_name}", "FAIL", str(e)[:50])
         return False
 
-def login_and_get_token() -> str:
-    """Login untuk dapat JWT token."""
-    try:
-        response = requests.post(
-            f"{CONFIG['BACKEND_API_BASE']}/auth/login",
-            json={"email": LOGIN_EMAIL, "password": LOGIN_PASSWORD},
-            timeout=CONFIG["HTTP_TIMEOUT"]
-        )
-        if response.status_code == 200:
-            data = response.json()
-            token = data.get("data", {}).get("token", "")
-            if token:
-                print_result("Login JWT", "OK", f"Token didapat ({token[:20]}...)")
-                return token
-        print_result("Login JWT", "FAIL", f"HTTP {response.status_code}")
-        return None
-    except Exception as e:
-        print_result("Login JWT", "FAIL", str(e)[:50])
-        return None
-
 def check_database_via_backend(headers: dict) -> bool:
     try:
         response = requests.get(
@@ -156,11 +137,52 @@ def check_database_via_backend(headers: dict) -> bool:
         print_result("Database via API /assets", "FAIL", str(e)[:50])
         return False
 
+def login_and_get_token() -> str:
+    try:
+        response = requests.post(
+            f"{CONFIG['BACKEND_API_BASE']}/auth/login",
+            json={"email": LOGIN_EMAIL, "password": LOGIN_PASSWORD},
+            timeout=CONFIG["HTTP_TIMEOUT"]
+        )
+        if response.status_code == 200:
+            data = response.json()
+            token = data.get("data", {}).get("token", "")
+            if token:
+                print_result("Login JWT", "OK", f"Token didapat ({token[:20]}...)")
+                return token
+        print_result("Login JWT", "FAIL", f"HTTP {response.status_code}")
+        return None
+    except Exception as e:
+        print_result("Login JWT", "FAIL", str(e)[:50])
+        return None
+
+def check_systemd_service(service_name: str) -> bool:
+    """Cek systemd service aktif."""
+    try:
+        result = subprocess.run(
+            ["systemctl", "is-active", service_name],
+            capture_output=True, text=True
+        )
+        return result.stdout.strip() == "active"
+    except Exception:
+        return False
+
+def check_docker_container(container_name: str) -> bool:
+    """Cek Docker container jalan."""
+    try:
+        result = subprocess.run(
+            ["docker", "inspect", "-f", "{{.State.Running}}", container_name],
+            capture_output=True, text=True
+        )
+        return result.stdout.strip() == "true"
+    except Exception:
+        return False
+
 # =====================================================================
 # MAIN FUNCTION
 # =====================================================================
 def main():
-    print_header("T-AIMS MASTER HEALTH CHECKER v1.2")
+    print_header("T-AIMS MASTER HEALTH CHECKER v1.3")
     print(f"  {Color.CYAN}Waktu Pengecekan : {datetime.now().strftime('%Y-%m-%d %H:%M:%S WIB')}{Color.END}")
     print(f"  {Color.CYAN}Dijalankan Oleh  : Dzakwan (Shift Lead & System Integration){Color.END}")
     print(f"  {Color.CYAN}WINDOWS_HOST     : {WINDOWS_HOST}{Color.END}")
@@ -183,7 +205,7 @@ def main():
         else:
             results["fail"] += 1
 
-    # BLOK 2: LOGIN & CEK HTTP ENDPOINT BACKEND
+    # BLOK 2: LOGIN JWT & CEK HTTP ENDPOINT BACKEND
     print_header("BLOK 2 - LOGIN JWT & CEK HTTP ENDPOINT BACKEND")
     results["total"] += 1
     token = login_and_get_token()
@@ -215,13 +237,40 @@ def main():
     else:
         results["fail"] += 1
 
-    # BLOK 4: CEK FRONTEND
+    # BLOK 4: CEK FRONTEND DASHBOARD
     print_header("BLOK 4 - CEK FRONTEND DASHBOARD")
     results["total"] += 1
-    frontend_url = f"http://{CONFIG['FRONTEND_HOST']}:{CONFIG['FRONTEND_PORT']}"
+    frontend_url = f"http://{CONFIG['FRONTEND_HOST']}:{CONFIG['FRONTEND_PORT']}/"
     if check_http_endpoint(frontend_url, "Frontend Dashboard"):
         results["ok"] += 1
     else:
+        results["fail"] += 1
+
+    # BLOK 5: CEK SYSTEMD SERVICE & DOCKER CONTAINER
+    print_header("BLOK 5 - CEK SYSTEMD SERVICE & DOCKER CONTAINER")
+    
+    results["total"] += 1
+    if check_systemd_service("taims-monitoring"):
+        print_result("Systemd: taims-monitoring", "OK", "Active running")
+        results["ok"] += 1
+    else:
+        print_result("Systemd: taims-monitoring", "FAIL", "Tidak aktif")
+        results["fail"] += 1
+    
+    results["total"] += 1
+    if check_docker_container("taims-mosquitto"):
+        print_result("Docker: taims-mosquitto", "OK", "Running")
+        results["ok"] += 1
+    else:
+        print_result("Docker: taims-mosquitto", "FAIL", "Tidak jalan")
+        results["fail"] += 1
+    
+    results["total"] += 1
+    if check_docker_container("taims-n8n"):
+        print_result("Docker: taims-n8n", "OK", "Running")
+        results["ok"] += 1
+    else:
+        print_result("Docker: taims-n8n", "FAIL", "Tidak jalan")
         results["fail"] += 1
 
     # RINGKASAN
