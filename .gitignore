@@ -27,3 +27,7 @@ Thumbs.db
 # n8n Data (lokal)
 automation/n8n-data/
 automation/mosquitto/data/
+
+# Log Monitoring
+network-monitoring/*.csv
+*.csv
