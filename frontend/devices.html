@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>T-AIMS · Monitoring Status & Perangkat Live</title>
+  <link rel="icon" type="image/png" href="logo-teknolab.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="dashboard-body">
+  <div class="app-shell-container">
+    
+    <aside class="desktop-sidebar">
+      <div class="sidebar-logo-zone">
+        <a href="dashboard.html">
+          <img src="logo-teknolab.png" alt="Teknolab" class="brand-clean-blend">
+        </a>
+      </div>
+
+      <nav class="sidebar-nav-menu">
+        <a href="dashboard.html" class="sidebar-link ">
+          <i class="fa-solid fa-house"></i> <span>Dashboard</span>
+        </a>
+        <a href="devices.html" class="sidebar-link active">
+          <i class="fa-solid fa-microchip"></i> <span>Perangkat</span>
+        </a>
+        <a href="network.html" class="sidebar-link ">
+          <i class="fa-solid fa-network-wired"></i> <span>Jaringan</span>
+        </a>
+        <a href="topology.html" class="sidebar-link ">
+          <i class="fa-solid fa-location-dot"></i> <span>Lokasi</span>
+        </a>
+        <a href="history.html" class="sidebar-link ">
+          <i class="fa-regular fa-bell"></i> <span>Peringatan</span> <span class="alert-pill-red">5</span>
+        </a>
+        <a href="reports.html" class="sidebar-link ">
+          <i class="fa-solid fa-chart-simple"></i> <span>Laporan</span>
+        </a>
+        <a href="project.html" class="sidebar-link ">
+          <i class="fa-solid fa-circle-info"></i> <span>Informasi Projek</span>
+        </a>
+        <a href="users.html" class="sidebar-link ">
+          <i class="fa-solid fa-users"></i> <span>Pengguna</span>
+        </a>
+        <a href="settings.html" class="sidebar-link " style="margin-top:14px;">
+          <i class="fa-solid fa-gear"></i> <span>Pengaturan</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-status-box">
+        <span class="status-pulse-dot"></span>
+        <div class="status-text">
+          <small>Sistem</small>
+          <strong>Berjalan Normal</strong>
+        </div>
+      </div>
+    </aside>
+    
+    <main class="main-viewport">
+      
+      <div class="desktop-top-navbar">
+        <div class="topbar-left-meta">
+          <strong>T-AIMS</strong>
+          <span>|</span>
+          <p>Teknolab Asset & Infrastructure Monitoring System</p>
+        </div>
+
+        <div class="topbar-center-search">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" placeholder="Cari aset, perangkat, lokasi...">
+        </div>
+
+        <div class="topbar-right-meta">
+          <div class="topbar-clock-chip">
+            <i class="fa-regular fa-calendar"></i>
+            <div>
+              <span>Rabu, 14 Okt 2026</span>
+              <strong>20:55 WIB</strong>
+            </div>
+          </div>
+
+          <div class="topbar-notif-btn" onclick="location.href='history.html'">
+            <i class="fa-regular fa-bell"></i>
+            <span class="notif-bubble">5</span>
+          </div>
+
+          <div class="topbar-profile-dropdown" onclick="location.href='users.html'">
+            <div class="profile-avatar-circle"><i class="fa-regular fa-user"></i></div>
+            <div class="profile-meta-text">
+              <strong>Tamu / Viewer</strong>
+              <small>Viewer (Hanya Lihat)</small>
+            </div>
+            <i class="fa-solid fa-chevron-down caret-icon"></i>
+          </div>
+        </div>
+      </div>
+    
+
+      <!-- HEADER PERSIS FOTO 66 -->
+      <div class="subpage-header">
+        <h2><i class="fa-solid fa-server text-cyan"></i> Monitoring Status & Perangkat Live</h2>
+        <p>Pantau status operasional realtime (Online, Offline, Warning), IP address, latensi ping, dan kendali perangkat elektro.</p>
+      </div>
+
+      <!-- SEARCH BAR LEBAR & FILTER SESUAI FOTO 66 -->
+      <div class="search-filter-container-aziz">
+        <div class="search-bar-wide">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="devSearch" placeholder="Cari nama perangkat, IP, kode aset, PIC..." oninput="filterDeviceRows()">
+        </div>
+        <div class="filter-dropdown-pair">
+          <select id="filterCat" class="dropdown-filter-select" onchange="filterDeviceRows()">
+            <option value="ALL">Semua Kategori</option>
+            <option value="Server">Server</option>
+            <option value="Network Device">Network Device</option>
+            <option value="CCTV & Security">CCTV & Security</option>
+            <option value="IoT Sensor">IoT Sensor</option>
+          </select>
+          <select id="filterStat" class="dropdown-filter-select" onchange="filterDeviceRows()">
+            <option value="ALL">Semua Status</option>
+            <option value="Online">Online</option>
+            <option value="Offline">Offline</option>
+            <option value="Warning">Warning</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- TABEL PERANGKAT PERSIS FOTO 66 -->
+      <div class="card-table-panel">
+        <table class="data-table-full">
+          <thead>
+            <tr>
+              <th>NO</th>
+              <th>KODE ASET</th>
+              <th>NAMA PERANGKAT</th>
+              <th>KATEGORI</th>
+              <th>STATUS</th>
+              <th>IP ADDRESS</th>
+              <th>LOKASI</th>
+              <th>METODE</th>
+              <th>PIC</th>
+              <th>AKSI</th>
+            </tr>
+          </thead>
+          <tbody id="devicesTableBody">
+            <tr class="row-dev" data-cat="Server" data-stat="Online">
+              <td>1</td>
+              <td class="font-mono text-cyan">AST-SRV-001</td>
+              <td><strong>SRV-DC-01</strong></td>
+              <td>Server</td>
+              <td><span class="status-pill online">● Online</span></td>
+              <td class="font-mono text-blue">192.168.1.10</td>
+              <td>Pusat Data Teknolab - Jl. Cibodas No. 03 (Head Office)</td>
+              <td>Ping (ICMP)</td>
+              <td>Ahmad Rizki Pratama</td>
+              <td><button class="btn-detail-white" onclick="openDetailModal('AST-SRV-09')">Detail</button></td>
+            </tr>
+            <tr class="row-dev" data-cat="Network Device" data-stat="Online">
+              <td>2</td>
+              <td class="font-mono text-cyan">AST-NET-002</td>
+              <td><strong>SW-Core-01</strong></td>
+              <td>Network Device</td>
+              <td><span class="status-pill online">● Online</span></td>
+              <td class="font-mono text-blue">192.168.1.1</td>
+              <td>Core Switch Fiber Hub - Jl. Cibodas No. 03, Blitar</td>
+              <td>SNMP v2</td>
+              <td>Budi Santoso</td>
+              <td><button class="btn-detail-white" onclick="openDetailModal('AST-RTR-05')">Detail</button></td>
+            </tr>
+            <tr class="row-dev" data-cat="CCTV & Security" data-stat="Offline">
+              <td>3</td>
+              <td class="font-mono text-cyan">AST-CTV-003</td>
+              <td><strong>CCTV-BLT-01</strong></td>
+              <td>CCTV & Security</td>
+              <td><span class="status-pill offline">● Offline</span></td>
+              <td class="font-mono text-blue">192.168.2.15</td>
+              <td>Pos Pantau Gerbang Utama - Jl. Cibodas No. 03 (HO)</td>
+              <td>HTTP / RTSP</td>
+              <td>Dimas Wahyu Saputra</td>
+              <td><button class="btn-detail-white" onclick="openDetailModal('AST-CAM-02')">Detail</button></td>
+            </tr>
+            <tr class="row-dev" data-cat="Network Device" data-stat="Warning">
+              <td>4</td>
+              <td class="font-mono text-cyan">AST-NET-004</td>
+              <td><strong>AP-KNG-01</strong></td>
+              <td>Network Device</td>
+              <td><span class="status-pill warning">● Warning</span></td>
+              <td class="font-mono text-blue">192.168.3.8</td>
+              <td>Node Distribusi Sektor - Jl. Ciliwung No. 247 (Marketing Office)</td>
+              <td>Ping (ICMP)</td>
+              <td>Siti Rahmadani</td>
+              <td><button class="btn-detail-white" onclick="openDetailModal('AST-RTR-06')">Detail</button></td>
+            </tr>
+            <tr class="row-dev" data-cat="Server" data-stat="Online">
+              <td>5</td>
+              <td class="font-mono text-cyan">AST-SRV-005</td>
+              <td><strong>SRV-APP-02</strong></td>
+              <td>Server</td>
+              <td><span class="status-pill online">● Online</span></td>
+              <td class="font-mono text-blue">192.168.1.20</td>
+              <td>Cluster Server Aplikasi - Jl. Cibodas No. 03 (HO)</td>
+              <td>HTTP / API</td>
+              <td>Ahmad Rizki Pratama</td>
+              <td><button class="btn-detail-white" onclick="openDetailModal('AST-PC-03')">Detail</button></td>
+            </tr>
+            <tr class="row-dev" data-cat="IoT Sensor" data-stat="Online">
+              <td>6</td>
+              <td class="font-mono text-cyan">AST-IOT-006</td>
+              <td><strong>IOT-TEMP-04</strong></td>
+              <td>IoT Sensor</td>
+              <td><span class="status-pill online">● Online</span></td>
+              <td class="font-mono text-blue">192.168.4.88</td>
+              <td>Sensor Suhu Ruang Server - Jl. Cibodas No. 03 (HO)</td>
+              <td>MQTT Broker</td>
+              <td>Dimas Wahyu Saputra</td>
+              <td><button class="btn-detail-white" onclick="openDetailModal('AST-ESP-01')">Detail</button></td>
+            </tr>
+            <tr class="row-dev" data-cat="CCTV & Security" data-stat="Online">
+              <td>7</td>
+              <td class="font-mono text-cyan">AST-CTV-007</td>
+              <td><strong>CCTV-WLI-02</strong></td>
+              <td>CCTV & Security</td>
+              <td><span class="status-pill online">● Online</span></td>
+              <td class="font-mono text-blue">192.168.5.12</td>
+              <td>Pos Pemantau - Jl. Ciliwung No. 247 (Marketing Office)</td>
+              <td>HTTP / RTSP</td>
+              <td>Budi Santoso</td>
+              <td><button class="btn-detail-white" onclick="openDetailModal('AST-RPI-08')">Detail</button></td>
+            </tr>
+            <tr class="row-dev" data-cat="Network Device" data-stat="Online">
+              <td>8</td>
+              <td class="font-mono text-cyan">AST-NET-008</td>
+              <td><strong>RTR-SRG-01</strong></td>
+              <td>Network Device</td>
+              <td><span class="status-pill online">● Online</span></td>
+              <td class="font-mono text-blue">192.168.6.1</td>
+              <td>Sub-Gateway Router - Jl. Ciliwung No. 247 (MO)</td>
+              <td>SNMP v3</td>
+              <td>Budi Santoso</td>
+              <td><button class="btn-detail-white" onclick="openDetailModal('AST-RTR-07')">Detail</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+
+  <div class="modal-overlay" id="device-modal" style="display: none;">
+    <div class="modal-card-mobile">
+      <div class="m-modal-top">
+        <button class="m-back-btn" onclick="closeDetailModal()"><i class="fa-solid fa-arrow-left"></i></button>
+        <span class="m-modal-title">Detail Aset</span>
+        <button class="m-close-btn" onclick="closeDetailModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="m-modal-scroll">
+        <div class="m-asset-hero">
+          <div class="m-asset-icon-box"><i class="fa-solid fa-server"></i></div>
+          <h2 id="m-code">SRV-DC-01</h2>
+          <p id="m-name-sub">Server Utama · AST-SRV-001</p>
+          <span class="tag-status-pill online" id="m-status-pill">● ONLINE</span>
+        </div>
+        <div class="m-section-card">
+          <div class="m-sec-title"><i class="fa-solid fa-circle-info text-blue"></i> Informasi Dasar</div>
+          <div class="m-info-row"><span>IP Address</span><strong id="m-ip">192.168.1.10</strong></div>
+          <div class="m-info-row"><span>Lokasi</span><strong id="m-loc">Jl. Cibodas No. 03 (Head Office)</strong></div>
+          <div class="m-info-row"><span>PIC</span><strong id="m-pic">Ahmad Rizki Pratama</strong></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    function filterDeviceRows() {
+      const q = document.getElementById('devSearch').value.toLowerCase();
+      const cat = document.getElementById('filterCat').value;
+      const stat = document.getElementById('filterStat').value;
+      const rows = document.querySelectorAll('.row-dev');
+
+      rows.forEach(r => {
+        const text = r.innerText.toLowerCase();
+        const rCat = r.getAttribute('data-cat');
+        const rStat = r.getAttribute('data-stat');
+
+        const mText = text.includes(q);
+        const mCat = (cat === 'ALL' || rCat === cat);
+        const mStat = (stat === 'ALL' || rStat === stat);
+
+        r.style.display = (mText && mCat && mStat) ? '' : 'none';
+      });
+    }
+  </script>
+</body>
+</html>
+
+  <!-- MODAL TAMBAH PERANGKAT INTERAKTIF -->
+  <div class="modal-overlay" id="add-device-modal" style="display: none;">
+    <div class="modal-card-mobile" style="max-width: 480px;">
+      <div class="m-modal-top">
+        <span class="m-modal-title"><i class="fa-solid fa-plus-circle text-red"></i> Tambah Perangkat Baru</span>
+        <button class="m-close-btn" onclick="closeAddDeviceModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="m-modal-scroll" style="padding: 20px;">
+        <form onsubmit="handleAddNewDevice(event)" style="display:flex; flex-direction:column; gap:14px;">
+          <div>
+            <label style="display:block; font-size:11.5px; font-weight:700; color:var(--text-muted); margin-bottom:6px;">Nama Perangkat</label>
+            <input type="text" id="newDevName" placeholder="Contoh: Router Ruang Meeting" style="width:100%; background:#090E1A; border:1px solid var(--border-card); padding:10px 14px; border-radius:8px; color:#fff; font-size:12px;" required>
+          </div>
+          <div>
+            <label style="display:block; font-size:11.5px; font-weight:700; color:var(--text-muted); margin-bottom:6px;">IP Address</label>
+            <input type="text" id="newDevIp" placeholder="Contoh: 192.168.1.50" style="width:100%; background:#090E1A; border:1px solid var(--border-card); padding:10px 14px; border-radius:8px; color:#fff; font-size:12px;" required>
+          </div>
+          <div>
+            <label style="display:block; font-size:11.5px; font-weight:700; color:var(--text-muted); margin-bottom:6px;">Kategori</label>
+            <select id="newDevCat" style="width:100%; background:#090E1A; border:1px solid var(--border-card); padding:10px 14px; border-radius:8px; color:#fff; font-size:12px;">
+              <option value="Server">Server</option>
+              <option value="Network Device">Network Device</option>
+              <option value="CCTV & Security">CCTV & Security</option>
+              <option value="IoT Sensor">IoT Sensor</option>
+              <option value="Workstation">Workstation</option>
+            </select>
+          </div>
+          <div>
+            <label style="display:block; font-size:11.5px; font-weight:700; color:var(--text-muted); margin-bottom:6px;">Lokasi Site Blitar</label>
+            <select id="newDevSite" style="width:100%; background:#090E1A; border:1px solid var(--border-card); padding:10px 14px; border-radius:8px; color:#fff; font-size:12px;">
+              <option value="HO (Jl. Cibodas No. 03)">HO - Jl. Cibodas No. 03 (Head Office)</option>
+              <option value="MO (Kos Kiki, Jl. Ciliwung)">MO - Kos Kiki, Jl. Ciliwung No. 247 (Marketing Office)</option>
+            </select>
+          </div>
+          <button type="submit" style="background:var(--accent-red); border:none; color:#fff; font-weight:800; padding:12px; border-radius:8px; cursor:pointer; margin-top:10px;">Simpan & Daftarkan Perangkat</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <script>
+    function openAddDeviceModal() { document.getElementById('add-device-modal').style.display = 'flex'; }
+    function closeAddDeviceModal() { document.getElementById('add-device-modal').style.display = 'none'; }
+    function handleAddNewDevice(e) {
+      e.preventDefault();
+      const name = document.getElementById('newDevName').value;
+      const ip = document.getElementById('newDevIp').value;
+      alert(`Perangkat baru "${name}" (${ip}) berhasil ditambahkan ke sistem monitoring T-AIMS!`);
+      closeAddDeviceModal();
+    }
+  </script>

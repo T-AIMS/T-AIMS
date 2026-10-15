@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>T-AIMS · Pengaturan Sistem</title>
+  <link rel="icon" type="image/png" href="logo-teknolab.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="dashboard-body">
+  <div class="app-shell-container">
+    <aside class="desktop-sidebar">
+      <div class="sidebar-logo-zone"><a href="dashboard.html"><img src="logo-teknolab.png" alt="Teknolab" class="brand-clean-blend"></a></div>
+      <nav class="sidebar-nav-menu">
+        <a href="dashboard.html" class="sidebar-link"><i class="fa-solid fa-house"></i> <span>Dashboard</span></a>
+        <a href="devices.html" class="sidebar-link"><i class="fa-solid fa-microchip"></i> <span>Perangkat</span></a>
+        <a href="network.html" class="sidebar-link"><i class="fa-solid fa-network-wired"></i> <span>Jaringan</span></a>
+        <a href="topology.html" class="sidebar-link"><i class="fa-solid fa-location-dot"></i> <span>Lokasi</span></a>
+        <a href="history.html" class="sidebar-link"><i class="fa-regular fa-bell"></i> <span>Peringatan</span> <span class="alert-pill-red">5</span></a>
+        <a href="reports.html" class="sidebar-link"><i class="fa-solid fa-chart-simple"></i> <span>Laporan</span></a>
+        <a href="project.html" class="sidebar-link"><i class="fa-solid fa-circle-info"></i> <span>Informasi Projek</span></a>
+        <a href="users.html" class="sidebar-link"><i class="fa-solid fa-users"></i> <span>Pengguna</span></a>
+        <a href="settings.html" class="sidebar-link active" style="margin-top:14px;"><i class="fa-solid fa-gear"></i> <span>Pengaturan</span></a>
+      </nav>
+      <div class="sidebar-status-box"><span class="status-pulse-dot"></span><div class="sidebar-status-box-text"><small>Sistem</small><strong>Berjalan Normal</strong></div></div>
+    </aside>
+
+    <main class="main-viewport">
+      <div class="desktop-top-navbar">
+        <div class="topbar-left-meta"><strong>T-AIMS</strong><span>|</span><p>Teknolab Asset & Infrastructure Monitoring System</p></div>
+        <div class="topbar-center-search"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="Cari aset, perangkat, lokasi..."></div>
+        <div class="topbar-right-meta">
+          <div class="topbar-clock-chip"><i class="fa-regular fa-calendar"></i><div><span>Rabu, 14 Okt 2026</span><strong>20:55 WIB</strong></div></div>
+          <div class="topbar-notif-btn" onclick="location.href='history.html'"><i class="fa-regular fa-bell"></i><span class="notif-bubble">5</span></div>
+          <div class="topbar-profile-dropdown" onclick="location.href='users.html'">
+            <div class="profile-avatar-circle" id="topbarAvatar">A</div>
+            <div class="profile-meta-text"><strong id="topbarRoleName">Ahmad Rizki</strong><small id="topbarRoleSub">Administrator</small></div>
+            <i class="fa-solid fa-chevron-down caret-icon"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="subpage-header-row">
+        <div>
+          <h2><i class="fa-solid fa-sliders text-cyan"></i> Pengaturan Sistem T-AIMS</h2>
+          <p>Konfigurasi interval ping sensor, ambang batas alert, dan kredensial sistem.</p>
+        </div>
+        <button class="btn-save-red" onclick="alert('Pengaturan sistem berhasil disimpan!')"><i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan</button>
+      </div>
+
+      <div class="settings-form-panel">
+        <div class="setting-group-box"><label>Interval Auto-Refresh Monitoring (Detik)</label><input type="number" class="setting-input-text" value="10"></div>
+        <div class="setting-group-box"><label>Ambang Batas Suhu Kritis Server (°C)</label><input type="number" class="setting-input-text" value="32"></div>
+        <div class="setting-group-box"><label>Zona Waktu Monitoring</label>
+          <select class="setting-select-box"><option selected>Asia/Jakarta (WIB - UTC+7)</option><option>Asia/Makassar (WITA - UTC+8)</option></select>
+        </div>
+        <div class="setting-group-box"><label>Mode Tema Dashboard</label>
+          <select class="setting-select-box"><option selected>Opsi 2 - Cyber-Electric Dark (Aktif)</option><option>Opsi 1 - Minimalist Midnight</option></select>
+        </div>
+      </div>
+    </main>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>T-AIMS · Monitoring Performa Real-Time Jaringan</title>
+  <link rel="icon" type="image/png" href="logo-teknolab.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="dashboard-body">
+  <div class="app-shell-container">
+    
+    <aside class="desktop-sidebar">
+      <div class="sidebar-logo-zone">
+        <a href="dashboard.html">
+          <img src="logo-teknolab.png" alt="Teknolab" class="brand-clean-blend">
+        </a>
+      </div>
+
+      <nav class="sidebar-nav-menu">
+        <a href="dashboard.html" class="sidebar-link ">
+          <i class="fa-solid fa-house"></i> <span>Dashboard</span>
+        </a>
+        <a href="devices.html" class="sidebar-link ">
+          <i class="fa-solid fa-microchip"></i> <span>Perangkat</span>
+        </a>
+        <a href="network.html" class="sidebar-link active">
+          <i class="fa-solid fa-network-wired"></i> <span>Jaringan</span>
+        </a>
+        <a href="topology.html" class="sidebar-link ">
+          <i class="fa-solid fa-location-dot"></i> <span>Lokasi</span>
+        </a>
+        <a href="history.html" class="sidebar-link ">
+          <i class="fa-regular fa-bell"></i> <span>Peringatan</span> <span class="alert-pill-red">5</span>
+        </a>
+        <a href="reports.html" class="sidebar-link ">
+          <i class="fa-solid fa-chart-simple"></i> <span>Laporan</span>
+        </a>
+        <a href="project.html" class="sidebar-link ">
+          <i class="fa-solid fa-circle-info"></i> <span>Informasi Projek</span>
+        </a>
+        <a href="users.html" class="sidebar-link ">
+          <i class="fa-solid fa-users"></i> <span>Pengguna</span>
+        </a>
+        <a href="settings.html" class="sidebar-link " style="margin-top:14px;">
+          <i class="fa-solid fa-gear"></i> <span>Pengaturan</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-status-box">
+        <span class="status-pulse-dot"></span>
+        <div class="status-text">
+          <small>Sistem</small>
+          <strong>Berjalan Normal</strong>
+        </div>
+      </div>
+    </aside>
+    
+    <main class="main-viewport">
+      
+      <div class="desktop-top-navbar">
+        <div class="topbar-left-meta">
+          <strong>T-AIMS</strong>
+          <span>|</span>
+          <p>Teknolab Asset & Infrastructure Monitoring System</p>
+        </div>
+
+        <div class="topbar-center-search">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" placeholder="Cari aset, perangkat, lokasi...">
+        </div>
+
+        <div class="topbar-right-meta">
+          <div class="topbar-clock-chip">
+            <i class="fa-regular fa-calendar"></i>
+            <div>
+              <span>Rabu, 14 Okt 2026</span>
+              <strong>20:55 WIB</strong>
+            </div>
+          </div>
+
+          <div class="topbar-notif-btn" onclick="location.href='history.html'">
+            <i class="fa-regular fa-bell"></i>
+            <span class="notif-bubble">5</span>
+          </div>
+
+          <div class="topbar-profile-dropdown" onclick="location.href='users.html'">
+            <div class="profile-avatar-circle"><i class="fa-regular fa-user"></i></div>
+            <div class="profile-meta-text">
+              <strong>Tamu / Viewer</strong>
+              <small>Viewer (Hanya Lihat)</small>
+            </div>
+            <i class="fa-solid fa-chevron-down caret-icon"></i>
+          </div>
+        </div>
+      </div>
+    
+
+      <div class="subpage-header-row">
+        <div>
+          <div class="badge-sub-green">● LIVE MONITORING</div>
+          <h2>Monitoring Performa Real-Time</h2>
+          <p>Telemetri latensi ICMP, ketersediaan daya, dan statistik uptime per jam inter-office.</p>
+        </div>
+        <button class="btn-export-top"><i class="fa-solid fa-paper-plane"></i> Kirim Ping Test</button>
+      </div>
+
+      <div class="net-availability-card">
+        <div class="avail-title-row">
+          <span><i class="fa-solid fa-circle-check text-cyan"></i> Ketersediaan Sistem (Availability 30 Hari Terakhir)</span>
+          <strong class="text-cyan">99.6% (Target: 99.0%)</strong>
+        </div>
+        <div class="avail-bar-track">
+          <div class="avail-bar-fill" style="width: 99.6%;"></div>
+        </div>
+        <div class="avail-sub-row">
+          <span>716 Jam <small>Uptime Aktif</small></span>
+          <span class="text-red">2.8 Jam <small>Total Gangguan (Downtime)</small></span>
+          <span class="text-cyan">14 ms <small>Rata-Rata Latensi Respon</small></span>
+        </div>
+      </div>
+
+      <div class="trouble-list-panel">
+        <h4><i class="fa-solid fa-triangle-exclamation text-red"></i> Top 3 Device Paling Bermasalah (Perlu Perhatian Teknisi)</h4>
+        
+        <div class="trouble-item">
+          <span class="trouble-rank text-red">#1</span>
+          <div class="trouble-info">
+            <strong>CCTV Utama Gate (Jl. Cibodas HO)</strong>
+            <small>Gangguan RTSP Stream • Total Gangguan: 4 kali • Downtime: 1.5 Jam</small>
+          </div>
+          <span class="status-pill offline">Offline</span>
+        </div>
+
+        <div class="trouble-item">
+          <span class="trouble-rank text-red">#2</span>
+          <div class="trouble-info">
+            <strong>Router 2 MO (Jl. Ciliwung Marketing Office)</strong>
+            <small>Link Fiber Optik Flapping • Packet Loss 12%</small>
+          </div>
+          <span class="status-pill offline">Offline</span>
+        </div>
+
+        <div class="trouble-item">
+          <span class="trouble-rank text-amber">#3</span>
+          <div class="trouble-info">
+            <strong>Smart Home RPi (Jl. Ciliwung Marketing Office)</strong>
+            <small>Beban Bandwidth Tinggi • Latensi > 150 ms</small>
+          </div>
+          <span class="status-pill warning">Peringatan</span>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
