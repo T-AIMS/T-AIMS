@@ -113,16 +113,22 @@
         <div class="filter-dropdown-pair">
           <select id="filterCat" class="dropdown-filter-select" onchange="filterDeviceRows()">
             <option value="ALL">Semua Kategori</option>
+            <option value="Router">Router</option>
+            <option value="Switch Manageable">Switch Manageable</option>
+            <option value="Access Point">Access Point</option>
             <option value="Server">Server</option>
-            <option value="Network Device">Network Device</option>
-            <option value="CCTV & Security">CCTV & Security</option>
-            <option value="IoT Sensor">IoT Sensor</option>
+            <option value="Storage">Storage</option>
+            <option value="CCTV">CCTV</option>
+            <option value="IoT Node">IoT Node</option>
+            <option value="Firewall">Firewall</option>
+            <option value="PC">PC Workstation</option>
+            <option value="TV">Smart TV</option>
           </select>
           <select id="filterStat" class="dropdown-filter-select" onchange="filterDeviceRows()">
             <option value="ALL">Semua Status</option>
-            <option value="Online">Online</option>
-            <option value="Offline">Offline</option>
-            <option value="Warning">Warning</option>
+            <option value="online">Online</option>
+            <option value="offline">Offline</option>
+            <option value="unknown">Unknown</option>
           </select>
         </div>
       </div>
@@ -263,30 +269,35 @@
         </div>
         <div class="m-section-card">
           <div class="m-sec-title"><i class="fa-solid fa-circle-info text-blue"></i> Informasi Dasar</div>
-          <div class="m-info-row"><span>IP Address</span><strong id="m-ip">192.168.1.10</strong></div>
-          <div class="m-info-row"><span>Lokasi</span><strong id="m-loc">Jl. Cibodas No. 03 (Head Office)</strong></div>
-          <div class="m-info-row"><span>PIC</span><strong id="m-pic">Ahmad Rizki Pratama</strong></div>
+          <div class="m-info-row"><span>Kategori</span><strong id="m-cat">Server</strong></div>
+          <div class="m-info-row"><span>IP Address</span><strong id="m-ip">192.168.10.1</strong></div>
+          <div class="m-info-row"><span>MAC Address</span><strong id="m-mac">-</strong></div>
+          <div class="m-info-row"><span>Lokasi</span><strong id="m-loc">Head Office</strong></div>
+          <div class="m-info-row"><span>PIC Penanggung Jawab</span><strong id="m-pic">Ananda Dwi Susanti</strong></div>
+          <div class="m-info-row"><span>Metode Monitoring</span><strong id="m-method">Ping</strong></div>
+          <div class="m-info-row"><span>Terakhir Terlihat</span><strong id="m-seen">-</strong></div>
         </div>
       </div>
     </div>
   </div>
 
+  <script src="apiService.js"></script>
   <script src="app.js"></script>
   <script>
     function filterDeviceRows() {
-      const q = document.getElementById('devSearch').value.toLowerCase();
-      const cat = document.getElementById('filterCat').value;
-      const stat = document.getElementById('filterStat').value;
+      const q = (document.getElementById('devSearch')?.value || '').toLowerCase();
+      const cat = document.getElementById('filterCat')?.value || 'ALL';
+      const stat = document.getElementById('filterStat')?.value || 'ALL';
       const rows = document.querySelectorAll('.row-dev');
 
       rows.forEach(r => {
         const text = r.innerText.toLowerCase();
-        const rCat = r.getAttribute('data-cat');
-        const rStat = r.getAttribute('data-stat');
+        const rCat = (r.getAttribute('data-cat') || '').toLowerCase();
+        const rStat = (r.getAttribute('data-stat') || '').toLowerCase();
 
-        const mText = text.includes(q);
-        const mCat = (cat === 'ALL' || rCat === cat);
-        const mStat = (stat === 'ALL' || rStat === stat);
+        const mText = !q || text.includes(q);
+        const mCat = (cat === 'ALL' || rCat === cat.toLowerCase());
+        const mStat = (stat === 'ALL' || rStat === stat.toLowerCase());
 
         r.style.display = (mText && mCat && mStat) ? '' : 'none';
       });

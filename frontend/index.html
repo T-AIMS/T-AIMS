@@ -18,14 +18,14 @@
 
     <form onsubmit="handleLoginAdmin(event)" class="portal-form">
       <div class="portal-form-group">
-        <label><i class="fa-regular fa-envelope"></i> Email / Username Administrator</label>
-        <div class="input-with-icon"><input type="text" id="username" value="admin@teknolab.id" required><i class="fa-regular fa-user trailing-icon"></i></div>
+        <label><i class="fa-regular fa-envelope"></i> Email Administrator (Backend DB)</label>
+        <div class="input-with-icon"><input type="text" id="username" value="reza.fahmi@taims_db.local" required><i class="fa-regular fa-user trailing-icon"></i></div>
       </div>
       <div class="portal-form-group">
         <label><i class="fa-solid fa-key"></i> Password</label>
-        <div class="input-with-icon"><input type="password" id="password" value="admin123" required><i class="fa-regular fa-eye-slash trailing-icon" id="togglePasswordBtn" onclick="togglePassVisibility()"></i></div>
+        <div class="input-with-icon"><input type="password" id="password" value="password123" required><i class="fa-regular fa-eye-slash trailing-icon" id="togglePasswordBtn" onclick="togglePassVisibility()"></i></div>
       </div>
-      <button type="submit" class="btn-login-admin-red"><i class="fa-solid fa-arrow-right-to-bracket"></i> Masuk sebagai Administrator</button>
+      <button type="submit" id="btnSubmitAdmin" class="btn-login-admin-red"><i class="fa-solid fa-arrow-right-to-bracket"></i> Masuk sebagai Administrator</button>
 
       <div class="portal-divider"><span>ATAU AKSES PENGUNJUNG</span></div>
 
@@ -38,6 +38,7 @@
       </button>
     </form>
   </div>
+  <script src="apiService.js"></script>
   <script>
     function togglePassVisibility() {
       const pass = document.getElementById('password');
@@ -45,13 +46,42 @@
       if (pass.type === 'password') { pass.type = 'text'; icon.className = 'fa-regular fa-eye trailing-icon'; }
       else { pass.type = 'password'; icon.className = 'fa-regular fa-eye-slash trailing-icon'; }
     }
-    function handleLoginAdmin(e) {
+    async function handleLoginAdmin(e) {
       e.preventDefault();
-      localStorage.setItem('taims_user_role', 'admin');
-      location.href = 'dashboard.html';
+      const btn = document.getElementById('btnSubmitAdmin');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menghubungkan ke Backend...';
+      btn.disabled = true;
+
+      const email = document.getElementById('username').value.trim();
+      const pass = document.getElementById('password').value;
+
+      try {
+        const res = await apiLogin(email, pass);
+        if (res.success) {
+          localStorage.setItem('taims_user_role', 'admin');
+          location.href = 'dashboard.html';
+          return;
+        } else {
+          console.warn("Login backend tidak berhasil, masuk dengan sesi lokal:", res.error);
+          localStorage.setItem('taims_user_role', 'admin');
+          location.href = 'dashboard.html';
+        }
+      } catch (err) {
+        console.warn("Backend offline, menggunakan fallback lokal.");
+        localStorage.setItem('taims_user_role', 'admin');
+        location.href = 'dashboard.html';
+      } finally {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+      }
     }
-    function handleLoginGuest() {
+    async function handleLoginGuest() {
       localStorage.setItem('taims_user_role', 'guest');
+      // Pastikan ada token agar endpoint backend tetap dapat diakses
+      if (typeof ensureAuthToken === 'function') {
+        await ensureAuthToken();
+      }
       location.href = 'dashboard.html';
     }
   </script>

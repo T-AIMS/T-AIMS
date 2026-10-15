@@ -54,13 +54,13 @@ router.get('/stats', authenticate, async (req, res) => {
         res.status(200).json({
             success: true,
             data: {
-                total_devices: total,
-                online: statusCount[0].online || 0,
-                offline: statusCount[0].offline || 0,
-                unknown: statusCount[0].unknown || 0,
-                maintenance: statusCount[0].maintenance || 0,
+                total_devices: parseInt(total, 10) || 0,
+                online: parseInt(statusCount[0].online, 10) || 0,
+                offline: parseInt(statusCount[0].offline, 10) || 0,
+                unknown: parseInt(statusCount[0].unknown, 10) || 0,
+                maintenance: parseInt(statusCount[0].maintenance, 10) || 0,
                 availability_percent: parseFloat(availability),
-                total_incidents_today: incidents[0].total || 0,
+                total_incidents_today: parseInt(incidents[0].total, 10) || 0,
                 by_category: categoryMap,
                 last_updated: lastUpdate[0].last_updated
             }

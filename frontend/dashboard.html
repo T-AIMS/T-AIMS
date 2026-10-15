@@ -123,7 +123,7 @@
           <div class="kpi-icon-cell"><i class="fa-solid fa-cubes"></i></div>
           <div class="kpi-data-cell">
             <span class="kpi-head-label">Total Perangkat</span>
-            <h2>9</h2>
+            <h2 id="kpi-total-devices">16</h2>
             <div class="kpi-progress-bar-wrap"><div class="kpi-progress-bar bar-red" style="width: 100%;"></div></div>
             <small class="kpi-change-text text-green"><i class="fa-solid fa-location-dot"></i> 2 Site Aktif (HO & MO)</small>
           </div>
@@ -133,9 +133,9 @@
           <div class="kpi-icon-cell"><i class="fa-solid fa-signal"></i></div>
           <div class="kpi-data-cell">
             <span class="kpi-head-label">Perangkat Online</span>
-            <h2>7</h2>
-            <div class="kpi-progress-bar-wrap"><div class="kpi-progress-bar bar-green" style="width: 77.8%;"></div></div>
-            <small class="kpi-sub-label"><strong>77.8%</strong> normal beroperasi</small>
+            <h2 id="kpi-online-devices">5</h2>
+            <div class="kpi-progress-bar-wrap"><div id="kpi-bar-online" class="kpi-progress-bar bar-green" style="width: 31.25%;"></div></div>
+            <small id="kpi-sub-online" class="kpi-sub-label"><strong>31.3%</strong> normal beroperasi</small>
           </div>
         </div>
 
@@ -143,19 +143,19 @@
           <div class="kpi-icon-cell"><i class="fa-solid fa-power-off"></i></div>
           <div class="kpi-data-cell">
             <span class="kpi-head-label">Perangkat Offline</span>
-            <h2>1</h2>
-            <div class="kpi-progress-bar-wrap"><div class="kpi-progress-bar bar-offline" style="width: 11.1%;"></div></div>
-            <small class="kpi-sub-label"><strong>11.1%</strong> fault (CCTV 1 Gate)</small>
+            <h2 id="kpi-offline-devices">6</h2>
+            <div class="kpi-progress-bar-wrap"><div id="kpi-bar-offline" class="kpi-progress-bar bar-offline" style="width: 37.5%;"></div></div>
+            <small id="kpi-sub-offline" class="kpi-sub-label"><strong>37.5%</strong> offline fault</small>
           </div>
         </div>
 
         <div class="card-kpi-hard card-kpi-amber">
           <div class="kpi-icon-cell"><i class="fa-solid fa-triangle-exclamation"></i></div>
           <div class="kpi-data-cell">
-            <span class="kpi-head-label">Peringatan Aktif</span>
-            <h2>1</h2>
-            <div class="kpi-progress-bar-wrap"><div class="kpi-progress-bar bar-amber" style="width: 11.1%;"></div></div>
-            <small class="kpi-sub-label"><strong>11.1%</strong> alert (WIFI 2 MO)</small>
+            <span class="kpi-head-label">Peringatan & Unknown</span>
+            <h2 id="kpi-warning-devices">5</h2>
+            <div class="kpi-progress-bar-wrap"><div id="kpi-bar-warning" class="kpi-progress-bar bar-amber" style="width: 31.25%;"></div></div>
+            <small id="kpi-sub-warning" class="kpi-sub-label"><strong>31.3%</strong> belum termonitor</small>
           </div>
         </div>
 
@@ -163,7 +163,7 @@
           <div class="kpi-icon-cell"><i class="fa-solid fa-location-dot"></i></div>
           <div class="kpi-data-cell">
             <span class="kpi-head-label">Lokasi Aktif</span>
-            <h2>2</h2>
+            <h2 id="kpi-location-count">2</h2>
             <div class="kpi-progress-bar-wrap"><div class="kpi-progress-bar bar-blue" style="width: 100%;"></div></div>
             <small class="kpi-sub-label">HO Cibodas & MO Ciliwung</small>
           </div>
@@ -173,13 +173,13 @@
           <div class="kpi-icon-cell"><i class="fa-regular fa-clock"></i></div>
           <div class="kpi-data-cell">
             <span class="kpi-head-label">Uptime Sistem</span>
-            <h2>99.6%</h2>
-            <div class="kpi-progress-bar-wrap"><div class="kpi-progress-bar bar-purple" style="width: 99.6%;"></div></div>
-            <small class="kpi-change-text text-green"><i class="fa-solid fa-arrow-trend-up"></i> Operasional Stabil</small>
+            <h2 id="kpi-uptime">31.25%</h2>
+            <div class="kpi-progress-bar-wrap"><div id="kpi-bar-uptime" class="kpi-progress-bar bar-purple" style="width: 31.25%;"></div></div>
+            <small id="kpi-sub-uptime" class="kpi-change-text text-green"><i class="fa-solid fa-arrow-trend-up"></i> Operasional Stabil</small>
           </div>
         </div>
       </section>
-      <!-- SEKSI GRAFIK TREN & KATEGORI (9 PERANGKAT) -->
+      <!-- SEKSI GRAFIK TREN & KATEGORI (16 PERANGKAT DATABASE) -->
       <section class="charts-section-hard">
         <div class="chart-glass-panel panel-left-trend">
           <div class="panel-header-row">
@@ -205,16 +205,17 @@
             <div class="donut-circle-wrap">
               <canvas id="categoryDonutChart"></canvas>
               <div class="donut-inner-data">
-                <strong>9</strong>
+                <strong id="donutTotalCount">16</strong>
                 <small>Perangkat</small>
               </div>
             </div>
-            <div class="donut-category-stats-list">
-              <div class="stat-category-item"><div class="cat-label-title"><span class="sq-dot sq-amber"></span> Network Device</div><div class="cat-numbers"><strong>3</strong> <small>33.3%</small></div></div>
-              <div class="stat-category-item"><div class="cat-label-title"><span class="sq-dot sq-blue"></span> Workstation</div><div class="cat-numbers"><strong>2</strong> <small>22.2%</small></div></div>
-              <div class="stat-category-item"><div class="cat-label-title"><span class="sq-dot sq-cyan"></span> CCTV & Security</div><div class="cat-numbers"><strong>2</strong> <small>22.2%</small></div></div>
-              <div class="stat-category-item"><div class="cat-label-title"><span class="sq-dot sq-green"></span> IoT Sensor</div><div class="cat-numbers"><strong>1</strong> <small>11.1%</small></div></div>
-              <div class="stat-category-item"><div class="cat-label-title"><span class="sq-dot sq-red"></span> Server</div><div class="cat-numbers"><strong>1</strong> <small>11.1%</small></div></div>
+            <div class="donut-category-stats-list" id="donutCategoryStatsList">
+              <div class="stat-category-item"><div class="cat-label-title"><span class="sq-dot sq-amber"></span> Network / Switch</div><div class="cat-numbers"><strong>4</strong> <small>25.0%</small></div></div>
+              <div class="stat-category-item"><div class="cat-label-title"><span class="sq-dot sq-blue"></span> Workstation / PC</div><div class="cat-numbers"><strong>3</strong> <small>18.8%</small></div></div>
+              <div class="stat-category-item"><div class="cat-label-title"><span class="sq-dot sq-cyan"></span> CCTV & Security</div><div class="cat-numbers"><strong>2</strong> <small>12.5%</small></div></div>
+              <div class="stat-category-item"><div class="cat-label-title"><span class="sq-dot sq-green"></span> IoT Sensor</div><div class="cat-numbers"><strong>2</strong> <small>12.5%</small></div></div>
+              <div class="stat-category-item"><div class="cat-label-title"><span class="sq-dot sq-red"></span> Server & Storage</div><div class="cat-numbers"><strong>3</strong> <small>18.8%</small></div></div>
+              <div class="stat-category-item"><div class="cat-label-title"><span class="sq-dot sq-purple"></span> Router & Gateway</div><div class="cat-numbers"><strong>2</strong> <small>12.5%</small></div></div>
             </div>
           </div>
         </div>
@@ -223,14 +224,14 @@
         <div class="bottom-mini-panel">
           <div class="mini-header-row">
             <h4><i class="fa-solid fa-server text-red"></i> Status Perangkat Terbaru</h4>
-            <a onclick="openAddDeviceModal()" style="cursor:pointer;" class="link-mini-more">Lihat Semua →</a>
+            <a href="devices.html" class="link-mini-more">Lihat Semua →</a>
           </div>
           <table class="mini-table-quick">
             <thead><tr><th>NAMA PERANGKAT</th><th>LOKASI</th><th>IP ADDRESS</th><th>STATUS</th></tr></thead>
-            <tbody>
-              <tr onclick="location.href='devices.html'"><td><strong>SRV-DC-01</strong><br><small>Server Utama</small></td><td>Head Office (HO)</td><td class="font-mono text-blue">192.168.1.10</td><td><span class="badge-mini-stat online">● Online</span></td></tr>
-              <tr onclick="location.href='devices.html'"><td><strong>SW-Core-01</strong><br><small>Switch Fiber</small></td><td>Head Office (HO)</td><td class="font-mono text-blue">192.168.1.1</td><td><span class="badge-mini-stat online">● Online</span></td></tr>
-              <tr onclick="location.href='devices.html'"><td><strong>CCTV-BLT-01</strong><br><small>Gate Cam</small></td><td>Gerbang HO</td><td class="font-mono text-blue">192.168.2.15</td><td><span class="badge-mini-stat offline">● Offline</span></td></tr>
+            <tbody id="dashboardRecentDevices">
+              <tr onclick="location.href='devices.html'"><td><strong>NET-RTR-01</strong><br><small>Router Utama MikroTik</small></td><td>Head Office</td><td class="font-mono text-blue">192.168.10.1</td><td><span class="badge-mini-stat offline">● Offline</span></td></tr>
+              <tr onclick="location.href='devices.html'"><td><strong>NET-SRV-01</strong><br><small>Server Monitoring</small></td><td>Head Office</td><td class="font-mono text-blue">192.168.10.20</td><td><span class="badge-mini-stat offline">● Offline</span></td></tr>
+              <tr onclick="location.href='devices.html'"><td><strong>IOT-ESP-01</strong><br><small>ESP32 Panel Surya</small></td><td>Head Office</td><td class="font-mono text-blue">192.168.10.101</td><td><span class="badge-mini-stat offline">● Offline</span></td></tr>
             </tbody>
           </table>
         </div>
@@ -254,15 +255,15 @@
             <h4><i class="fa-solid fa-triangle-exclamation text-amber"></i> Riwayat Gangguan</h4>
             <a href="history.html" class="link-mini-more">Lihat Semua →</a>
           </div>
-          <div class="incident-timeline-mini">
+          <div class="incident-timeline-mini" id="incidentTimelineMini">
             <div class="incident-mini-card">
-              <div class="inc-time">18:50 WIB</div>
-              <div class="inc-desc"><strong>Perangkat CCTV-BLT-01 tidak merespons</strong><small>Packet loss 100% pada RTSP stream</small></div>
+              <div class="inc-time">13:20 WIB</div>
+              <div class="inc-desc"><strong>Perangkat NET-GW-01 Timeout (Offline)</strong><small>Packet loss 100% pada Ping Check</small></div>
               <span class="badge-kritis">Kritis</span>
             </div>
             <div class="incident-mini-card">
-              <div class="inc-time">16:30 WIB</div>
-              <div class="inc-desc"><strong>CPU Usage Tinggi (92%)</strong><small>SRV-APP-01 Data Center</small></div>
+              <div class="inc-time">11:53 WIB</div>
+              <div class="inc-desc"><strong>Heartbeat IOT-ESP-01 Terputus</strong><small>MQTT Broker timeout > 90 detik</small></div>
               <span class="badge-warn">Warning</span>
             </div>
           </div>
