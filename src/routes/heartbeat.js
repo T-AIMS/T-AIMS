@@ -2,12 +2,14 @@ const express = require('express');
 const router = express.Router();
 const db = require('../config/db');
 const { authenticate } = require('../middleware/auth');
+const { apiKeyAuth } = require('../middleware/apiKeyAuth');
 
 // ============================================================
 // POST /api/heartbeat
 // Device kirim heartbeat via HTTP (fallback MQTT)
+// Auth: API Key (bukan JWT)
 // ============================================================
-router.post('/', async (req, res) => {
+router.post('/', apiKeyAuth, async (req, res) => {
     try {
         const {
             device_id,
@@ -26,6 +28,10 @@ router.post('/', async (req, res) => {
             });
         }
 
+        // Validasi status
+        const validStatuses = ['online', 'offline', 'unknown', 'maintenance'];
+        const deviceStatus = validStatuses.includes(status) ? status : 'online';
+
         // Cari asset
         const [assets] = await db.query(
             'SELECT asset_id, asset_code FROM assets WHERE asset_code = ?',
@@ -40,16 +46,17 @@ router.post('/', async (req, res) => {
         }
 
         const asset = assets[0];
-        const checkTime = timestamp || new Date();
+        const checkTime = new Date(); // pakai waktu server
 
         // Simpan log
         await db.query(
             `INSERT INTO monitoring_logs 
                 (asset_id, check_time, status, method, source, response_time_ms, details)
-             VALUES (?, ?, 'online', 'Heartbeat', 'device', 0, ?)`,
+             VALUES (?, ?, ?, 'Heartbeat', 'device', 0, ?)`,
             [
                 asset.asset_id,
                 checkTime,
+                deviceStatus,
                 JSON.stringify({
                     ip_address: ip_address || null,
                     rssi: rssi || null,
@@ -62,14 +69,15 @@ router.post('/', async (req, res) => {
         // Update asset
         await db.query(
             `UPDATE assets 
-             SET current_status = 'online', last_seen = ?, updated_at = NOW()
+             SET current_status = ?, last_seen = ?, updated_at = NOW()
              WHERE asset_id = ?`,
-            [checkTime, asset.asset_id]
+            [deviceStatus, checkTime, asset.asset_id]
         );
 
         res.status(200).json({
             success: true,
             message: 'Heartbeat received',
+            status: deviceStatus,
             next_heartbeat_in: 30
         });
     } catch (err) {
@@ -80,7 +88,7 @@ router.post('/', async (req, res) => {
 
 // ============================================================
 // GET /api/heartbeat/:assetCode/latest
-// Heartbeat terakhir
+// Auth: JWT (user login via web)
 // ============================================================
 router.get('/:assetCode/latest', authenticate, async (req, res) => {
     try {

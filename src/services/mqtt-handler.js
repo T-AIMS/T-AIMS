@@ -1,9 +1,6 @@
 const db = require('../config/db');
 const mqttClient = require('../config/mqtt');
 
-// ============================================================
-// Subscribe ke topic heartbeat
-// ============================================================
 function startMqttHandler() {
     mqttClient.subscribe('taims/heartbeat/#', { qos: 1 }, (err) => {
         if (err) {
@@ -14,12 +11,8 @@ function startMqttHandler() {
     });
 }
 
-// ============================================================
-// Handle pesan masuk
-// ============================================================
 mqttClient.on('message', async (topic, message) => {
     try {
-        // Topic format: taims/heartbeat/{asset_code}
         const parts = topic.split('/');
         if (parts.length !== 3 || parts[0] !== 'taims' || parts[1] !== 'heartbeat') {
             return;
@@ -30,7 +23,6 @@ mqttClient.on('message', async (topic, message) => {
 
         console.log(`💓 Heartbeat from ${assetCode}:`, payload);
 
-        // Cari asset
         const [assets] = await db.query(
             'SELECT asset_id FROM assets WHERE asset_code = ?',
             [assetCode]
@@ -42,22 +34,26 @@ mqttClient.on('message', async (topic, message) => {
         }
 
         const assetId = assets[0].asset_id;
-        const checkTime = payload.timestamp || new Date();
+        const checkTime = new Date();
 
-        // Simpan ke monitoring_logs
+        // Validasi status ← 3 BARIS BARU
+        const validStatuses = ['online', 'offline', 'unknown', 'maintenance'];
+        const deviceStatus = validStatuses.includes(payload.status)
+            ? payload.status
+            : 'online';
+
         await db.query(
             `INSERT INTO monitoring_logs 
                 (asset_id, check_time, status, method, source, response_time_ms, details)
-             VALUES (?, ?, 'online', 'Heartbeat', 'device', 0, ?)`,
-            [assetId, checkTime, JSON.stringify(payload)]
+             VALUES (?, ?, ?, 'Heartbeat', 'device', 0, ?)`,
+            [assetId, checkTime, deviceStatus, JSON.stringify(payload)]
         );
 
-        // Update asset
         await db.query(
             `UPDATE assets 
-             SET current_status = 'online', last_seen = ?, updated_at = NOW()
+             SET current_status = ?, last_seen = ?, updated_at = NOW()
              WHERE asset_id = ?`,
-            [checkTime, assetId]
+            [deviceStatus, checkTime, assetId]
         );
 
         console.log(`✅ Heartbeat ${assetCode} disimpan`);

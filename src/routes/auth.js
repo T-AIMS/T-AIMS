@@ -96,4 +96,60 @@ router.post('/logout', authenticate, (req, res) => {
     res.status(200).json({ success: true, message: 'Logout berhasil' });
 });
 
+// POST /api/auth/change-password
+router.post('/change-password', authenticate, async (req, res) => {
+    try {
+        const { old_password, new_password } = req.body;
+
+        if (!old_password || !new_password) {
+            return res.status(400).json({
+                success: false,
+                error: 'Password lama dan baru wajib diisi'
+            });
+        }
+
+        if (new_password.length < 6) {
+            return res.status(400).json({
+                success: false,
+                error: 'Password baru minimal 6 karakter'
+            });
+        }
+
+        const [users] = await db.query(
+            'SELECT user_id, password_hash FROM users WHERE user_id = ?',
+            [req.user.user_id]
+        );
+
+        if (users.length === 0) {
+            return res.status(404).json({
+                success: false,
+                error: 'User tidak ditemukan'
+            });
+        }
+
+        const isValid = await bcrypt.compare(old_password, users[0].password_hash);
+        if (!isValid) {
+            return res.status(400).json({
+                success: false,
+                error: 'Password lama salah'
+            });
+        }
+
+        const newHash = await bcrypt.hash(new_password, 10);
+
+        await db.query(
+            'UPDATE users SET password_hash = ? WHERE user_id = ?',
+            [newHash, req.user.user_id]
+        );
+
+        res.status(200).json({
+            success: true,
+            message: 'Password berhasil diubah'
+        });
+    } catch (err) {
+        console.error('Change password error:', err);
+        res.status(500).json({ success: false, error: 'Internal server error' });
+    }
+});
+
 module.exports = router;

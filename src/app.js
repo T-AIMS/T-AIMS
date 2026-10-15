@@ -14,6 +14,7 @@ const notificationsRoutes = require('./routes/notifications');
 const heartbeatRoutes = require('./routes/heartbeat');
 const { startMqttHandler } = require('./services/mqtt-handler');
 const searchRoutes = require('./routes/search');
+const { startOfflineChecker } = require('./services/offline-checker');
 
 const app = express();
 
@@ -60,4 +61,7 @@ app.listen(PORT, () => {
     
     // Start MQTT handler
     startMqttHandler();
+    
+  // Start offline checker ← TAMBAHKAN
+    startOfflineChecker();
 });

@@ -1,13 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../config/db');
-const { authenticate, can } = require('../middleware/auth');
+const { authenticate } = require('../middleware/auth');
+const { apiKeyAuth } = require('../middleware/apiKeyAuth');
 
 // ============================================================
 // Helper: Simpan hasil monitoring
 // ============================================================
 async function saveMonitoringLog(assetId, status, method, responseTimeMs, details, checkTime) {
-    // 1. Insert ke monitoring_logs
     const [result] = await db.query(
         `INSERT INTO monitoring_logs 
             (asset_id, check_time, status, method, source, response_time_ms, details)
@@ -18,11 +18,10 @@ async function saveMonitoringLog(assetId, status, method, responseTimeMs, detail
             status,
             method,
             responseTimeMs,
-            JSON.stringify(details)
+            JSON.stringify(details || {})
         ]
     );
 
-    // 2. Update current_status & last_seen di assets
     await db.query(
         `UPDATE assets 
          SET current_status = ?, last_seen = ?, updated_at = NOW()
@@ -35,8 +34,9 @@ async function saveMonitoringLog(assetId, status, method, responseTimeMs, detail
 
 // ============================================================
 // POST /api/monitoring/ping
+// Auth: API Key
 // ============================================================
-router.post('/ping', authenticate, can('create'), async (req, res) => {
+router.post('/ping', apiKeyAuth, async (req, res) => {
     try {
         const { asset_id, status, response_time_ms, check_time, details } = req.body;
 
@@ -47,15 +47,12 @@ router.post('/ping', authenticate, can('create'), async (req, res) => {
             });
         }
 
-        // Cek asset ada
         const [asset] = await db.query('SELECT asset_id FROM assets WHERE asset_id = ?', [asset_id]);
         if (asset.length === 0) {
             return res.status(404).json({ success: false, error: 'Asset tidak ditemukan' });
         }
 
-        const logId = await saveMonitoringLog(
-            asset_id, status, 'Ping', response_time_ms, details || {}, check_time
-        );
+        const logId = await saveMonitoringLog(asset_id, status, 'Ping', response_time_ms, details, check_time);
 
         res.status(201).json({
             success: true,
@@ -71,15 +68,12 @@ router.post('/ping', authenticate, can('create'), async (req, res) => {
 // ============================================================
 // POST /api/monitoring/http
 // ============================================================
-router.post('/http', authenticate, can('create'), async (req, res) => {
+router.post('/http', apiKeyAuth, async (req, res) => {
     try {
         const { asset_id, status, response_time_ms, check_time, details } = req.body;
 
         if (!asset_id || !status || response_time_ms === undefined) {
-            return res.status(400).json({
-                success: false,
-                error: 'asset_id, status, response_time_ms wajib diisi'
-            });
+            return res.status(400).json({ success: false, error: 'asset_id, status, response_time_ms wajib diisi' });
         }
 
         const [asset] = await db.query('SELECT asset_id FROM assets WHERE asset_id = ?', [asset_id]);
@@ -87,15 +81,8 @@ router.post('/http', authenticate, can('create'), async (req, res) => {
             return res.status(404).json({ success: false, error: 'Asset tidak ditemukan' });
         }
 
-        const logId = await saveMonitoringLog(
-            asset_id, status, 'HTTP', response_time_ms, details || {}, check_time
-        );
-
-        res.status(201).json({
-            success: true,
-            message: 'Monitoring log berhasil disimpan',
-            data: { log_id: logId }
-        });
+        const logId = await saveMonitoringLog(asset_id, status, 'HTTP', response_time_ms, details, check_time);
+        res.status(201).json({ success: true, data: { log_id: logId } });
     } catch (err) {
         console.error('POST /api/monitoring/http error:', err);
         res.status(500).json({ success: false, error: 'Internal server error' });
@@ -105,15 +92,12 @@ router.post('/http', authenticate, can('create'), async (req, res) => {
 // ============================================================
 // POST /api/monitoring/tcp
 // ============================================================
-router.post('/tcp', authenticate, can('create'), async (req, res) => {
+router.post('/tcp', apiKeyAuth, async (req, res) => {
     try {
         const { asset_id, status, response_time_ms, check_time, details } = req.body;
 
         if (!asset_id || !status || response_time_ms === undefined) {
-            return res.status(400).json({
-                success: false,
-                error: 'asset_id, status, response_time_ms wajib diisi'
-            });
+            return res.status(400).json({ success: false, error: 'asset_id, status, response_time_ms wajib diisi' });
         }
 
         const [asset] = await db.query('SELECT asset_id FROM assets WHERE asset_id = ?', [asset_id]);
@@ -121,15 +105,8 @@ router.post('/tcp', authenticate, can('create'), async (req, res) => {
             return res.status(404).json({ success: false, error: 'Asset tidak ditemukan' });
         }
 
-        const logId = await saveMonitoringLog(
-            asset_id, status, 'TCP', response_time_ms, details || {}, check_time
-        );
-
-        res.status(201).json({
-            success: true,
-            message: 'Monitoring log berhasil disimpan',
-            data: { log_id: logId }
-        });
+        const logId = await saveMonitoringLog(asset_id, status, 'TCP', response_time_ms, details, check_time);
+        res.status(201).json({ success: true, data: { log_id: logId } });
     } catch (err) {
         console.error('POST /api/monitoring/tcp error:', err);
         res.status(500).json({ success: false, error: 'Internal server error' });
@@ -138,17 +115,13 @@ router.post('/tcp', authenticate, can('create'), async (req, res) => {
 
 // ============================================================
 // POST /api/monitoring/ping-http
-// Kombinasi Ping + HTTP untuk CCTV
 // ============================================================
-router.post('/ping-http', authenticate, can('create'), async (req, res) => {
+router.post('/ping-http', apiKeyAuth, async (req, res) => {
     try {
         const { asset_id, status, response_time_ms, check_time, details } = req.body;
 
         if (!asset_id || !status || response_time_ms === undefined) {
-            return res.status(400).json({
-                success: false,
-                error: 'asset_id, status, response_time_ms wajib diisi'
-            });
+            return res.status(400).json({ success: false, error: 'asset_id, status, response_time_ms wajib diisi' });
         }
 
         const [asset] = await db.query('SELECT asset_id FROM assets WHERE asset_id = ?', [asset_id]);
@@ -156,15 +129,8 @@ router.post('/ping-http', authenticate, can('create'), async (req, res) => {
             return res.status(404).json({ success: false, error: 'Asset tidak ditemukan' });
         }
 
-        const logId = await saveMonitoringLog(
-            asset_id, status, 'Ping + HTTP', response_time_ms, details || {}, check_time
-        );
-
-        res.status(201).json({
-            success: true,
-            message: 'Monitoring log berhasil disimpan',
-            data: { log_id: logId }
-        });
+        const logId = await saveMonitoringLog(asset_id, status, 'Ping + HTTP', response_time_ms, details, check_time);
+        res.status(201).json({ success: true, data: { log_id: logId } });
     } catch (err) {
         console.error('POST /api/monitoring/ping-http error:', err);
         res.status(500).json({ success: false, error: 'Internal server error' });
@@ -172,8 +138,56 @@ router.post('/ping-http', authenticate, can('create'), async (req, res) => {
 });
 
 // ============================================================
+// POST /api/monitoring/snmp
+// ============================================================
+router.post('/snmp', apiKeyAuth, async (req, res) => {
+    try {
+        const { asset_id, status, response_time_ms, check_time, details } = req.body;
+
+        if (!asset_id || !status) {
+            return res.status(400).json({ success: false, error: 'asset_id dan status wajib diisi' });
+        }
+
+        const [asset] = await db.query('SELECT asset_id FROM assets WHERE asset_id = ?', [asset_id]);
+        if (asset.length === 0) {
+            return res.status(404).json({ success: false, error: 'Asset tidak ditemukan' });
+        }
+
+        const logId = await saveMonitoringLog(asset_id, status, 'SNMP', response_time_ms || 0, details, check_time);
+        res.status(201).json({ success: true, data: { log_id: logId } });
+    } catch (err) {
+        console.error('POST /api/monitoring/snmp error:', err);
+        res.status(500).json({ success: false, error: 'Internal server error' });
+    }
+});
+
+// ============================================================
+// POST /api/monitoring/mqtt-health
+// ============================================================
+router.post('/mqtt-health', apiKeyAuth, async (req, res) => {
+    try {
+        const { asset_id, status, check_time, details } = req.body;
+
+        if (!asset_id || !status) {
+            return res.status(400).json({ success: false, error: 'asset_id dan status wajib diisi' });
+        }
+
+        const [asset] = await db.query('SELECT asset_id FROM assets WHERE asset_id = ?', [asset_id]);
+        if (asset.length === 0) {
+            return res.status(404).json({ success: false, error: 'Asset tidak ditemukan' });
+        }
+
+        const logId = await saveMonitoringLog(asset_id, status, 'MQTT', 0, details, check_time);
+        res.status(201).json({ success: true, data: { log_id: logId } });
+    } catch (err) {
+        console.error('POST /api/monitoring/mqtt-health error:', err);
+        res.status(500).json({ success: false, error: 'Internal server error' });
+    }
+});
+
+// ============================================================
 // GET /api/monitoring/logs
-// List log monitoring dengan filter
+// Auth: JWT (user login via web)
 // ============================================================
 router.get('/logs', authenticate, async (req, res) => {
     try {
@@ -181,17 +195,10 @@ router.get('/logs', authenticate, async (req, res) => {
 
         let sql = `
             SELECT 
-                ml.log_id,
-                ml.asset_id,
-                a.asset_code,
-                a.asset_name,
-                ml.check_time,
-                ml.status,
-                ml.method,
-                ml.source,
-                ml.response_time_ms,
-                ml.details,
-                ml.created_at
+                ml.log_id, ml.asset_id,
+                a.asset_code, a.asset_name,
+                ml.check_time, ml.status, ml.method, ml.source,
+                ml.response_time_ms, ml.details, ml.created_at
             FROM monitoring_logs ml
             LEFT JOIN assets a ON ml.asset_id = a.asset_id
             WHERE 1=1
@@ -205,7 +212,6 @@ router.get('/logs', authenticate, async (req, res) => {
         if (from) { sql += ' AND ml.check_time >= ?'; params.push(from); }
         if (to) { sql += ' AND ml.check_time <= ?'; params.push(to); }
 
-        // Hitung total
         const countSql = sql.replace(
             /SELECT[\s\S]*?FROM monitoring_logs ml/,
             'SELECT COUNT(*) AS total FROM monitoring_logs ml'
@@ -213,7 +219,6 @@ router.get('/logs', authenticate, async (req, res) => {
         const [countResult] = await db.query(countSql, params);
         const total = countResult[0].total;
 
-        // Pagination
         const offset = (parseInt(page) - 1) * parseInt(limit);
         sql += ' ORDER BY ml.check_time DESC LIMIT ? OFFSET ?';
         params.push(parseInt(limit), offset);
@@ -235,7 +240,6 @@ router.get('/logs', authenticate, async (req, res) => {
 
 // ============================================================
 // GET /api/monitoring/status/:assetId
-// Status terkini satu aset
 // ============================================================
 router.get('/status/:assetId', authenticate, async (req, res) => {
     try {
@@ -243,12 +247,8 @@ router.get('/status/:assetId', authenticate, async (req, res) => {
 
         const [rows] = await db.query(`
             SELECT 
-                a.asset_id,
-                a.asset_code,
-                a.asset_name,
-                a.category,
-                a.current_status,
-                a.last_seen,
+                a.asset_id, a.asset_code, a.asset_name, a.category,
+                a.current_status, a.last_seen,
                 ml.response_time_ms AS last_response_time_ms,
                 ml.method AS last_method,
                 ml.check_time AS last_check_time
@@ -274,11 +274,9 @@ router.get('/status/:assetId', authenticate, async (req, res) => {
 
 // ============================================================
 // GET /api/monitoring/summary
-// Ringkasan status semua device
 // ============================================================
 router.get('/summary', authenticate, async (req, res) => {
     try {
-        // Total per status
         const [statusCount] = await db.query(`
             SELECT 
                 COUNT(*) AS total,
@@ -289,7 +287,6 @@ router.get('/summary', authenticate, async (req, res) => {
             FROM assets
         `);
 
-        // Total per kategori
         const [byCategory] = await db.query(`
             SELECT category, current_status, COUNT(*) AS count
             FROM assets
@@ -297,7 +294,6 @@ router.get('/summary', authenticate, async (req, res) => {
             ORDER BY category ASC
         `);
 
-        // Susun by_category jadi nested
         const categoryMap = {};
         for (const row of byCategory) {
             if (!categoryMap[row.category]) {
@@ -315,76 +311,6 @@ router.get('/summary', authenticate, async (req, res) => {
         });
     } catch (err) {
         console.error('GET /api/monitoring/summary error:', err);
-        res.status(500).json({ success: false, error: 'Internal server error' });
-    }
-});
-
-// ============================================================
-// POST /api/monitoring/snmp
-// Hasil monitoring SNMP (MikroTik, Switch, AP)
-// ============================================================
-router.post('/snmp', authenticate, can('create'), async (req, res) => {
-    try {
-        const { asset_id, status, response_time_ms, check_time, details } = req.body;
-
-        if (!asset_id || !status) {
-            return res.status(400).json({
-                success: false,
-                error: 'asset_id dan status wajib diisi'
-            });
-        }
-
-        const [asset] = await db.query('SELECT asset_id FROM assets WHERE asset_id = ?', [asset_id]);
-        if (asset.length === 0) {
-            return res.status(404).json({ success: false, error: 'Asset tidak ditemukan' });
-        }
-
-        const logId = await saveMonitoringLog(
-            asset_id, status, 'SNMP', response_time_ms || 0, details || {}, check_time
-        );
-
-        res.status(201).json({
-            success: true,
-            message: 'SNMP log berhasil disimpan',
-            data: { log_id: logId }
-        });
-    } catch (err) {
-        console.error('POST /api/monitoring/snmp error:', err);
-        res.status(500).json({ success: false, error: 'Internal server error' });
-    }
-});
-
-// ============================================================
-// POST /api/monitoring/mqtt-health
-// MQTT Broker health check
-// ============================================================
-router.post('/mqtt-health', authenticate, can('create'), async (req, res) => {
-    try {
-        const { asset_id, status, check_time, details } = req.body;
-
-        if (!asset_id || !status) {
-            return res.status(400).json({
-                success: false,
-                error: 'asset_id dan status wajib diisi'
-            });
-        }
-
-        const [asset] = await db.query('SELECT asset_id FROM assets WHERE asset_id = ?', [asset_id]);
-        if (asset.length === 0) {
-            return res.status(404).json({ success: false, error: 'Asset tidak ditemukan' });
-        }
-
-        const logId = await saveMonitoringLog(
-            asset_id, status, 'MQTT', 0, details || {}, check_time
-        );
-
-        res.status(201).json({
-            success: true,
-            message: 'MQTT health log berhasil disimpan',
-            data: { log_id: logId }
-        });
-    } catch (err) {
-        console.error('POST /api/monitoring/mqtt-health error:', err);
         res.status(500).json({ success: false, error: 'Internal server error' });
     }
 });
