@@ -40,3 +40,8 @@ database/backups/
 backend/node_modules/
 backend/.env
 backend/*.log
+
+# Backup SQL (lokal)
+*.sql
+backup_taims_*.sql
+taims_db_export_*.sql
