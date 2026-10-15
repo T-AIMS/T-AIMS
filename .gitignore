@@ -31,3 +31,7 @@ automation/mosquitto/data/
 # Log Monitoring
 network-monitoring/*.csv
 *.csv
+
+database/backups/
+*.sql
+.env
