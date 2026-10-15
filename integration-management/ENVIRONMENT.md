@@ -49,3 +49,21 @@ Compose file: `automation/docker-compose.yml`
 ## n8n Workflow
 - Workflow OFFLINE → Telegram (cooldown 10 menit)
 - Workflow RECOVERY → Telegram (cooldown 10 menit)
+
+## Systemd Service
+| Service | File | Status |
+|---|---|---|
+| taims-monitoring | /etc/systemd/system/taims-monitoring.service | ✅ enabled |
+
+## Docker Container
+| Container | Image | Port | Status |
+|---|---|---|---|
+| taims-mosquitto | eclipse-mosquitto:2 | 1883, 9001 | ✅ |
+| taims-n8n | n8nio/n8n | 5678 | ✅ |
+
+Network: `taims-net`
+
+## Monitoring Engine
+- File: `network-monitoring/monitoring_engine.py`
+- Service: `taims-monitoring.service`
+- Interval: 10 detik
