@@ -35,3 +35,8 @@ network-monitoring/*.csv
 database/backups/
 *.sql
 .env
+
+# Backend
+backend/node_modules/
+backend/.env
+backend/*.log
