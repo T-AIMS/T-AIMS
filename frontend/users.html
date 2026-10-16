@@ -70,48 +70,101 @@
       <div class="m-modal-scroll" style="padding: 20px;">
         <form onsubmit="saveNewUser(event)" style="display:flex; flex-direction:column; gap:14px;">
           <div><label style="font-size:11.5px;font-weight:700;color:var(--text-muted);">Nama Pengguna</label><input type="text" id="newUserName" placeholder="Nama lengkap..." style="width:100%;background:#090E1A;border:1px solid var(--border-card);padding:10px;border-radius:8px;color:#fff;" required></div>
-          <div><label style="font-size:11.5px;font-weight:700;color:var(--text-muted);">Email</label><input type="email" id="newUserEmail" placeholder="email@teknolab.id" style="width:100%;background:#090E1A;border:1px solid var(--border-card);padding:10px;border-radius:8px;color:#fff;" required></div>
+          <div><label style="font-size:11.5px;font-weight:700;color:var(--text-muted);">Email</label><input type="email" id="newUserEmail" placeholder="nama@taims.local" style="width:100%;background:#090E1A;border:1px solid var(--border-card);padding:10px;border-radius:8px;color:#fff;" required></div>
+          <div><label style="font-size:11.5px;font-weight:700;color:var(--text-muted);">Password</label><input type="password" id="newUserPassword" value="password123" placeholder="Minimal 6 karakter" style="width:100%;background:#090E1A;border:1px solid var(--border-card);padding:10px;border-radius:8px;color:#fff;" required></div>
           <div><label style="font-size:11.5px;font-weight:700;color:var(--text-muted);">Role Akses</label>
             <select id="newUserRole" style="width:100%;background:#090E1A;border:1px solid var(--border-card);padding:10px;border-radius:8px;color:#fff;">
-              <option value="Administrator">Administrator</option>
-              <option value="Viewer / Pengamat">Viewer / Pengamat</option>
-              <option value="Operator Elektro">Operator Elektro</option>
+              <option value="admin">Administrator</option>
+              <option value="user">Viewer / Pengamat</option>
+              <option value="super_admin">Super Administrator</option>
             </select>
           </div>
-          <button type="submit" style="background:#10B981;border:none;color:#fff;font-weight:800;padding:12px;border-radius:8px;cursor:pointer;">Simpan Pengguna</button>
+          <button type="submit" id="btnSubmitUser" style="background:#10B981;border:none;color:#fff;font-weight:800;padding:12px;border-radius:8px;cursor:pointer;">Simpan Pengguna ke Database</button>
         </form>
       </div>
     </div>
   </div>
 
+  <script src="apiService.js"></script>
   <script src="app.js"></script>
   <script>
     function openAddUserModal() { document.getElementById('addUserModal').style.display = 'flex'; }
     function closeAddUserModal() { document.getElementById('addUserModal').style.display = 'none'; }
-    function saveNewUser(e) {
-      e.preventDefault();
-      const name = document.getElementById('newUserName').value;
-      const email = document.getElementById('newUserEmail').value;
-      const role = document.getElementById('newUserRole').value;
-      const tbody = document.getElementById('userTableBody');
-      const rowCount = tbody.rows.length + 1;
 
-      const tr = document.createElement('tr');
-      tr.innerHTML = `<td>${rowCount}</td><td><strong>${name}</strong></td><td class="font-mono text-cyan">${email}</td><td><span class="role-pill blue">${role}</span></td><td><span class="status-tag active">● Aktif</span></td><td><button class="btn-table-edit" onclick="editUserRow(this)">Edit</button></td>`;
-      tbody.appendChild(tr);
-      closeAddUserModal();
-      alert('Pengguna baru berhasil ditambahkan!');
-    }
-    function editUserRow(btn) {
-      const tr = btn.closest('tr');
-      const nameTd = tr.cells[1];
-      const currentName = nameTd.innerText;
-      const newName = prompt("Ubah nama pengguna:", currentName);
-      if (newName) {
-        nameTd.innerHTML = `<strong>${newName}</strong>`;
-        alert('Data pengguna berhasil diperbarui.');
+    async function loadUsersFromApi() {
+      const tbody = document.getElementById('userTableBody');
+      if (!tbody) return;
+
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text-muted);"><i class="fa-solid fa-spinner fa-spin"></i> Memuat data pengguna dari Database taims_db...</td></tr>';
+
+      try {
+        const users = await getUsers();
+        if (users && users.length > 0) {
+          tbody.innerHTML = users.map((u, idx) => {
+            let roleClass = 'blue';
+            let roleLabel = 'Administrator';
+            if (u.role === 'super_admin') { roleClass = 'amber'; roleLabel = 'Super Admin'; }
+            else if (u.role === 'user') { roleClass = 'cyan'; roleLabel = 'Viewer / Pengamat'; }
+
+            return `
+              <tr>
+                <td>${idx + 1}</td>
+                <td><strong>${u.full_name}</strong></td>
+                <td class="font-mono text-cyan">${u.email}</td>
+                <td><span class="role-pill ${roleClass}">${roleLabel}</span></td>
+                <td><span class="status-tag active">● Aktif</span></td>
+                <td><button class="btn-table-edit" onclick="alert('User ID: ${u.user_id} (${u.full_name})')">Detail</button></td>
+              </tr>
+            `;
+          }).join('');
+        } else {
+          tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text-muted);">Belum ada data pengguna di database.</td></tr>';
+        }
+      } catch (err) {
+        console.warn("Gagal memuat pengguna via API:", err);
       }
     }
+
+    async function saveNewUser(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btnSubmitUser');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan ke DB...';
+      btn.disabled = true;
+
+      const name = document.getElementById('newUserName').value.trim();
+      const email = document.getElementById('newUserEmail').value.trim();
+      const password = document.getElementById('newUserPassword').value;
+      const role = document.getElementById('newUserRole').value;
+
+      try {
+        const res = await createUser({
+          full_name: name,
+          email: email,
+          password: password,
+          role: role
+        });
+
+        if (res && res.success) {
+          alert('Pengguna baru berhasil ditambahkan ke Database MySQL!');
+          closeAddUserModal();
+          document.getElementById('newUserName').value = '';
+          document.getElementById('newUserEmail').value = '';
+          await loadUsersFromApi();
+        } else {
+          alert('Gagal menambah pengguna: ' + (res?.error || 'Terjadi kesalahan'));
+        }
+      } catch (err) {
+        alert('Gagal menghubungi backend: ' + err.message);
+      } finally {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      loadUsersFromApi();
+    });
   </script>
 </body>
 </html>

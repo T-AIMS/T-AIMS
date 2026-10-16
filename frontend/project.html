@@ -42,7 +42,7 @@
           <div class="topbar-notif-btn" onclick="location.href='history.html'"><i class="fa-regular fa-bell"></i><span class="notif-bubble">5</span></div>
           <div class="topbar-profile-dropdown" onclick="location.href='users.html'">
             <div class="profile-avatar-circle" id="topbarAvatar">A</div>
-            <div class="profile-meta-text"><strong id="topbarRoleName">Ahmad Rizki</strong><small id="topbarRoleSub">Administrator</small></div>
+            <div class="profile-meta-text"><strong id="topbarRoleName">Ahmad Reza Fahmi</strong><small id="topbarRoleSub">Administrator</small></div>
             <i class="fa-solid fa-chevron-down caret-icon"></i>
           </div>
         </div>
@@ -198,7 +198,7 @@
       const avatarEl = document.getElementById('topbarAvatar');
 
       if (activeRole === 'admin') {
-        if (nameEl) nameEl.innerText = "Ahmad Rizki";
+        if (nameEl) nameEl.innerText = "Ahmad Reza Fahmi";
         if (subEl) subEl.innerText = "Administrator";
         if (avatarEl) avatarEl.innerHTML = '<i class="fa-solid fa-shield-halved"></i>';
       } else {
@@ -208,5 +208,7 @@
       }
     }
   </script>
+  <script src="apiService.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>

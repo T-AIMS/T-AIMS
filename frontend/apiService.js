@@ -9,7 +9,7 @@
 
 const BASE_URL = 'http://localhost:3000/api';
 const DEFAULT_AUTH = {
-  email: 'reza.fahmi@taims_db.local',
+  email: 'reza.fahmi@taims.local',
   password: 'password123'
 };
 
@@ -473,8 +473,121 @@ async function getLocations() {
     }
     return [];
   } catch (error) {
-    console.warn("Gagal memuat lokasi.");
+    console.warn("Gagal memuat lokasi:", error);
     return [];
+  }
+}
+
+/**
+ * 8. Mengambil Daftar Pengguna (GET /api/users)
+ */
+async function getUsers() {
+  try {
+    const res = await apiFetch('/users');
+    if (res && res.success && Array.isArray(res.data)) {
+      return res.data;
+    }
+    return [];
+  } catch (error) {
+    console.warn("Gagal memuat pengguna dari database:", error);
+    return [];
+  }
+}
+
+/**
+ * 9. Menambah Pengguna Baru (POST /api/users)
+ */
+async function createUser(userData) {
+  try {
+    const res = await apiFetch('/users', {
+      method: 'POST',
+      body: JSON.stringify(userData)
+    });
+    return res;
+  } catch (error) {
+    console.error("Gagal menambah pengguna:", error);
+    throw error;
+  }
+}
+
+/**
+ * 10. Tambah Aset Baru (POST /api/assets)
+ */
+async function createAsset(assetData) {
+  try {
+    const res = await apiFetch('/assets', {
+      method: 'POST',
+      body: JSON.stringify(assetData)
+    });
+    return res;
+  } catch (error) {
+    console.error("Gagal menambah aset:", error);
+    throw error;
+  }
+}
+
+/**
+ * 11. Update Aset (PUT /api/assets/:id)
+ */
+async function updateAsset(assetId, assetData) {
+  try {
+    const res = await apiFetch(`/assets/${assetId}`, {
+      method: 'PUT',
+      body: JSON.stringify(assetData)
+    });
+    return res;
+  } catch (error) {
+    console.error("Gagal update aset:", error);
+    throw error;
+  }
+}
+
+/**
+ * 12. Kirim Heartbeat Device (POST /api/heartbeat via API Key)
+ */
+async function sendHeartbeat(deviceId, status = 'online', extra = {}) {
+  try {
+    const res = await fetch(`${BASE_URL}/heartbeat`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-API-Key': 'taims_dev_5bee447416b0fac135fcb60e4a6b84621ec75fdb132549f1'
+      },
+      body: JSON.stringify({
+        device_id: deviceId,
+        status: status,
+        ...extra
+      })
+    });
+    return await res.json();
+  } catch (error) {
+    console.error("Gagal kirim heartbeat:", error);
+    throw error;
+  }
+}
+
+/**
+ * 13. Kirim Ping Test (POST /api/monitoring/ping via API Key)
+ */
+async function sendPing(assetId, status = 'online', responseTimeMs = 15, details = {}) {
+  try {
+    const res = await fetch(`${BASE_URL}/monitoring/ping`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-API-Key': 'taims_dev_5bee447416b0fac135fcb60e4a6b84621ec75fdb132549f1'
+      },
+      body: JSON.stringify({
+        asset_id: assetId,
+        status: status,
+        response_time_ms: responseTimeMs,
+        details: details
+      })
+    });
+    return await res.json();
+  } catch (error) {
+    console.error("Gagal kirim ping test:", error);
+    throw error;
   }
 }
 
@@ -487,5 +600,23 @@ window.apiService = {
   getAssets,
   getIncidentLogs,
   getLocations,
+  getUsers,
+  createUser,
+  createAsset,
+  updateAsset,
+  sendHeartbeat,
+  sendPing,
   FALLBACK_ASSETS
 };
+
+// Expose fungsi langsung ke global scope window
+window.getDashboardStats = getDashboardStats;
+window.getAssets = getAssets;
+window.getIncidentLogs = getIncidentLogs;
+window.getLocations = getLocations;
+window.getUsers = getUsers;
+window.createUser = createUser;
+window.createAsset = createAsset;
+window.updateAsset = updateAsset;
+window.sendHeartbeat = sendHeartbeat;
+window.sendPing = sendPing;

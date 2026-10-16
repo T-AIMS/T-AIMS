@@ -108,51 +108,8 @@
         <button class="btn-export-top"><i class="fa-solid fa-check-double"></i> Tandai Semua Dibaca</button>
       </div>
 
-      <div class="history-log-panel">
-        <div class="log-card-item">
-          <div class="log-time-col">14:22 WIB</div>
-          <div class="log-info-col">
-            <strong>Perangkat CCTV-BLT-01 tidak merespons (Offline)</strong>
-            <p><i class="fa-solid fa-location-dot"></i> Pos Pantau Gerbang Utama - Jl. Cibodas No. 03 (Head Office)</p>
-          </div>
-          <span class="badge-kritis">Gangguan Kritis</span>
-        </div>
-
-        <div class="log-card-item">
-          <div class="log-time-col">13:48 WIB</div>
-          <div class="log-info-col">
-            <strong>CPU usage tinggi (92%) pada SRV-APP-02</strong>
-            <p><i class="fa-solid fa-location-dot"></i> Server Cluster - Jl. Cibodas No. 03 (Head Office)</p>
-          </div>
-          <span class="badge-warn">Peringatan</span>
-        </div>
-
-        <div class="log-card-item">
-          <div class="log-time-col">11:24 WIB</div>
-          <div class="log-info-col">
-            <strong>Latensi link wireless tinggi (>145ms) pada Router 2</strong>
-            <p><i class="fa-solid fa-location-dot"></i> Sektor Distribusi - Jl. Ciliwung No. 247 (Marketing Office)</p>
-          </div>
-          <span class="badge-warn">Peringatan</span>
-        </div>
-
-        <div class="log-card-item">
-          <div class="log-time-col">10:17 WIB</div>
-          <div class="log-info-col">
-            <strong>Suhu ruang server melebihi ambang batas (32.8°C)</strong>
-            <p><i class="fa-solid fa-location-dot"></i> Sensor Panel ESP 1 - Server Room Jl. Cibodas (HO)</p>
-          </div>
-          <span class="badge-warn">Peringatan</span>
-        </div>
-
-        <div class="log-card-item">
-          <div class="log-time-col">09:03 WIB</div>
-          <div class="log-info-col">
-            <strong>Daya cadangan baterai UPS rendah (22%)</strong>
-            <p><i class="fa-solid fa-location-dot"></i> Pusat Data Teknolab - Jl. Cibodas No. 03 (HO)</p>
-          </div>
-          <span class="badge-warn">Peringatan</span>
-        </div>
+      <div class="history-log-panel" id="incidentLogPanel">
+        <div style="text-align:center;padding:30px;color:var(--text-muted);"><i class="fa-solid fa-spinner fa-spin"></i> Memuat riwayat gangguan dari Database taims_db...</div>
       </div>
     </main>
   </div>
@@ -168,7 +125,7 @@
       const avatarEl = document.getElementById('topbarAvatar');
 
       if (currentRole === 'admin') {
-        if (nameEl) nameEl.innerText = "Ahmad Rizki";
+        if (nameEl) nameEl.innerText = "Ahmad Reza Fahmi";
         if (subEl) subEl.innerText = "Administrator";
         if (avatarEl) {
           avatarEl.innerHTML = '<i class="fa-solid fa-shield-halved"></i>';
@@ -215,6 +172,49 @@
       }
     }
 
+    async function loadIncidentsFromApi() {
+      const panel = document.getElementById('incidentLogPanel');
+      if (!panel) return;
+
+      try {
+        const incidents = await getIncidentLogs();
+        if (incidents && incidents.length > 0) {
+          document.querySelectorAll('.alert-pill-red, .notif-bubble').forEach(el => el.innerText = incidents.length);
+
+          panel.innerHTML = incidents.map(inc => {
+            const timeStr = inc.detected_at 
+              ? new Date(inc.detected_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB'
+              : 'Hari ini';
+
+            let badgeClass = 'badge-warn';
+            let badgeLabel = 'Peringatan';
+            if (inc.severity === 'critical' || inc.severity === 'high') {
+              badgeClass = 'badge-kritis';
+              badgeLabel = 'Gangguan Kritis';
+            } else if (inc.incident_status === 'resolved') {
+              badgeClass = 'badge-green';
+              badgeLabel = 'Terselesaikan';
+            }
+
+            return `
+              <div class="log-card-item">
+                <div class="log-time-col">${timeStr}</div>
+                <div class="log-info-col">
+                  <strong>${inc.incident_type || 'Insiden'}: ${inc.asset_name || inc.asset_code || 'Perangkat'}</strong>
+                  <p><i class="fa-solid fa-circle-info"></i> ${inc.description || 'Tidak ada keterangan detail.'}</p>
+                </div>
+                <span class="${badgeClass}">${badgeLabel}</span>
+              </div>
+            `;
+          }).join('');
+        } else {
+          panel.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-muted);"><i class="fa-regular fa-circle-check text-green" style="font-size:24px;display:block;margin-bottom:8px;"></i>Tidak ada gangguan aktif. Seluruh perangkat berjalan normal!</div>';
+        }
+      } catch (err) {
+        console.warn("Gagal render insiden live:", err);
+      }
+    }
+
     // 3. Jalankan saat halaman dibuka
     document.addEventListener("DOMContentLoaded", async () => {
       syncUserRole();
@@ -229,13 +229,8 @@
         btnMark.setAttribute('onclick', 'markAllNotificationsAsRead()');
       }
 
-      // Panggil API Reza jika server backend port 3000 sedang aktif
-      if (typeof getIncidentLogs === 'function') {
-        const remoteData = await getIncidentLogs();
-        if (remoteData && remoteData.length > 0) {
-          console.log("Data insiden berhasil ditarik dari backend Reza:", remoteData);
-        }
-      }
+      // Muat data insiden live dari database
+      await loadIncidentsFromApi();
     });
   </script>
 </body>

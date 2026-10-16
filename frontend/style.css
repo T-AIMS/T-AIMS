@@ -1587,3 +1587,26 @@ body {
   border-top: 1px solid rgba(255, 255, 255, 0.04);
   padding-top: 10px;
 }
+/* SINKRONISASI UKURAN TEKS POJOK KIRI BAWAH DI SEMUA HALAMAN */
+.status-text small,
+.sidebar-status-box-text small {
+  display: block !important;
+  font-size: 9px !important;
+  color: var(--text-dim) !important;
+  line-height: 1.2 !important;
+}
+
+.status-text strong,
+.sidebar-status-box-text strong {
+  display: block !important;
+  font-size: 11px !important;
+  color: var(--accent-green) !important;
+  font-weight: 800 !important;
+  margin-top: 2px !important;
+}
+
+.status-pill.unknown,
+.tag-status-pill.unknown {
+  background: rgba(245, 158, 11, 0.15);
+  color: #FBBF24;
+}

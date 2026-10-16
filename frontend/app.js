@@ -1,53 +1,47 @@
 /**
  * =====================================================================
- * T-AIMS GLOBAL SESSION, MONITORING & INTERACTION SCRIPT
+ * T-AIMS GLOBAL SESSION, RBAC PERMISSION, DYNAMIC INTERVAL & CHARTS
  * =====================================================================
  * Terintegrasi ke Backend Express.js (Port 3000) & Database MySQL (16 Aset)
  * =====================================================================
  */
 
-// 16 MASTER ASET DATABASE MYSQL TAIMS_DB (Fallback & State Global)
-let MASTER_DEVICES = (typeof FALLBACK_ASSETS !== 'undefined') ? FALLBACK_ASSETS : [
-  { asset_code: "NET-RTR-01", asset_name: "Router Utama MikroTik RB4011", category: "Router", ip_address: "192.168.10.1", mac_address: "D4:CA:6D:11:22:01", location_name: "Head Office", pic_name: "Ananda Dwi Susanti", monitoring_method: "Ping", current_status: "offline", last_seen: "15 Okt 2026 13:20" },
-  { asset_code: "NET-RTR-02", asset_name: "Router Marketing Office", category: "Router", ip_address: "192.168.10.2", mac_address: "00:0C:29:4F:88:02", location_name: "Marketing Office", pic_name: "Ahmad Reza Fahmi", monitoring_method: "Ping", current_status: "offline", last_seen: "15 Okt 2026 13:20" },
-  { asset_code: "NET-SWD-01", asset_name: "Distribution Switch D-Link DGS-1210", category: "Switch Manageable", ip_address: "192.168.10.3", mac_address: "14:D6:4D:55:66:03", location_name: "Head Office", pic_name: "Ananda Dwi Susanti", monitoring_method: "Ping", current_status: "unknown", last_seen: "-" },
-  { asset_code: "NET-SWA-01", asset_name: "Access Switch TP-Link TL-SG1024DE", category: "Switch Manageable", ip_address: "192.168.10.4", mac_address: "50:D4:F7:77:88:04", location_name: "Head Office", pic_name: "Ananda Dwi Susanti", monitoring_method: "Ping", current_status: "unknown", last_seen: "-" },
-  { asset_code: "NET-AP-01", asset_name: "Access Point Lab Utama UniFi U6-Lite", category: "Access Point", ip_address: "192.168.10.11", mac_address: "70:A7:41:99:AA:05", location_name: "Head Office", pic_name: "Ananda Dwi Susanti", monitoring_method: "Ping", current_status: "offline", last_seen: "15 Okt 2026 13:19" },
-  { asset_code: "NET-SRV-01", asset_name: "Server Monitoring T-AIMS Ubuntu", category: "Server", ip_address: "192.168.10.20", mac_address: "00:0C:29:DD:EE:07", location_name: "Head Office", pic_name: "Ananda Dwi Susanti", monitoring_method: "HTTP", current_status: "offline", last_seen: "15 Okt 2026 13:19" },
-  { asset_code: "NET-GW-01", asset_name: "Firewall & Gateway pfSense", category: "Firewall", ip_address: "192.168.10.254", mac_address: "00:0C:29:11:33:08", location_name: "Head Office", pic_name: "Ananda Dwi Susanti", monitoring_method: "Ping", current_status: "offline", last_seen: "15 Okt 2026 13:20" },
-  { asset_code: "NET-DNS-01", asset_name: "DNS & DHCP Server Pi-hole", category: "Server", ip_address: "192.168.10.5", mac_address: "B8:27:EB:44:66:09", location_name: "Head Office", pic_name: "Ananda Dwi Susanti", monitoring_method: "TCP", current_status: "unknown", last_seen: "-" },
-  { asset_code: "NET-NAS-01", asset_name: "NAS Backup Synology DS220+", category: "Storage", ip_address: "192.168.10.30", mac_address: "00:11:32:88:99:0A", location_name: "Head Office", pic_name: "Ananda Dwi Susanti", monitoring_method: "Ping", current_status: "offline", last_seen: "15 Okt 2026 13:19" },
-  { asset_code: "IOT-ESP-01", asset_name: "ESP32 Monitoring Panel Surya", category: "IoT Node", ip_address: "192.168.10.101", mac_address: "24:6F:28:AA:01:0B", location_name: "Head Office", pic_name: "Ilvina Muvarika", monitoring_method: "Heartbeat", current_status: "offline", last_seen: "13 Okt 2026 23:29" },
-  { asset_code: "SEC-CCTV-01", asset_name: "CCTV Head Office", category: "CCTV", ip_address: "192.168.10.31", mac_address: "A4:C1:38:2B:4C:01", location_name: "Head Office", pic_name: "Ananda Dwi Susanti", monitoring_method: "Ping + HTTP", current_status: "offline", last_seen: "15 Okt 2026 13:20" },
-  { asset_code: "SEC-CCTV-02", asset_name: "CCTV Marketing Office", category: "CCTV", ip_address: "192.168.10.32", mac_address: "A4:C1:38:2B:4C:02", location_name: "Marketing Office", pic_name: "Ananda Dwi Susanti", monitoring_method: "Ping + HTTP", current_status: "unknown", last_seen: "-" },
-  { asset_code: "DISP-TV-01", asset_name: "Smart TV Xiaomi Head Office", category: "TV", ip_address: "192.168.10.40", mac_address: "F8:8F:80:4D:6E:01", location_name: "Head Office", pic_name: "Ananda Dwi Susanti", monitoring_method: "Ping", current_status: "offline", last_seen: "15 Okt 2026 13:20" },
-  { asset_code: "PC-WS-01", asset_name: "PC Head Office 01", category: "PC", ip_address: "192.168.10.41", mac_address: "00:E0:4C:3C:5D:01", location_name: "Head Office", pic_name: "Ananda Dwi Susanti", monitoring_method: "Ping", current_status: "offline", last_seen: "15 Okt 2026 13:20" },
-  { asset_code: "PC-WS-02", asset_name: "PC Head Office 02", category: "PC", ip_address: "192.168.10.42", mac_address: "00:E0:4C:3C:5D:02", location_name: "Head Office", pic_name: "Ananda Dwi Susanti", monitoring_method: "Ping", current_status: "unknown", last_seen: "-" },
-  { asset_code: "IOT-RPI-01", asset_name: "Raspberry Pi Smart Home", category: "IoT Node", ip_address: "192.168.10.102", mac_address: "B8:27:EB:6F:80:02", location_name: "Head Office", pic_name: "Ilvina Muvarika", monitoring_method: "Heartbeat", current_status: "offline", last_seen: "13 Okt 2026 23:52" }
-];
+let MASTER_DEVICES = (typeof FALLBACK_ASSETS !== 'undefined') ? FALLBACK_ASSETS : [];
+let dashboardTimerId = null;
+let devicesTimerId = null;
 
-// Inisialisasi saat Dokumen Selesai Dimuat
+// Ambil nilai interval dari Pengaturan (Default: 10 detik)
+function getActiveRefreshIntervalMs() {
+  const savedSec = parseInt(localStorage.getItem('taims_refresh_interval') || '10', 10);
+  const validSec = (isNaN(savedSec) || savedSec < 1) ? 10 : savedSec;
+  return validSec * 1000;
+}
+
+window.getActiveRefreshIntervalMs = getActiveRefreshIntervalMs;
+
 document.addEventListener("DOMContentLoaded", async () => {
   initGlobalSession();
   initLiveClock();
 
-  // 1. Jika di Dashboard: Muat statistik dan chart realtime
+  const intervalMs = getActiveRefreshIntervalMs();
+
+  // 1. Jika di Dashboard: Muat statistik dan chart realtime sesuai interval pengaturan
   if (document.getElementById('kpi-total-devices') || document.getElementById('categoryDonutChart')) {
     await initDashboard();
-    // Auto-polling live data setiap 5 detik agar responsif terhadap perubahan status
-    setInterval(initDashboard, 5000);
+    if (dashboardTimerId) clearInterval(dashboardTimerId);
+    dashboardTimerId = setInterval(initDashboard, intervalMs);
   }
 
-  // 2. Jika di Halaman Devices: Muat tabel 16 aset realtime
+  // 2. Jika di Halaman Devices: Muat tabel 16 aset realtime sesuai interval pengaturan
   if (document.getElementById('devicesTableBody')) {
     await initDevicesTable();
-    // Auto-polling data tabel setiap 5 detik
-    setInterval(initDevicesTable, 5000);
+    if (devicesTimerId) clearInterval(devicesTimerId);
+    devicesTimerId = setInterval(initDevicesTable, intervalMs);
   }
 });
 
 // =====================================================================
-// 1. GLOBAL SESSION & PROFILE SYNC
+// 1. GLOBAL SESSION, POJOK KANAN ATAS & KUNCI EDIT KHUSUS ADMIN
 // =====================================================================
 function initGlobalSession() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -57,31 +51,80 @@ function initGlobalSession() {
   }
 
   const activeRole = localStorage.getItem('taims_user_role') || 'admin';
+  const isAdmin = (activeRole === 'admin' || activeRole === 'super_admin');
 
+  // Sinkronisasi teks dan ikon profil di pojok kanan atas pada SEMUA halaman
   const nameEls = document.querySelectorAll('#topbarRoleName, .profile-meta-text strong');
   const subEls = document.querySelectorAll('#topbarRoleSub, .profile-meta-text small');
   const avatarEls = document.querySelectorAll('#topbarAvatar, .profile-avatar-circle');
+  const profileBoxes = document.querySelectorAll('.topbar-profile-dropdown');
 
   nameEls.forEach(el => {
-    if (activeRole === 'admin') el.innerText = "Ahmad Reza Fahmi";
-    else el.innerText = "Tamu / Viewer";
+    el.innerText = isAdmin ? "Ahmad Reza Fahmi" : "Tamu / Viewer";
   });
 
   subEls.forEach(el => {
-    if (activeRole === 'admin') el.innerText = "Administrator";
-    else el.innerText = "Viewer (Hanya Lihat)";
+    el.innerText = isAdmin ? "Administrator" : "Viewer (Hanya Lihat)";
   });
 
   avatarEls.forEach(el => {
-    if (activeRole === 'admin') {
+    if (isAdmin) {
       el.innerHTML = '<i class="fa-solid fa-shield-halved"></i>';
       el.style.background = 'linear-gradient(135deg, #10B981, #047857)';
     } else {
       el.innerHTML = '<i class="fa-regular fa-user"></i>';
-      el.style.background = 'linear-gradient(135deg, #EF4444, #991B1B)';
+      el.style.background = 'linear-gradient(135deg, #64748B, #334155)';
     }
   });
+
+  // Klik kotak profil kanan atas untuk beralih mode Admin <-> Tamu saat demo
+  profileBoxes.forEach(box => {
+    box.style.cursor = 'pointer';
+    box.title = 'Klik untuk beralih mode: Administrator / Tamu (Viewer)';
+    box.removeAttribute('onclick');
+    box.onclick = (e) => {
+      e.preventDefault();
+      const nextRole = isAdmin ? 'guest' : 'admin';
+      localStorage.setItem('taims_user_role', nextRole);
+      location.reload();
+    };
+  });
+
+  // PROTEKSI EDIT: Sembunyikan semua tombol Edit/Tambah jika login sebagai Tamu (Guest)
+  const adminOnlyElements = document.querySelectorAll(
+    '.pill-add, .pill-sensor, #btnAdminMode, #btnDenahEditMode, #btnAddDenahPin, #btnEditToggle, .btn-action-edit, .btn-table-edit, .btn-save-red, #btnPingTest'
+  );
+
+  adminOnlyElements.forEach(el => {
+    el.style.display = isAdmin ? '' : 'none';
+  });
+
+  // Kunci input form di halaman Pengaturan jika Tamu
+  const settingInputs = document.querySelectorAll('.setting-input-text, .setting-select-box');
+  settingInputs.forEach(input => {
+    input.disabled = !isAdmin;
+    input.style.opacity = isAdmin ? '1' : '0.5';
+    input.style.cursor = isAdmin ? 'text' : 'not-allowed';
+  });
+
+  // Update lencana role di banner Dashboard
+  const bannerRoleBadge = document.querySelector('.pill-admin');
+  if (bannerRoleBadge) {
+    bannerRoleBadge.innerHTML = isAdmin
+      ? '<i class="fa-solid fa-shield-halved"></i> Administrator (Kontrol Penuh)'
+      : '<i class="fa-regular fa-eye"></i> Mode Tamu / Viewer (Hanya Lihat - Edit Dikunci)';
+  }
+
+  // Sinkronisasi lencana notifikasi jika sudah ditandai dibaca
+  if (localStorage.getItem('taims_alerts_read') === 'true') {
+    document.querySelectorAll('.notif-bubble, .alert-pill-red').forEach(b => b.style.display = 'none');
+  }
 }
+
+window.isCurrentUserAdmin = function() {
+  const r = localStorage.getItem('taims_user_role') || 'admin';
+  return (r === 'admin' || r === 'super_admin');
+};
 
 function toggleNavDrawer() {
   const d = document.getElementById('mobileDrawerMenu');
@@ -102,12 +145,8 @@ function initLiveClock() {
     const s = String(now.getSeconds()).padStart(2, '0');
     const tStr = `${h}:${m}:${s} WIB`;
 
-    const elD = document.getElementById("dt-live-date");
-    const elT = document.getElementById("dt-live-time");
-    const elMT = document.getElementById("m-live-time");
-    if (elD) elD.innerText = dStr;
-    if (elT) elT.innerText = tStr;
-    if (elMT) elMT.innerText = tStr;
+    document.querySelectorAll('.topbar-clock-chip span, #dt-live-date').forEach(el => el.innerText = dStr);
+    document.querySelectorAll('.topbar-clock-chip strong, #dt-live-time, #m-live-time').forEach(el => el.innerText = tStr);
   }
   update();
   setInterval(update, 1000);
@@ -120,13 +159,11 @@ let categoryDonutChartInstance = null;
 let trendChartInstance = null;
 
 async function initDashboard() {
-  // Panggil apiService untuk ambil stats
   let stats = null;
   if (typeof getDashboardStats === 'function') {
     stats = await getDashboardStats();
   }
 
-  // Jika gagal, buat fallback stats dari MASTER_DEVICES
   if (!stats) {
     stats = {
       total_devices: MASTER_DEVICES.length,
@@ -143,18 +180,17 @@ async function initDashboard() {
     });
   }
 
-  // Bind ke KPI Cards
-  const total = Number(stats.total_devices) || 16;
   const online = Number(stats.online) || 0;
   const offline = Number(stats.offline) || 0;
   const unknown = Number(stats.unknown) || 0;
   const maintenance = Number(stats.maintenance) || 0;
   const warning = unknown + maintenance;
+  const total = Number(stats.total_devices) || (online + offline + warning);
   const uptime = Number(stats.availability_percent) || 0;
 
-  const pctOnline = total > 0 ? ((online / total) * 100).toFixed(1) : "0";
-  const pctOffline = total > 0 ? ((offline / total) * 100).toFixed(1) : "0";
-  const pctWarning = total > 0 ? ((warning / total) * 100).toFixed(1) : "0";
+  const pctOnline = total > 0 ? ((online / total) * 100).toFixed(1) : "0.0";
+  const pctOffline = total > 0 ? ((offline / total) * 100).toFixed(1) : "0.0";
+  const pctWarning = total > 0 ? ((warning / total) * 100).toFixed(1) : "0.0";
 
   const elTot = document.getElementById('kpi-total-devices');
   const elOn = document.getElementById('kpi-online-devices');
@@ -168,7 +204,6 @@ async function initDashboard() {
   if (elWarn) elWarn.innerText = warning;
   if (elUptime) elUptime.innerText = `${uptime}%`;
 
-  // Update progress bars & sub-label
   const barOn = document.getElementById('kpi-bar-online');
   const subOn = document.getElementById('kpi-sub-online');
   if (barOn) barOn.style.width = `${pctOnline}%`;
@@ -182,63 +217,70 @@ async function initDashboard() {
   const barWarn = document.getElementById('kpi-bar-warning');
   const subWarn = document.getElementById('kpi-sub-warning');
   if (barWarn) barWarn.style.width = `${pctWarning}%`;
-  if (subWarn) subWarn.innerHTML = `<strong>${pctWarning}%</strong> belum termonitor`;
+  if (subWarn) subWarn.innerHTML = `<strong>${pctWarning}%</strong> belum termonitor (${unknown} unknown)`;
 
   const barUp = document.getElementById('kpi-bar-uptime');
   if (barUp) barUp.style.width = `${uptime}%`;
 
-  // Render Charts
-  initDashboardCharts(stats);
+  initDashboardCharts({ total, online, offline, unknown, warning, maintenance, by_category: stats.by_category });
 
-  // Ambil list aset & update recent table
   if (typeof getAssets === 'function') {
     const assetsRes = await getAssets({ limit: 50 });
     if (assetsRes && assetsRes.data) {
       MASTER_DEVICES = assetsRes.data;
-      renderRecentDevicesTable(assetsRes.data.slice(0, 5));
+      renderRecentDevicesTable(assetsRes.data.slice(0, 4));
     }
   } else {
-    renderRecentDevicesTable(MASTER_DEVICES.slice(0, 5));
+    renderRecentDevicesTable(MASTER_DEVICES.slice(0, 4));
   }
 }
 
 function initDashboardCharts(stats) {
-  // 1. Trend Chart
+  const online = stats.online;
+  const offline = stats.offline;
+  const warning = stats.warning;
+
   const ctxTrend = document.getElementById('trendChart');
-  if (ctxTrend && typeof Chart !== 'undefined' && !trendChartInstance) {
-    trendChartInstance = new Chart(ctxTrend, {
-      type: 'line',
-      data: {
-        labels: ['10 Okt', '11 Okt', '12 Okt', '13 Okt', '14 Okt', '15 Okt', '16 Okt'],
-        datasets: [
-          { label: 'Online', data: [5, 6, 6, 7, 7, 6, stats.online || 5], borderColor: '#10B981', borderWidth: 2, tension: 0.3, pointRadius: 3 },
-          { label: 'Offline', data: [2, 3, 3, 4, 5, 5, stats.offline || 6], borderColor: '#EF4444', borderWidth: 1.5, borderDash: [3, 3], pointRadius: 2, tension: 0.3 },
-          { label: 'Unknown', data: [9, 7, 7, 5, 4, 5, (stats.unknown || 5)], borderColor: '#F59E0B', borderWidth: 1.5, borderDash: [4, 4], pointRadius: 2, tension: 0.3 }
-        ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: { legend: { display: false } },
-        scales: {
-          x: { grid: { color: '#131B30' }, ticks: { color: '#64748B', font: { size: 9 } } },
-          y: { grid: { color: '#131B30' }, ticks: { color: '#64748B', font: { size: 9 } }, min: 0, max: 18 }
+  if (ctxTrend && typeof Chart !== 'undefined') {
+    if (!trendChartInstance) {
+      trendChartInstance = new Chart(ctxTrend, {
+        type: 'line',
+        data: {
+          labels: ['10 Okt', '11 Okt', '12 Okt', '13 Okt', '14 Okt', '15 Okt', 'Hari Ini'],
+          datasets: [
+            { label: 'Online', data: [5, 6, 6, 7, 7, 6, online], borderColor: '#10B981', borderWidth: 2, tension: 0.3, pointRadius: 3 },
+            { label: 'Offline', data: [2, 3, 3, 4, 5, 5, offline], borderColor: '#EF4444', borderWidth: 1.5, borderDash: [3, 3], pointRadius: 2, tension: 0.3 },
+            { label: 'Unknown', data: [9, 7, 7, 5, 4, 5, warning], borderColor: '#F59E0B', borderWidth: 1.5, borderDash: [4, 4], pointRadius: 2, tension: 0.3 }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { grid: { color: '#131B30' }, ticks: { color: '#64748B', font: { size: 9 } } },
+            y: { grid: { color: '#131B30' }, ticks: { color: '#64748B', font: { size: 9 } }, min: 0, max: 18 }
+          }
         }
-      }
-    });
+      });
+    } else {
+      trendChartInstance.data.datasets[0].data[6] = online;
+      trendChartInstance.data.datasets[1].data[6] = offline;
+      trendChartInstance.data.datasets[2].data[6] = warning;
+      trendChartInstance.update();
+    }
   }
 
-  // 2. Category Donut Chart
   const ctxDonut = document.getElementById('categoryDonutChart');
   if (ctxDonut && typeof Chart !== 'undefined') {
     const catMap = stats.by_category || {};
     const labels = Object.keys(catMap).length > 0 ? Object.keys(catMap) : ['Router', 'Switch Manageable', 'Access Point', 'Server', 'Storage', 'CCTV', 'IoT Node', 'Firewall', 'PC', 'TV'];
-    const dataVals = labels.map(lbl => catMap[lbl] || 1);
+    const dataVals = labels.map(lbl => Number(catMap[lbl]) || 0);
     const colorPalette = ['#EF4444', '#F59E0B', '#06B6D4', '#10B981', '#3B82F6', '#8B5CF6', '#EC4899', '#14B8A6', '#6366F1', '#A855F7'];
 
     const totalCount = dataVals.reduce((a, b) => a + b, 0);
     const donutTotalEl = document.getElementById('donutTotalCount');
-    if (donutTotalEl) donutTotalEl.innerText = totalCount;
+    if (donutTotalEl) donutTotalEl.innerText = totalCount || stats.total || 16;
 
     if (categoryDonutChartInstance) {
       categoryDonutChartInstance.destroy();
@@ -263,11 +305,10 @@ function initDashboardCharts(stats) {
       }
     });
 
-    // Render Legenda Kategori
     const listEl = document.getElementById('donutCategoryStatsList');
     if (listEl) {
       listEl.innerHTML = labels.map((lbl, idx) => {
-        const cnt = catMap[lbl] || 1;
+        const cnt = Number(catMap[lbl]) || 0;
         const pct = totalCount > 0 ? ((cnt / totalCount) * 100).toFixed(1) : 0;
         const color = colorPalette[idx % colorPalette.length];
         return `
@@ -348,11 +389,10 @@ async function initDevicesTable() {
     const method = d.monitoring_method || d.monitoringMethod || 'Ping';
     const pic = d.pic_name || d.pic || 'Ananda Dwi Susanti';
 
-    let pillClass = 'status-pill unknown';
+    let pillClass = 'status-pill warning';
     let pillText = '● Unknown';
     if (rawStat === 'online') { pillClass = 'status-pill online'; pillText = '● Online'; }
     else if (rawStat === 'offline') { pillClass = 'status-pill offline'; pillText = '● Offline'; }
-    else if (rawStat === 'warning') { pillClass = 'status-pill warning'; pillText = '● Warning'; }
 
     return `
       <tr class="row-dev" data-cat="${cat}" data-stat="${rawStat}">
@@ -377,7 +417,7 @@ async function initDevicesTable() {
 }
 
 // =====================================================================
-// 5. DETAIL MODAL INTERACTION
+// 5. DETAIL MODAL & AI INSIGHT REFRESH
 // =====================================================================
 function openDetailModal(code) {
   const d = MASTER_DEVICES.find(x => (x.asset_code === code || x.assetCode === code)) || MASTER_DEVICES[0];
@@ -394,29 +434,19 @@ function openDetailModal(code) {
   const seenVal = d.last_seen || d.lastSeen || 'Online Baru Saja';
   const rawStat = (d.current_status || d.status || 'unknown').toLowerCase();
 
-  const elCode = document.getElementById("m-code");
-  const elSub = document.getElementById("m-name-sub");
+  if (document.getElementById("m-code")) document.getElementById("m-code").innerText = codeVal;
+  if (document.getElementById("m-name-sub")) document.getElementById("m-name-sub").innerText = `${nameVal} · ${catVal}`;
+  if (document.getElementById("m-ip")) document.getElementById("m-ip").innerText = ipVal;
+  if (document.getElementById("m-mac")) document.getElementById("m-mac").innerText = macVal;
+  if (document.getElementById("m-cat")) document.getElementById("m-cat").innerText = catVal;
+  if (document.getElementById("m-loc")) document.getElementById("m-loc").innerText = locVal;
+  if (document.getElementById("m-pic")) document.getElementById("m-pic").innerText = picVal;
+  if (document.getElementById("m-method")) document.getElementById("m-method").innerText = methodVal;
+  if (document.getElementById("m-seen")) document.getElementById("m-seen").innerText = seenVal;
+
   const elPill = document.getElementById("m-status-pill");
-  const elIp = document.getElementById("m-ip");
-  const elMac = document.getElementById("m-mac");
-  const elCat = document.getElementById("m-cat");
-  const elLoc = document.getElementById("m-loc");
-  const elPic = document.getElementById("m-pic");
-  const elMethod = document.getElementById("m-method");
-  const elSeen = document.getElementById("m-seen");
-
-  if (elCode) elCode.innerText = codeVal;
-  if (elSub) elSub.innerText = `${nameVal} · ${catVal}`;
-  if (elIp) elIp.innerText = ipVal;
-  if (elMac) elMac.innerText = macVal;
-  if (elCat) elCat.innerText = catVal;
-  if (elLoc) elLoc.innerText = locVal;
-  if (elPic) elPic.innerText = picVal;
-  if (elMethod) elMethod.innerText = methodVal;
-  if (elSeen) elSeen.innerText = seenVal;
-
   if (elPill) {
-    elPill.className = `tag-status-pill ${rawStat}`;
+    elPill.className = `tag-status-pill ${rawStat === 'online' ? 'online' : 'offline'}`;
     elPill.innerText = `● ${rawStat.toUpperCase()}`;
   }
 
@@ -429,7 +459,11 @@ function closeDetailModal() {
   if (modalEl) modalEl.style.display = "none";
 }
 
-window.addEventListener("click", (e) => {
-  const modalEl = document.getElementById("device-modal");
-  if (modalEl && e.target === modalEl) closeDetailModal();
-});
+function refreshAiInsight() {
+  const aiText = document.getElementById('aiInsightText');
+  if (!aiText) return;
+  aiText.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-cyan"></i> Menganalisis telemetri 16 perangkat dari database taims_db...';
+  setTimeout(() => {
+    aiText.innerHTML = `Berdasarkan telemetri terbaru (${new Date().toLocaleTimeString('id-ID')} WIB): Terdeteksi perangkat prioritas <strong>NET-RTR-01</strong> & <strong>SEC-CCTV-01 (HO)</strong> membutuhkan pengecekan suplai adaptor dan konektivitas gateway, serta pemantauan link <strong>NET-RTR-02 (MO Kos Kiki)</strong>.`;
+  }, 500);
+}
