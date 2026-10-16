@@ -17,13 +17,14 @@
     <div class="portal-title-block"><h1>T-AIMS PORTAL</h1><p>Asset & Infrastructure Monitoring System</p></div>
 
     <form onsubmit="handleLoginAdmin(event)" class="portal-form">
+      <div id="loginAlert" style="display:none; margin-bottom:14px; padding:10px 14px; border-radius:8px; font-size:13px; line-height:1.4; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #fca5a5;"></div>
       <div class="portal-form-group">
         <label><i class="fa-regular fa-envelope"></i> Email Administrator (Backend DB)</label>
-        <div class="input-with-icon"><input type="text" id="username" value="reza.fahmi@taims_db.local" required><i class="fa-regular fa-user trailing-icon"></i></div>
+        <div class="input-with-icon"><input type="email" id="username" placeholder="reza.fahmi@taims_db.local" required><i class="fa-regular fa-user trailing-icon"></i></div>
       </div>
       <div class="portal-form-group">
         <label><i class="fa-solid fa-key"></i> Password</label>
-        <div class="input-with-icon"><input type="password" id="password" value="password123" required><i class="fa-regular fa-eye-slash trailing-icon" id="togglePasswordBtn" onclick="togglePassVisibility()"></i></div>
+        <div class="input-with-icon"><input type="password" id="password" placeholder="Masukkan password" required><i class="fa-regular fa-eye-slash trailing-icon" id="togglePasswordBtn" onclick="togglePassVisibility()"></i></div>
       </div>
       <button type="submit" id="btnSubmitAdmin" class="btn-login-admin-red"><i class="fa-solid fa-arrow-right-to-bracket"></i> Masuk sebagai Administrator</button>
 
@@ -40,6 +41,13 @@
   </div>
   <script src="apiService.js"></script>
   <script>
+    function showLoginError(msg) {
+      const alertBox = document.getElementById('loginAlert');
+      if (alertBox) {
+        alertBox.textContent = msg;
+        alertBox.style.display = 'block';
+      }
+    }
     function togglePassVisibility() {
       const pass = document.getElementById('password');
       const icon = document.getElementById('togglePasswordBtn');
@@ -48,6 +56,9 @@
     }
     async function handleLoginAdmin(e) {
       e.preventDefault();
+      const alertBox = document.getElementById('loginAlert');
+      if (alertBox) alertBox.style.display = 'none';
+
       const btn = document.getElementById('btnSubmitAdmin');
       const originalText = btn.innerHTML;
       btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menghubungkan ke Backend...';
@@ -59,18 +70,13 @@
       try {
         const res = await apiLogin(email, pass);
         if (res.success) {
-          localStorage.setItem('taims_user_role', 'admin');
           location.href = 'dashboard.html';
           return;
         } else {
-          console.warn("Login backend tidak berhasil, masuk dengan sesi lokal:", res.error);
-          localStorage.setItem('taims_user_role', 'admin');
-          location.href = 'dashboard.html';
+          showLoginError(res.error || "Email atau password salah. Silakan coba lagi.");
         }
       } catch (err) {
-        console.warn("Backend offline, menggunakan fallback lokal.");
-        localStorage.setItem('taims_user_role', 'admin');
-        location.href = 'dashboard.html';
+        showLoginError("Gagal menghubungi server backend (Port 3000). Pastikan backend aktif.");
       } finally {
         btn.innerHTML = originalText;
         btn.disabled = false;

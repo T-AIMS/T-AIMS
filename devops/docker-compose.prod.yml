@@ -1,0 +1,150 @@
+# =====================================================================
+# T-AIMS PRODUCTION DOCKER COMPOSE WITH NGINX SSL REVERSE PROXY
+# Penanggung Jawab : Wafian (DevOps, Server & Security Engineer)
+# File             : devops/docker-compose.prod.yml
+# =====================================================================
+
+services:
+  # 1. DATABASE SERVICE
+  mysql:
+    image: mysql:8.0
+    container_name: taims-mysql
+    restart: unless-stopped
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - "127.0.0.1:3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASS:-root_taims_2026}
+      MYSQL_DATABASE: ${DB_NAME:-taims_db}
+    volumes:
+      - taims_mysql_data:/var/lib/mysql
+      - ../database/taims_db.sql:/docker-entrypoint-initdb.d/01_init.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_PASS:-root_taims_2026}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - taims-net
+
+  # 2. MQTT BROKER (Hardened Production Config)
+  mosquitto:
+    image: eclipse-mosquitto:2
+    container_name: taims-mosquitto
+    restart: unless-stopped
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./mosquitto/mosquitto.prod.conf:/mosquitto/config/mosquitto.conf:ro
+      - ./mosquitto/passwd:/mosquitto/config/passwd:ro
+      - taims_mosquitto_data:/mosquitto/data
+      - taims_mosquitto_log:/mosquitto/log
+    networks:
+      - taims-net
+
+  # 3. BACKEND API SERVICE
+  backend:
+    build:
+      context: ../taims-backend
+      dockerfile: Dockerfile
+    container_name: taims-backend
+    restart: unless-stopped
+    expose:
+      - "3000"
+    environment:
+      PORT: 3000
+      NODE_ENV: production
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASS: ${DB_PASS:-root_taims_2026}
+      DB_NAME: ${DB_NAME:-taims_db}
+      MQTT_HOST: mosquitto
+      MQTT_PORT: 1883
+      MQTT_USER: ${MQTT_USER:-taims-broker}
+      MQTT_PASS: ${MQTT_PASS:-taims-mqtt-2026}
+      JWT_SECRET: ${JWT_SECRET:-taims_jwt_production_secure_token_2026}
+    depends_on:
+      mysql:
+        condition: service_healthy
+      mosquitto:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/api/monitoring/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    networks:
+      - taims-net
+
+  # 4. FRONTEND DASHBOARD
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    container_name: taims-frontend
+    restart: unless-stopped
+    expose:
+      - "3001"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - taims-net
+
+  # 5. AUTOMATION ENGINE (n8n)
+  n8n:
+    image: n8nio/n8n
+    container_name: taims-n8n
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:5678:5678"
+    environment:
+      GENERIC_TIMEZONE: Asia/Jakarta
+      N8N_HOST: localhost
+      N8N_PORT: 5678
+      N8N_PROTOCOL: http
+      N8N_DIAGNOSTICS_ENABLED: "false"
+    volumes:
+      - taims_n8n_data:/home/node/.n8n
+    depends_on:
+      - mosquitto
+    networks:
+      - taims-net
+
+  # 6. NGINX REVERSE PROXY & SSL TERMINATION
+  nginx:
+    image: nginx:alpine
+    container_name: taims-nginx-proxy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - /var/log/nginx:/var/log/nginx
+    depends_on:
+      - frontend
+      - backend
+      - mosquitto
+    networks:
+      - taims-net
+
+volumes:
+  taims_mysql_data:
+    name: taims_mysql_data
+  taims_mosquitto_data:
+    name: taims_mosquitto_data
+  taims_mosquitto_log:
+    name: taims_mosquitto_log
+  taims_n8n_data:
+    name: taims_n8n_data
+
+networks:
+  taims-net:
+    name: taims-net
+    driver: bridge
