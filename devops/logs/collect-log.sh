@@ -5,7 +5,8 @@
 # Deskripsi        : Pengumpulan log terpusat 5 layanan dan rotasi 7 hari
 # =====================================================================
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REAL_SCRIPT="$(readlink -f "${BASH_SOURCE[0]}")"
+SCRIPT_DIR="$(cd "$(dirname "$REAL_SCRIPT")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 LOG_DIR="$PROJECT_ROOT/logs"
 DATE=$(date +%Y-%m-%d)

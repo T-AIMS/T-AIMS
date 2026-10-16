@@ -5,7 +5,8 @@
 # Deskripsi        : Pencadangan otomatis database MySQL taims_db
 # =====================================================================
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REAL_SCRIPT="$(readlink -f "${BASH_SOURCE[0]}")"
+SCRIPT_DIR="$(cd "$(dirname "$REAL_SCRIPT")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 BACKUP_DIR="${BACKUP_DIR:-$PROJECT_ROOT/database/backups}"
 LOG_FILE="$PROJECT_ROOT/logs/backup.log"
