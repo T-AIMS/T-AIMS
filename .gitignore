@@ -45,3 +45,9 @@ backend/*.log
 *.sql
 backup_taims_*.sql
 taims_db_export_*.sql
+
+# SSL Certificates (Keamanan Kredensial)
+devops/nginx/ssl/*.key
+devops/nginx/ssl/*.crt
+!devops/nginx/ssl/.gitkeep
+
