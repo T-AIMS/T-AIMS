@@ -1,0 +1,18 @@
+$kind: http-request
+url: "{{base_url}}/locations/{{test_location_id}}"
+method: PUT
+headers:
+  Authorization: Bearer {{token_super_admin}}
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "location_name": "Lab QA & Testing (Updated)",
+      "description": "Telah diperbarui oleh Super Admin"
+    }
+scripts:
+  - type: afterResponse
+    code: pm.test('Status code is 200 OK', function () { pm.response.to.have.status(200); });
+    language: text/javascript
+order: 3000

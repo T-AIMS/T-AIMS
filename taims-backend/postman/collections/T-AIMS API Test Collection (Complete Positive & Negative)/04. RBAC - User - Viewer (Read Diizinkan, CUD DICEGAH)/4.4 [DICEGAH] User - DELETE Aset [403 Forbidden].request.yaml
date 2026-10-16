@@ -1,0 +1,13 @@
+$kind: http-request
+url: "{{base_url}}/assets/3"
+method: DELETE
+headers:
+  Authorization: Bearer {{token_user}}
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status code is 403 Forbidden', function () { pm.response.to.have.status(403); });
+      var res = pm.response.json();
+      pm.test('Sistem mencegah role user menghapus data', function () { pm.expect(res.error).to.include('tidak bisa delete'); });
+    language: text/javascript
+order: 4000

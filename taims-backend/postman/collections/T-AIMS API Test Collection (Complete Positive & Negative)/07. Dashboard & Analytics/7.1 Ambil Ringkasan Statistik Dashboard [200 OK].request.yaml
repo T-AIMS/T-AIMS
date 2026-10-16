@@ -1,0 +1,13 @@
+$kind: http-request
+url: "{{base_url}}/dashboard/stats"
+method: GET
+headers:
+  Authorization: Bearer {{token_super_admin}}
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status code is 200 OK', function () { pm.response.to.have.status(200); });
+      var res = pm.response.json();
+      pm.test('Statistik perangkat valid', function () { pm.expect(res.data.total_devices).to.be.a('number'); });
+    language: text/javascript
+order: 1000
