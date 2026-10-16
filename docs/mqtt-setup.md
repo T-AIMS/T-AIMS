@@ -18,9 +18,14 @@ sudo systemctl start mosquitto
 sudo systemctl enable mosquitto
 sudo systemctl status mosquitto
 
-## Port
-- MQTT: 1883 (non-SSL)
-- MQTT SSL: 8883 (nanti di server)
+## Port & Otentikasi
+- Port MQTT: 1883 (TCP)
+- Port MQTT WebSocket: 9001 (WS)
+- Port MQTT SSL: 8883 (Production)
+- **Otentikasi Broker (`allow_anonymous false`)**:
+  - Username: `taims-broker`
+  - Password: `taims-mqtt-2026`
+  - Password File: `/mosquitto/config/passwd`
 
 ## Topik yang Dipakai
 - taims/heartbeat/<asset_code>  -> heartbeat IoT

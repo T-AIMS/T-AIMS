@@ -10,8 +10,8 @@ from datetime import datetime, timezone, timedelta
 # ===== KONFIGURASI =====
 MQTT_HOST = "localhost"
 MQTT_PORT = 1883
-MQTT_USER = None
-MQTT_PASS = None
+MQTT_USER = "taims-broker"
+MQTT_PASS = "taims-mqtt-2026"
 DEVICE_ID = "IOT-ESP-01"
 TOPIC     = f"taims/heartbeat/{DEVICE_ID}"
 INTERVAL  = 30
