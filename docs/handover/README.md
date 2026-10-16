@@ -22,3 +22,10 @@ Folder ini merupakan repositori terpadu seluruh berkas serah terima harian (*Dai
 | **Hari 2** | 13 Okt 2026 | [`2026-10-13_Handover_RezaTri.md`](2026-10-13_Handover_RezaTri.md) | Setup backend & test 58 endpoint Postman |
 | **Hari 3** | 14 Okt 2026 | [`2026-10-14_Handover_RezaTri.md`](2026-10-14_Handover_RezaTri.md) | Pengujian end-to-end integrasi |
 | **Hari 4** | 15 Okt 2026 | [`2026-10-15_Handover_RezaTri.md`](2026-10-15_Handover_RezaTri.md) | Validasi QA akhir & konsolidasi bug tracking |
+
+---
+
+## 3. Berkas Handover Dzakwan (Shift Lead & System Integration - Shift 2)
+| Hari | Tanggal | Berkas | Fokus Utama |
+| :---: | :---: | :--- | :--- |
+| **Hari 5** | 16 Okt 2026 | [`2026-10-16_Handover_Dzakwan.md`](2026-10-16_Handover_Dzakwan.md) | Finalisasi 20 Komponen, 17 Dependensi, 16/16 Zero Defect & Rilis v1.0.0-gold |
