@@ -1,0 +1,1535 @@
+{
+  "info": {
+    "_postman_id": "f405fa94-1697-4d05-9943-a01ff8a0b15e",
+    "name": "T-AIMS API - 58 Endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "58858297",
+    "_collection_link": "https://go.postman.co/collection/58858297-f405fa94-1697-4d05-9943-a01ff8a0b15e?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "1. Auth (4)",
+      "item": [
+        {
+          "name": "1. Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"reza.fahmi@taims_db.local\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "2. Me",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/me",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "3. Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/logout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "logout"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "4. Change Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"old_password\": \"password123\",\n  \"new_password\": \"newpass456\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/change-password",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "change-password"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "2. Users (6)",
+      "item": [
+        {
+          "name": "1. List Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "2. Detail User",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "3. Create User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Test User\",\n  \"email\": \"test@taims_db.local\",\n  \"password\": \"password123\",\n  \"role\": \"user\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "4. Update User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Test Updated\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/7",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "7"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "5. Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users/7",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "7"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "6. Update Role",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"role\": \"admin\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/7/role",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "7",
+                "role"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "3. Assets (8)",
+      "item": [
+        {
+          "name": "1. List Assets",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/assets",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "assets"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "2. Detail Asset",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/assets/3",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "assets",
+                "3"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "3. History Asset",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/assets/3/history",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "assets",
+                "3",
+                "history"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "4. By Category",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/assets/by-category",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "assets",
+                "by-category"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "5. Create Asset",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"asset_code\": \"TEST-001\",\n  \"asset_name\": \"Test Asset\",\n  \"category\": \"Router\",\n  \"ip_address\": \"192.168.10.99\",\n  \"location_id\": 2,\n  \"pic_user_id\": 2,\n  \"monitoring_method\": \"Ping\",\n  \"priority\": 2,\n  \"installation_date\": \"2026-10-13\",\n  \"description\": \"Test QA\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/assets",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "assets"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "6. Update Asset",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"asset_name\": \"Test Updated\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/assets/3",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "assets",
+                "3"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "7. Delete Asset",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/assets/3",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "assets",
+                "3"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "4. Locations (5)",
+      "item": [
+        {
+          "name": "1. List Locations",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/locations",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "locations"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "2. Detail Location",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/locations/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "locations",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "3. Create Location",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"location_name\": \"Test Location\",\n  \"description\": \"Test QA\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/locations",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "locations"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "4. Update Location",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"location_name\": \"Test Updated\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/locations/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "locations",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "5. Delete Location",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/locations/3",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "locations",
+                "3"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "5. Monitoring (9)",
+      "item": [
+        {
+          "name": "1. Ping",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"asset_id\": 3,\n  \"status\": \"online\",\n  \"response_time_ms\": 2,\n  \"details\": {\"packet_loss\": 0}\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/monitoring/ping",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "monitoring",
+                "ping"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "2. HTTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"asset_id\": 7,\n  \"status\": \"online\",\n  \"response_time_ms\": 45,\n  \"details\": {\"http_status\": 200}\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/monitoring/http",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "monitoring",
+                "http"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "3. TCP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"asset_id\": 9,\n  \"status\": \"online\",\n  \"response_time_ms\": 1,\n  \"details\": {\"port\": 53, \"open\": true}\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/monitoring/tcp",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "monitoring",
+                "tcp"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "4. Ping + HTTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"asset_id\": 17,\n  \"status\": \"online\",\n  \"response_time_ms\": 8,\n  \"details\": {\"ping\": {\"packet_loss\": 0}, \"http\": {\"http_status\": 200}}\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/monitoring/ping-http",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "monitoring",
+                "ping-http"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "5. SNMP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"asset_id\": 3,\n  \"status\": \"online\",\n  \"response_time_ms\": 5,\n  \"details\": {\"sysUpTime\": \"123456\", \"cpu_load\": 15}\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/monitoring/snmp",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "monitoring",
+                "snmp"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "6. MQTT Health",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"asset_id\": 10,\n  \"status\": \"online\",\n  \"details\": {\"clients_connected\": 5, \"uptime_seconds\": 86400}\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/monitoring/mqtt-health",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "monitoring",
+                "mqtt-health"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "7. List Logs",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/monitoring/logs",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "monitoring",
+                "logs"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "8. Status Asset",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/monitoring/status/3",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "monitoring",
+                "status",
+                "3"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "9. Summary",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/monitoring/summary",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "monitoring",
+                "summary"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "6. Heartbeat (2)",
+      "item": [
+        {
+          "name": "1. Send Heartbeat",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"device_id\": \"IOT-ESP-01\",\n  \"status\": \"online\",\n  \"ip_address\": \"192.168.10.101\",\n  \"rssi\": -67,\n  \"uptime_seconds\": 86400\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/heartbeat",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "heartbeat"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "2. Latest Heartbeat",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/heartbeat/IOT-ESP-01/latest",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "heartbeat",
+                "IOT-ESP-01",
+                "latest"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "7. Dashboard (7)",
+      "item": [
+        {
+          "name": "1. Stats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/dashboard/stats",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "dashboard",
+                "stats"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "2. Uptime",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/dashboard/uptime",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "dashboard",
+                "uptime"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "3. Top Issues",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/dashboard/top-issues",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "dashboard",
+                "top-issues"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "4. Charts",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/dashboard/charts",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "dashboard",
+                "charts"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "5. AI Report",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/dashboard/ai-report",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "dashboard",
+                "ai-report"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "6. Activity",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/dashboard/activity",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "dashboard",
+                "activity"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "7. Map",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/dashboard/map",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "dashboard",
+                "map"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "8. Incidents (5)",
+      "item": [
+        {
+          "name": "1. List",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/incidents",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "incidents"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "2. Detail",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/incidents/2",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "incidents",
+                "2"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "3. Create",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"asset_id\": 3,\n  \"incident_type\": \"Connection Loss\",\n  \"description\": \"Test QA\",\n  \"severity\": \"high\",\n  \"incident_status\": \"open\",\n  \"detected_at\": \"2026-10-13T10:00:00+07:00\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/incidents",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "incidents"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "4. Update",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"incident_status\": \"resolved\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/incidents/2",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "incidents",
+                "2"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "5. Delete",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/incidents/5",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "incidents",
+                "5"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "9. Maintenance (5)",
+      "item": [
+        {
+          "name": "1. List",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/maintenance",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "maintenance"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "2. Detail",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/maintenance/3",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "maintenance",
+                "3"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "3. Create",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"asset_id\": 3,\n  \"maintenance_type\": \"Test\",\n  \"scheduled_date\": \"2026-10-20\",\n  \"description\": \"Test QA\",\n  \"maintenance_status\": \"scheduled\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/maintenance",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "maintenance"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "4. Update",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"maintenance_status\": \"in_progress\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/maintenance/3",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "maintenance",
+                "3"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "5. Delete",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/maintenance/5",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "maintenance",
+                "5"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "10. Notifications (6)",
+      "item": [
+        {
+          "name": "1. List",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/notifications",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notifications"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "2. Detail",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/notifications/2",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notifications",
+                "2"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "3. Create",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": 2,\n  \"asset_id\": 3,\n  \"title\": \"Test Notif\",\n  \"message\": \"Test QA\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/notifications",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notifications"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "4. Mark Read",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/notifications/2/read",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notifications",
+                "2",
+                "read"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "5. Mark All Read",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/notifications/read-all/mark",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notifications",
+                "read-all",
+                "mark"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "6. Delete",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/notifications/2",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "notifications",
+                "2"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "11. Search (1)",
+      "item": [
+        {
+          "name": "1. Global Search",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/search?q=mikrotik",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "mikrotik"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
