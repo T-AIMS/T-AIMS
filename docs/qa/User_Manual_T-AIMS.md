@@ -6,11 +6,6 @@
 **Penulis**   : Reza Tri (QA & Documentation Engineer)  
 **Untuk**     : Pengguna T-AIMS (Administrator & Viewer)  
 
-### Jika Lupa Password:
-
-1. Klik **Lupa Password?** di halaman login
-2. Masukkan email terdaftar
-3. Cek email untuk link reset password
 ---
 
 ## 1. PENDAHULUAN
