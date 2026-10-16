@@ -31,7 +31,7 @@ Berdasarkan pemeriksaan sebelumnya terhadap database final, jumlah data yang ter
 
 | Tabel | Jumlah Data |
 |---|---:|
-| `users` | 6 |
+| `users` | 15 (Termasuk 11 Personel Tim PKL) |
 | `locations` | 2 |
 | `assets` | 16 |
 | `incidents` | 3 |
@@ -66,7 +66,7 @@ Berdasarkan pemeriksaan sebelumnya terhadap database final, jumlah data yang ter
 
 Dokumen ini menjadi panduan umum pengelolaan database T-AIMS. Informasi teknis lebih rinci dapat diperiksa melalui struktur tabel di phpMyAdmin dan file SQL referensi proyek.
 
-Berdasarkan pemeriksaan database lokal, terdapat 7 tabel utama dengan jumlah data sebagai berikut: 6 pengguna, 2 lokasi, 16 aset, 3 insiden, 3 data pemeliharaan, 42 monitoring logs, dan 5 notifikasi.
+Berdasarkan pemeriksaan database lokal, terdapat 7 tabel utama dengan jumlah data sebagai berikut: 15 pengguna (termasuk 11 personel tim PKL), 2 lokasi, 16 aset, 3 insiden, 3 data pemeliharaan, 42 monitoring logs, dan 5 notifikasi.
 
 Terdapat perbedaan schema yang perlu ditindaklanjuti: file `database/taims_db.sql` pada repository GitHub memiliki kolom `offline_since` di tabel `assets`, sedangkan kolom tersebut belum ditemukan pada struktur tabel database lokal saat diperiksa. Backend `backend/src/services/offline-checker.js` menggunakan kolom tersebut dalam query untuk memperbarui status perangkat.
 

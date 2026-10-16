@@ -233,7 +233,7 @@ CREATE TABLE `users` (
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `uq_users_email` (`email`),
   KEY `idx_users_role` (`role`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -242,7 +242,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'Admin T-AIMS','admin@taims_db.local',NULL,'super_admin'),(2,'Ananda Dwi Susanti','ananda@taims_db.local',NULL,'admin'),(3,'Ilvina Muvarika','ilvina@taims_db.local',NULL,'admin'),(4,'Faida Trisma Amelia','faida@taims_db.local',NULL,'admin'),(5,'Ahmad Reza Fahmi','reza.fahmi@taims_db.local','$2b$10$P468LoZyKFKA8Fo4AL4BZ.AViQIcdUnYeI9gBB8dxfhVR8C70YM9e','admin'),(6,'[DATA UJI] Operator Monitoring Lab','operator.uji@taims_db.local',NULL,'user');
+INSERT INTO `users` VALUES (1,'Admin T-AIMS','admin@taims_db.local','$2b$10$P468LoZyKFKA8Fo4AL4BZ.AViQIcdUnYeI9gBB8dxfhVR8C70YM9e','super_admin'),(2,'Ananda Dwi Susanti','ananda@taims_db.local','$2b$10$P468LoZyKFKA8Fo4AL4BZ.AViQIcdUnYeI9gBB8dxfhVR8C70YM9e','admin'),(3,'Ilvina Ramadhani','ilvina@taims_db.local','$2b$10$P468LoZyKFKA8Fo4AL4BZ.AViQIcdUnYeI9gBB8dxfhVR8C70YM9e','admin'),(4,'Faida Trisma Amelia','faida@taims_db.local','$2b$10$P468LoZyKFKA8Fo4AL4BZ.AViQIcdUnYeI9gBB8dxfhVR8C70YM9e','admin'),(5,'Ahmad Reza Fahmi','reza.fahmi@taims_db.local','$2b$10$P468LoZyKFKA8Fo4AL4BZ.AViQIcdUnYeI9gBB8dxfhVR8C70YM9e','admin'),(6,'[DATA UJI] Operator Monitoring Lab','operator.uji@taims_db.local','$2b$10$P468LoZyKFKA8Fo4AL4BZ.AViQIcdUnYeI9gBB8dxfhVR8C70YM9e','user'),(7,'Damar Munajad','damar@taims_db.local','$2b$10$P468LoZyKFKA8Fo4AL4BZ.AViQIcdUnYeI9gBB8dxfhVR8C70YM9e','admin'),(8,'Iqbal Setya Nugraha','iqbal@taims_db.local','$2b$10$P468LoZyKFKA8Fo4AL4BZ.AViQIcdUnYeI9gBB8dxfhVR8C70YM9e','admin'),(9,'Karisma Rahmatika','karisma@taims_db.local','$2b$10$P468LoZyKFKA8Fo4AL4BZ.AViQIcdUnYeI9gBB8dxfhVR8C70YM9e','admin'),(10,'Wafian Zaidan El Y.','wafian@taims_db.local','$2b$10$P468LoZyKFKA8Fo4AL4BZ.AViQIcdUnYeI9gBB8dxfhVR8C70YM9e','admin'),(11,'Naufal Dzakwan Ramadhan','dzakwan@taims_db.local','$2b$10$P468LoZyKFKA8Fo4AL4BZ.AViQIcdUnYeI9gBB8dxfhVR8C70YM9e','admin'),(12,'Muhammad Fahmi Arick','arick@taims_db.local','$2b$10$P468LoZyKFKA8Fo4AL4BZ.AViQIcdUnYeI9gBB8dxfhVR8C70YM9e','admin'),(13,'Haidar Zaki','haidar@taims_db.local','$2b$10$P468LoZyKFKA8Fo4AL4BZ.AViQIcdUnYeI9gBB8dxfhVR8C70YM9e','admin'),(14,'Akmal Bayu Pratama','akmal@taims_db.local','$2b$10$P468LoZyKFKA8Fo4AL4BZ.AViQIcdUnYeI9gBB8dxfhVR8C70YM9e','admin'),(15,'Reza Tri Wardana','rezatri@taims_db.local','$2b$10$P468LoZyKFKA8Fo4AL4BZ.AViQIcdUnYeI9gBB8dxfhVR8C70YM9e','user');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

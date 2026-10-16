@@ -52,7 +52,7 @@ Perbedaan schema tersebut perlu dikoordinasikan dengan tim backend sebelum datab
 | Total maintenance | 3 |
 | Total monitoring logs | 42 |
 | Total notifikasi | 5 |
-| Total pengguna | 6 |
+| Total pengguna | 15 (11 Personel Tim + Admin/Uji) |
 | Aset tanpa IP | 0 |
 
 ## 6. Catatan
