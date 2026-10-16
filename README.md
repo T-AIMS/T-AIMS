@@ -71,24 +71,26 @@ graph TD
 
 ---
 
-## 3. Struktur Tim Proyek & Pembagian Tugas (11 Anggota)
+## 3. Struktur Tim Proyek & Pembagian Tugas (11 Anggota Sesuai Dokumen PKL Teknolab)
 
 Proyek dijalankan oleh 11 personel yang terbagi ke dalam 2 shift operasional:
 
-### Shift 1 (08.00 – 17.00 WIB)
-* **Damar Munajad**: Project Coordinator & System Analyst
-* **Ahmad Reza Fahmi**: Backend & API Developer
-* **Faida Trisma Amelia**: Database & Asset Management Engineer
-* **Ilvina Ramadhani**: IoT & Embedded Systems Engineer
-* **Iqbal Setya Nugraha**: Automation & Workflow Specialist (n8n)
-* **Karisma Rahmatika**: Frontend & UI/UX Designer
+### Shift 1 (07.00 WIB – 16.00 WIB) — 5 Peserta
+* **Fokus**: System Core, Backend, Database, Hardware Integration, dan Network Monitoring.
+1. **Damar Munajad**: Project Coordinator & System Analyst
+2. **Ahmad Reza Fahmi**: Backend & API Developer
+3. **Faida Trisma Amelia**: Database & Asset Management Engineer
+4. **Ilvina Muvarika**: IoT & Device Integration Engineer
+5. **Ananda Dwi Susanti**: Network & Device Monitoring Engineer
 
-### Shift 2 (16.00 – 01.00 WIB)
-* **Wafian Zaidan El Y.**: DevOps, Server & Security Engineer (Penanggung Jawab Infrastruktur)
-* **Naufal Dzakwan Ramadhan**: Integration & Data Flow Engineer
-* **Muhammad Fahmi Arick**: Automation, Alerting & Quality Engineer
-* **Haidar Zaki**: Frontend & UI/UX Developer
-* **Akmal Bayu Pratama**: Network & Hardware Engineer
+### Shift 2 (16.00 WIB – 01.00 WIB) — 6 Peserta
+* **Fokus**: Integration, Dashboard, Visualization, Automation, Deployment, Testing, dan Documentation.
+1. **Dzakwan**: Shift Lead & System Integration
+2. **Dika Yoga**: Frontend Dashboard Developer
+3. **Ahmad Aziz**: UI/UX & Data Visualization Engineer
+4. **Arik**: Automation & Notification Engineer
+5. **Wafian**: DevOps, Server & Security Engineer (Penanggung Jawab Infrastruktur & Keamanan)
+6. **Reza Tri**: QA, Testing & Documentation Engineer
 
 ---
 

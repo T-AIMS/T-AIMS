@@ -1,121 +1,133 @@
-# Matriks Integrasi Infrastruktur & Keterhubungan Tim (11 Personel)
+# Matriks Integrasi Infrastruktur & Keterhubungan Tim (11 Personel Sesuai PDF Teknolab)
 **Sistem:** T-AIMS (*Teknolab Asset & Infrastructure Monitoring System*)  
 **Penanggung Jawab:** Wafian (*DevOps, Server & Security Engineer - Shift 2*)  
 **Pembaruan Terakhir:** 16 Oktober 2026  
-**Status Integrasi:** 100% Terhubung & Tervalidasi
+**Status Integrasi:** 100% Terhubung & Sesuai Dokumen Resmi PKL Teknolab  
 
 ---
 
-## Ikhtisar Keterhubungan Peran DevOps dengan 11 Anggota Tim
+## Ikhtisar Keterhubungan Peran DevOps dengan 11 Anggota Tim (Halaman 6 PDF)
 
-Sesuai Panduan Operasional PKL PT Teknolab Caraka Internasional, peran **DevOps, Server & Security Engineer** berfungsi sebagai tulang punggung integrasi infrastruktur yang menghubungkan seluruh keluaran teknis 11 anggota tim (Shift 1 & Shift 2):
+Sesuai Dokumen Kerja Praktik Kerja Lapangan PT Teknolab Caraka Internasional (Halaman 6), proyek T-AIMS dikerjakan oleh 11 personel yang terbagi dalam 2 shift:
+* **Shift 1 (07.00 WIB – 16.00 WIB)**: 5 Peserta (System Core, Backend, Database, Hardware Integration, dan Network Monitoring)
+* **Shift 2 (16.00 WIB – 01.00 WIB)**: 6 Peserta (Integration, Dashboard, Visualization, Automation, Deployment, Testing, dan Documentation)
 
 ```mermaid
 graph TD
-    WAF["Wafian (DevOps & Security)<br/>Pusat Infrastruktur & Keamanan"]
+    WAF["5. Wafian (DevOps, Server & Security)<br/>Pusat Infrastruktur, Deployment & Keamanan"]
 
-    %% Shift 1 Connections
-    DAMAR["1. Damar Munajad<br/>(Project Coordinator & Analyst)"]
-    REZA["2. Ahmad Reza Fahmi<br/>(Backend & API)"]
-    FAIDA["3. Faida Trisma Amelia<br/>(Database & Asset)"]
-    ILVINA["4. Ilvina Ramadhani<br/>(IoT & Embedded)"]
-    IQBAL["5. Iqbal Setya Nugraha<br/>(Automation Workflow)"]
-    KARISMA["6. Karisma Rahmatika<br/>(Frontend UI/UX)"]
+    %% Shift 1 (5 Peserta)
+    subgraph S1 ["Shift 1 (07.00 - 16.00 WIB) - 5 Peserta"]
+        DAMAR["1. Damar Munajad<br/>(Project Coordinator & System Analyst)"]
+        REZA["2. Ahmad Reza Fahmi<br/>(Backend & API Developer)"]
+        FAIDA["3. Faida Trisma Amelia<br/>(Database & Asset Management Engineer)"]
+        ILVINA["4. Ilvina Muvarika<br/>(IoT & Device Integration Engineer)"]
+        ANANDA["5. Ananda Dwi Susanti<br/>(Network & Device Monitoring Engineer)"]
+    end
 
-    %% Shift 2 Connections
-    DZAKWAN["7. Naufal Dzakwan Ramadhan<br/>(Integration Lead)"]
-    ARICK["8. Muhammad Fahmi Arick<br/>(Automation & Alerting)"]
-    HAIDAR["9. Haidar Zaki<br/>(Frontend Developer)"]
-    AKMAL["10. Akmal Bayu Pratama<br/>(Network & Hardware)"]
-    REZATRI["11. Reza Tri Wardana<br/>(QA & Documentation)"]
+    %% Shift 2 (6 Peserta)
+    subgraph S2 ["Shift 2 (16.00 - 01.00 WIB) - 6 Peserta"]
+        DZAKWAN["1. Dzakwan<br/>(Shift Lead & System Integration)"]
+        DIKA["2. Dika Yoga<br/>(Frontend Dashboard Developer)"]
+        AZIZ["3. Ahmad Aziz<br/>(UI/UX & Data Visualization Engineer)"]
+        ARIK["4. Arik<br/>(Automation & Notification Engineer)"]
+        REZATRI["6. Reza Tri<br/>(QA, Testing & Documentation Engineer)"]
+    end
 
-    %% Edges
-    WAF <==>|Arsitektur & Uji 6 Skenario| DAMAR
+    %% Hubungan Sisi DevOps (Wafian)
+    WAF <==>|Arsitektur, DFD & Uji 6 Skenario| DAMAR
     WAF <==>|Node.js Port 3000 & Dockerfile| REZA
-    WAF <==>|MySQL 3306 & backup_db.sh| FAIDA
-    WAF <==>|Mosquitto 1883 & LWT Offline| ILVINA
-    WAF <==>|n8n Docker Port 5678| IQBAL
-    WAF <==>|Nginx Alpine Port 3001| KARISMA
-    WAF <==>|verify_integration.py & Guide| DZAKWAN
-    WAF <==>|Telegram & SMTP Gmail Alert| ARICK
-    WAF <==>|E2E 16 Aset Live & Anti-Bypass| HAIDAR
-    WAF <==>|Systemd Daemon Monitoring| AKMAL
-    WAF <==>|Konsolidasi Handover & Evidence| REZATRI
+    WAF <==>|MySQL Port 3306 & backup_db.sh| FAIDA
+    WAF <==>|Mosquitto Dual-Auth Port 1883| ILVINA
+    WAF <==>|Network Engine & Monitoring Daemon| ANANDA
+    WAF <==>|verify_integration.py & Merge Runbook| DZAKWAN
+    WAF <==>|Nginx Alpine Port 3001 & API Route| DIKA
+    WAF <==>|Asset Map, Responsive & Asset Cards| AZIZ
+    WAF <==>|n8n Docker 5678, Telegram & SMTP Gmail| ARIK
+    WAF <==>|Failure Simulation & Konsolidasi Handover| REZATRI
 ```
 
 ---
 
-## Rincian Titik Sambung Teknis Per Anggota Tim
+## Rincian Titik Sambung Teknis Per Anggota Tim (Sesuai Halaman 6-12 PDF)
 
-### 1. Damar Munajad — Project Coordinator & System Analyst (Shift 1)
-* **Keluaran Damar**: Requirement Document, Desain Arsitektur, Block Diagram, DFD, Integration Checklist.
-* **Integrasi oleh Wafian**:
-  * Mengintegrasikan seluruh dokumen keluaran Damar ke repositori utama di `docs/system-analyst/`.
-  * Mengadopsi diagram blok arsitektur Damar ke dalam master `README.md` (Mermaid Data Flow).
-  * Menyusun dan memvalidasi skrip otomatis ketahanan sistem terhadap 6 skenario kegagalan (`devops/scripts/test_failure_simulation.sh`) sesuai Hal 17 buku panduan PKL.
+### SHIFT 1 (07.00 WIB – 16.00 WIB) — 5 Peserta
 
-### 2. Ahmad Reza Fahmi — Backend & API Developer (Shift 1)
-* **Keluaran Reza**: REST API Express.js (Port 3000), otentikasi JWT, penanganan payload MQTT.
-* **Integrasi oleh Wafian**:
-  * Menyiapkan kontainerisasi Dockerfile resmi (`taims-backend/Dockerfile`).
+#### 1. Damar Munajad — Project Coordinator & System Analyst
+* **Output Wajib PDF**: *Requirement Document, System Architecture, Block Diagram, Data Flow, Integration Checklist, Daily Handover.*
+* **Integrasi Teknis oleh Wafian**:
+  * Mengintegrasikan seluruh dokumen keluaran Damar ke repositori resmi di `docs/system-analyst/`.
+  * Mengadopsi diagram blok dan aliran data arsitektur Damar ke dalam master `README.md`.
+  * Menyelaraskan dan memvalidasi skrip otomatis ketahanan terhadap 6 skenario kegagalan (`devops/scripts/test_failure_simulation.sh`) sesuai Halaman 17 PDF.
+
+#### 2. Ahmad Reza Fahmi — Backend & API Developer
+* **Output Wajib PDF**: *REST API, Heartbeat Endpoint, Status API, History API, Dashboard Statistics API, API Documentation.*
+* **Integrasi Teknis oleh Wafian**:
+  * Menyiapkan kontainerisasi Dockerfile resmi (`taims-backend/Dockerfile`) pada Port 3000.
   * Menyediakan skrip startup portabel (`devops/scripts/start_services.bat`) dengan deteksi dinamis.
-  * Menyelaraskan variabel environment (`.env.example`) dan routing API di balik reverse proxy Nginx.
+  * Menyelaraskan variabel environment (`.env.example`) dan routing API di balik reverse proxy Nginx SSL.
 
-### 3. Faida Trisma Amelia — Database & Asset Management Engineer (Shift 1)
-* **Keluaran Faida**: Skema relasional 7 tabel basis data `taims_db` dan registry 16 aset resmi.
-* **Integrasi oleh Wafian**:
-  * Membuat skrip pencadangan otomatis portabel (`devops/scripts/backup_db.sh`) dengan kebijakan retensi 7 hari.
-  * Menormalisasi berkas dokumentasi database dari ekstensi `.md.txt` menjadi `.md` murni di `database/docs/`.
-  * Mengorkestrasikan container `taims-mysql` lengkap dengan mekanisme *healthcheck* otomatis di `docker-compose.yml`.
+#### 3. Faida Trisma Amelia — Database & Asset Management Engineer
+* **Output Wajib PDF**: *Database Schema, Migration / SQL, Asset Registry, Backup Procedure, Database Documentation.*
+* **Integrasi Teknis oleh Wafian**:
+  * Menyiapkan skrip pencadangan otomatis portabel (`devops/scripts/backup_db.sh`) dengan kebijakan retensi 7 hari.
+  * Menjamin konsistensi relasional 7 tabel baku dan perbaikan seed akun pengguna pada `database/taims_db.sql`.
+  * Mengorkestrasikan kontainer `taims-mysql` lengkap dengan mekanisme *healthcheck* otomatis pada `docker-compose.yml`.
 
-### 4. Ilvina Ramadhani — IoT & Embedded Systems Engineer (Shift 1)
-* **Keluaran Ilvina**: Firmware ESP32 C++, Raspberry Pi, topik `taims/heartbeat/#`, dan status LWT `offline`.
-* **Integrasi oleh Wafian**:
-  * Mengonfigurasi broker Mosquitto Port 1883 dengan mode *Dual-Auth* (`allow_anonymous true` untuk kemudahan pengujian hardware lapangan + file otentikasi `passwd` untuk keamanan produksi).
-  * Menyelaraskan parameter koneksi pada skrip simulator dan edge heartbeat.
+#### 4. Ilvina Muvarika — IoT & Device Integration Engineer
+* **Output Wajib PDF**: *Firmware / Agent, Heartbeat Function, MQTT/HTTP Integration, Reconnect Logic, Test Result.*
+* **Integrasi Teknis oleh Wafian**:
+  * Mengonfigurasi broker Eclipse Mosquitto Port 1883 dengan mode *Dual-Auth* (`allow_anonymous true` untuk kemudahan pengujian hardware lapangan ESP32/RPi + file kredensial `passwd` untuk keamanan produksi).
+  * Menyelaraskan parameter koneksi MQTT topic `taims/heartbeat/#` dan status LWT `offline`.
 
-### 5. Iqbal Setya Nugraha — Automation & Workflow Specialist (Shift 1)
-* **Keluaran Iqbal**: Fondasi awal workflow n8n dan integrasi trigger Telegram.
-* **Integrasi oleh Wafian**:
+#### 5. Ananda Dwi Susanti — Network & Device Monitoring Engineer
+* **Output Wajib PDF**: *Monitoring Engine, Device Check Rules, Retry Logic, Response Time, Network Monitoring Test.*
+* **Integrasi Teknis oleh Wafian**:
+  * Menyediakan lingkungan runtime stabil untuk mesin monitoring berkala perangkat jaringan (Ping, HTTP, TCP, SNMP, MQTT).
+  * Mengintegrasikan service daemon pengawas (`taims-monitoring.service`) berbasis systemd untuk memastikan kontinuitas evaluasi status aset.
+
+---
+
+### SHIFT 2 (16.00 WIB – 01.00 WIB) — 6 Peserta
+
+#### 1. Dzakwan — Shift Lead & System Integration
+* **Output Wajib PDF**: *Integration Checklist, Bug List, Dependency List, Release Record, Daily Handover.*
+* **Integrasi Teknis oleh Wafian**:
+  * Menyelaraskan seluruh parameter infrastruktur pada `ENVIRONMENT.md` dan `INTEGRATION_GUIDE.md` hingga mencapai kelulusan master checker `verify_integration.py` (15/15 OK).
+  * Menyiapkan runbook kesiapan operator merge phase (`devops/scripts/runbook_merge_phase.sh`) dan symlink cepat `~/runbook.sh`.
+
+#### 2. Dika Yoga — Frontend Dashboard Developer
+* **Output Wajib PDF**: *Dashboard, Device List, Device Detail, Filter, History View, API Integration.*
+* **Integrasi Teknis oleh Wafian**:
+  * Menyediakan kontainerisasi frontend Nginx Alpine ringan (`frontend/Dockerfile`) pada Port 3001.
+  * Memperbaiki logika kalkulasi KPI availability pada script frontend dan menghubungkan live endpoint backend.
+
+#### 3. Ahmad Aziz — UI/UX & Data Visualization Engineer
+* **Output Wajib PDF**: *UI Design, Chart & Visualization, Location Map / Floorplan, Status Component, Responsive Layout.*
+* **Integrasi Teknis oleh Wafian**:
+  * Mengonfigurasi header keamanan Nginx (CSP, X-Frame-Options) agar komponen visualisasi peta dan chart interaktif ter-render mulus di desktop maupun mobile.
+  * Memastikan aset visual dan layout CSS tidak mengalami kendala *mixed-content* di bawah protokol HTTPS.
+
+#### 4. Arik — Automation & Notification Engineer
+* **Output Wajib PDF**: *Offline Alert, Recovery Alert, n8n Workflow, AI Analysis, Telegram / Email Output.*
+* **Integrasi Teknis oleh Wafian**:
   * Mengorkestrasikan kontainer Docker `taims-n8n` pada Port 5678 dengan volume persistent `taims_n8n_data`.
-  * Memastikan kontinuitas workflow saat kontainer di-restart atau dipindahkan lingkungan.
+  * Memvalidasi pengiriman notifikasi ganda Telegram dan SMTP Gmail (`education8420@gmail.com`) dengan status sukses `250 2.0.0 OK`.
 
-### 6. Karisma Rahmatika — Frontend & UI/UX Designer (Shift 1)
-* **Keluaran Karisma**: Desain tampilan monitoring, tata letak kartu aset, dan styling CSS.
-* **Integrasi oleh Wafian**:
-  * Membuat `frontend/Dockerfile` berbasis Nginx Alpine ringan untuk melayani antarmuka web pada Port 3001.
-  * Membersihkan 11 file controller backend yang salah tempat di folder frontend guna menjaga higienitas arsitektur.
+#### 5. Wafian — DevOps, Server & Security Engineer
+* **Output Wajib PDF**: *Production Deployment, SSL, Environment Configuration, Backup, Service Log, Security Checklist.*
+* **Tanggung Jawab Inti**:
+  * Menyiapkan orkestrasi kontainer penuh (Docker Compose 5 service: MySQL, Mosquitto, Backend, Frontend, n8n).
+  * Mengonfigurasi reverse proxy SSL/TLS (`devops/nginx/nginx.conf`), skrip setup SSL otomatis, dan manajemen secret `.env`.
+  * Menjamin otomatisasi rotasi backup database 7 hari, logging terpusat, dan ketahanan sistem terhadap 6 skenario kegagalan.
 
-### 7. Wafian Zaidan El Y. — DevOps, Server & Security Engineer (Shift 2)
-* **Peran Inti**: Penanggung jawab keandalan server, otomasi kontainerisasi 5 layanan, keamanan jaringan, mitigasi celah akses, dan operator utama kesiapan sistem (*Merge Phase*).
-
-### 8. Naufal Dzakwan Ramadhan — Integration & Data Flow Engineer (Shift 2 Lead)
-* **Keluaran Dzakwan**: Master health checker `verify_integration.py` v1.3 dan panduan integrasi tim.
-* **Integrasi oleh Wafian**:
-  * Menyelaraskan seluruh parameter sistem pada `ENVIRONMENT.md` dan `INTEGRATION_GUIDE.md` hingga mencapai kelulusan **15/15 OK (100% HIJAU)**.
-  * Bertindak sebagai **Operator Utama** yang mengendalikan seluruh service (MySQL, Mosquitto, API, UI, n8n) saat evaluasi Merge Phase berlangsung.
-
-### 9. Muhammad Fahmi Arick — Automation, Alerting & Quality Engineer (Shift 2)
-* **Keluaran Arick**: Pembaruan workflow n8n (notifikasi ganda Telegram + Email SMTP Gmail dengan jeda 10 menit).
-* **Integrasi oleh Wafian**:
-  * Memverifikasi kredensial SMTP Gmail (`education8420@gmail.com` dengan App Password `sydnaxxyqkdzypge`).
-  * Menambahkan node `Send an Email` pada workflow `MQTT T-AIMS OFFLINE` dan `MQTT T-AIMS RECOVERY`.
-  * Menguji live trigger via MQTT publish dan memvalidasi respon Google Mail Server (`250 2.0.0 OK`).
-
-### 10. Haidar Zaki — Frontend & UI/UX Developer (Shift 2)
-* **Keluaran Haidar**: Integrasi frontend live ke backend API, rendering dinamis 16 aset, live polling 5 detik.
-* **Integrasi oleh Wafian**:
-  * Memperbaiki bug kalkulasi KPI availability (konversi tipe data integer).
-  * Menutup celah keamanan otentikasi bypass pada `frontend/index.html` dan menghapus password hardcoded.
-  * Memastikan sinkronisasi data 16 aset database tersaji real-time di UI.
-
-### 11. Reza Tri Wardana — QA & Documentation Engineer (Shift 2)
-* **Keluaran Reza Tri**: Test plan, test cases, bukti pengujian 58 endpoint, pelacakan bug.
-* **Integrasi oleh Wafian**:
-  * Mengonsolidasikan seluruh berkas serah terima harian (*Daily Handover*) dari `docs/qa/handover/` ke direktori terpadu `docs/handover/`.
-  * Menyediakan berkas log pengujian dan SOP recovery resmi di `docs/recovery.md`.
+#### 6. Reza Tri — QA, Testing & Documentation Engineer
+* **Output Wajib PDF**: *Test Report, Bug Report, User Manual, Technical Documentation, Video Demo, Final Evidence.*
+* **Integrasi Teknis oleh Wafian**:
+  * Mengonsolidasikan seluruh berkas serah terima harian (*Daily Handover*) ke direktori terpusat `docs/handover/`.
+  * Menyediakan berkas log pengujian kegagalan (`devops/logs/`) dan SOP pemulihan sistem (`docs/recovery.md`) sebagai bukti verifikasi teknis.
 
 ---
 
 ## Status Kesiapan Operasional
-Seluruh modul dari 11 anggota tim telah terhubung tanpa konflik dalam satu arsitektur terpadu. Sistem dinyatakan **100% Siap untuk Merge Phase**.
+Seluruh modul dari 11 anggota tim sesuai Dokumen Operasional PKL PT Teknolab Caraka Internasional telah terintegrasi tanpa tumpang tindih. Sistem dinyatakan **100% Siap untuk Merge Phase**.
