@@ -92,7 +92,21 @@ Proyek dijalankan oleh 11 personel yang terbagi ke dalam 2 shift operasional:
 
 ---
 
-## 4. Panduan Menjalankan Layanan (Quick Start)
+## 4. Prasyarat Environment (System Prerequisites)
+
+Untuk menjalankan seluruh ekosistem T-AIMS, pastikan lingkungan host atau server memenuhi spesifikasi berikut:
+
+* **Sistem Operasi**: Linux (Ubuntu 22.04 LTS / Debian 12) atau Windows 10/11 dengan WSL2.
+* **Node.js**: Versi `18.x` atau `20.x` LTS (disertai `npm`).
+* **Python**: Versi `3.9+` (diperlukan modul `paho-mqtt` untuk simulator & skrip verifikasi).
+* **Database**: MySQL `8.0` atau MariaDB `10.5+` (Port `3306`).
+* **Message Broker**: Eclipse Mosquitto `2.0+` (Port `1883` & `9001`).
+* **Docker Engine & Docker Compose**: Versi `24.0+` & Docker Compose v2 (untuk kontainerisasi penuh).
+* **Web Server**: Nginx `1.22+` (untuk konfigurasi reverse proxy SSL/HTTPS).
+
+---
+
+## 5. Panduan Menjalankan Layanan (Quick Start)
 
 ### Opsi 1: Menjalankan di Lingkungan Lokal (Windows / XAMPP / WSL)
 1. **Database**: Aktifkan MySQL via XAMPP Control Panel (Port 3306).
@@ -118,7 +132,7 @@ docker compose down
 
 ---
 
-## 5. Prosedur Pencadangan Database (Backup & Recovery)
+## 6. Prosedur Pencadangan Database (Backup & Recovery)
 
 Pencadangan database dilakukan secara otomatis menggunakan skrip portabel dinamis:
 ```bash
@@ -130,7 +144,7 @@ bash devops/scripts/backup_db.sh
 
 ---
 
-## 6. Uji Simulasi Kegagalan (Failure & Recovery Verification)
+## 7. Uji Simulasi Kegagalan (Failure & Recovery Verification)
 
 Sesuai panduan operasional PKL, sistem telah melewati pengujian 6 skenario kegagalan:
 1. **Pemutusan Koneksi Simulator/ESP32**: Mendeteksi status `offline` dalam waktu 60 detik melalui LWT / timeout checker.
@@ -139,7 +153,8 @@ Sesuai panduan operasional PKL, sistem telah melewati pengujian 6 skenario kegag
 
 ---
 
-## 7. Kebijakan Keamanan (Security Policy)
+## 8. Kebijakan Keamanan & Tata Kelola Repositori
 * **Kredensial**: File `.env` tidak pernah dikomit ke repositori publik.
 * **Autentikasi Form**: Form login frontend memvalidasi respons API backend secara ketat tanpa bypass lokal.
-* **MQTT Auth**: Tersedia konfigurasi produksi `devops/mosquitto/mosquitto.prod.conf` dengan `allow_anonymous false` untuk fase migrasi produksi.
+* **MQTT Auth**: Konfigurasi broker mengaktifkan `allow_anonymous false` dengan otentikasi user `taims-broker`.
+* **Daily Handover**: Seluruh berkas serah terima tugas harian 11 personel tim terdokumentasi terpadu di [`docs/handover/`](docs/handover/).
