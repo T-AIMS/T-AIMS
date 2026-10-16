@@ -51,11 +51,6 @@ untuk:
 3. Masukkan **username** dan **password** yang diberikan Administrator
 4. Klik tombol **Login**
 
-### Jika Lupa Password:
-
-1. Klik **Lupa Password?** di halaman login
-2. Masukkan email terdaftar
-3. Cek email untuk link reset password
 
 ---
 
