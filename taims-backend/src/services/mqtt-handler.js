@@ -51,9 +51,12 @@ mqttClient.on('message', async (topic, message) => {
 
         await db.query(
             `UPDATE assets 
-             SET current_status = ?, last_seen = ?, updated_at = NOW()
+             SET current_status = ?, 
+                 last_seen = ?, 
+                 offline_since = CASE WHEN ? = 'offline' THEN NOW() ELSE NULL END,
+                 updated_at = NOW()
              WHERE asset_id = ?`,
-            [deviceStatus, checkTime, assetId]
+            [deviceStatus, checkTime, deviceStatus, assetId]
         );
 
         console.log(`✅ Heartbeat ${assetCode} disimpan`);

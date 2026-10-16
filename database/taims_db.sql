@@ -218,6 +218,34 @@ INSERT INTO `notifications` VALUES (2,2,3,'[ALERT OFFLINE] NET-SWD-01 Terputus',
 UNLOCK TABLES;
 
 --
+-- Table structure for table `token_blacklist`
+--
+
+DROP TABLE IF EXISTS `token_blacklist`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `token_blacklist` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `token` text NOT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  `expires_at` datetime NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_token` (`token`(255)),
+  KEY `idx_expires_at` (`expires_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `token_blacklist`
+--
+
+LOCK TABLES `token_blacklist` WRITE;
+/*!40000 ALTER TABLE `token_blacklist` DISABLE KEYS */;
+/*!40000 ALTER TABLE `token_blacklist` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `users`
 --
 

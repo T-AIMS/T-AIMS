@@ -12,19 +12,20 @@
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
 #include <time.h>
+#include "config.h"
 
 // ============ KONFIGURASI ============
-const char* WIFI_SSID       = "espnow";
-const char* WIFI_PASSWORD   = "icayangku";
+const char* WIFI_SSID       = CONFIG_WIFI_SSID;
+const char* WIFI_PASSWORD   = CONFIG_WIFI_PASS;
 
-const char* MQTT_BROKER = "10.181.43.144";  // ← GANTI dari 192.168.1.43
-const int   MQTT_PORT       = 1883;
+const char* MQTT_BROKER     = CONFIG_MQTT_HOST;
+const int   MQTT_PORT       = CONFIG_MQTT_PORT;
 
-const char* DEVICE_ID       = "IOT-ESP-02";
-const char* MQTT_TOPIC      = "taims/heartbeat/IOT-ESP-02";
+const char* DEVICE_ID       = CONFIG_DEVICE_ID;
+const char* MQTT_TOPIC      = CONFIG_TOPIC_HEARTBEAT;
 
-const unsigned long HEARTBEAT_INTERVAL = 30000;
-const char* FIRMWARE_VERSION = "1.0.0";
+const unsigned long HEARTBEAT_INTERVAL = CONFIG_HEARTBEAT_INTERVAL_MS;
+const char* FIRMWARE_VERSION = CONFIG_FIRMWARE;
 
 // ============ OBJEK ============
 WiFiClient espClient;

@@ -42,13 +42,18 @@ INTERVAL = 10
 # Nama file CSV untuk menyimpan hasil monitoring lokal
 LOG_FILE = "monitoring_logs.csv"
 
-# Konfigurasi Backend API
-BACKEND_URL = "http://172.19.112.1:3000/api"
-AUTH_EMAIL = "reza.fahmi@taims_db.local"
-AUTH_PASSWORD = "password123"
+# Konfigurasi Backend API & Database (Ananda & Wafian)
+BACKEND_URL = os.getenv("BACKEND_URL", "http://127.0.0.1:3000/api")
+AUTH_EMAIL = os.getenv("AUTH_EMAIL", "reza.fahmi@taims_db.local")
+AUTH_PASSWORD = os.getenv("AUTH_PASSWORD", "password123")
 
-# Token awal hasil login
-cached_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo1LCJlbWFpbCI6InJlemEuZmFobWlAdGFpbXNfZGIubG9jYWwiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3OTIwMzY3OTYsImV4cCI6MTc5MjEyMzE5Nn0.7xS2uenk9LKO33e2Wq5KYvZj4szsdbXm7n6pwiLYaw8"
+DB_HOST = os.getenv('DB_HOST', 'localhost')
+DB_USER = os.getenv('DB_USER', 'root')
+DB_PASS = os.getenv('DB_PASS', '')
+DB_NAME = os.getenv('DB_NAME', 'taims_db')
+
+# Token awal hasil login (dinamis)
+cached_token = os.getenv("AUTH_TOKEN", "")
 
 
 # ==========================================

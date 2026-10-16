@@ -92,8 +92,18 @@ router.get('/me', authenticate, async (req, res) => {
 });
 
 // POST /api/auth/logout
-router.post('/logout', authenticate, (req, res) => {
-    res.status(200).json({ success: true, message: 'Logout berhasil' });
+router.post('/logout', authenticate, async (req, res) => {
+    try {
+        const token = req.headers.authorization.split(' ')[1];
+        await db.query(
+            'INSERT INTO token_blacklist (token, expires_at) VALUES (?, FROM_UNIXTIME(?))', 
+            [token, req.user.exp]
+        );
+        res.status(200).json({ success: true, message: 'Logout berhasil, token dinonaktifkan' });
+    } catch (err) {
+        console.error('Logout error:', err);
+        res.status(500).json({ success: false, error: err.message });
+    }
 });
 
 // POST /api/auth/change-password

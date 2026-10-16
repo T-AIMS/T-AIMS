@@ -55,3 +55,8 @@ devops/nginx/ssl/*.key
 devops/nginx/ssl/*.crt
 !devops/nginx/ssl/.gitkeep
 
+# Hardware IoT Secrets
+hardware-iot/esp32/include/config.h
+!hardware-iot/esp32/include/config.h.example
+
+

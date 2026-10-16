@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const db = require('../config/db');
 require('dotenv').config();
 
 const PERMISSIONS = {
@@ -7,7 +8,7 @@ const PERMISSIONS = {
     user:        { create: false, read: true, update: false, delete: false }
 };
 
-function authenticate(req, res, next) {
+async function authenticate(req, res, next) {
     const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -21,6 +22,13 @@ function authenticate(req, res, next) {
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        // Periksa apakah token ada di blacklist (logout)
+        const [blacklisted] = await db.query('SELECT id FROM token_blacklist WHERE token = ?', [token]);
+        if (blacklisted.length > 0) {
+            return res.status(401).json({ success: false, error: 'Token sudah logout / tidak valid' });
+        }
+
         req.user = decoded;
         next();
     } catch (err) {
