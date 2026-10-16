@@ -46,6 +46,26 @@
       "position": [240, 0],
       "id": "b1044d59-d6bb-404b-9227-44576e96c7e6",
       "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "fromEmail": "education8420@gmail.com",
+        "toEmail": "education8420@gmail.com",
+        "subject": "=[T-AIMS] Offline: {{ $('Code in JavaScript').item.json.asset_name }}",
+        "text": "={{ $('Code in JavaScript').item.json.message }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [672, 0],
+      "id": "c71a396e-028d-4e9e-a612-4d2fa810ee39",
+      "name": "Send an Email",
+      "credentials": {
+        "smtp": {
+          "id": "jlA7hNu6apT5kTDT",
+          "name": "SMTP T-AIMS"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -53,9 +73,11 @@
     "MQTT T-AIMS OFFLINE": {
       "main": [[{"node": "Code in JavaScript", "type": "main", "index": 0}]]
     },
-    "Send a text message": {"main": [[]]},
     "Code in JavaScript": {
       "main": [[{"node": "Send a text message", "type": "main", "index": 0}]]
+    },
+    "Send a text message": {
+      "main": [[{"node": "Send an Email", "type": "main", "index": 0}]]
     }
   },
   "active": true,

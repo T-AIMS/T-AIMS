@@ -46,6 +46,26 @@
           "name": "Telegram account"
         }
       }
+    },
+    {
+      "parameters": {
+        "fromEmail": "education8420@gmail.com",
+        "toEmail": "education8420@gmail.com",
+        "subject": "=[T-AIMS] Recovery: {{ $('Code in JavaScript1').item.json.asset_name }}",
+        "text": "={{ $('Code in JavaScript1').item.json.message }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [672, 0],
+      "id": "d82b487f-139e-4a1f-b723-5e3cb921ff41",
+      "name": "Send an Email",
+      "credentials": {
+        "smtp": {
+          "id": "jlA7hNu6apT5kTDT",
+          "name": "SMTP T-AIMS"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -55,6 +75,9 @@
     },
     "Code in JavaScript1": {
       "main": [[{"node": "Send a text message1", "type": "main", "index": 0}]]
+    },
+    "Send a text message1": {
+      "main": [[{"node": "Send an Email", "type": "main", "index": 0}]]
     }
   },
   "active": true,
