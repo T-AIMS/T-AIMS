@@ -1005,365 +1005,61 @@
                 <!-- HALAMAN 7: INFORMASI PROJEK, TIM & KEGUNAAN ALAT (PROFESIONAL) -->
                 <!-- ============================================================= -->
                 <div id="page-project-info" class="page-view">
-                    <!-- Hero Header Dokumen Projek -->
-                    <div class="project-hero-card mb-3">
-                        <div class="ph-content">
-                            <div class="ph-badge">
-                                <span class="pulse-led online"></span>
-                                <span>DOKUMENTASI RESMI PROYEK PKL ELEKTRO &bull; TEKNOLAB CARAKA INTERNASIONAL</span>
+                    <!-- Header Halaman Persis Gambar 1 -->
+                    <div class="project-page-header">
+                        <div class="pi-badge-wrap">
+                            <span class="badge-pill-green"><i class="fa-solid fa-circle"></i> DOKUMENTASI RESMI &bull; TIM PENGEMBANG PKL</span>
+                        </div>
+                        <div class="pi-header-row">
+                            <div>
+                                <h2 class="pi-main-title">Informasi Pengguna & Tim PKL Teknolab</h2>
+                                <p class="pi-main-subtitle">Klik tombol "Edit Tim" di sebelah kanan untuk mengubah data anggota tim, lalu klik "Simpan Perubahan".</p>
                             </div>
-                            <h2 class="ph-title">T-AIMS: Teknolab Asset & Infrastructure Monitoring System</h2>
-                            <p class="ph-desc">
-                                Sistem Monitoring Infrastruktur IT, Jaringan, dan Telemetri Sensor Berbasis IoT & GIS Wilayah Blitar.
-                                Dikembangkan sebagai portofolio profesional untuk kegiatan Praktik Kerja Lapangan (PKL) 30 Hari Bidang Teknik Ketenagalistrikan & Elektronika / Rekayasa Perangkat Lunak.
-                            </p>
-                            <div class="ph-meta-row">
-                                <span class="ph-pill"><i class="fa-solid fa-calendar-check text-cyan"></i> Periode PKL: 30 Hari Kerja</span>
-                                <span class="ph-pill"><i class="fa-solid fa-location-dot text-crimson"></i> Wilayah Fokus: Area Blitar, Jawa Timur</span>
-                                <span class="ph-pill"><i class="fa-solid fa-certificate text-green"></i> Standar: Industri IT & Telekomunikasi</span>
-                                <button class="btn btn-outline-cyber btn-sm" onclick="exportProjectBrief()">
-                                    <i class="fa-solid fa-file-pdf text-red"></i> Unduh Lembar Profil Projek
-                                </button>
-                            </div>
+                            <button type="button" class="btn-edit-team-top" onclick="openEditTeamModal()">
+                                <i class="fa-solid fa-pen-to-square"></i> Edit Tim
+                            </button>
                         </div>
                     </div>
 
-                    <!-- SUB-NAV TAB: DATA TIM | LATAR BELAKANG | KEGUNAAN ALAT | SOP -->
-                    <div class="project-tab-bar mb-3">
-                        <button class="proj-tab-btn active" onclick="switchProjSection('team')">
-                            <i class="fa-solid fa-users text-cyan"></i> Data & Profil Tim Kami
-                        </button>
-                        <button class="proj-tab-btn" onclick="switchProjSection('purpose')">
-                            <i class="fa-solid fa-bullseye text-crimson"></i> Informasi Kegunaan Alat
-                        </button>
-                        <button class="proj-tab-btn" onclick="switchProjSection('overview')">
-                            <i class="fa-solid fa-microchip text-yellow"></i> Latar Belakang & Arsitektur
-                        </button>
-                        <button class="proj-tab-btn" onclick="switchProjSection('sop')">
-                            <i class="fa-solid fa-list-check text-green"></i> SOP Pengoperasian
-                        </button>
-                    </div>
-
-                    <!-- ========================================== -->
-                    <!-- TAB 1: DATA NAMA & PROFIL TIM PENGEMBANG  -->
-                    <!-- ========================================== -->
-                    <div id="proj-sec-team" class="proj-section-panel active">
-                        <div class="section-title-wrap mb-3">
-                            <div class="flex justify-between items-center flex-wrap gap-2">
+                    <!-- SHIFT 1 CONTAINER (PERSIS GAMBAR 1) -->
+                    <div class="shift-section-box">
+                        <div class="shift-banner-bar s1-banner">
+                            <div class="sbb-left">
+                                <i class="fa-solid fa-gear sbb-icon-white"></i>
                                 <div>
-                                    <h3 class="section-title"><i class="fa-solid fa-user-group text-cyan"></i> Susunan 11 Anggota Tim Pengembang Proyek PKL</h3>
-                                    <p class="section-subtitle">Struktur resmi pembagian shift, peran spesifik, kontak PIC, dan output deliverable terverifikasi.</p>
+                                    <h3 class="sbb-title">SHIFT 1 — PAGI (07.00 - 16.00 WIB)</h3>
+                                    <p class="sbb-sub">System Core, Backend, Database, Hardware & Network</p>
                                 </div>
-                                <div class="btn-group">
-                                    <button class="btn btn-primary-cyber btn-sm admin-only" onclick="openAddTeamMemberModal()">
-                                        <i class="fa-solid fa-user-plus"></i> Tambah Anggota Tim
-                                    </button>
-                                    <button class="btn btn-outline-cyber btn-sm" onclick="resetTeamDataPrompt()">
-                                        <i class="fa-solid fa-rotate-left"></i> Reset Tim Default (11 Siswa)
-                                    </button>
-                                </div>
+                            </div>
+                            <div class="sbb-right">
+                                <span class="sbb-badge badge-amber">5 Anggota</span>
                             </div>
                         </div>
 
-                        <!-- Banner Ikhtisar Pembagian Shift 1 & Shift 2 (Sesuai Dokumen Resmi PKL Teknolab) -->
-                        <div class="shift-overview-container mb-3">
-                            <div class="shift-summary-card s1-box">
-                                <div class="ssc-header">
-                                    <div class="ssc-badge s1"><i class="fa-solid fa-sun"></i> SHIFT 1 &bull; 07.00 – 16.00 WIB</div>
-                                    <span class="ssc-count">5 Anggota</span>
-                                </div>
-                                <h4 class="ssc-focus-title">System Core, Backend, Database & IoT Integration</h4>
-                                <p class="ssc-desc">Fokus pada penyusunan requirement, arsitektur data flow, pembuatan REST API backend, perancangan skema database PostgreSQL, mekanisme heartbeat perangkat IoT ESP32/Raspberry Pi, dan monitoring engine ketersediaan jaringan.</p>
-                                <div class="ssc-lead">
-                                    <i class="fa-solid fa-user-tie text-cyan"></i> <span>Koordinator: <strong>Damar Munajad</strong> (System Analyst)</span>
-                                </div>
-                            </div>
-
-                            <div class="shift-summary-card s2-box">
-                                <div class="ssc-header">
-                                    <div class="ssc-badge s2"><i class="fa-solid fa-moon"></i> SHIFT 2 &bull; 16.00 – 01.00 WIB</div>
-                                    <span class="ssc-count">6 Anggota</span>
-                                </div>
-                                <h4 class="ssc-focus-title">Integration, Dashboard, Visualization, Automation & QA</h4>
-                                <p class="ssc-desc">Fokus pada integrasi menyeluruh antar modul, pengembangan antarmuka dashboard Cyber HUD, visualisasi peta GIS Blitar & grafik analitik, otomatisasi notifikasi Telegram/Email/n8n, deployment server DevOps, dan audit QA.</p>
-                                <div class="ssc-lead">
-                                    <i class="fa-solid fa-crown text-crimson"></i> <span>Shift Lead: <strong>Dzakwan</strong> (System Integration)</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Bar Filter Interaktif Shift (Semua / Shift 1 / Shift 2) -->
-                        <div class="team-filter-bar mb-3">
-                            <div class="tf-left">
-                                <span class="tf-label"><i class="fa-solid fa-filter text-cyan"></i> Filter Berdasarkan Shift:</span>
-                                <div class="tf-buttons">
-                                    <button type="button" class="team-filter-btn active" id="team-filter-all" onclick="filterTeamByShift('all')">
-                                        <i class="fa-solid fa-users"></i> Semua Anggota (11)
-                                    </button>
-                                    <button type="button" class="team-filter-btn s1" id="team-filter-1" onclick="filterTeamByShift('1')">
-                                        <i class="fa-solid fa-sun text-cyan"></i> Shift 1: Core & IoT (5)
-                                    </button>
-                                    <button type="button" class="team-filter-btn s2" id="team-filter-2" onclick="filterTeamByShift('2')">
-                                        <i class="fa-solid fa-moon text-crimson"></i> Shift 2: Integration & UI (6)
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="tf-right">
-                                <span class="tf-hint"><i class="fa-regular fa-lightbulb text-yellow"></i> Klik tombol WhatsApp / Email / Salin pada kartu untuk menghubungi anggota</span>
-                            </div>
-                        </div>
-
-                        <!-- Grid Kartu Profil Tim (Dapat Diedit & Disimpan) -->
-                        <div class="team-cards-grid" id="team-cards-container">
-                            <!-- Rendered dynamically by app.js -->
-                        </div>
-
-                        <!-- Dewan Pembimbing & Advisory -->
-                        <div class="dashboard-card mt-3">
-                            <div class="card-header">
-                                <div class="card-title-group">
-                                    <i class="fa-solid fa-graduation-cap text-yellow"></i>
-                                    <h4>Dewan Pembimbing Proyek PKL</h4>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <div class="advisory-grid">
-                                    <div class="advisor-item">
-                                        <div class="adv-icon bg-blue"><i class="fa-solid fa-building"></i></div>
-                                        <div class="adv-info">
-                                            <strong>PT Teknolab Caraka Internasional</strong>
-                                            <span>Pembimbing Industri Lapangan</span>
-                                            <p class="adv-desc">Supervisi standar industri monitoring infrastruktur, validasi keandalan sensor, dan verifikasi protokol keamanan jaringan.</p>
-                                        </div>
-                                    </div>
-                                    <div class="advisor-item">
-                                        <div class="adv-icon bg-purple"><i class="fa-solid fa-user-tie"></i></div>
-                                        <div class="adv-info">
-                                            <strong>Ir. Hendra Gunawan, S.T., M.Kom.</strong>
-                                            <span>Guru Pembimbing Sekolah (Jurusan Elektro / RPL)</span>
-                                            <p class="adv-desc">Bimbingan metodologi rekayasa, penilaian pencapaian kompetensi 30 hari PKL, dan pengujian kelayakan sistem terintegrasi.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                        <!-- 3-Column Grid Kartu Shift 1 -->
+                        <div class="shift-cards-grid" id="shift-1-cards-container">
+                            <!-- Dimuat dinamis oleh app.js -->
                         </div>
                     </div>
 
-                    <!-- ========================================== -->
-                    <!-- TAB 2: INFORMASI KEGUNAAN & FUNGSI ALAT    -->
-                    <!-- ========================================== -->
-                    <div id="proj-sec-purpose" class="proj-section-panel hidden">
-                        <div class="section-title-wrap mb-3">
-                            <h3 class="section-title"><i class="fa-solid fa-screwdriver-wrench text-crimson"></i> Manfaat, Kegunaan & Keunggulan Alat T-AIMS</h3>
-                            <p class="section-subtitle">Nilai guna profesional sistem T-AIMS dalam pengelolaan infrastruktur industri modern.</p>
-                        </div>
-
-                        <!-- 6 Pilar Kegunaan Utama Industri -->
-                        <div class="utilities-grid">
-                            <div class="utility-card">
-                                <div class="uc-header">
-                                    <div class="uc-num">01</div>
-                                    <div class="uc-icon crimson-bg"><i class="fa-solid fa-heart-pulse"></i></div>
-                                </div>
-                                <h4 class="uc-title">Pemantauan Ketersediaan Real-Time (24/7 Uptime)</h4>
-                                <p class="uc-desc">
-                                    Mendeteksi kondisi alat elektro, server, dan jaringan detik-demi-detik melalui protokol ICMP telemetry dan SNMP. Sistem secara otomatis menandai status <strong>Online (Hijau)</strong>, <strong>Peringatan (Kuning)</strong>, atau <strong>Offline (Merah)</strong> tanpa perlunya inspeksi manual berkala.
-                                </p>
-                                <div class="uc-impact">
-                                    <span class="impact-tag"><i class="fa-solid fa-check"></i> Mengurangi downtime hingga 85%</span>
+                    <!-- SHIFT 2 CONTAINER (PERSIS GAMBAR 2) -->
+                    <div class="shift-section-box">
+                        <div class="shift-banner-bar s2-banner">
+                            <div class="sbb-left">
+                                <i class="fa-solid fa-moon sbb-icon-white"></i>
+                                <div>
+                                    <h3 class="sbb-title">SHIFT 2 — SORE / MALAM (16.00 - 01.00 WIB)</h3>
+                                    <p class="sbb-sub">Frontend Dashboard, Automation, Security, Testing & System Integration</p>
                                 </div>
                             </div>
-
-                            <div class="utility-card">
-                                <div class="uc-header">
-                                    <div class="uc-num">02</div>
-                                    <div class="uc-icon cyan-bg"><i class="fa-solid fa-map-location-dot"></i></div>
-                                </div>
-                                <h4 class="uc-title">Pelacakan Geospasial Presisi di Area Blitar</h4>
-                                <p class="uc-desc">
-                                    Menyediakan visualisasi peta geografis dengan titik koordinat lintang dan bujur (Latitude & Longitude) yang presisi di Kota dan Kabupaten Blitar. Teknisi lapangan dapat langsung menuju lokasi tiang BTS, gardu, atau ruang server terdekat saat terjadi insiden.
-                                </p>
-                                <div class="uc-impact">
-                                    <span class="impact-tag"><i class="fa-solid fa-check"></i> Mempercepat respons lapangan &bull; MTTR turun 60%</span>
-                                </div>
-                            </div>
-
-                            <div class="utility-card">
-                                <div class="uc-header">
-                                    <div class="uc-num">03</div>
-                                    <div class="uc-icon amber-bg"><i class="fa-solid fa-triangle-exclamation"></i></div>
-                                </div>
-                                <h4 class="uc-title">Sistem Peringatan Dini (Early Warning System)</h4>
-                                <p class="uc-desc">
-                                    Mencegah kerusakan hardware fatal melalui ambang batas toleransi (threshold). Jika sensor suhu server melampaui 32°C, daya listrik baterai UPS anjlok di bawah 20%, atau latensi melonjak di atas 150ms, alarm instan dan notifikasi darurat langsung dipicu.
-                                </p>
-                                <div class="uc-impact">
-                                    <span class="impact-tag"><i class="fa-solid fa-check"></i> Pencegahan kebakaran & lonjakan beban listrik</span>
-                                </div>
-                            </div>
-
-                            <div class="utility-card">
-                                <div class="uc-header">
-                                    <div class="uc-num">04</div>
-                                    <div class="uc-icon purple-bg"><i class="fa-solid fa-boxes-stacked"></i></div>
-                                </div>
-                                <h4 class="uc-title">Sentralisasi Inventaris & Manajemen Siklus Aset</h4>
-                                <p class="uc-desc">
-                                    Menggabungkan data aset fisik dan perangkat telemetri dalam satu portal. Setiap aset memiliki kode identifikasi (AST-...), nilai perolehan, masa garansi, kondisi kelayakan fisik, serta PIC penanggung jawab untuk audit transparansi.
-                                </p>
-                                <div class="uc-impact">
-                                    <span class="impact-tag"><i class="fa-solid fa-check"></i> Tata kelola inventaris standar ISO 55000</span>
-                                </div>
-                            </div>
-
-                            <div class="utility-card">
-                                <div class="uc-header">
-                                    <div class="uc-num">05</div>
-                                    <div class="uc-icon emerald-bg"><i class="fa-solid fa-microchip"></i></div>
-                                </div>
-                                <h4 class="uc-title">Rekomendasi Prediktif AI untuk Pemeliharaan</h4>
-                                <p class="uc-desc">
-                                    Memanfaatkan analisis data log historis 30 hari untuk menganalisis pola fluktuasi tegangan daya listrik dan packet loss jaringan. Sistem memberikan saran teknis langsung ke teknisi sebelum perangkat mengalami kerusakan total.
-                                </p>
-                                <div class="uc-impact">
-                                    <span class="impact-tag"><i class="fa-solid fa-check"></i> Dari perbaikan reaktif beralih ke preventif</span>
-                                </div>
-                            </div>
-
-                            <div class="utility-card">
-                                <div class="uc-header">
-                                    <div class="uc-num">06</div>
-                                    <div class="uc-icon blue-bg"><i class="fa-solid fa-file-invoice"></i></div>
-                                </div>
-                                <h4 class="uc-title">Pelaporan Otomatis Siap Cetak (Audit Compliance)</h4>
-                                <p class="uc-desc">
-                                    Mengotomatisasi pembuatan laporan ketersediaan sistem, rekapitulasi gangguan, dan buku log pemeliharaan dalam format PDF dan Excel. Memudahkan pelaporan harian/mingguan ke pihak sekolah dan pimpinan instansi.
-                                </p>
-                                <div class="uc-impact">
-                                    <span class="impact-tag"><i class="fa-solid fa-check"></i> Efisiensi administrasi laporan 100% otomatis</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- ========================================== -->
-                    <!-- TAB 3: LATAR BELAKANG & ARSITEKTUR TEKNOLOGI -->
-                    <!-- ========================================== -->
-                    <div id="proj-sec-overview" class="proj-section-panel hidden">
-                        <div class="section-title-wrap mb-3">
-                            <h3 class="section-title"><i class="fa-solid fa-diagram-project text-yellow"></i> Latar Belakang & Arsitektur Teknis</h3>
-                            <p class="section-subtitle">Konsep perancangan, landasan teori, dan diagram integrasi perangkat keras dan lunak.</p>
-                        </div>
-
-                        <div class="dashboard-card mb-3">
-                            <div class="card-header">
-                                <h4>Latar Belakang Pembuatan Alat</h4>
-                            </div>
-                            <div class="card-body">
-                                <p class="text-secondary mb-3 leading-relaxed">
-                                    Di era Industri 4.0, stabilitas infrastruktur teknologi dan kelistrikan merupakan tulang punggung operasional setiap perusahaan. PT Teknolab Caraka Internasional mengelola puluhan node infrastruktur yang tersebar di berbagai wilayah, khususnya sentra operasional di wilayah <strong>Blitar, Jawa Timur</strong>.
-                                </p>
-                                <p class="text-secondary mb-3 leading-relaxed">
-                                    Permasalahan klasik yang dihadapi di lapangan meliputi keterlambatan mendeteksi putusnya kabel fiber optik, panas berlebih pada ruangan server yang berujung pada hang sistem, serta pencatatan inventaris perangkat elektro yang masih konvensional dan terpisah-pisah. Proyek <strong>T-AIMS</strong> dirancang sebagai solusi holistik untuk mengatasi seluruh permasalahan tersebut dalam satu layar kendali real-time.
-                                </p>
+                            <div class="sbb-right">
+                                <span class="sbb-badge badge-blue">6 Anggota</span>
                             </div>
                         </div>
 
-                        <!-- 3-Tier Architecture Diagram -->
-                        <div class="dashboard-card">
-                            <div class="card-header">
-                                <h4>Arsitektur Sistem Terintegrasi 3-Tier</h4>
-                            </div>
-                            <div class="card-body">
-                                <div class="architecture-flow-grid">
-                                    <div class="arch-tier-box">
-                                        <div class="at-head">
-                                            <i class="fa-solid fa-microchip text-yellow"></i>
-                                            <h5>Tier 1: Hardware & Sensor Edge</h5>
-                                        </div>
-                                        <ul class="at-list">
-                                            <li><i class="fa-solid fa-check text-green"></i> Mikrokontroler ESP32 / Industrial Gateway</li>
-                                            <li><i class="fa-solid fa-check text-green"></i> Sensor Suhu & Kelembaban (DHT22 / DS18B20)</li>
-                                            <li><i class="fa-solid fa-check text-green"></i> Sensor Arus & Daya (ACS712 / PZEM-004T)</li>
-                                            <li><i class="fa-solid fa-check text-green"></i> Modul Relai Kontrol Catu Daya</li>
-                                        </ul>
-                                    </div>
-
-                                    <div class="arch-arrow"><i class="fa-solid fa-arrow-right-long text-cyan"></i></div>
-
-                                    <div class="arch-tier-box">
-                                        <div class="at-head">
-                                            <i class="fa-solid fa-network-wired text-cyan"></i>
-                                            <h5>Tier 2: Komunikasi & Protokol</h5>
-                                        </div>
-                                        <ul class="at-list">
-                                            <li><i class="fa-solid fa-check text-green"></i> ICMP Ping Telemetry (Deteksi Latensi & Uptime)</li>
-                                            <li><i class="fa-solid fa-check text-green"></i> Protokol MQTT Broker (Kirim Telemetri Sensor)</li>
-                                            <li><i class="fa-solid fa-check text-green"></i> SNMP v2c/v3 MIB (Monitoring Status Switch/Router)</li>
-                                            <li><i class="fa-solid fa-check text-green"></i> HTTP REST API & WebSockets Transport</li>
-                                        </ul>
-                                    </div>
-
-                                    <div class="arch-arrow"><i class="fa-solid fa-arrow-right-long text-cyan"></i></div>
-
-                                    <div class="arch-tier-box">
-                                        <div class="at-head">
-                                            <i class="fa-solid fa-display text-crimson"></i>
-                                            <h5>Tier 3: Frontend & GIS Dashboard</h5>
-                                        </div>
-                                        <ul class="at-list">
-                                            <li><i class="fa-solid fa-check text-green"></i> Cyber Dark HUD Dashboard (High Visibility)</li>
-                                            <li><i class="fa-solid fa-check text-green"></i> Leaflet GIS Interactive Mapping Area Blitar</li>
-                                            <li><i class="fa-solid fa-check text-green"></i> Visualisasi Analitik Tren Data (Chart.js)</li>
-                                            <li><i class="fa-solid fa-check text-green"></i> Role-Based Access: Administrator & Mode Tamu</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- ========================================== -->
-                    <!-- TAB 4: STANDAR OPERASIONAL PROSEDUR (SOP) -->
-                    <!-- ========================================== -->
-                    <div id="proj-sec-sop" class="proj-section-panel hidden">
-                        <div class="section-title-wrap mb-3">
-                            <h3 class="section-title"><i class="fa-solid fa-clipboard-check text-green"></i> Standar Operasional Prosedur (SOP) Penggunaan</h3>
-                            <p class="section-subtitle">Panduan langkah demi langkah pengoperasian sistem monitoring untuk teknisi dan operator.</p>
-                        </div>
-
-                        <div class="sop-steps-grid">
-                            <div class="sop-card">
-                                <div class="sop-step-badge">LANGKAH 1</div>
-                                <h4 class="sop-step-title"><i class="fa-solid fa-id-card-clip text-cyan"></i> Autentikasi & Registrasi Aset</h4>
-                                <p class="sop-text">
-                                    Login sebagai Administrator ke portal T-AIMS. Daftarkan perangkat baru melalui menu <strong>Aset &bull; Tambah Perangkat</strong>, isi kode registrasi (AST-...), IP Address statis, MAC address, serta nama PIC penanggung jawab.
-                                </p>
-                            </div>
-
-                            <div class="sop-card">
-                                <div class="sop-step-badge">LANGKAH 2</div>
-                                <h4 class="sop-step-title"><i class="fa-solid fa-location-crosshairs text-crimson"></i> Penandaan Koordinat Geospasial Blitar</h4>
-                                <p class="sop-text">
-                                    Buka menu <strong>Lokasi</strong>, klik pada peta Blitar di lokasi fisik alat terpasang untuk mendapatkan titik koordinat Latitude dan Longitude secara presisi, lalu simpan koordinat ke dalam profil perangkat.
-                                </p>
-                            </div>
-
-                            <div class="sop-card">
-                                <div class="sop-step-badge">LANGKAH 3</div>
-                                <h4 class="sop-step-title"><i class="fa-solid fa-chart-line text-yellow"></i> Pemantauan Dashboard & Ambang Batas</h4>
-                                <p class="sop-text">
-                                    Pantau grafik tren status dan kartu KPI. Jika terjadi perubahan warna menjadi Kuning (Peringatan) atau Merah (Offline), buka menu <strong>Peringatan</strong> untuk melihat detail gangguan teknis yang terdeteksi.
-                                </p>
-                            </div>
-
-                            <div class="sop-card">
-                                <div class="sop-step-badge">LANGKAH 4</div>
-                                <h4 class="sop-step-title"><i class="fa-solid fa-wrench text-green"></i> Tindakan Teknisi & Ekspor Laporan</h4>
-                                <p class="sop-text">
-                                    Teknisi menuju ke titik lokasi koordinat atau melakukan remote restart melalui tombol kontrol status. Setelah penanganan selesai, generate laporan performa bulanan melalui menu <strong>Laporan &bull; Export PDF/Excel</strong>.
-                                </p>
-                            </div>
+                        <!-- 3-Column Grid Kartu Shift 2 -->
+                        <div class="shift-cards-grid" id="shift-2-cards-container">
+                            <!-- Dimuat dinamis oleh app.js -->
                         </div>
                     </div>
                 </div>
@@ -1664,69 +1360,66 @@
             <div class="modal-header">
                 <div class="modal-title-wrap">
                     <i class="fa-solid fa-user-pen text-cyan"></i>
-                    <h5 id="team-modal-title">Edit Profil Anggota Tim</h5>
+                    <h5 id="team-modal-title">Edit Data Tim PKL Teknolab</h5>
                 </div>
                 <button class="modal-close-btn" onclick="closeTeamModal()"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <form id="team-member-form" onsubmit="event.preventDefault(); handleSaveTeamMember();">
-                <input type="hidden" id="tm-id">
                 <div class="modal-body">
-                    <div class="form-row-2">
-                        <div class="form-group">
-                            <label>Nama Lengkap Anggota *</label>
-                            <input type="text" id="tm-name" placeholder="Misal: Damar Munajad" required>
-                        </div>
-                        <div class="form-group">
-                            <label>NISN / NIM / No. Induk *</label>
-                            <input type="text" id="tm-nisn" placeholder="0067829101" required>
-                        </div>
+                    <div class="form-group mb-3">
+                        <label><i class="fa-solid fa-users text-cyan"></i> Pilih Anggota Tim yang Akan Diedit:</label>
+                        <select id="tm-select-member" class="cyber-select" onchange="onSelectMemberToEdit(this.value)">
+                            <!-- Filled dynamically by app.js -->
+                        </select>
                     </div>
 
+                    <input type="hidden" id="tm-id">
+
                     <div class="form-row-2">
+                        <div class="form-group">
+                            <label>Nama Lengkap Siswa *</label>
+                            <input type="text" id="tm-name" placeholder="DAMAR MUNAJAD" required>
+                        </div>
                         <div class="form-group">
                             <label>Pembagian Shift *</label>
                             <select id="tm-shift" class="cyber-select" required>
-                                <option value="1">Shift 1 (07.00 – 16.00 WIB) &bull; Core & IoT</option>
-                                <option value="2">Shift 2 (16.00 – 01.00 WIB) &bull; Integration & UI</option>
+                                <option value="1">Shift 1 — Pagi (07.00 - 16.00 WIB)</option>
+                                <option value="2">Shift 2 — Sore / Malam (16.00 - 01.00 WIB)</option>
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label>Jabatan / Peran di Tim *</label>
-                            <input type="text" id="tm-role" placeholder="Misal: Project Coordinator & System Analyst" required>
-                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Jabatan / Peran Utama *</label>
+                        <input type="text" id="tm-role" placeholder="Project Coordinator & System Analyst" required>
                     </div>
 
                     <div class="form-row-2">
                         <div class="form-group">
-                            <label><i class="fa-solid fa-phone text-green"></i> Nomor HP / WhatsApp</label>
-                            <input type="text" id="tm-phone" placeholder="+62 812-3456-7801">
+                            <label><i class="fa-solid fa-phone text-green"></i> Nomor HP / WhatsApp *</label>
+                            <input type="text" id="tm-phone" placeholder="0851-5866-6985" required>
                         </div>
                         <div class="form-group">
-                            <label><i class="fa-solid fa-envelope text-cyan"></i> Email Resmi Teknolab</label>
-                            <input type="email" id="tm-email" placeholder="nama@teknolab.id">
+                            <label><i class="fa-solid fa-envelope text-cyan"></i> Alamat Email *</label>
+                            <input type="email" id="tm-email" placeholder="damarmunajad7@gmail.com" required>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label>Tanggung Jawab & Tugas Utama *</label>
-                        <textarea id="tm-responsibilities" rows="3" class="cyber-textarea" placeholder="Deskripsikan peran dan tanggung jawab anggota dalam proyek..." required></textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Output Wajib / Bukti Tugas (Pisahkan dengan koma)</label>
-                        <input type="text" id="tm-outputs" placeholder="System Architecture, Block Diagram, Data Flow, Daily Handover">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Keahlian Teknis (Pisahkan dengan koma)</label>
-                        <input type="text" id="tm-skills" placeholder="ESP32, Sensor Wiring, JavaScript, GIS">
+                        <label>Deskripsi Tugas & Tanggung Jawab *</label>
+                        <textarea id="tm-responsibilities" rows="3" class="cyber-textarea" placeholder="Deskripsikan pekerjaan..." required></textarea>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-cyber" onclick="closeTeamModal()">Batal</button>
-                    <button type="submit" class="btn btn-primary-cyber">
-                        <i class="fa-solid fa-floppy-disk"></i> Simpan Data Tim
+                <div class="modal-footer justify-between">
+                    <button type="button" class="btn btn-outline-cyber btn-sm" onclick="resetTeamDataPrompt()">
+                        <i class="fa-solid fa-rotate-left"></i> Reset Default (11 Anggota)
                     </button>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-outline-cyber" onclick="closeTeamModal()">Batal</button>
+                        <button type="submit" class="btn btn-primary-blue">
+                            <i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>
