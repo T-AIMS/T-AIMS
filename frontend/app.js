@@ -504,26 +504,34 @@ function switchPage(pageId) {
         }
     });
 
-    // Handle aksi spesifik setiap halaman
+    // Handle aksi spesifik setiap halaman & kontrol scroll
+    const mainEl = document.querySelector('.main-content');
+    const contentEl = document.querySelector('.content-container');
     if (pageId === 'page-dashboard') {
+        if (mainEl) mainEl.style.overflow = 'hidden';
+        if (contentEl) contentEl.style.overflow = 'hidden';
         setTimeout(() => {
             initCharts();
             if (APP_STATE.homeMap) APP_STATE.homeMap.invalidateSize();
         }, 80);
-    } else if (pageId === 'page-location') {
-        setTimeout(() => {
-            if (APP_STATE.fullMap) {
-                APP_STATE.fullMap.invalidateSize();
-            } else {
-                initBlitarMaps();
-            }
-        }, 120);
-    } else if (pageId === 'page-assets') {
-        renderAssetsTable();
-    } else if (pageId === 'page-devices') {
-        renderFullDevicesTable();
-    } else if (pageId === 'page-project-info') {
-        renderTeamCards();
+    } else {
+        if (mainEl) mainEl.style.overflow = 'auto';
+        if (contentEl) contentEl.style.overflow = 'auto';
+        if (pageId === 'page-location') {
+            setTimeout(() => {
+                if (APP_STATE.fullMap) {
+                    APP_STATE.fullMap.invalidateSize();
+                } else {
+                    initBlitarMaps();
+                }
+            }, 120);
+        } else if (pageId === 'page-assets') {
+            renderAssetsTable();
+        } else if (pageId === 'page-devices') {
+            renderFullDevicesTable();
+        } else if (pageId === 'page-project-info') {
+            renderTeamCards();
+        }
     }
 
     // Tutup mobile sidebar jika terbuka
@@ -531,7 +539,6 @@ function switchPage(pageId) {
     if (sidebar) sidebar.classList.remove('mobile-open');
 
     // Scroll ke atas halaman
-    const mainEl = document.querySelector('.main-content');
     if (mainEl) mainEl.scrollTop = 0;
 }
 
@@ -662,16 +669,23 @@ function toggleUserMenu() {
 }
 
 // =============================================================================
-// JAM DIGITAL WIB REALTIME
+// JAM DIGITAL WIB REALTIME (Format Referensi: 19:56:45 | Sabtu, 17 Oktober 2026)
 // =============================================================================
 function initClock() {
     function tick() {
         const now = new Date();
         const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+        const months = [
+            'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+            'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+        ];
+
+        const h = String(now.getHours()).padStart(2, '0');
+        const m = String(now.getMinutes()).padStart(2, '0');
+        const s = String(now.getSeconds()).padStart(2, '0');
+        const tStr = `${h}:${m}:${s}`;
 
         const dStr = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
-        const tStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')} WIB`;
 
         const dEl = document.getElementById('live-date');
         const tEl = document.getElementById('live-time');

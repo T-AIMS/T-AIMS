@@ -392,7 +392,9 @@ body {
    ========================================================================== */
 .app-layout {
     display: flex;
-    min-height: 100vh;
+    height: 100vh;
+    max-height: 100vh;
+    overflow: hidden;
     background-color: var(--bg-void);
 }
 
@@ -622,20 +624,58 @@ body {
     gap: 1.1rem;
 }
 
-/* Jam Realtime */
-.live-clock {
-    display: flex;
+/* Jam Realtime Pill Badge (Persis Sesuai Gambar Referensi: 🕒 19:56:45 | 🗓️ Sabtu, 17 Oktober 2026) */
+.live-clock-pill {
+    display: inline-flex;
     align-items: center;
     gap: 8px;
-    font-size: 0.75rem;
+    background: #0f1e42;
+    border: 1px solid rgba(59, 130, 246, 0.35);
+    border-radius: 9999px;
+    padding: 5px 15px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
+    user-select: none;
 }
-.clock-display {
-    display: flex;
-    flex-direction: column;
-    line-height: 1.15;
+
+.live-clock-pill .clock-emoji {
+    font-size: 0.95rem;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
 }
-.clock-display span { color: var(--text-muted); font-size: 0.68rem; }
-.clock-display .time-bold { font-family: 'JetBrains Mono', monospace; font-weight: 700; color: var(--text-pure); font-size: 0.78rem; }
+
+.live-clock-pill .clock-time-val {
+    font-family: 'JetBrains Mono', 'Consolas', monospace;
+    font-weight: 800;
+    color: #F59E0B;
+    font-size: 0.92rem;
+    letter-spacing: 0.5px;
+    line-height: 1;
+    text-shadow: 0 0 10px rgba(245, 158, 11, 0.25);
+}
+
+.live-clock-pill .clock-divider {
+    color: rgba(255, 255, 255, 0.28);
+    font-weight: 300;
+    font-size: 0.88rem;
+    margin: 0 3px;
+    line-height: 1;
+}
+
+.live-clock-pill .calendar-emoji {
+    font-size: 0.95rem;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+}
+
+.live-clock-pill .clock-date-val {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #FFFFFF;
+    line-height: 1;
+    white-space: nowrap;
+}
 
 /* Notifikasi Bell */
 .notification-wrapper { position: relative; }
@@ -2434,139 +2474,165 @@ body {
    COMPACT HUD CYBER DARK DASHBOARD (FIT IN VIEWPORT WITHOUT SCROLLING)
    ========================================================================== */
 @media (min-height: 700px) {
-  #page-dashboard.active {
+  #page-dashboard.page-view.active {
     display: flex !important;
     flex-direction: column;
     justify-content: space-between;
+    height: 100% !important;
+    overflow: hidden !important;
   }
 
   .content-container {
-    padding: 0.8rem 1.4rem 1.2rem;
+    padding: 6px 14px 6px 14px !important;
+    overflow: hidden !important;
   }
 
   .banner-hero {
-    padding: 12px 18px;
-    margin-bottom: 0.75rem;
+    padding: 8px 14px !important;
+    margin-bottom: 6px !important;
   }
 
   .banner-title {
-    font-size: 1.35rem;
-    margin-bottom: 2px;
+    font-size: 1.2rem !important;
+    margin-bottom: 2px !important;
   }
 
   .banner-desc {
-    font-size: 0.8rem;
-    margin-bottom: 8px;
+    font-size: 0.76rem !important;
+    margin-bottom: 4px !important;
+  }
+
+  .slogan-box {
+    padding: 6px 12px !important;
   }
 
   .slogan-box .slogan-line {
-    font-size: 0.75rem;
-    line-height: 1.2;
+    font-size: 0.68rem !important;
+    line-height: 1.2 !important;
   }
 
   .kpi-grid {
     grid-template-columns: repeat(6, 1fr) !important;
-    gap: 10px;
-    margin-bottom: 0.75rem;
+    gap: 8px !important;
+    margin-bottom: 6px !important;
   }
 
   .kpi-card {
-    padding: 10px 14px;
+    padding: 6px 10px !important;
+    min-height: unset !important;
   }
 
   .kpi-value {
-    font-size: 1.4rem;
+    font-size: 1.25rem !important;
   }
 
   .kpi-icon-box {
-    width: 38px;
-    height: 38px;
-    font-size: 16px;
+    width: 32px !important;
+    height: 32px !important;
+    font-size: 14px !important;
   }
 
   .charts-row {
-    gap: 12px;
-    margin-bottom: 0.75rem;
+    gap: 8px !important;
+    margin-bottom: 6px !important;
+  }
+
+  .charts-row .dashboard-card .card-header {
+    padding: 5px 10px !important;
   }
 
   .chart-body {
-    height: 185px !important;
-    padding: 8px 12px;
+    height: 155px !important;
+    padding: 4px 8px !important;
   }
 
   .donut-body {
-    height: 185px !important;
-    padding: 8px 12px;
+    height: 155px !important;
+    padding: 4px 10px !important;
+    gap: 12px !important;
   }
 
   .donut-visual-wrap {
-    width: 140px;
-    height: 140px;
+    width: 120px !important;
+    height: 120px !important;
   }
 
   .donut-center-label strong {
-    font-size: 1.5rem;
+    font-size: 1.3rem !important;
   }
 
   .bottom-three-grid {
     display: grid !important;
     grid-template-columns: 1.4fr 1.2fr 1fr !important;
-    gap: 12px;
-    margin-bottom: 0.75rem;
-    flex: 1 1 auto;
-    min-height: 240px;
+    gap: 8px !important;
+    margin-bottom: 6px !important;
+    flex: 1 1 0 !important;
+    min-height: 0 !important;
   }
 
   .bottom-three-grid .dashboard-card {
     display: flex !important;
     flex-direction: column !important;
     height: 100% !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .bottom-three-grid .card-header {
+    padding: 5px 10px !important;
+    flex-shrink: 0 !important;
   }
 
   .status-table-card .card-body {
-    flex: 1 1 auto;
-    height: 250px !important;
-    min-height: 235px;
-    max-height: 290px;
-    overflow-y: auto;
+    flex: 1 1 0 !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow-y: auto !important;
   }
 
   .status-table-card .table-responsive {
-    height: 100%;
-    overflow-y: auto;
+    height: 100% !important;
+    overflow-y: auto !important;
   }
 
   .map-card .card-body {
-    flex: 1 1 auto;
-    height: 250px !important;
-    min-height: 235px;
-    max-height: 290px;
+    flex: 1 1 0 !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    max-height: none !important;
     display: flex !important;
     flex-direction: column !important;
     justify-content: space-between !important;
-    padding: 8px 10px !important;
+    padding: 5px 8px !important;
   }
 
   .map-interactive-container {
-    flex: 1 1 auto !important;
+    flex: 1 1 0 !important;
     position: relative !important;
-    min-height: 195px !important;
+    min-height: 0 !important;
     display: flex !important;
   }
 
   .home-map-leaflet {
     width: 100% !important;
     height: 100% !important;
-    min-height: 195px !important;
+    min-height: 0 !important;
     flex: 1 !important;
   }
 
+  .map-legend-bar {
+    padding-top: 3px !important;
+    font-size: 0.68rem !important;
+    flex-shrink: 0 !important;
+  }
+
   .alerts-card .card-body {
-    flex: 1 1 auto;
-    height: 250px !important;
-    min-height: 235px;
-    max-height: 290px;
-    overflow-y: auto;
+    flex: 1 1 0 !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow-y: auto !important;
   }
 
   .alerts-timeline-wrap {
@@ -2576,27 +2642,30 @@ body {
   }
 
   .maintenance-section {
-    padding: 8px 16px;
+    padding: 6px 14px !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    flex-shrink: 0 !important;
   }
 
   .maint-header {
-    margin-bottom: 6px;
+    margin-bottom: 4px !important;
   }
 
   .maint-cards-grid {
-    gap: 10px;
+    gap: 8px !important;
   }
 
   .m-card {
-    padding: 8px 14px;
+    padding: 5px 10px !important;
   }
 
   .m-val {
-    font-size: 1.25rem;
+    font-size: 1.15rem !important;
   }
 
   .m-lbl {
-    font-size: 0.75rem;
+    font-size: 0.68rem !important;
   }
 }
 
@@ -2642,80 +2711,104 @@ body {
    AND FULL-BOTTOM VIEWPORT EXTENSION (NO EMPTY BLACK VOID AT BOTTOM)
    ========================================================================== */
 .main-content {
-    min-height: 100vh;
+    height: 100vh;
+    max-height: 100vh;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
 }
 
 .content-container {
-    flex: 1;
+    flex: 1 1 0;
+    min-height: 0;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    padding: 0.75rem 1.4rem 0.6rem 1.4rem !important;
+    padding: 6px 14px 6px 14px !important;
+    overflow: hidden;
 }
 
 #page-dashboard.page-view.active {
-    flex: 1;
+    flex: 1 1 0;
+    min-height: 0;
+    height: 100%;
     display: flex !important;
     flex-direction: column;
-    justify-content: flex-start;
+    justify-content: space-between;
+    overflow: hidden !important;
 }
 
-/* TIGA KARTU BAWAH DIPERBESAR KE BAWAH MENUTUP RUANG KOSONG (STATUS, PETA, RIWAYAT GANGGUAN) */
+/* TIGA KARTU BAWAH DIPERBESAR SECARA DINAMIS MENGISI RUANG TANPA MEMICU SCROLLBAR */
 .bottom-three-grid {
     display: grid !important;
     grid-template-columns: 1.4fr 1.2fr 1fr !important;
-    gap: 12px !important;
-    flex: 1 1 auto !important;
-    min-height: 250px !important;
-    margin-bottom: 0.75rem !important;
+    gap: 8px !important;
+    flex: 1 1 0 !important;
+    min-height: 0 !important;
+    margin-bottom: 6px !important;
 }
 
 .bottom-three-grid .dashboard-card {
     display: flex !important;
     flex-direction: column !important;
     height: 100% !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+}
+
+.bottom-three-grid .card-header {
+    padding: 5px 10px !important;
+    flex-shrink: 0 !important;
 }
 
 .status-table-card .card-body {
-    flex: 1 1 auto !important;
-    height: 250px !important;
-    min-height: 235px !important;
-    max-height: 290px !important;
+    flex: 1 1 0 !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow-y: auto !important;
+}
+
+.status-table-card .table-responsive {
+    height: 100% !important;
     overflow-y: auto !important;
 }
 
 .map-card .card-body {
-    flex: 1 1 auto !important;
-    height: 250px !important;
-    min-height: 235px !important;
-    max-height: 290px !important;
+    flex: 1 1 0 !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    max-height: none !important;
     display: flex !important;
     flex-direction: column !important;
     justify-content: space-between !important;
-    padding: 8px 10px !important;
+    padding: 5px 8px !important;
 }
 
 .map-interactive-container {
-    flex: 1 1 auto !important;
+    flex: 1 1 0 !important;
     position: relative !important;
-    min-height: 195px !important;
+    min-height: 0 !important;
     display: flex !important;
 }
 
 .home-map-leaflet {
     width: 100% !important;
     height: 100% !important;
-    min-height: 195px !important;
+    min-height: 0 !important;
     flex: 1 !important;
 }
 
+.map-legend-bar {
+    padding-top: 3px !important;
+    font-size: 0.68rem !important;
+    flex-shrink: 0 !important;
+}
+
 .alerts-card .card-body {
-    flex: 1 1 auto !important;
-    height: 250px !important;
-    min-height: 235px !important;
-    max-height: 290px !important;
+    flex: 1 1 0 !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    max-height: none !important;
     overflow-y: auto !important;
 }
 
@@ -2729,7 +2822,7 @@ body {
     margin-top: 0 !important;
     margin-bottom: 0 !important;
     flex-shrink: 0 !important;
-    padding: 10px 18px !important;
+    padding: 6px 14px !important;
     background: rgba(13, 22, 41, 0.85) !important;
     border: 1px solid rgba(225, 29, 72, 0.25) !important;
     box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4) !important;
