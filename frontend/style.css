@@ -398,14 +398,14 @@ body {
     background-color: var(--bg-void);
 }
 
-/* SIDEBAR KIRI (Dilebarkan ke Kanan sampai Garis Biru) */
+/* SIDEBAR KIRI (Gradasi Ambient Merah Teknolab Sesuai Mockup Referensi) */
 .sidebar {
     width: 275px;
-    background-color: var(--bg-sidebar);
-    border-right: 1px solid var(--border-dark);
+    background: radial-gradient(circle at 45% 95px, rgba(225, 29, 72, 0.40) 0%, rgba(159, 18, 57, 0.20) 36%, rgba(7, 11, 20, 0.98) 72%), #070B14;
+    border-right: 1px solid rgba(225, 29, 72, 0.2);
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-start;
     position: sticky;
     top: 0;
     height: 100vh;
@@ -413,53 +413,52 @@ body {
     z-index: 100;
 }
 
-/* Logo Teknolab di Bagian Atas Sidebar (Diperbesar Sesuai Permintaan) */
+/* Logo Teknolab di Bagian Atas Sidebar (Besar & Jelas Sesuai Referensi Gambar) */
 .sidebar-header {
-    padding: 24px 22px 18px 22px;
+    padding: 24px 20px 16px 20px;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 .brand-logo-img {
-    max-height: 105px !important;
+    height: 110px !important;
+    max-height: 110px !important;
     width: auto;
     object-fit: contain;
-    filter: drop-shadow(0 0 16px rgba(225, 29, 72, 0.45));
+    filter: drop-shadow(0 0 18px rgba(225, 29, 72, 0.45));
 }
 
 /* Navigasi Utama */
 .sidebar-nav {
-    flex: 1;
     display: flex;
     flex-direction: column;
-    padding: 10px 14px 14px 14px;
+    padding: 6px 14px 14px 14px;
 }
 
 .nav-menu {
     list-style: none;
     display: flex;
     flex-direction: column;
-    flex: 1; /* Agar item terdistribusi dengan proporsional */
 }
 
 .nav-item {
-    margin-bottom: 8px;
+    margin-bottom: 7px;
 }
 
-/* Item Pengaturan Dibuat di Bagian Bawah Menu (Sesuai Permintaan & Gambar) */
+/* Item Pengaturan Pepetin Langsung di Bawah Pengguna (Persis Sesuai Mockup Gambar) */
 .nav-item.nav-item-settings {
-    margin-top: auto; /* Mendorong tombol Pengaturan ke bawah persis di atas footer */
-    margin-bottom: 8px;
+    margin-top: 0 !important;
+    margin-bottom: 7px;
 }
 
 .nav-item .nav-link {
     display: flex;
     align-items: center;
     gap: 16px;
-    padding: 11px 18px;
+    padding: 10px 16px;
     color: var(--text-secondary);
     text-decoration: none;
-    font-size: 0.96rem;
+    font-size: 0.94rem;
     font-weight: 600;
     border-radius: var(--radius-md);
     transition: var(--transition);
@@ -469,7 +468,7 @@ body {
     width: 24px;
     text-align: center;
     font-size: 1.1rem;
-    color: var(--text-muted);
+    color: var(--text-secondary);
     transition: var(--transition);
 }
 
@@ -478,15 +477,16 @@ body {
     color: var(--text-pure);
 }
 .nav-item:hover .nav-link i {
-    color: var(--cyan-neon);
+    color: var(--text-pure);
 }
 
-/* Menu Aktif (Badge Merah Rounded Sesuai Referensi Gambar) */
+/* Menu Aktif (Badge Merah Rounded Gradasi & Glow Sesuai Referensi Gambar) */
 .nav-item.active .nav-link {
-    background: linear-gradient(90deg, #A81B34 0%, #7A1224 100%);
+    background: linear-gradient(90deg, #B91C1C 0%, #7F1D1D 100%);
     color: #FFFFFF;
     font-weight: 700;
-    box-shadow: 0 4px 15px rgba(225, 29, 72, 0.35);
+    box-shadow: 0 4px 16px rgba(225, 29, 72, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(244, 63, 94, 0.3);
 }
 .nav-item.active .nav-link i {
     color: #FFFFFF;
@@ -494,30 +494,32 @@ body {
 
 .nav-badge {
     margin-left: auto;
-    background: var(--tekno-red);
+    background: #E11D48;
     color: #FFFFFF;
     font-size: 0.72rem;
     font-weight: 700;
-    padding: 3px 8px;
+    padding: 2px 7px;
     border-radius: var(--radius-full);
+    box-shadow: 0 0 10px rgba(225, 29, 72, 0.5);
 }
 
 /* Status Sistem di Bagian Bawah Sidebar (Persis Sesuai Mockup) */
 .sidebar-footer {
-    padding: 14px 16px 20px 16px;
-    border-top: 1px solid var(--border-dark);
+    margin-top: auto;
+    padding: 16px 18px 20px 18px;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
 }
 
 .system-status-pill {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     font-size: 0.8rem;
 }
 .status-texts {
     display: flex;
     flex-direction: column;
-    line-height: 1.2;
+    line-height: 1.25;
 }
 .status-label {
     font-size: 0.65rem;

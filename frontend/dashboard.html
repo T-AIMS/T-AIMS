@@ -152,16 +152,21 @@
                 <img src="teknolab_logo_dark.png" alt="Teknolab Caraka Internasional Logo" class="brand-logo-img">
             </div>
 
-            <!-- Menu Navigasi Utama (Ukuran & Spasi Proporsional Sesuai Mockup) -->
+            <!-- Menu Navigasi Utama (Persis Sesuai Mockup Gambar Referensi) -->
             <nav class="sidebar-nav">
                 <ul class="nav-menu">
                     <li class="nav-item active" data-page="page-dashboard">
                         <a href="javascript:void(0)" class="nav-link" onclick="switchPage('page-dashboard')">
-                            <i class="fa-solid fa-house-chimney"></i>
+                            <i class="fa-solid fa-house"></i>
                             <span>Dashboard</span>
                         </a>
                     </li>
-                    
+                    <li class="nav-item" data-page="page-assets">
+                        <a href="javascript:void(0)" class="nav-link" onclick="switchPage('page-assets')">
+                            <i class="fa-solid fa-cube"></i>
+                            <span>Aset</span>
+                        </a>
+                    </li>
                     <li class="nav-item" data-page="page-devices">
                         <a href="javascript:void(0)" class="nav-link" onclick="switchPage('page-devices')">
                             <i class="fa-solid fa-server"></i>
@@ -170,7 +175,7 @@
                     </li>
                     <li class="nav-item" data-page="page-monitoring">
                         <a href="javascript:void(0)" class="nav-link" onclick="switchPage('page-monitoring')">
-                            <i class="fa-solid fa-network-wired"></i>
+                            <i class="fa-solid fa-share-nodes"></i>
                             <span>Jaringan</span>
                         </a>
                     </li>
@@ -189,14 +194,8 @@
                     </li>
                     <li class="nav-item" data-page="page-reports">
                         <a href="javascript:void(0)" class="nav-link" onclick="switchPage('page-reports')">
-                            <i class="fa-solid fa-chart-column"></i>
+                            <i class="fa-solid fa-chart-simple"></i>
                             <span>Laporan</span>
-                        </a>
-                    </li>
-                    <li class="nav-item" data-page="page-project-info">
-                        <a href="javascript:void(0)" class="nav-link" onclick="switchPage('page-project-info')">
-                            <i class="fa-solid fa-circle-info"></i>
-                            <span>Informasi Projek</span>
                         </a>
                     </li>
                     <li class="nav-item" data-page="page-users">
@@ -205,7 +204,7 @@
                             <span>Pengguna</span>
                         </a>
                     </li>
-                    <!-- Pengaturan terletak di bawah sesuai referensi gambar -->
+                    <!-- Pengaturan pepet langsung di bawah Pengguna sesuai gambar referensi -->
                     <li class="nav-item nav-item-settings" data-page="page-settings">
                         <a href="javascript:void(0)" class="nav-link" onclick="switchPage('page-settings')">
                             <i class="fa-solid fa-gear"></i>
@@ -674,7 +673,76 @@
                 </div> <!-- END PAGE DASHBOARD -->
 
                 <!-- ============================================================= -->
-                <!-- HALAMAN 2: MANAJEMEN INVENTARIS ASET (KHUSUS MENU ASET)       -->
+                <!-- HALAMAN: MANAJEMEN INVENTARIS ASET (MENU ASET)                -->
+                <!-- ============================================================= -->
+                <div id="page-assets" class="page-view">
+                    <div class="page-title-row">
+                        <div>
+                            <h2 class="section-heading"><i class="fa-solid fa-cube text-cyan"></i> Manajemen Inventaris Aset IT & Elektro</h2>
+                            <p class="section-subheading">Inventarisasi lengkap seluruh aset perangkat, nilai perolehan, nomor seri/MAC, masa garansi, dan PIC penanggung jawab.</p>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <button class="btn btn-outline-cyber" onclick="exportAssetsList()">
+                                <i class="fa-solid fa-file-export"></i> Ekspor Data Aset
+                            </button>
+                            <button class="btn btn-primary-cyber admin-only" onclick="openAddAssetModal()">
+                                <i class="fa-solid fa-plus"></i> Tambah Aset Baru
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Search & Filter Bar Aset -->
+                    <div class="filter-controls-card">
+                        <div class="filter-search-input">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="assets-search-input" placeholder="Cari kode aset, nama perangkat, PIC, wilayah..." oninput="filterAssetsTable()">
+                        </div>
+                        <div class="filter-select-group">
+                            <select id="assets-cat-select" onchange="filterAssetsTable()">
+                                <option value="all">Semua Kategori</option>
+                                <option value="Server">Server</option>
+                                <option value="Network Device">Network Device</option>
+                                <option value="CCTV & Security">CCTV & Security</option>
+                                <option value="IoT Sensor">IoT Sensor</option>
+                                <option value="Workstation">Workstation</option>
+                            </select>
+                            <select id="assets-cond-select" onchange="filterAssetsTable()">
+                                <option value="all">Semua Kondisi</option>
+                                <option value="Baik">🟢 Baik / Normal</option>
+                                <option value="Perlu Servis">🟡 Perlu Servis</option>
+                                <option value="Rusak">🔴 Rusak</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Tabel Inventaris Aset -->
+                    <div class="dashboard-card mt-3">
+                        <div class="table-responsive">
+                            <table class="mockup-table full-table">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Kode Aset</th>
+                                        <th>Nama Aset</th>
+                                        <th>Kategori</th>
+                                        <th>Lokasi</th>
+                                        <th>Nilai Aset</th>
+                                        <th>Kondisi</th>
+                                        <th>Masa Garansi</th>
+                                        <th>PIC</th>
+                                        <th class="text-right">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="assets-tbody">
+                                    <!-- Rendered dynamically via renderAssetsTable() -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============================================================= -->
+                <!-- HALAMAN 2: MANAJEMEN MONITORING PERANGKAT (MENU PERANGKAT)    -->
                 <!-- ============================================================= -->
                 <div id="page-devices" class="page-view">
                     <div class="page-title-row">
