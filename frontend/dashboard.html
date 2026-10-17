@@ -192,6 +192,12 @@
                             <span>Laporan</span>
                         </a>
                     </li>
+                    <li class="nav-item" data-page="page-project-info">
+                        <a href="javascript:void(0)" class="nav-link" onclick="switchPage('page-project-info')">
+                            <i class="fa-solid fa-circle-info"></i>
+                            <span>Informasi Proyek</span>
+                        </a>
+                    </li>
                     <li class="nav-item" data-page="page-users">
                         <a href="javascript:void(0)" class="nav-link" onclick="switchPage('page-users')">
                             <i class="fa-solid fa-users"></i>
@@ -1045,17 +1051,65 @@
                         <div class="section-title-wrap mb-3">
                             <div class="flex justify-between items-center flex-wrap gap-2">
                                 <div>
-                                    <h3 class="section-title"><i class="fa-solid fa-user-group text-cyan"></i> Susunan Tim Pengembang Proyek</h3>
-                                    <p class="section-subtitle">Daftar siswa dan penanggung jawab teknis dalam pelaksanaan proyek T-AIMS.</p>
+                                    <h3 class="section-title"><i class="fa-solid fa-user-group text-cyan"></i> Susunan 11 Anggota Tim Pengembang Proyek PKL</h3>
+                                    <p class="section-subtitle">Struktur resmi pembagian shift, peran spesifik, kontak PIC, dan output deliverable terverifikasi.</p>
                                 </div>
                                 <div class="btn-group">
                                     <button class="btn btn-primary-cyber btn-sm admin-only" onclick="openAddTeamMemberModal()">
                                         <i class="fa-solid fa-user-plus"></i> Tambah Anggota Tim
                                     </button>
                                     <button class="btn btn-outline-cyber btn-sm" onclick="resetTeamDataPrompt()">
-                                        <i class="fa-solid fa-rotate-left"></i> Reset Tim Default
+                                        <i class="fa-solid fa-rotate-left"></i> Reset Tim Default (11 Siswa)
                                     </button>
                                 </div>
+                            </div>
+                        </div>
+
+                        <!-- Banner Ikhtisar Pembagian Shift 1 & Shift 2 (Sesuai Dokumen Resmi PKL Teknolab) -->
+                        <div class="shift-overview-container mb-3">
+                            <div class="shift-summary-card s1-box">
+                                <div class="ssc-header">
+                                    <div class="ssc-badge s1"><i class="fa-solid fa-sun"></i> SHIFT 1 &bull; 07.00 – 16.00 WIB</div>
+                                    <span class="ssc-count">5 Anggota</span>
+                                </div>
+                                <h4 class="ssc-focus-title">System Core, Backend, Database & IoT Integration</h4>
+                                <p class="ssc-desc">Fokus pada penyusunan requirement, arsitektur data flow, pembuatan REST API backend, perancangan skema database PostgreSQL, mekanisme heartbeat perangkat IoT ESP32/Raspberry Pi, dan monitoring engine ketersediaan jaringan.</p>
+                                <div class="ssc-lead">
+                                    <i class="fa-solid fa-user-tie text-cyan"></i> <span>Koordinator: <strong>Damar Munajad</strong> (System Analyst)</span>
+                                </div>
+                            </div>
+
+                            <div class="shift-summary-card s2-box">
+                                <div class="ssc-header">
+                                    <div class="ssc-badge s2"><i class="fa-solid fa-moon"></i> SHIFT 2 &bull; 16.00 – 01.00 WIB</div>
+                                    <span class="ssc-count">6 Anggota</span>
+                                </div>
+                                <h4 class="ssc-focus-title">Integration, Dashboard, Visualization, Automation & QA</h4>
+                                <p class="ssc-desc">Fokus pada integrasi menyeluruh antar modul, pengembangan antarmuka dashboard Cyber HUD, visualisasi peta GIS Blitar & grafik analitik, otomatisasi notifikasi Telegram/Email/n8n, deployment server DevOps, dan audit QA.</p>
+                                <div class="ssc-lead">
+                                    <i class="fa-solid fa-crown text-crimson"></i> <span>Shift Lead: <strong>Dzakwan</strong> (System Integration)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bar Filter Interaktif Shift (Semua / Shift 1 / Shift 2) -->
+                        <div class="team-filter-bar mb-3">
+                            <div class="tf-left">
+                                <span class="tf-label"><i class="fa-solid fa-filter text-cyan"></i> Filter Berdasarkan Shift:</span>
+                                <div class="tf-buttons">
+                                    <button type="button" class="team-filter-btn active" id="team-filter-all" onclick="filterTeamByShift('all')">
+                                        <i class="fa-solid fa-users"></i> Semua Anggota (11)
+                                    </button>
+                                    <button type="button" class="team-filter-btn s1" id="team-filter-1" onclick="filterTeamByShift('1')">
+                                        <i class="fa-solid fa-sun text-cyan"></i> Shift 1: Core & IoT (5)
+                                    </button>
+                                    <button type="button" class="team-filter-btn s2" id="team-filter-2" onclick="filterTeamByShift('2')">
+                                        <i class="fa-solid fa-moon text-crimson"></i> Shift 2: Integration & UI (6)
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="tf-right">
+                                <span class="tf-hint"><i class="fa-regular fa-lightbulb text-yellow"></i> Klik tombol WhatsApp / Email / Salin pada kartu untuk menghubungi anggota</span>
                             </div>
                         </div>
 
@@ -1620,28 +1674,47 @@
                     <div class="form-row-2">
                         <div class="form-group">
                             <label>Nama Lengkap Anggota *</label>
-                            <input type="text" id="tm-name" placeholder="Misal: Ahmad Rizki Pratama" required>
+                            <input type="text" id="tm-name" placeholder="Misal: Damar Munajad" required>
                         </div>
                         <div class="form-group">
                             <label>NISN / NIM / No. Induk *</label>
-                            <input type="text" id="tm-nisn" placeholder="0067829104" required>
+                            <input type="text" id="tm-nisn" placeholder="0067829101" required>
                         </div>
                     </div>
 
                     <div class="form-row-2">
                         <div class="form-group">
-                            <label>Jabatan / Peran di Tim *</label>
-                            <input type="text" id="tm-role" placeholder="Misal: Hardware & IoT Engineer" required>
+                            <label>Pembagian Shift *</label>
+                            <select id="tm-shift" class="cyber-select" required>
+                                <option value="1">Shift 1 (07.00 – 16.00 WIB) &bull; Core & IoT</option>
+                                <option value="2">Shift 2 (16.00 – 01.00 WIB) &bull; Integration & UI</option>
+                            </select>
                         </div>
                         <div class="form-group">
-                            <label>Email / Kontak PIC</label>
-                            <input type="email" id="tm-contact" placeholder="nama@teknolab.id">
+                            <label>Jabatan / Peran di Tim *</label>
+                            <input type="text" id="tm-role" placeholder="Misal: Project Coordinator & System Analyst" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row-2">
+                        <div class="form-group">
+                            <label><i class="fa-solid fa-phone text-green"></i> Nomor HP / WhatsApp</label>
+                            <input type="text" id="tm-phone" placeholder="+62 812-3456-7801">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fa-solid fa-envelope text-cyan"></i> Email Resmi Teknolab</label>
+                            <input type="email" id="tm-email" placeholder="nama@teknolab.id">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label>Tanggung Jawab & Tugas Utama *</label>
                         <textarea id="tm-responsibilities" rows="3" class="cyber-textarea" placeholder="Deskripsikan peran dan tanggung jawab anggota dalam proyek..." required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Output Wajib / Bukti Tugas (Pisahkan dengan koma)</label>
+                        <input type="text" id="tm-outputs" placeholder="System Architecture, Block Diagram, Data Flow, Daily Handover">
                     </div>
 
                     <div class="form-group">

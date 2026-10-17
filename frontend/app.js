@@ -4,49 +4,179 @@
  */
 
 const DEFAULT_TEAM_MEMBERS = [
+    // =========================================================================
+    // SHIFT 1: 07.00 WIB s.d. 16.00 WIB
+    // Fokus: System Core, Backend, Database, Hardware Integration, Network Monitoring
+    // =========================================================================
     {
         id: 'TM-01',
-        name: 'Ahmad Rizki Pratama',
-        nisn: '0067829104',
-        role: 'Project Leader & System Integrator',
-        avatarIcon: 'fa-user-tie',
-        avatarColor: '#00E5FF',
-        responsibilities: 'Koordinator utama proyek T-AIMS, analisis kebutuhan sistem monitoring industri, integrasi perangkat keras sensor dengan dasbor telemetri, serta pengujian performa sistem.',
-        skills: ['Project Management', 'System Architecture', 'Telemetry', 'IoT Integration'],
-        contact: 'ahmad.rizki@teknolab.id'
+        name: 'Damar Munajad',
+        nisn: '0067829101',
+        role: 'Project Coordinator & System Analyst',
+        shift: '1',
+        shiftLabel: 'Shift 1 (07.00 – 16.00 WIB)',
+        avatarIcon: 'fa-diagram-project',
+        avatarColor: '#00F0FF',
+        phone: '+62 812-3456-7801',
+        email: 'damar.munajad@teknolab.id',
+        responsibilities: 'Menyusun requirement system & scope pekerjaan, merancang System Architecture, Block Diagram, dan Data Flow, membagi task pada Project Board dan memonitor progress Shift 1, menjaga konsistensi integrasi modul, serta membuat integration checklist dan daily handover.',
+        skills: ['System Architecture', 'Block Diagram', 'Data Flow', 'Requirement Doc', 'Daily Handover'],
+        outputs: ['Requirement Document', 'System Architecture', 'Block Diagram', 'Data Flow', 'Daily Handover']
     },
     {
         id: 'TM-02',
-        name: 'Dimas Wahyu Saputra',
-        nisn: '0067829105',
-        role: 'Hardware & IoT Engineer',
-        avatarIcon: 'fa-microchip',
-        avatarColor: '#10B981',
-        responsibilities: 'Perancangan skematik rangkaian elektro, perakitan mikrokontroler ESP32, wiring sensor arus (ACS712), sensor suhu (DHT22), kalibrasi tegangan listrik, dan pengemasan casing.',
-        skills: ['ESP32 Microcontroller', 'Sensor Calibration', 'Circuit Wiring', 'MQTT Broker'],
-        contact: 'dimas.wahyu@teknolab.id'
+        name: 'Ahmad Reza Fahmi',
+        nisn: '0067829102',
+        role: 'Backend & API Developer',
+        shift: '1',
+        shiftLabel: 'Shift 1 (07.00 – 16.00 WIB)',
+        avatarIcon: 'fa-server',
+        avatarColor: '#38BDF8',
+        phone: '+62 812-3456-7802',
+        email: 'reza.fahmi@teknolab.id',
+        responsibilities: 'Membangun backend sebagai penghubung device, database, dan dashboard, membuat API asset, heartbeat, status, history, dan statistik dashboard, menyediakan authentication, validation, error handling, serta dokumentasi endpoint dan payload.',
+        skills: ['Node.js / Express', 'REST API Engine', 'Heartbeat Endpoint', 'Authentication & JWT', 'API Documentation'],
+        outputs: ['REST API', 'Heartbeat Endpoint', 'Status API', 'History API', 'API Documentation']
     },
     {
         id: 'TM-03',
-        name: 'Budi Santoso',
-        nisn: '0067829106',
-        role: 'Network & Infrastructure Admin',
-        avatarIcon: 'fa-network-wired',
-        avatarColor: '#8B5CF6',
-        responsibilities: 'Konfigurasi topologi jaringan area Blitar, routing & subnetting IP address, implementasi protokol ICMP ping test, SNMP v2c/v3 monitoring, dan analisis throughput jaringan.',
-        skills: ['Subnetting IP', 'MikroTik / Cisco', 'ICMP / SNMP', 'Network Security'],
-        contact: 'budi.santoso@teknolab.id'
+        name: 'Faida Trisma Amelia',
+        nisn: '0067829103',
+        role: 'Database & Asset Management Engineer',
+        shift: '1',
+        shiftLabel: 'Shift 1 (07.00 – 16.00 WIB)',
+        avatarIcon: 'fa-database',
+        avatarColor: '#EC4899',
+        phone: '+62 812-3456-7803',
+        email: 'faida.trisma@teknolab.id',
+        responsibilities: 'Merancang skema database T-AIMS dan relasi antar tabel, inventarisasi aset Teknolab, menjaga konsistensi data asset, monitoring log, incident, location, user, dan maintenance, serta menyusun prosedur backup dan dokumentasi database.',
+        skills: ['PostgreSQL / SQL', 'Database Schema', 'Asset Registry', 'Automated Backup', 'DB Documentation'],
+        outputs: ['Database Schema', 'Migration / SQL', 'Asset Registry', 'Backup Procedure', 'DB Documentation']
     },
     {
         id: 'TM-04',
-        name: 'Siti Rahmadani',
+        name: 'Ilvina Muvarika',
+        nisn: '0067829104',
+        role: 'IoT & Device Integration Engineer',
+        shift: '1',
+        shiftLabel: 'Shift 1 (07.00 – 16.00 WIB)',
+        avatarIcon: 'fa-microchip',
+        avatarColor: '#10B981',
+        phone: '+62 812-3456-7804',
+        email: 'ilvina.muvarika@teknolab.id',
+        responsibilities: 'Membuat mekanisme heartbeat untuk ESP32/Raspberry Pi/perangkat IoT, mengirim Device ID, status, dan Last Seen melalui MQTT atau HTTP, mengembangkan auto reconnect Wi-Fi dan recovery communication, serta uji disconnect/reconnect.',
+        skills: ['ESP32 / Raspberry Pi', 'MQTT Protocol', 'Heartbeat Firmware', 'Auto Reconnect', 'Hardware Recovery'],
+        outputs: ['Firmware / Agent', 'Heartbeat Function', 'MQTT/HTTP Integration', 'Reconnect Logic', 'Hardware Test']
+    },
+    {
+        id: 'TM-05',
+        name: 'Ananda Dwi Susanti',
+        nisn: '0067829105',
+        role: 'Network & Device Monitoring Engineer',
+        shift: '1',
+        shiftLabel: 'Shift 1 (07.00 – 16.00 WIB)',
+        avatarIcon: 'fa-network-wired',
+        avatarColor: '#A855F7',
+        phone: '+62 812-3456-7805',
+        email: 'ananda.dwi@teknolab.id',
+        responsibilities: 'Membangun Monitoring Engine untuk memeriksa perangkat jaringan dan service (Ping, HTTP, TCP, SNMP, MQTT, heartbeat), kalkulasi response time, status, retry logic, dan offline decision, serta mencatat hasil ke backend/database.',
+        skills: ['Monitoring Engine', 'ICMP Telemetry', 'SNMP v2c/v3', 'Response Time Metric', 'Retry Decision Logic'],
+        outputs: ['Monitoring Engine', 'Device Check Rules', 'Retry Logic', 'Response Time Metric', 'Network Test Log']
+    },
+
+    // =========================================================================
+    // SHIFT 2: 16.00 WIB s.d. 01.00 WIB
+    // Fokus: Integration, Dashboard, Visualization, Automation, Deployment, Testing, Documentation
+    // =========================================================================
+    {
+        id: 'TM-06',
+        name: 'Dzakwan',
+        nisn: '0067829106',
+        role: 'Shift Lead & System Integration',
+        shift: '2',
+        shiftLabel: 'Shift 2 (16.00 – 01.00 WIB)',
+        avatarIcon: 'fa-crown',
+        avatarColor: '#FF1744',
+        phone: '+62 812-3456-7806',
+        email: 'dzakwan@teknolab.id',
+        responsibilities: 'Menerima hasil handover Shift 1 dan mengecek kesiapan integrasi, menghubungkan backend, database, monitoring engine, frontend, automation, dan server, menyusun bug list, dependency list, integration checklist, release record, serta memastikan pergerakan satu sistem.',
+        skills: ['System Integration', 'Release Record', 'Bug Triage', 'Handover Triage', 'Dependency Matrix'],
+        outputs: ['Integration Checklist', 'Bug List', 'Dependency List', 'Release Record', 'Daily Handover']
+    },
+    {
+        id: 'TM-07',
+        name: 'Dika Yoga',
         nisn: '0067829107',
-        role: 'Frontend & GIS Developer',
+        role: 'Frontend Dashboard Developer',
+        shift: '2',
+        shiftLabel: 'Shift 2 (16.00 – 01.00 WIB)',
         avatarIcon: 'fa-laptop-code',
-        avatarColor: '#E11D48',
-        responsibilities: 'Pengembangan antarmuka dasbor Cyber Dark HUD, integrasi pemetaan koordinat geospasial Blitar (Leaflet GIS), visualisasi analitik tren (Chart.js), dan optimasi UX responsif.',
-        skills: ['HTML5 / CSS3 HUD', 'JavaScript ES6', 'Leaflet GIS', 'Chart.js Analytics'],
-        contact: 'siti.rahma@teknolab.id'
+        avatarColor: '#F97316',
+        phone: '+62 812-3456-7807',
+        email: 'dika.yoga@teknolab.id',
+        responsibilities: 'Membangun dashboard utama T-AIMS, menampilkan total device, online, offline, warning, last seen, response time, dan history log, menyediakan daftar perangkat, filter kategori/lokasi, detail device, serta integrasi frontend dengan REST API.',
+        skills: ['Cyber HUD Dashboard', 'Device Explorer', 'REST API Client', 'Real-time Telemetry UI', 'Multi-view Routing'],
+        outputs: ['Dashboard Interface', 'Device List View', 'Device Detail Modal', 'Category Filter', 'API Integration']
+    },
+    {
+        id: 'TM-08',
+        name: 'Ahmad Aziz',
+        nisn: '0067829108',
+        role: 'UI/UX & Data Visualization Engineer',
+        shift: '2',
+        shiftLabel: 'Shift 2 (16.00 – 01.00 WIB)',
+        avatarIcon: 'fa-chart-pie',
+        avatarColor: '#00F0FF',
+        phone: '+62 812-3456-7808',
+        email: 'ahmad.aziz@teknolab.id',
+        responsibilities: 'Membuat tampilan T-AIMS yang mudah dibaca, konsisten, dan berstandar industri profesional, membuat grafik tren uptime/downtime, distribusi kategori, top device bermasalah, peta/floorplan GIS Blitar, serta status visual (Online, Offline, Warning).',
+        skills: ['Chart.js Analytics', 'Leaflet GIS Theming', 'Cyber HUD Styling', 'Color System', 'High Contrast Design'],
+        outputs: ['UI Design System', 'Chart Visualizations', 'GIS Blitar Map', 'Status Component', 'Responsive Layout']
+    },
+    {
+        id: 'TM-09',
+        name: 'Arik',
+        nisn: '0067829109',
+        role: 'Automation & Notification Engineer',
+        shift: '2',
+        shiftLabel: 'Shift 2 (16.00 – 01.00 WIB)',
+        avatarIcon: 'fa-bolt-lightning',
+        avatarColor: '#FFD600',
+        phone: '+62 812-3456-7809',
+        email: 'arik@teknolab.id',
+        responsibilities: 'Membuat notifikasi instan Offline dan Recovery menggunakan Telegram / Email / n8n, mencegah spam alert dengan cooldown/debounce notification, mengembangkan AI Infrastructure Assistant setelah monitoring stabil, dan workflow analisis otomatis.',
+        skills: ['n8n Automation', 'Telegram Bot API', 'Debounce Anti-Spam', 'AI Assistant Logic', 'Incident Webhooks'],
+        outputs: ['Offline Alert Bot', 'Recovery Alert Bot', 'n8n Workflow', 'AI Analysis Engine', 'Telegram / Email Output']
+    },
+    {
+        id: 'TM-10',
+        name: 'Wafian',
+        nisn: '0067829110',
+        role: 'DevOps, Server & Security Engineer',
+        shift: '2',
+        shiftLabel: 'Shift 2 (16.00 – 01.00 WIB)',
+        avatarIcon: 'fa-shield-halved',
+        avatarColor: '#14B8A6',
+        phone: '+62 812-3456-7810',
+        email: 'wafian@teknolab.id',
+        responsibilities: 'Melakukan deployment production backend, database, dashboard, dan monitoring engine, mengelola domain/subdomain, SSL/TLS certificates, environment security, backup database otomatis, service logging, dan pengamanan kredensial via .env.',
+        skills: ['Linux Ubuntu Server', 'Nginx Reverse Proxy', 'SSL / TLS Security', 'Automated Cron Backup', 'Hardening & Secrets'],
+        outputs: ['Production Server', 'SSL Certification', 'Environment Config', 'Backup Automation', 'Security Checklist']
+    },
+    {
+        id: 'TM-11',
+        name: 'Reza Tri',
+        nisn: '0067829111',
+        role: 'QA, Testing & Documentation Engineer',
+        shift: '2',
+        shiftLabel: 'Shift 2 (16.00 – 01.00 WIB)',
+        avatarIcon: 'fa-clipboard-check',
+        avatarColor: '#8B5CF6',
+        phone: '+62 812-3456-7811',
+        email: 'reza.tri@teknolab.id',
+        responsibilities: 'Menguji setiap fitur sebelum dinyatakan selesai, menyusun test case, bug report, dan verification report, menyusun user manual, technical documentation, screenshot, video demo pengujian, serta validasi failure simulation.',
+        skills: ['Quality Assurance', 'Test Cases & Matrix', 'User Manual SOP', 'Failure Simulation Logs', 'Technical Writing'],
+        outputs: ['Test Report Matrix', 'Bug Tracking Report', 'User Manual SOP', 'Technical Docs', 'Verification Evidence']
     }
 ];
 
@@ -1502,16 +1632,26 @@ function exportAssetsList() {
 // =============================================================================
 // MODUL INFORMASI PROJEK & DATA TIM KAMI (PAGE-PROJECT-INFO)
 // =============================================================================
+APP_STATE.teamShiftFilter = 'all';
+
 function loadTeamData() {
     try {
         const saved = localStorage.getItem('taims_team_members');
         if (saved) {
-            APP_STATE.teamMembers = JSON.parse(saved);
+            const parsed = JSON.parse(saved);
+            // Validasi data tim: harus memiliki 11 anggota lengkap dari dokumen resmi PKL
+            if (Array.isArray(parsed) && parsed.length >= 11 && parsed.some(m => m.name === 'Damar Munajad') && parsed.some(m => m.name === 'Dzakwan')) {
+                APP_STATE.teamMembers = parsed;
+            } else {
+                APP_STATE.teamMembers = JSON.parse(JSON.stringify(DEFAULT_TEAM_MEMBERS));
+                saveTeamData();
+            }
         } else {
-            APP_STATE.teamMembers = [...DEFAULT_TEAM_MEMBERS];
+            APP_STATE.teamMembers = JSON.parse(JSON.stringify(DEFAULT_TEAM_MEMBERS));
+            saveTeamData();
         }
     } catch (e) {
-        APP_STATE.teamMembers = [...DEFAULT_TEAM_MEMBERS];
+        APP_STATE.teamMembers = JSON.parse(JSON.stringify(DEFAULT_TEAM_MEMBERS));
     }
 }
 
@@ -1519,7 +1659,50 @@ function saveTeamData() {
     try {
         localStorage.setItem('taims_team_members', JSON.stringify(APP_STATE.teamMembers));
     } catch (e) {
-        console.error('Gagal menyimpan team data:', e);
+        console.error('Gagal menyimpan data tim:', e);
+    }
+}
+
+function filterTeamByShift(shift) {
+    APP_STATE.teamShiftFilter = shift;
+
+    // Update status tombol filter
+    document.querySelectorAll('.team-filter-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    const activeBtn = document.getElementById(`team-filter-${shift}`);
+    if (activeBtn) activeBtn.classList.add('active');
+
+    renderTeamCards();
+}
+
+function copyContactText(text, label) {
+    if (!text || text === '-') {
+        showToast('Pemberitahuan', 'Kontak belum tersedia.', 'warning');
+        return;
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+            showToast('Tersalin!', `${label} "${text}" berhasil disalin ke clipboard.`, 'success');
+        }).catch(() => {
+            fallbackCopyContact(text, label);
+        });
+    } else {
+        fallbackCopyContact(text, label);
+    }
+}
+
+function fallbackCopyContact(text, label) {
+    try {
+        const temp = document.createElement('input');
+        temp.value = text;
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand('copy');
+        document.body.removeChild(temp);
+        showToast('Tersalin!', `${label} "${text}" berhasil disalin ke clipboard.`, 'success');
+    } catch (err) {
+        prompt(`Salin ${label} manual:`, text);
     }
 }
 
@@ -1528,31 +1711,128 @@ function renderTeamCards() {
     if (!grid) return;
 
     grid.innerHTML = '';
-    APP_STATE.teamMembers.forEach(tm => {
+
+    const filter = APP_STATE.teamShiftFilter || 'all';
+    const list = APP_STATE.teamMembers.filter(tm => {
+        if (filter === 'all') return true;
+        return String(tm.shift) === String(filter);
+    });
+
+    if (list.length === 0) {
+        grid.innerHTML = `
+            <div class="empty-team-state" style="grid-column: 1 / -1; text-align: center; padding: 40px 20px; background: rgba(13,22,41,0.5); border: 1px dashed rgba(255,255,255,0.15); border-radius: 12px;">
+                <i class="fa-solid fa-users-slash" style="font-size: 2.5rem; color: var(--text-muted); margin-bottom: 12px;"></i>
+                <h4 style="color: #FFF; font-weight: 700; margin-bottom: 6px;">Tidak ada anggota pada filter ini</h4>
+                <p style="color: var(--text-secondary); font-size: 0.85rem;">Pilih filter lain atau reset tim ke konfigurasi awal.</p>
+            </div>
+        `;
+        return;
+    }
+
+    list.forEach(tm => {
         const card = document.createElement('div');
-        card.className = 'team-card';
+        const isShift1 = String(tm.shift) === '1';
+        card.className = `team-card ${isShift1 ? 'shift-1-card' : 'shift-2-card'}`;
+        card.style.borderTop = `3px solid ${tm.avatarColor || '#00E5FF'}`;
 
         const skillsHtml = (tm.skills || []).map(s => `<span class="skill-chip">${s}</span>`).join('');
+        const outputsHtml = (tm.outputs || []).map(o => `<span class="output-chip"><i class="fa-solid fa-check"></i> ${o}</span>`).join('');
+
+        // Format link WhatsApp bersih tanpa tanda hubung dan spasi
+        const rawPhone = (tm.phone || '').replace(/[^0-9]/g, '');
+        const waLink = rawPhone ? `https://wa.me/${rawPhone}` : '#';
+        const mailLink = tm.email ? `mailto:${tm.email}` : '#';
 
         card.innerHTML = `
             <div>
+                <!-- Badge Pembagian Shift -->
+                <div class="tc-shift-header">
+                    <span class="badge-shift ${isShift1 ? 's1' : 's2'}">
+                        <i class="fa-solid ${isShift1 ? 'fa-sun' : 'fa-moon'}"></i>
+                        ${isShift1 ? 'Shift 1 &bull; 07.00 – 16.00 WIB' : 'Shift 2 &bull; 16.00 – 01.00 WIB'}
+                    </span>
+                    <span class="tc-nisn"><i class="fa-solid fa-id-card"></i> ${tm.nisn}</span>
+                </div>
+
+                <!-- Bagian Profil & Jabatan -->
                 <div class="tc-top">
-                    <div class="tc-avatar" style="color: ${tm.avatarColor || '#00E5FF'};">
-                        <i class="fa-solid ${tm.avatarIcon || 'fa-user'}"></i>
+                    <div class="tc-avatar" style="color: ${tm.avatarColor || '#00E5FF'}; border-color: ${tm.avatarColor}55; box-shadow: 0 0 16px ${tm.avatarColor}33;">
+                        <i class="fa-solid ${tm.avatarIcon || 'fa-user-gear'}"></i>
                     </div>
                     <div class="tc-info">
                         <h4 class="tc-name">${tm.name}</h4>
-                        <span class="tc-role">${tm.role}</span>
-                        <span class="tc-nisn"><i class="fa-solid fa-id-card"></i> NISN: ${tm.nisn}</span>
+                        <span class="tc-role" style="color: ${tm.avatarColor || 'var(--cyan-neon)'};">
+                            <i class="fa-solid ${tm.avatarIcon || 'fa-user-tag'}"></i> ${tm.role}
+                        </span>
                     </div>
                 </div>
-                <p class="tc-desc">${tm.responsibilities}</p>
-                <div class="tc-skills">${skillsHtml}</div>
+
+                <!-- Tanggung Jawab & Deskripsi Tugas -->
+                <div class="tc-section-block">
+                    <span class="tc-section-label"><i class="fa-solid fa-briefcase"></i> Tanggung Jawab Utama:</span>
+                    <p class="tc-desc">${tm.responsibilities}</p>
+                </div>
+
+                <!-- Output Wajib & Bukti Fisik (Sesuai PDF) -->
+                ${outputsHtml ? `
+                <div class="tc-section-block">
+                    <span class="tc-section-label"><i class="fa-solid fa-file-circle-check"></i> Output Wajib / Bukti Tugas:</span>
+                    <div class="tc-outputs-wrap">${outputsHtml}</div>
+                </div>` : ''}
+
+                <!-- Keahlian / Kompetensi Teknis -->
+                <div class="tc-section-block">
+                    <span class="tc-section-label"><i class="fa-solid fa-code"></i> Kompetensi Teknis:</span>
+                    <div class="tc-skills">${skillsHtml}</div>
+                </div>
             </div>
+
+            <!-- Bagian Kontak (Nomor HP / WhatsApp & Email) Sesuai Permintaan User -->
+            <div class="tc-contact-box">
+                <div class="contact-entry">
+                    <div class="ce-label">
+                        <i class="fa-solid fa-phone text-green"></i>
+                        <span>No. HP / WA:</span>
+                    </div>
+                    <div class="ce-value-group">
+                        <span class="ce-val ce-phone" title="${tm.phone || '-'}">${tm.phone || '-'}</span>
+                        <div class="ce-actions">
+                            ${rawPhone ? `
+                            <a href="${waLink}" target="_blank" rel="noopener noreferrer" class="btn-contact-action btn-wa" title="Kirim Chat WhatsApp">
+                                <i class="fa-brands fa-whatsapp"></i> WA
+                            </a>` : ''}
+                            <button type="button" class="btn-contact-action btn-copy" onclick="copyContactText('${tm.phone || ''}', 'Nomor HP')" title="Salin Nomor HP">
+                                <i class="fa-regular fa-copy"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="contact-entry">
+                    <div class="ce-label">
+                        <i class="fa-solid fa-envelope text-cyan"></i>
+                        <span>Email Resmi:</span>
+                    </div>
+                    <div class="ce-value-group">
+                        <span class="ce-val ce-email" title="${tm.email || '-'}">${tm.email || '-'}</span>
+                        <div class="ce-actions">
+                            ${tm.email ? `
+                            <a href="${mailLink}" class="btn-contact-action btn-mail" title="Kirim Pesan Email">
+                                <i class="fa-solid fa-envelope-open-text"></i> Kirim
+                            </a>` : ''}
+                            <button type="button" class="btn-contact-action btn-copy" onclick="copyContactText('${tm.email || ''}', 'Email')" title="Salin Alamat Email">
+                                <i class="fa-regular fa-copy"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Kartu: Status PIC & Tombol Edit -->
             <div class="tc-footer">
-                <span class="text-muted"><i class="fa-solid fa-envelope"></i> ${tm.contact || '-'}</span>
+                <span class="tc-pic-badge"><i class="fa-solid fa-shield-halved text-green"></i> PIC Terverifikasi</span>
                 <button class="btn-sm btn-outline-cyber admin-only" onclick="openEditTeamMemberModal('${tm.id}')">
-                    <i class="fa-solid fa-pen-to-square"></i> Edit
+                    <i class="fa-solid fa-user-pen"></i> Edit Profil
                 </button>
             </div>
         `;
@@ -1574,6 +1854,7 @@ function switchProjSection(secId) {
 function openAddTeamMemberModal() {
     document.getElementById('team-member-form').reset();
     document.getElementById('tm-id').value = '';
+    document.getElementById('tm-shift').value = '1';
     document.getElementById('team-modal-title').textContent = 'Tambah Anggota Tim Baru';
     document.getElementById('team-modal').classList.remove('hidden');
 }
@@ -1585,12 +1866,23 @@ function openEditTeamMemberModal(id) {
     document.getElementById('tm-id').value = member.id;
     document.getElementById('tm-name').value = member.name;
     document.getElementById('tm-nisn').value = member.nisn;
+    if (document.getElementById('tm-shift')) {
+        document.getElementById('tm-shift').value = member.shift || '1';
+    }
     document.getElementById('tm-role').value = member.role;
-    document.getElementById('tm-contact').value = member.contact || '';
+    if (document.getElementById('tm-phone')) {
+        document.getElementById('tm-phone').value = member.phone || '';
+    }
+    if (document.getElementById('tm-email')) {
+        document.getElementById('tm-email').value = member.email || member.contact || '';
+    }
     document.getElementById('tm-responsibilities').value = member.responsibilities;
     document.getElementById('tm-skills').value = (member.skills || []).join(', ');
+    if (document.getElementById('tm-outputs')) {
+        document.getElementById('tm-outputs').value = (member.outputs || []).join(', ');
+    }
 
-    document.getElementById('team-modal-title').textContent = `Edit Profil: ${member.name}`;
+    document.getElementById('team-modal-title').textContent = `Edit Profil Anggota: ${member.name}`;
     document.getElementById('team-modal').classList.remove('hidden');
 }
 
@@ -1602,10 +1894,13 @@ function handleSaveTeamMember() {
     const id = document.getElementById('tm-id').value;
     const name = document.getElementById('tm-name').value.trim();
     const nisn = document.getElementById('tm-nisn').value.trim();
+    const shift = document.getElementById('tm-shift') ? document.getElementById('tm-shift').value : '1';
     const role = document.getElementById('tm-role').value.trim();
-    const contact = document.getElementById('tm-contact').value.trim();
+    const phone = document.getElementById('tm-phone') ? document.getElementById('tm-phone').value.trim() : '';
+    const email = document.getElementById('tm-email') ? document.getElementById('tm-email').value.trim() : '';
     const responsibilities = document.getElementById('tm-responsibilities').value.trim();
     const skills = document.getElementById('tm-skills').value.split(',').map(s => s.trim()).filter(Boolean);
+    const outputs = document.getElementById('tm-outputs') ? document.getElementById('tm-outputs').value.split(',').map(s => s.trim()).filter(Boolean) : [];
 
     if (id) {
         // Edit anggota ada
@@ -1613,39 +1908,50 @@ function handleSaveTeamMember() {
         if (member) {
             member.name = name;
             member.nisn = nisn;
+            member.shift = shift;
+            member.shiftLabel = shift === '1' ? 'Shift 1 (07.00 – 16.00 WIB)' : 'Shift 2 (16.00 – 01.00 WIB)';
             member.role = role;
-            member.contact = contact;
+            member.phone = phone;
+            member.email = email;
+            member.contact = email;
             member.responsibilities = responsibilities;
             member.skills = skills;
+            member.outputs = outputs;
         }
     } else {
         // Tambah baru
         const newId = `TM-${Date.now().toString().slice(-4)}`;
+        const avatarColor = shift === '1' ? '#00F0FF' : '#FF1744';
         APP_STATE.teamMembers.push({
             id: newId,
             name,
             nisn,
+            shift,
+            shiftLabel: shift === '1' ? 'Shift 1 (07.00 – 16.00 WIB)' : 'Shift 2 (16.00 – 01.00 WIB)',
             role,
-            contact,
+            phone,
+            email,
+            contact: email,
             responsibilities,
             skills,
-            avatarIcon: 'fa-user-astronaut',
-            avatarColor: '#F59E0B'
+            outputs,
+            avatarIcon: 'fa-user-gear',
+            avatarColor: avatarColor
         });
     }
 
     saveTeamData();
     renderTeamCards();
     closeTeamModal();
-    showToast('Data Tim Disimpan!', `Profil ${name} berhasil diperbarui.`, 'success');
+    showToast('Data Profil Disimpan!', `Profil ${name} berhasil disimpan.`, 'success');
 }
 
 function resetTeamDataPrompt() {
-    if (confirm('Kembalikan susunan tim ke data anggota bawaan proyek?')) {
-        APP_STATE.teamMembers = [...DEFAULT_TEAM_MEMBERS];
+    if (confirm('Kembalikan susunan tim ke 11 anggota bawaan resmi dari dokumen PKL Teknolab?')) {
+        APP_STATE.teamMembers = JSON.parse(JSON.stringify(DEFAULT_TEAM_MEMBERS));
         saveTeamData();
         renderTeamCards();
-        showToast('Tim Di-reset', 'Data tim telah dikembalikan ke pengaturan awal.', 'info');
+        showToast('Tim Di-reset', '11 Anggota PKL resmi telah dimuat ulang.', 'info');
     }
 }
 
