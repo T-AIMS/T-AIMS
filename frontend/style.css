@@ -2434,8 +2434,8 @@ body {
    COMPACT HUD CYBER DARK DASHBOARD (FIT IN VIEWPORT WITHOUT SCROLLING)
    ========================================================================== */
 @media (min-height: 700px) {
-  #page-dashboard {
-    display: flex;
+  #page-dashboard.active {
+    display: flex !important;
     flex-direction: column;
     justify-content: space-between;
   }
@@ -2554,4 +2554,40 @@ body {
   .m-lbl {
     font-size: 0.75rem;
   }
+}
+
+
+/* ==========================================================================
+   STRICT PAGE VIEW DISPLAY CONTROL (NO OVERLAPPING BETWEEN DASHBOARD & MENUS)
+   ========================================================================== */
+.page-view {
+    display: none !important;
+}
+
+.page-view.active {
+    display: block !important;
+}
+
+#page-dashboard.page-view {
+    display: none !important;
+}
+
+#page-dashboard.page-view.active {
+    display: flex !important;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* LEAFLET DARK MAP BACKGROUND FIX */
+.map-interactive-container,
+.home-map-leaflet,
+#home-blitar-map,
+#full-blitar-map,
+.leaflet-container {
+    background-color: #080D1A !important;
+    border-radius: var(--radius-sm);
+}
+
+.leaflet-tile {
+    filter: brightness(0.9) contrast(1.1) !important;
 }

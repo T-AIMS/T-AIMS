@@ -1076,6 +1076,7 @@ function initBlitarMaps() {
     if (homeEl && !APP_STATE.homeMap) {
         try {
             APP_STATE.homeMap = L.map('home-blitar-map', {
+                preferCanvas: true,
                 center: [-8.0988, 112.1652],
                 zoom: 13,
                 zoomControl: false,
@@ -1106,6 +1107,10 @@ function initBlitarMaps() {
                 });
                 APP_STATE.homeMarkers.push(marker);
             });
+
+            setTimeout(() => { if (APP_STATE.homeMap) APP_STATE.homeMap.invalidateSize(); }, 200);
+            setTimeout(() => { if (APP_STATE.homeMap) APP_STATE.homeMap.invalidateSize(); }, 600);
+
         } catch (e) {
             console.error('Gagal inisialisasi home map:', e);
         }
@@ -1751,7 +1756,7 @@ function initCharts() {
                 plugins: { legend: { display: false } },
                 scales: {
                     x: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#64748B', font: { size: 9 } } },
-                    y: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#64748B', font: { size: 9 } }, min: 0, max: 1200 }
+                    y: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#64748B', font: { size: 9 } }, min: 0, max: 18, stepSize: 3 }
                 }
             }
         });
@@ -1789,14 +1794,14 @@ function updateTrendChartTimeframe(val) {
 
     if (val === '7') {
         chart.data.labels = ['18 Apr', '19 Apr', '20 Apr', '21 Apr', '22 Apr', '23 Apr', '24 Apr'];
-        chart.data.datasets[0].data = [875, 880, 882, 890, 888, 891, 892];
-        chart.data.datasets[1].data = [138, 136, 135, 130, 133, 131, 132];
-        chart.data.datasets[2].data = [25, 24, 25, 23, 25, 24, 24];
+        chart.data.datasets[0].data = [14, 14, 13, 14, 14, 14, 14];
+        chart.data.datasets[1].data = [1, 1, 2, 1, 1, 1, 1];
+        chart.data.datasets[2].data = [1, 1, 1, 1, 1, 1, 1];
     } else if (val === '1') {
         chart.data.labels = ['00:00', '04:00', '08:00', '12:00', '14:00', 'Sekarang'];
-        chart.data.datasets[0].data = [890, 891, 888, 892, 891, 892];
-        chart.data.datasets[1].data = [134, 133, 135, 131, 133, 132];
-        chart.data.datasets[2].data = [24, 24, 25, 25, 24, 24];
+        chart.data.datasets[0].data = [14, 14, 14, 14, 14, 14];
+        chart.data.datasets[1].data = [1, 1, 1, 1, 1, 1];
+        chart.data.datasets[2].data = [1, 1, 1, 1, 1, 1];
     } else {
         chart.data.labels = ['25 Mar', '28 Mar', '31 Mar', '03 Apr', '06 Apr', '09 Apr', '12 Apr', '15 Apr', '18 Apr', '21 Apr', '24 Apr'];
         chart.data.datasets[0].data = [13, 13, 14, 14, 14, 13, 14, 14, 14, 14, 14];
