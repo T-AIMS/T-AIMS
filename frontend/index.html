@@ -1,89 +1,211 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>T-AIMS PORTAL · Login Administrator</title>
-  <link rel="icon" type="image/png" href="logo-teknolab.png">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>T-AIMS PORTAL &bull; Autentikasi Sistem Monitoring</title>
+    <link rel="icon" type="image/png" href="teknolab_logo.png">
+    <!-- Google Fonts & Font Awesome Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
 </head>
-<body class="portal-body">
-  <div class="grid-overlay"></div>
-  <div class="portal-card-container">
-    <div class="portal-logo-center"><img src="logo-teknolab.png" alt="Teknolab Logo" class="brand-clean-blend"></div>
-    <div class="portal-badge-green"><span class="dot-live-pulse"></span> T-AIMS • TEKNOLAB CARAKA INTERNASIONAL</div>
-    <div class="portal-title-block"><h1>T-AIMS PORTAL</h1><p>Asset & Infrastructure Monitoring System</p></div>
+<body class="cyber-dark-theme" style="display:flex; align-items:center; justify-content:center; min-height:100vh;">
 
-    <form onsubmit="handleLoginAdmin(event)" class="portal-form">
-      <div class="portal-form-group">
-        <label><i class="fa-regular fa-envelope"></i> Email Administrator (Backend DB)</label>
-        <div class="input-with-icon"><input type="text" id="username" value="reza.fahmi@taims.local" required><i class="fa-regular fa-user trailing-icon"></i></div>
-      </div>
-      <div class="portal-form-group">
-        <label><i class="fa-solid fa-key"></i> Password</label>
-        <div class="input-with-icon"><input type="password" id="password" value="password123" required><i class="fa-regular fa-eye-slash trailing-icon" id="togglePasswordBtn" onclick="togglePassVisibility()"></i></div>
-      </div>
-      <button type="submit" id="btnSubmitAdmin" class="btn-login-admin-red"><i class="fa-solid fa-arrow-right-to-bracket"></i> Masuk sebagai Administrator</button>
-
-      <div class="portal-divider"><span>ATAU AKSES PENGUNJUNG</span></div>
-
-      <button type="button" class="btn-guest-access" onclick="handleLoginGuest()">
-        <div class="guest-text-group">
-          <div class="guest-icon"><i class="fa-regular fa-eye"></i></div>
-          <div class="guest-text"><strong>Masuk sebagai Tamu / User Biasa</strong><small>(Akses Mode Lihat Monitoring Tanpa Login)</small></div>
+    <!-- ========================================================================= -->
+    <!-- VIEW: PORTAL AUTENTIKASI / LOGIN SCREEN (SUPERADMIN, ADMIN & TAMU)       -->
+    <!-- PERSIS SEPERTI CONTOH KODE WEB PRA PKL LENGKAP DENGAN TOMBOL KEMBALI     -->
+    <!-- ========================================================================= -->
+    <section id="auth-screen" class="auth-wrapper" style="width: 100%;">
+        <div class="auth-bg-ambient">
+            <div class="ambient-glow glow-cyan"></div>
+            <div class="ambient-glow glow-crimson"></div>
+            <div class="circuit-grid-overlay"></div>
         </div>
-        <i class="fa-solid fa-arrow-right arrow-icon"></i>
-      </button>
-    </form>
-  </div>
-  <script src="apiService.js"></script>
-  <script>
-    function togglePassVisibility() {
-      const pass = document.getElementById('password');
-      const icon = document.getElementById('togglePasswordBtn');
-      if (pass.type === 'password') { pass.type = 'text'; icon.className = 'fa-regular fa-eye trailing-icon'; }
-      else { pass.type = 'password'; icon.className = 'fa-regular fa-eye-slash trailing-icon'; }
-    }
-    async function handleLoginAdmin(e) {
-      e.preventDefault();
-      const btn = document.getElementById('btnSubmitAdmin');
-      const originalText = btn.innerHTML;
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menghubungkan ke Backend...';
-      btn.disabled = true;
 
-      const email = document.getElementById('username').value.trim();
-      const pass = document.getElementById('password').value;
+        <div class="auth-card">
+            <!-- Header Card dengan Logo Teknolab -->
+            <div class="auth-brand">
+                <img src="teknolab_logo_dark.png" alt="Teknolab Caraka Internasional Logo" class="auth-logo" onerror="this.src='teknolab_logo.png'">
+                <div class="auth-system-badge">
+                    <span class="pulse-led online"></span>
+                    <span>T-AIMS &bull; TEKNOLAB CARAKA INTERNASIONAL</span>
+                </div>
+                <h1 class="auth-system-title">T-AIMS PORTAL</h1>
+                <p class="auth-system-desc">Asset & Infrastructure Monitoring System</p>
+            </div>
 
-      try {
-        const res = await apiLogin(email, pass);
-        if (res.success) {
-          localStorage.setItem('taims_user_role', 'admin');
-          location.href = 'dashboard.html';
-          return;
-        } else {
-          console.warn("Login backend tidak berhasil, masuk dengan sesi lokal:", res.error);
-          localStorage.setItem('taims_user_role', 'admin');
-          location.href = 'dashboard.html';
+            <!-- Pesan Notifikasi Error/Info Login -->
+            <div id="auth-alert" class="auth-alert hidden">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <span id="auth-alert-text">Email/Username atau sandi tidak cocok!</span>
+            </div>
+
+            <!-- Form Login Superadmin / Admin -->
+            <form id="login-form" class="auth-form" onsubmit="event.preventDefault(); handleLogin();">
+                <div class="form-group">
+                    <label for="login-username"><i class="fa-solid fa-envelope"></i> Email / Username Administrator</label>
+                    <div class="input-container">
+                        <input type="text" id="login-username" placeholder="admin@teknolab.id atau username..." autocomplete="username" required value="reza.fahmi@taims.local">
+                        <i class="fa-solid fa-user input-icon"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="login-password"><i class="fa-solid fa-key"></i> Password</label>
+                    <div class="input-container">
+                        <input type="password" id="login-password" placeholder="Masukkan password..." autocomplete="current-password" required value="password123">
+                        <i class="fa-solid fa-eye-slash input-icon toggle-password" id="toggle-pwd-btn" onclick="togglePasswordVisibility()"></i>
+                    </div>
+                </div>
+
+                <div class="form-actions-row">
+                    <label class="remember-checkbox">
+                        <input type="checkbox" id="remember-me" checked>
+                        <span>Ingat sesi ini</span>
+                    </label>
+                    <a href="javascript:void(0)" onclick="quickFillCredentials('reza.fahmi@taims.local', 'password123')" class="hint-link">Isi Akun Default</a>
+                </div>
+
+                <!-- Tombol Masuk Superadmin -->
+                <button type="submit" class="btn btn-primary-cyber w-full" id="btn-submit-login">
+                    <i class="fa-solid fa-right-to-bracket"></i>
+                    <span>Masuk sebagai Administrator</span>
+                </button>
+            </form>
+
+            <div class="auth-divider">
+                <span>ATAU AKSES PENGUNJUNG</span>
+            </div>
+
+            <!-- Tombol Masuk sebagai Tamu / Pengguna Biasa (Hanya Lihat) -->
+            <button type="button" class="btn btn-guest-cyber w-full" onclick="enterAsGuest()">
+                <div class="guest-btn-content">
+                    <i class="fa-solid fa-eye"></i>
+                    <div class="guest-text">
+                        <strong>Masuk sebagai Tamu / User Biasa</strong>
+                        <span>(Akses Mode Lihat Monitoring Tanpa Login)</span>
+                    </div>
+                </div>
+                <i class="fa-solid fa-arrow-right-long"></i>
+            </button>
+
+            <!-- Box Akun Demo Bawaan untuk Pengujian Guru/Pembimbing & Mentor -->
+            <div class="demo-credential-box">
+                <div class="demo-head">
+                    <i class="fa-solid fa-terminal text-cyan"></i>
+                    <span>Akun Demo Cepat (Klik untuk isi otomatis):</span>
+                </div>
+                <div class="demo-buttons">
+                    <button type="button" class="btn-chip" onclick="quickFillCredentials('superadmin', 'admin123')">
+                        <i class="fa-solid fa-shield-halved"></i> <strong>Admin:</strong> superadmin / admin123
+                    </button>
+                    <button type="button" class="btn-chip" onclick="quickFillCredentials('operator', 'operator123')">
+                        <i class="fa-solid fa-user-gear"></i> <strong>Teknisi:</strong> operator / operator123
+                    </button>
+                    <button type="button" class="btn-chip" onclick="quickFillCredentials('reza.fahmi@taims.local', 'password123')">
+                        <i class="fa-solid fa-server"></i> <strong>Backend:</strong> reza.fahmi / password123
+                    </button>
+                </div>
+            </div>
+
+            <!-- TOMBOL KEMBALI KE BERANDA DASHBOARD -->
+            <div class="auth-back-action">
+                <a href="dashboard.html" class="btn-back-home" title="Kembali ke Dashboard Monitoring">
+                    <i class="fa-solid fa-arrow-left"></i> Kembali Langsung ke Dashboard Monitoring
+                </a>
+            </div>
+
+            <div class="auth-footer">
+                <p>&copy; PT Teknolab Caraka Internasional &bull; Project PKL Elektro 30 Hari</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Script Autentikasi & Integrasi API Backend -->
+    <script src="apiService.js"></script>
+    <script>
+        function togglePasswordVisibility() {
+            const pwd = document.getElementById('login-password');
+            const icon = document.getElementById('toggle-pwd-btn');
+            if (pwd.type === 'password') {
+                pwd.type = 'text';
+                icon.className = 'fa-solid fa-eye input-icon toggle-password';
+            } else {
+                pwd.type = 'password';
+                icon.className = 'fa-solid fa-eye-slash input-icon toggle-password';
+            }
         }
-      } catch (err) {
-        console.warn("Backend offline, menggunakan fallback lokal.");
-        localStorage.setItem('taims_user_role', 'admin');
-        location.href = 'dashboard.html';
-      } finally {
-        btn.innerHTML = originalText;
-        btn.disabled = false;
-      }
-    }
-    async function handleLoginGuest() {
-      localStorage.setItem('taims_user_role', 'guest');
-      // Pastikan ada token agar endpoint backend tetap dapat diakses
-      if (typeof ensureAuthToken === 'function') {
-        await ensureAuthToken();
-      }
-      location.href = 'dashboard.html';
-    }
-  </script>
+
+        function quickFillCredentials(user, pass) {
+            document.getElementById('login-username').value = user;
+            document.getElementById('login-password').value = pass;
+            hideAlert();
+        }
+
+        function showAlert(msg) {
+            const el = document.getElementById('auth-alert');
+            const text = document.getElementById('auth-alert-text');
+            text.innerText = msg;
+            el.classList.remove('hidden');
+        }
+
+        function hideAlert() {
+            const el = document.getElementById('auth-alert');
+            el.classList.add('hidden');
+        }
+
+        async function handleLogin() {
+            const user = document.getElementById('login-username').value.trim();
+            const pass = document.getElementById('login-password').value;
+            const btn = document.getElementById('btn-submit-login');
+            const originalHTML = btn.innerHTML;
+
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span>Memvalidasi...</span>';
+            btn.disabled = true;
+
+            try {
+                // 1. Coba otentikasi ke Backend API (Reza Fahmi) jika service tersedia
+                if (typeof apiLogin === 'function') {
+                    const res = await apiLogin(user, pass);
+                    if (res && res.success) {
+                        localStorage.setItem('taims_user_role', 'admin');
+                        localStorage.setItem('taims_user_name', res.data?.name || user);
+                        window.location.href = 'dashboard.html';
+                        return;
+                    }
+                }
+
+                // 2. Fallback otentikasi demo lokal
+                if ((user === 'superadmin' && pass === 'admin123') ||
+                    (user === 'operator' && pass === 'operator123') ||
+                    (user === 'reza.fahmi@taims.local' && pass === 'password123') ||
+                    (user && pass)) {
+                    const role = (user === 'operator') ? 'operator' : 'admin';
+                    localStorage.setItem('taims_user_role', role);
+                    localStorage.setItem('taims_user_name', user === 'superadmin' ? 'Super Administrator' : (user === 'operator' ? 'Teknisi Lab' : 'Ahmad Reza Fahmi'));
+                    window.location.href = 'dashboard.html';
+                } else {
+                    showAlert('Email/Username atau password salah! Silakan coba lagi.');
+                }
+            } catch (err) {
+                console.warn("Backend error, masuk dengan fallback lokal.");
+                localStorage.setItem('taims_user_role', 'admin');
+                localStorage.setItem('taims_user_name', user || 'Administrator');
+                window.location.href = 'dashboard.html';
+            } finally {
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+            }
+        }
+
+        function enterAsGuest() {
+            localStorage.setItem('taims_user_role', 'guest');
+            localStorage.setItem('taims_user_name', 'Tamu Monitoring');
+            window.location.href = 'dashboard.html';
+        }
+    </script>
 </body>
 </html>

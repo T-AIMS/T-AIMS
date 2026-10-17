@@ -1,479 +1,603 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>T-AIMS · Teknolab Asset & Infrastructure Monitoring System</title>
-  <link rel="icon" type="image/png" href="logo-teknolab.png">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body class="dashboard-body">
-  <div class="app-shell-container">
-    
-    <aside class="desktop-sidebar">
-      <div class="sidebar-logo-zone">
-        <a href="dashboard.html">
-          <img src="logo-teknolab.png" alt="Teknolab" class="brand-clean-blend">
-        </a>
-      </div>
-
-      <nav class="sidebar-nav-menu">
-        <a href="dashboard.html" class="sidebar-link active">
-          <i class="fa-solid fa-house"></i> <span>Dashboard</span>
-        </a>
-        <a href="devices.html" class="sidebar-link">
-          <i class="fa-solid fa-microchip"></i> <span>Perangkat</span>
-        </a>
-        <a href="network.html" class="sidebar-link ">
-          <i class="fa-solid fa-network-wired"></i> <span>Jaringan</span>
-        </a>
-        <a href="topology.html" class="sidebar-link ">
-          <i class="fa-solid fa-location-dot"></i> <span>Lokasi</span>
-        </a>
-        <a href="history.html" class="sidebar-link ">
-          <i class="fa-regular fa-bell"></i> <span>Peringatan</span> <span class="alert-pill-red">5</span>
-        </a>
-        <a href="reports.html" class="sidebar-link ">
-          <i class="fa-solid fa-chart-simple"></i> <span>Laporan</span>
-        </a>
-        <a href="project.html" class="sidebar-link ">
-          <i class="fa-solid fa-circle-info"></i> <span>Informasi Projek</span>
-        </a>
-        <a href="users.html" class="sidebar-link ">
-          <i class="fa-solid fa-users"></i> <span>Pengguna</span>
-        </a>
-        <a href="settings.html" class="sidebar-link " style="margin-top:14px;">
-          <i class="fa-solid fa-gear"></i> <span>Pengaturan</span>
-        </a>
-      </nav>
-
-      <div class="sidebar-status-box">
-        <span class="status-pulse-dot"></span>
-        <div class="status-text">
-          <small>Sistem</small>
-          <strong>Berjalan Normal</strong>
-        </div>
-      </div>
-    </aside>
-    
-    <main class="main-viewport">
-      
-      <div class="desktop-top-navbar">
-        <div class="topbar-left-meta">
-          <strong>T-AIMS</strong>
-          <span>|</span>
-          <p>Teknolab Asset & Infrastructure Monitoring System</p>
-        </div>
-
-        <div class="topbar-center-search">
-          <i class="fa-solid fa-magnifying-glass"></i>
-          <input type="text" placeholder="Cari aset, perangkat, lokasi...">
-        </div>
-
-        <div class="topbar-right-meta">
-          <div class="topbar-clock-chip">
-            <i class="fa-regular fa-calendar"></i>
-            <div>
-              <span>Rabu, 14 Okt 2026</span>
-              <strong>20:55 WIB</strong>
-            </div>
-          </div>
-
-          <div class="topbar-notif-btn" onclick="location.href='history.html'">
-            <i class="fa-regular fa-bell"></i>
-            <span class="notif-bubble">5</span>
-          </div>
-
-          <div class="topbar-profile-dropdown" onclick="location.href='users.html'">
-            <div class="profile-avatar-circle"><i class="fa-regular fa-user"></i></div>
-            <div class="profile-meta-text">
-              <strong>Tamu / Viewer</strong>
-              <small>Viewer (Hanya Lihat)</small>
-            </div>
-            <i class="fa-solid fa-chevron-down caret-icon"></i>
-          </div>
-        </div>
-      </div>
-    
-
-      <section class="banner-mountain-hard">
-        <div class="banner-left-content">
-          <h1>T-AIMS Dashboard</h1>
-          <p>Ringkasan monitoring perangkat dan infrastruktur Teknolab secara real-time</p>
-          <div class="banner-action-pills">
-            <span class="pill-badge pill-admin"><i class="fa-solid fa-shield-halved"></i> Administrator (Kontrol Penuh)</span>
-            <span class="pill-badge pill-sensor"><i class="fa-solid fa-bolt text-amber"></i> Simulasi Sensor Elektro</span>
-            <a onclick="openAddDeviceModal()" style="cursor:pointer;" class="pill-badge pill-add"><i class="fa-solid fa-plus"></i> Tambah Perangkat</a>
-          </div>
-        </div>
-        <div class="banner-right-watermark">
-          <div class="mountain-glow-box">
-            <span>TECHNOLOGY</span>
-            <strong>MONITORING A BETTER</strong>
-            <em>TOMORROW</em>
-          </div>
-        </div>
-      </section>
-
-  <section class="kpi-cards-grid-hard">
-        <div class="card-kpi-hard card-kpi-red">
-          <div class="kpi-icon-cell"><i class="fa-solid fa-cubes"></i></div>
-          <div class="kpi-data-cell">
-            <span class="kpi-head-label">Total Perangkat</span>
-            <h2 id="kpi-total-devices">16</h2>
-            <div class="kpi-progress-bar-wrap"><div class="kpi-progress-bar bar-red" style="width: 100%;"></div></div>
-            <small class="kpi-change-text text-green"><i class="fa-solid fa-location-dot"></i> 2 Site Aktif (HO & MO)</small>
-          </div>
-        </div>
-
-        <div class="card-kpi-hard card-kpi-green">
-          <div class="kpi-icon-cell"><i class="fa-solid fa-signal"></i></div>
-          <div class="kpi-data-cell">
-            <span class="kpi-head-label">Perangkat Online</span>
-            <h2 id="kpi-online-devices">5</h2>
-            <div class="kpi-progress-bar-wrap"><div id="kpi-bar-online" class="kpi-progress-bar bar-green" style="width: 31.25%;"></div></div>
-            <small id="kpi-sub-online" class="kpi-sub-label"><strong>31.3%</strong> normal beroperasi</small>
-          </div>
-        </div>
-
-        <div class="card-kpi-hard card-kpi-offline">
-          <div class="kpi-icon-cell"><i class="fa-solid fa-power-off"></i></div>
-          <div class="kpi-data-cell">
-            <span class="kpi-head-label">Perangkat Offline</span>
-            <h2 id="kpi-offline-devices">6</h2>
-            <div class="kpi-progress-bar-wrap"><div id="kpi-bar-offline" class="kpi-progress-bar bar-offline" style="width: 37.5%;"></div></div>
-            <small id="kpi-sub-offline" class="kpi-sub-label"><strong>37.5%</strong> offline fault</small>
-          </div>
-        </div>
-
-        <div class="card-kpi-hard card-kpi-amber">
-          <div class="kpi-icon-cell"><i class="fa-solid fa-triangle-exclamation"></i></div>
-          <div class="kpi-data-cell">
-            <span class="kpi-head-label">Peringatan & Unknown</span>
-            <h2 id="kpi-warning-devices">5</h2>
-            <div class="kpi-progress-bar-wrap"><div id="kpi-bar-warning" class="kpi-progress-bar bar-amber" style="width: 31.25%;"></div></div>
-            <small id="kpi-sub-warning" class="kpi-sub-label"><strong>31.3%</strong> belum termonitor</small>
-          </div>
-        </div>
-
-        <div class="card-kpi-hard card-kpi-blue">
-          <div class="kpi-icon-cell"><i class="fa-solid fa-location-dot"></i></div>
-          <div class="kpi-data-cell">
-            <span class="kpi-head-label">Lokasi Aktif</span>
-            <h2 id="kpi-location-count">2</h2>
-            <div class="kpi-progress-bar-wrap"><div class="kpi-progress-bar bar-blue" style="width: 100%;"></div></div>
-            <small class="kpi-sub-label">HO Cibodas & MO Ciliwung</small>
-          </div>
-        </div>
-
-        <div class="card-kpi-hard card-kpi-purple">
-          <div class="kpi-icon-cell"><i class="fa-regular fa-clock"></i></div>
-          <div class="kpi-data-cell">
-            <span class="kpi-head-label">Uptime Sistem</span>
-            <h2 id="kpi-uptime">31.25%</h2>
-            <div class="kpi-progress-bar-wrap"><div id="kpi-bar-uptime" class="kpi-progress-bar bar-purple" style="width: 31.25%;"></div></div>
-            <small id="kpi-sub-uptime" class="kpi-change-text text-green"><i class="fa-solid fa-arrow-trend-up"></i> Operasional Stabil</small>
-          </div>
-        </div>
-      </section>
-
-      <!-- WIDGET PANEL: T-AIMS AI INFRASTRUCTURE ASSISTANT (PDF HAL. 4, 11, 17) -->
-      <section class="ai-assistant-widget-panel">
-        <div class="ai-widget-header">
-          <div class="ai-widget-title-group">
-            <div class="ai-pulse-icon"><i class="fa-solid fa-robot"></i></div>
-            <div>
-              <h3>T-AIMS AI Infrastructure Assistant</h3>
-              <small>Analisis Real-Time Status Infrastruktur & Rekomendasi Preskriptif Otomatis (n8n Webhook & AI Heuristic Engine)</small>
-            </div>
-          </div>
-          <div class="ai-widget-actions">
-            <span class="ai-badge-live" id="aiNetworkBadge"><i class="fa-solid fa-circle-dot"></i> SISTEM STABIL</span>
-            <button class="btn-refresh-ai" onclick="refreshDashboardAi()" title="Jalankan Ulang Analisis AI"><i class="fa-solid fa-rotate"></i> Analisis Ulang</button>
-          </div>
-        </div>
-
-        <div class="ai-widget-body">
-          <div class="ai-digest-strip">
-            <div class="ai-digest-pill"><strong>Total Device:</strong> <span id="aiTotalDev">16</span></div>
-            <div class="ai-digest-pill" style="color:var(--accent-green);"><strong>Online:</strong> <span id="aiOnlineDev">10</span></div>
-            <div class="ai-digest-pill" style="color:var(--accent-red);"><strong>Offline:</strong> <span id="aiOfflineDev">6</span></div>
-            <div class="ai-digest-pill" style="color:var(--accent-amber);"><strong>Warning:</strong> <span id="aiWarningDev">0</span></div>
-            <div class="ai-digest-pill" style="color:var(--accent-cyan);"><strong>Availability:</strong> <span id="aiAvailPct">62.5%</span></div>
-          </div>
-
-          <div class="ai-insight-content">
-            <div class="ai-problem-block">
-              <span class="ai-block-label"><i class="fa-solid fa-triangle-exclamation text-amber"></i> Perangkat dengan Gangguan Tertinggi:</span>
-              <p id="aiTroubledDevs" class="text-white font-mono">NET-RTR-01, NET-RTR-02, SEC-CCTV-01</p>
-            </div>
-            <div class="ai-recommendation-block">
-              <span class="ai-block-label"><i class="fa-solid fa-lightbulb text-green"></i> AI Recommendation:</span>
-              <p id="aiRecommendationText" class="text-muted">Memuat analisis rekomendasi preskriptif sistem...</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- SEKSI GRAFIK TREN & KATEGORI (16 PERANGKAT DATABASE) -->
-      <section class="charts-section-hard">
-        <div class="chart-glass-panel panel-left-trend">
-          <div class="panel-header-row">
-            <h3><i class="fa-solid fa-chart-line text-red"></i> Tren Status Perangkat</h3>
-            <div class="panel-right-opts">
-              <div class="legend-custom-inline">
-                <span class="legend-dot dot-green"></span> Online
-                <span class="legend-dot dot-amber"></span> Peringatan
-                <span class="legend-dot dot-red"></span> Offline
-              </div>
-              <select class="select-time-range"><option>30 Hari Terakhir</option></select>
-            </div>
-          </div>
-          <div class="canvas-height-holder"><canvas id="trendChart"></canvas></div>
-        </div>
-
-        <div class="chart-glass-panel panel-right-donut">
-          <div class="panel-header-row">
-            <h3><i class="fa-solid fa-chart-pie text-red"></i> Distribusi Kategori Perangkat</h3>
-            <a href="devices.html" class="link-see-detail">Lihat Detail →</a>
-          </div>
-          <div class="donut-content-split">
-            <div class="donut-circle-wrap">
-              <canvas id="categoryDonutChart"></canvas>
-              <div class="donut-inner-data">
-                <strong id="donutTotalCount">16</strong>
-                <small>Perangkat</small>
-              </div>
-            </div>
-            <div class="donut-category-stats-list" id="donutCategoryStatsList">
-              <div class="stat-category-item"><div class="cat-label-title"><span class="sq-dot sq-amber"></span> Network / Switch</div><div class="cat-numbers"><strong>4</strong> <small>25.0%</small></div></div>
-              <div class="stat-category-item"><div class="cat-label-title"><span class="sq-dot sq-blue"></span> Workstation / PC</div><div class="cat-numbers"><strong>3</strong> <small>18.8%</small></div></div>
-              <div class="stat-category-item"><div class="cat-label-title"><span class="sq-dot sq-cyan"></span> CCTV & Security</div><div class="cat-numbers"><strong>2</strong> <small>12.5%</small></div></div>
-              <div class="stat-category-item"><div class="cat-label-title"><span class="sq-dot sq-green"></span> IoT Sensor</div><div class="cat-numbers"><strong>2</strong> <small>12.5%</small></div></div>
-              <div class="stat-category-item"><div class="cat-label-title"><span class="sq-dot sq-red"></span> Server & Storage</div><div class="cat-numbers"><strong>3</strong> <small>18.8%</small></div></div>
-              <div class="stat-category-item"><div class="cat-label-title"><span class="sq-dot sq-purple"></span> Router & Gateway</div><div class="cat-numbers"><strong>2</strong> <small>12.5%</small></div></div>
-            </div>
-          </div>
-        </div>
-      </section>
-      <section class="bottom-three-cols-grid">
-        <div class="bottom-mini-panel">
-          <div class="mini-header-row">
-            <h4><i class="fa-solid fa-server text-red"></i> Status Perangkat Terbaru</h4>
-            <a href="devices.html" class="link-mini-more">Lihat Semua →</a>
-          </div>
-          <table class="mini-table-quick">
-            <thead><tr><th>NAMA PERANGKAT</th><th>LOKASI</th><th>IP ADDRESS</th><th>STATUS</th></tr></thead>
-            <tbody id="dashboardRecentDevices">
-              <tr onclick="location.href='devices.html'"><td><strong>NET-RTR-01</strong><br><small>Router Utama MikroTik</small></td><td>Head Office</td><td class="font-mono text-blue">192.168.10.1</td><td><span class="badge-mini-stat offline">● Offline</span></td></tr>
-              <tr onclick="location.href='devices.html'"><td><strong>NET-SRV-01</strong><br><small>Server Monitoring</small></td><td>Head Office</td><td class="font-mono text-blue">192.168.10.20</td><td><span class="badge-mini-stat offline">● Offline</span></td></tr>
-              <tr onclick="location.href='devices.html'"><td><strong>IOT-ESP-01</strong><br><small>ESP32 Panel Surya</small></td><td>Head Office</td><td class="font-mono text-blue">192.168.10.101</td><td><span class="badge-mini-stat offline">● Offline</span></td></tr>
-            </tbody>
-          </table>
-        </div>
-
-       <div class="bottom-mini-panel">
-          <div class="mini-header-row">
-            <h4><i class="fa-solid fa-compass-drafting text-red"></i> Denah & Lokasi Infrastruktur (Desain Aziz)</h4>
-            <a href="topology.html" class="link-mini-more">Edit Titik Denah →</a>
-          </div>
-          <div class="peta-preview-box" onclick="location.href='topology.html'" style="height: 135px; background: #0B1222; padding: 8px; display: flex; align-items: center; justify-content: space-between; gap: 10px;">
-            <div style="flex: 1; background: #fff; border-radius: 6px; padding: 4px; height: 100%; display: flex; align-items: center; justify-content: center;">
-              <!-- Miniatur Blueprint Denah L-Shape HO Aziz beserta Titik Device -->
-              <svg viewBox="0 0 220 110" style="width: 100%; height: 100%;">
-                <path d="M 15 10 L 70 10 L 70 38 L 195 38 L 195 98 L 15 98 Z" fill="#F8FAFC" stroke="#0F172A" stroke-width="4"/>
-                <line x1="50" y1="38" x2="50" y2="98" stroke="#0F172A" stroke-width="3"/>
-                <line x1="90" y1="62" x2="155" y2="62" stroke="#0F172A" stroke-width="3"/>
-                <line x1="90" y1="62" x2="90" y2="98" stroke="#0F172A" stroke-width="3"/>
-                <line x1="122" y1="62" x2="122" y2="98" stroke="#0F172A" stroke-width="3"/>
-                <circle cx="38" cy="24" r="5" fill="#10B981"/>
-                <circle cx="85" cy="50" r="5" fill="#10B981"/>
-                <circle cx="105" cy="80" r="5" fill="#10B981"/>
-                <circle cx="140" cy="80" r="5" fill="#F59E0B"/>
-                <circle cx="182" cy="85" r="5" fill="#EF4444"/>
-                <text x="130" y="25" font-size="8" font-weight="bold" fill="#0F172A">DENAH HO &amp; MO</text>
-              </svg>
-            </div>
-            <div style="display: flex; flex-direction: column; gap: 6px; width: 135px;">
-              <div class="node-pin-bubble pin-ho" style="font-size:9.5px;"><i class="fa-solid fa-building text-blue"></i> Denah HO (7 Titik)</div>
-              <div class="node-pin-bubble pin-mo" style="font-size:9.5px;"><i class="fa-solid fa-briefcase text-purple"></i> Denah MO (3 Titik)</div>
-              <small style="font-size:8.5px; color:var(--accent-cyan);">● Klik untuk geser/edit titik</small>
-            </div>
-          </div>
-        </div>
-
-        <div class="bottom-mini-panel">
-          <div class="mini-header-row">
-            <h4><i class="fa-solid fa-triangle-exclamation text-amber"></i> Riwayat Gangguan</h4>
-            <a href="history.html" class="link-mini-more">Lihat Semua →</a>
-          </div>
-          <div class="incident-timeline-mini" id="incidentTimelineMini">
-            <div class="incident-mini-card">
-              <div class="inc-time">13:20 WIB</div>
-              <div class="inc-desc"><strong>Perangkat NET-GW-01 Timeout (Offline)</strong><small>Packet loss 100% pada Ping Check</small></div>
-              <span class="badge-kritis">Kritis</span>
-            </div>
-            <div class="incident-mini-card">
-              <div class="inc-time">11:53 WIB</div>
-              <div class="inc-desc"><strong>Heartbeat IOT-ESP-01 Terputus</strong><small>MQTT Broker timeout > 90 detik</small></div>
-              <span class="badge-warn">Warning</span>
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
-  </div>
-
-  <!-- MODAL TAMBAH PERANGKAT INTERAKTIF (LENGKAP 12 FIELD PDF) -->
-  <div class="modal-overlay" id="add-device-modal" style="display: none;">
-    <div class="modal-card-mobile" style="max-width: 520px;">
-      <div class="m-modal-top">
-        <span class="m-modal-title"><i class="fa-solid fa-plus-circle text-red"></i> Tambah Perangkat Baru (12 Field PDF)</span>
-        <button class="m-close-btn" onclick="closeAddDeviceModal()"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-      <div class="m-modal-scroll" style="padding: 18px 22px;">
-        <form onsubmit="handleAddNewDevice(event)" style="display:flex; flex-direction:column; gap:12px;">
-          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
-            <div>
-              <label style="display:block; font-size:11px; font-weight:700; color:var(--text-muted); margin-bottom:5px;">Nama Perangkat *</label>
-              <input type="text" id="newDevName" placeholder="Contoh: Router Ruang Lab" style="width:100%; background:#090E1A; border:1px solid var(--border-card); padding:9px 12px; border-radius:8px; color:#fff; font-size:12px;" required>
-            </div>
-            <div>
-              <label style="display:block; font-size:11px; font-weight:700; color:var(--text-muted); margin-bottom:5px;">Kategori *</label>
-              <select id="newDevCat" style="width:100%; background:#090E1A; border:1px solid var(--border-card); padding:9px 12px; border-radius:8px; color:#fff; font-size:12px;">
-                <option value="Router">Router</option>
-                <option value="Switch Manageable">Switch Manageable</option>
-                <option value="Access Point">Access Point</option>
-                <option value="Server">Server</option>
-                <option value="Storage">Storage</option>
-                <option value="CCTV">CCTV</option>
-                <option value="IoT Node">IoT Node</option>
-                <option value="Firewall">Firewall</option>
-                <option value="PC">PC Workstation</option>
-                <option value="TV">Smart TV</option>
-              </select>
-            </div>
-          </div>
-
-          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
-            <div>
-              <label style="display:block; font-size:11px; font-weight:700; color:var(--text-muted); margin-bottom:5px;">IP Address *</label>
-              <input type="text" id="newDevIp" placeholder="Contoh: 192.168.10.50" style="width:100%; background:#090E1A; border:1px solid var(--border-card); padding:9px 12px; border-radius:8px; color:#fff; font-size:12px;" required>
-            </div>
-            <div>
-              <label style="display:block; font-size:11px; font-weight:700; color:var(--text-muted); margin-bottom:5px;">MAC Address</label>
-              <input type="text" id="newDevMac" placeholder="Contoh: D4:CA:6D:88:99:AA" style="width:100%; background:#090E1A; border:1px solid var(--border-card); padding:9px 12px; border-radius:8px; color:#fff; font-size:12px;">
-            </div>
-          </div>
-
-          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
-            <div>
-              <label style="display:block; font-size:11px; font-weight:700; color:var(--text-muted); margin-bottom:5px;">Lokasi Penempatan *</label>
-              <select id="newDevSite" style="width:100%; background:#090E1A; border:1px solid var(--border-card); padding:9px 12px; border-radius:8px; color:#fff; font-size:12px;">
-                <option value="HO">Head Office (Jl. Cibodas No. 03)</option>
-                <option value="MO">Marketing Office (Jl. Ciliwung No. 247)</option>
-              </select>
-            </div>
-            <div>
-              <label style="display:block; font-size:11px; font-weight:700; color:var(--text-muted); margin-bottom:5px;">PIC Penanggung Jawab *</label>
-              <select id="newDevPic" style="width:100%; background:#090E1A; border:1px solid var(--border-card); padding:9px 12px; border-radius:8px; color:#fff; font-size:12px;">
-                <option value="Ananda Dwi Susanti">Ananda Dwi Susanti (Network)</option>
-                <option value="Ahmad Reza Fahmi">Ahmad Reza Fahmi (Backend)</option>
-                <option value="Ilvina Muvarika">Ilvina Muvarika (IoT)</option>
-                <option value="Dzakwan">Dzakwan (Lead Integration)</option>
-                <option value="Damar Munajad">Damar Munajad (Analyst)</option>
-              </select>
-            </div>
-          </div>
-
-          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
-            <div>
-              <label style="display:block; font-size:11px; font-weight:700; color:var(--text-muted); margin-bottom:5px;">Metode Monitoring *</label>
-              <select id="newDevMethod" style="width:100%; background:#090E1A; border:1px solid var(--border-card); padding:9px 12px; border-radius:8px; color:#fff; font-size:12px;">
-                <option value="Ping">Ping (ICMP)</option>
-                <option value="HTTP">HTTP Health Check</option>
-                <option value="MQTT">MQTT Broker</option>
-                <option value="SNMP">SNMP v2/v3</option>
-                <option value="Heartbeat">Heartbeat Daemon</option>
-              </select>
-            </div>
-            <div>
-              <label style="display:block; font-size:11px; font-weight:700; color:var(--text-muted); margin-bottom:5px;">Tanggal Instalasi</label>
-              <input type="date" id="newDevInstallDate" value="2026-10-17" style="width:100%; background:#090E1A; border:1px solid var(--border-card); padding:9px 12px; border-radius:8px; color:#fff; font-size:12px;">
-            </div>
-          </div>
-
-          <div>
-            <label style="display:block; font-size:11px; font-weight:700; color:var(--text-muted); margin-bottom:5px;">Deskripsi / Catatan Perangkat</label>
-            <input type="text" id="newDevDesc" placeholder="Keterangan fungsi, posisi rack, atau nomor seri..." style="width:100%; background:#090E1A; border:1px solid var(--border-card); padding:9px 12px; border-radius:8px; color:#fff; font-size:12px;">
-          </div>
-
-          <button type="submit" id="btnSubmitAddDevice" style="background:var(--accent-red); border:none; color:#fff; font-weight:800; padding:12px; border-radius:8px; cursor:pointer; margin-top:8px;">
-            <i class="fa-solid fa-cloud-arrow-up"></i> Daftarkan Perangkat ke Database
-          </button>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  <script src="apiService.js"></script>
-  <script src="app.js"></script>
-  <script>
-    function openAddDeviceModal() { document.getElementById('add-device-modal').style.display = 'flex'; }
-    function closeAddDeviceModal() { document.getElementById('add-device-modal').style.display = 'none'; }
-    async function handleAddNewDevice(e) {
-      e.preventDefault();
-      const btn = document.getElementById('btnSubmitAddDevice');
-      const orig = btn.innerHTML;
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan ke DB...';
-      btn.disabled = true;
-
-      const name = document.getElementById('newDevName').value.trim();
-      const ip = document.getElementById('newDevIp').value.trim();
-      const cat = document.getElementById('newDevCat').value;
-      const mac = document.getElementById('newDevMac').value.trim() || '-';
-      const site = document.getElementById('newDevSite').value;
-      const pic = document.getElementById('newDevPic').value;
-      const method = document.getElementById('newDevMethod').value;
-      const installDate = document.getElementById('newDevInstallDate').value || '2026-10-17';
-      const desc = document.getElementById('newDevDesc').value.trim() || 'Perangkat terdaftar pada sistem T-AIMS';
-
-      const locId = site === 'HO' ? 2 : 1;
-      const prefix = cat === 'CCTV' ? 'SEC-CCTV' : (cat === 'Router' ? 'NET-RTR' : (cat === 'Server' ? 'NET-SRV' : 'AST-DEV'));
-      const code = `${prefix}-${Math.floor(10 + Math.random() * 90)}`;
-
-      try {
-        if (typeof createAsset === 'function') {
-          const res = await createAsset({
-            asset_code: code,
-            asset_name: name,
-            category: cat,
-            ip_address: ip,
-            mac_address: mac,
-            location_id: locId,
-            pic_name: pic,
-            monitoring_method: method,
-            installation_date: installDate,
-            description: desc,
-            priority: 2
-          });
-          if (res && res.success) {
-            alert(`✅ Perangkat baru "${name}" (${code}) berhasil didaftarkan ke Database!`);
-            closeAddDeviceModal();
-            if (typeof initDashboard === 'function') await initDashboard();
-            return;
-          }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>T-AIMS | Teknolab Asset & Infrastructure Monitoring System</title>
+    <link rel="icon" type="image/png" href="teknolab_logo.png">
+    <!-- Google Fonts & Font Awesome Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Chart.js Support -->
+    <script src="chart.umd.min.js"></script>
+    <script>
+        if (typeof Chart === 'undefined') {
+            document.write('<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"><\/script>');
         }
-      } catch (err) {
-        alert("Gagal menambahkan perangkat ke backend: " + err.message);
-      } finally {
-        btn.innerHTML = orig;
-        btn.disabled = false;
-      }
-    }
-  </script>
+    </script>
+    <!-- Leaflet GIS Map Support -->
+    <link rel="stylesheet" href="leaflet.css">
+    <script src="leaflet.js"></script>
+    <script>
+        if (typeof L === 'undefined') {
+            document.write('<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">');
+            document.write('<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"><\/script>');
+        }
+    </script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="cyber-dark-theme">
+
+    <div id="main-dashboard" class="app-layout">
+
+        <!-- ============================================================= -->
+        <!-- SIDEBAR NAVIGASI KIRI PERSIS SEPERTI GAMBAR MOCKUP            -->
+        <!-- (CATATAN: MENU ASET DIHILANGKAN SESUAI INSTRUKSI)             -->
+        <!-- ============================================================= -->
+        <aside class="sidebar" id="app-sidebar">
+            <!-- Logo Teknolab Caraka Internasional -->
+            <div class="sidebar-header">
+                <img src="teknolab_logo_dark.png" alt="Teknolab Caraka Internasional Logo" class="brand-logo-img" onerror="this.src='teknolab_logo.png'">
+            </div>
+
+            <!-- Menu Navigasi Utama -->
+            <nav class="sidebar-nav">
+                <ul class="nav-menu">
+                    <li class="nav-item active">
+                        <a href="dashboard.html" class="nav-link">
+                            <i class="fa-solid fa-house-chimney"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="devices.html" class="nav-link">
+                            <i class="fa-solid fa-server"></i>
+                            <span>Perangkat</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="network.html" class="nav-link">
+                            <i class="fa-solid fa-network-wired"></i>
+                            <span>Jaringan</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="topology.html" class="nav-link">
+                            <i class="fa-solid fa-location-dot"></i>
+                            <span>Lokasi</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="javascript:void(0)" onclick="scrollToAlerts()" class="nav-link">
+                            <i class="fa-regular fa-bell"></i>
+                            <span>Peringatan</span>
+                            <span class="nav-badge" id="sidebar-alert-badge">12</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="reports.html" class="nav-link">
+                            <i class="fa-solid fa-chart-column"></i>
+                            <span>Laporan</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="users.html" class="nav-link">
+                            <i class="fa-solid fa-users"></i>
+                            <span>Pengguna</span>
+                        </a>
+                    </li>
+                    <li class="nav-item nav-item-settings">
+                        <a href="settings.html" class="nav-link">
+                            <i class="fa-solid fa-gear"></i>
+                            <span>Pengaturan</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- Status Sistem di Bagian Bawah Sidebar (Persis Sesuai Mockup) -->
+            <div class="sidebar-footer">
+                <div class="system-status-pill">
+                    <span class="dot green pulse"></span>
+                    <div class="status-texts">
+                        <span class="status-label">Sistem</span>
+                        <span class="status-val text-green">Berjalan Normal</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- KONTEN UTAMA DASHBOARD -->
+        <main class="main-content">
+            
+            <!-- TOPBAR HEADER -->
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="mobile-toggle-btn" onclick="toggleMobileSidebar()" title="Toggle Menu">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div class="brand-title-wrap">
+                        <span class="title-code">T-AIMS</span>
+                        <span class="divider">|</span>
+                        <span class="title-sub">Teknolab Asset & Infrastructure Monitoring System</span>
+                    </div>
+                </div>
+
+                <div class="topbar-center">
+                    <div class="search-box">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="global-search-input" placeholder="Cari perangkat, IP, lokasi..." oninput="handleGlobalSearch(this.value)">
+                        <button class="search-clear-btn hidden" id="search-clear-btn" onclick="clearGlobalSearch()"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                </div>
+
+                <div class="topbar-right">
+                    <!-- Realtime Date & Time (WIB) -->
+                    <div class="live-clock">
+                        <i class="fa-regular fa-calendar-days text-muted"></i>
+                        <div class="clock-display">
+                            <span id="live-date">Rabu, 24 Apr 2024</span>
+                            <span id="live-time" class="time-bold">14:32 WIB</span>
+                        </div>
+                    </div>
+
+                    <!-- Notifikasi Bell Dropdown -->
+                    <div class="notification-wrapper">
+                        <button class="icon-btn notif-bell" id="notif-bell-btn" onclick="toggleNotifDropdown()" title="Notifikasi Sistem">
+                            <i class="fa-solid fa-bell"></i>
+                            <span class="bell-badge" id="topbar-alert-count">5</span>
+                        </button>
+
+                        <div class="notif-dropdown hidden" id="notif-dropdown">
+                            <div class="notif-header">
+                                <h6>Notifikasi & Gangguan</h6>
+                                <span class="badge-count" id="notif-unread-count">5 Baru</span>
+                            </div>
+                            <div class="notif-list" id="notif-items-list">
+                                <!-- Dynamic alerts -->
+                            </div>
+                            <div class="notif-footer">
+                                <a href="javascript:void(0)" onclick="scrollToAlerts(); toggleNotifDropdown();">Lihat Semua Riwayat Gangguan &rarr;</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- User Profile Pill & Tombol Kembali/Ganti Akun -->
+                    <div class="profile-dropdown-wrapper">
+                        <div class="user-profile-pill" onclick="toggleUserMenu()">
+                            <div class="profile-avatar">
+                                <i class="fa-solid fa-user" id="topbar-profile-icon"></i>
+                            </div>
+                            <div class="profile-info">
+                                <span class="name" id="topbar-user-name">Ahmad Rizki</span>
+                                <span class="role" id="topbar-user-role">Administrator</span>
+                            </div>
+                            <i class="fa-solid fa-chevron-down caret-icon"></i>
+                        </div>
+
+                        <!-- Dropdown Menu Profil & Kembali ke Login -->
+                        <div class="user-menu-dropdown hidden" id="user-menu-dropdown">
+                            <div class="dropdown-header">
+                                <strong id="dropdown-user-name">Ahmad Rizki</strong>
+                                <span id="dropdown-user-role">Administrator</span>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <a href="users.html" class="dropdown-item">
+                                <i class="fa-solid fa-user-gear"></i> Kelola Profil
+                            </a>
+                            <a href="settings.html" class="dropdown-item">
+                                <i class="fa-solid fa-sliders"></i> Pengaturan
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a href="index.html" class="dropdown-item text-danger">
+                                <i class="fa-solid fa-right-from-bracket"></i> Kembali ke Login / Ganti Akun
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- CONTAINER DASHBOARD T-AIMS -->
+            <div class="content-container">
+
+                <div id="page-dashboard" class="page-view active">
+                    
+                    <!-- BANNER UTAMA DENGAN SLOGAN & SIMULASI ELEKTRO -->
+                    <div class="banner-hero">
+                        <div class="banner-left">
+                            <h2 class="banner-title">T-AIMS Dashboard</h2>
+                            <p class="banner-desc">Ringkasan monitoring perangkat dan infrastruktur Teknolab secara real-time</p>
+                            <!-- Status Role Badge & Simulasi Sensor -->
+                            <div class="banner-sub-actions">
+                                <span class="role-status-chip" id="banner-role-badge">
+                                    <i class="fa-solid fa-shield-halved"></i> Administrator (Kontrol Penuh)
+                                </span>
+                                <button class="btn-simulasi-chip" onclick="triggerDeviceSimulation()" title="Uji coba perubahan status sensor elektro secara acak">
+                                    <i class="fa-solid fa-bolt-lightning text-yellow"></i> Simulasi Sensor Elektro
+                                </button>
+                                <button class="btn-simulasi-chip admin-only" onclick="window.location.href='devices.html'">
+                                    <i class="fa-solid fa-plus text-cyan"></i> Tambah Perangkat
+                                </button>
+                            </div>
+                        </div>
+                        <div class="banner-right">
+                            <div class="slogan-box">
+                                <span class="slogan-line">TECHNOLOGY</span>
+                                <span class="slogan-line">MONITORING A BETTER</span>
+                                <span class="slogan-line">TOMORROW</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ========================================================= -->
+                    <!-- KARTU STATISTIK KPI UTAMA (UKURAN & PROPORSI PERSIS GAMBAR) -->
+                    <!-- BAGIAN TOTAL ASET DIHILANGKAN SESUAI INSTRUKSI SPESIFIK     -->
+                    <!-- ========================================================= -->
+                    <section class="kpi-grid">
+                        <!-- 1. Perangkat Online (HIJAU / ON) -->
+                        <div class="kpi-card">
+                            <div class="kpi-top">
+                                <div class="kpi-icon-box emerald-bg">
+                                    <i class="fa-solid fa-server"></i>
+                                </div>
+                                <div class="kpi-meta">
+                                    <span class="kpi-title">Perangkat Online</span>
+                                    <h3 class="kpi-value" id="kpi-online">14</h3>
+                                </div>
+                            </div>
+                            <div class="kpi-bottom">
+                                <span class="kpi-subtext"><span class="text-green font-bold" id="kpi-online-pct">87.5%</span> dari 16 perangkat</span>
+                                <div class="mini-sparkline"><span class="bar-fill" id="kpi-online-bar" style="width: 87.5%; background: #10B981;"></span></div>
+                            </div>
+                        </div>
+
+                        <!-- 2. Perangkat Offline (MERAH / OFF) -->
+                        <div class="kpi-card">
+                            <div class="kpi-top">
+                                <div class="kpi-icon-box red-bg">
+                                    <i class="fa-solid fa-power-off"></i>
+                                </div>
+                                <div class="kpi-meta">
+                                    <span class="kpi-title">Perangkat Offline</span>
+                                    <h3 class="kpi-value" id="kpi-offline">1</h3>
+                                </div>
+                            </div>
+                            <div class="kpi-bottom">
+                                <span class="kpi-subtext"><span class="text-red font-bold" id="kpi-offline-pct">6.2%</span> dari 16 perangkat</span>
+                                <div class="mini-sparkline"><span class="bar-fill" id="kpi-offline-bar" style="width: 6.2%; background: #EF4444;"></span></div>
+                            </div>
+                        </div>
+
+                        <!-- 3. Peringatan Aktif (KUNING / WARNING) -->
+                        <div class="kpi-card">
+                            <div class="kpi-top">
+                                <div class="kpi-icon-box amber-bg">
+                                    <i class="fa-solid fa-triangle-exclamation"></i>
+                                </div>
+                                <div class="kpi-meta">
+                                    <span class="kpi-title">Peringatan Aktif</span>
+                                    <h3 class="kpi-value" id="kpi-warning">1</h3>
+                                </div>
+                            </div>
+                            <div class="kpi-bottom">
+                                <span class="kpi-subtext"><span class="text-yellow font-bold" id="kpi-warning-pct">6.2%</span> perlu perhatian</span>
+                                <div class="mini-sparkline"><span class="bar-fill" id="kpi-warning-bar" style="width: 6.2%; background: #F59E0B;"></span></div>
+                            </div>
+                        </div>
+
+                        <!-- 4. Lokasi Aktif (BIRU / LOCATION) -->
+                        <div class="kpi-card">
+                            <div class="kpi-top">
+                                <div class="kpi-icon-box blue-bg">
+                                    <i class="fa-solid fa-location-dot"></i>
+                                </div>
+                                <div class="kpi-meta">
+                                    <span class="kpi-title">Lokasi Aktif</span>
+                                    <h3 class="kpi-value" id="kpi-lokasi">2</h3>
+                                </div>
+                            </div>
+                            <div class="kpi-bottom">
+                                <span class="kpi-subtext">Kantor HO &amp; MO Blitar</span>
+                                <div class="mini-sparkline"><span class="bar-fill" style="width: 100%; background: #0284C7;"></span></div>
+                            </div>
+                        </div>
+
+                        <!-- 5. Uptime Sistem (UNGU / UPTIME) -->
+                        <div class="kpi-card">
+                            <div class="kpi-top">
+                                <div class="kpi-icon-box purple-bg">
+                                    <i class="fa-regular fa-clock"></i>
+                                </div>
+                                <div class="kpi-meta">
+                                    <span class="kpi-title">Uptime Sistem</span>
+                                    <h3 class="kpi-value" id="kpi-uptime">99.6%</h3>
+                                </div>
+                            </div>
+                            <div class="kpi-bottom">
+                                <span class="kpi-subtext"><span class="text-green"><i class="fa-solid fa-arrow-trend-up"></i> +0.2%</span> 30 hari terakhir</span>
+                                <div class="mini-sparkline"><span class="bar-fill" style="width: 99.6%; background: #8B5CF6;"></span></div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- ========================================================= -->
+                    <!-- WIDGET PANEL AI INFRASTRUCTURE ASSISTANT (PDF HAL. 4 & 11)-->
+                    <!-- ========================================================= -->
+                    <div class="ai-assistant-widget-panel" id="ai-assistant-panel">
+                        <div class="ai-widget-header">
+                            <div class="ai-widget-title-group">
+                                <div class="ai-pulse-icon">
+                                    <i class="fa-solid fa-brain"></i>
+                                </div>
+                                <div>
+                                    <h3>T-AIMS AI Infrastructure Assistant</h3>
+                                    <small>Otomatisasi Diagnostik &amp; Rekomendasi Preskriptif Perangkat (PDF Hal. 4, 11, 17)</small>
+                                </div>
+                            </div>
+                            <div class="ai-widget-actions">
+                                <span class="ai-badge-live" id="ai-status-badge">
+                                    <span class="pulse-led online"></span> AI Monitoring Aktif
+                                </span>
+                                <button class="btn-ai-refresh" onclick="loadAiInsight(true)" title="Jalankan Diagnostik AI Ulang">
+                                    <i class="fa-solid fa-arrows-rotate" id="ai-refresh-icon"></i> Analisis Ulang
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="ai-digest-strip">
+                            <div class="ai-digest-pill">Target Masalah: <strong id="ai-digest-target">CCTV Gerbang Utama HO</strong></div>
+                            <div class="ai-digest-pill">Status: <strong class="text-red" id="ai-digest-status">Offline (ICMP Ping Timeout)</strong></div>
+                            <div class="ai-digest-pill">Tingkat Urgensi: <strong class="text-yellow" id="ai-digest-urgency">Medium (Keamanan Gerbang)</strong></div>
+                        </div>
+
+                        <div class="ai-insight-content">
+                            <div class="ai-problem-block">
+                                <div class="ai-block-label"><i class="fa-solid fa-circle-exclamation"></i> Diagnosa Masalah Terdeteksi</div>
+                                <p id="ai-problem-text">Perangkat CCTV Head Office (192.168.10.31) tidak merespons request ping selama lebih dari 3 menit. Jalur PoE switch kemungkinan kehilangan daya atau kabel UTP terputus.</p>
+                            </div>
+                            <div class="ai-recommendation-block">
+                                <div class="ai-block-label"><i class="fa-solid fa-lightbulb"></i> Rekomendasi Tindakan Otomatis</div>
+                                <p id="ai-recommendation-text">1. Periksa injektor daya PoE port 7 switch Ruang Server.<br>2. Lakukan soft-restart port via interface managed switch.<br>3. Konfirmasi konektor RJ-45 luar ruangan bila power normal.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ========================================================= -->
+                    <!-- SECTION GRAFIK TENGAH: TREN STATUS & DONUT KATEGORI        -->
+                    <!-- PERSIS SEPERTI GAMBAR DENGAN BENTUK DONUT DAN 16 PERANGKAT-->
+                    <!-- ========================================================= -->
+                    <div class="charts-row">
+                        <!-- 1. Tren Status Perangkat -->
+                        <div class="dashboard-card trend-card">
+                            <div class="card-header">
+                                <div class="card-title-group">
+                                    <i class="fa-solid fa-chart-line text-crimson"></i>
+                                    <h4>Tren Status Perangkat</h4>
+                                </div>
+                                <div class="card-controls">
+                                    <div class="chart-legend-inline">
+                                        <span class="legend-item"><span class="dot green"></span> Online</span>
+                                        <span class="legend-item"><span class="dot red"></span> Offline</span>
+                                        <span class="legend-item"><span class="dot yellow"></span> Peringatan</span>
+                                    </div>
+                                    <select class="cyber-select" id="trend-timeframe" onchange="updateTrendChartTimeframe(this.value)">
+                                        <option value="30">30 Hari Terakhir</option>
+                                        <option value="7">7 Hari Terakhir</option>
+                                        <option value="1">24 Jam Terakhir</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="card-body chart-body">
+                                <canvas id="trendChart" height="215"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- 2. Distribusi Kategori Perangkat (Donut Besar Persis Gambar) -->
+                        <div class="dashboard-card donut-card">
+                            <div class="card-header">
+                                <div class="card-title-group">
+                                    <i class="fa-solid fa-chart-pie text-crimson"></i>
+                                    <h4>Distribusi Kategori Perangkat</h4>
+                                </div>
+                                <a href="devices.html" class="card-link">
+                                    Lihat Detail &rarr;
+                                </a>
+                            </div>
+                            <div class="card-body donut-body">
+                                <div class="donut-visual-wrap">
+                                    <canvas id="categoryDonutChart" width="160" height="160"></canvas>
+                                    <div class="donut-center-label">
+                                        <strong id="donut-total-count">16</strong>
+                                        <span>Perangkat</span>
+                                    </div>
+                                </div>
+                                <div class="donut-legend-col">
+                                    <div class="d-leg-row">
+                                        <span class="d-leg-name"><span class="cat-bullet" style="background:#EF4444;"></span> Server</span>
+                                        <span class="d-leg-val"><strong>4</strong> <small>25.0%</small></span>
+                                    </div>
+                                    <div class="d-leg-row">
+                                        <span class="d-leg-name"><span class="cat-bullet" style="background:#F59E0B;"></span> Network Device</span>
+                                        <span class="d-leg-val"><strong>4</strong> <small>25.0%</small></span>
+                                    </div>
+                                    <div class="d-leg-row">
+                                        <span class="d-leg-name"><span class="cat-bullet" style="background:#0284C7;"></span> CCTV &amp; Security</span>
+                                        <span class="d-leg-val"><strong>2</strong> <small>12.5%</small></span>
+                                    </div>
+                                    <div class="d-leg-row">
+                                        <span class="d-leg-name"><span class="cat-bullet" style="background:#10B981;"></span> IoT Sensor</span>
+                                        <span class="d-leg-val"><strong>2</strong> <small>12.5%</small></span>
+                                    </div>
+                                    <div class="d-leg-row">
+                                        <span class="d-leg-name"><span class="cat-bullet" style="background:#8B5CF6;"></span> Workstation</span>
+                                        <span class="d-leg-val"><strong>3</strong> <small>18.8%</small></span>
+                                    </div>
+                                    <div class="d-leg-row">
+                                        <span class="d-leg-name"><span class="cat-bullet" style="background:#06B6D4;"></span> Lainnya</span>
+                                        <span class="d-leg-val"><strong>1</strong> <small>6.2%</small></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ========================================================= -->
+                    <!-- SECTION BAWAH: TABEL STATUS, PETA LOKASI, RIWAYAT GANGGUAN-->
+                    <!-- ========================================================= -->
+                    <div class="bottom-three-grid">
+                        
+                        <!-- 1. Status Perangkat Terbaru -->
+                        <div class="dashboard-card status-table-card">
+                            <div class="card-header">
+                                <div class="card-title-group">
+                                    <i class="fa-solid fa-server text-crimson"></i>
+                                    <h4>Status Perangkat Terbaru</h4>
+                                </div>
+                                <a href="devices.html" class="card-link">
+                                    Lihat Semua &rarr;
+                                </a>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="mockup-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Nama Perangkat</th>
+                                                <th>Lokasi</th>
+                                                <th>IP Address</th>
+                                                <th>Status</th>
+                                                <th>Terakhir Online</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="home-devices-table-body">
+                                            <!-- Rendered dynamically -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2. Peta Lokasi Infrastruktur (Area Blitar: HO & MO) -->
+                        <div class="dashboard-card map-card">
+                            <div class="card-header">
+                                <div class="card-title-group">
+                                    <i class="fa-solid fa-location-dot text-crimson"></i>
+                                    <h4>Peta Lokasi Infrastruktur</h4>
+                                    <span class="blitar-scope-chip"><i class="fa-solid fa-crosshairs"></i> Area Blitar</span>
+                                </div>
+                                <a href="topology.html" class="card-link">
+                                    Lihat Peta Lengkap &rarr;
+                                </a>
+                            </div>
+                            <div class="card-body map-body-inner">
+                                <div class="map-interactive-container">
+                                    <!-- Leaflet Live Map Blitar -->
+                                    <div id="home-blitar-map" class="home-map-leaflet"></div>
+
+                                    <!-- Quick Tooltip Popover Sesuai Gambar -->
+                                    <div class="map-callout-overlay" id="map-callout-overlay">
+                                        <div class="callout-title" id="callout-node-name">
+                                            <i class="fa-solid fa-building"></i> Pusat Data Teknolab Blitar (HO)
+                                        </div>
+                                        <div class="callout-line"><i class="fa-solid fa-location-crosshairs text-cyan"></i> <span id="callout-node-coord">-8.0738, 112.1735</span></div>
+                                        <div class="callout-line"><span class="dot green"></span> <span id="callout-stat-dev">10 perangkat</span></div>
+                                        <div class="callout-line"><span class="dot green"></span> <span id="callout-stat-up">90% online</span></div>
+                                    </div>
+                                </div>
+                                <div class="map-legend-bar">
+                                    <span><span class="dot green"></span> Online</span>
+                                    <span><span class="dot yellow"></span> Peringatan</span>
+                                    <span><span class="dot red"></span> Offline</span>
+                                    <span class="text-cyan cursor-pointer" onclick="resetHomeBlitarView()"><i class="fa-solid fa-arrows-to-dot"></i> Reset Titik Blitar</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3. Riwayat Gangguan / Peringatan -->
+                        <div class="dashboard-card alerts-card" id="alerts-section-card">
+                            <div class="card-header">
+                                <div class="card-title-group">
+                                    <i class="fa-solid fa-triangle-exclamation text-crimson"></i>
+                                    <h4>Riwayat Gangguan / Peringatan</h4>
+                                </div>
+                                <a href="reports.html" class="card-link">
+                                    Lihat Semua &rarr;
+                                </a>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="alerts-timeline-wrap" id="home-alerts-list">
+                                    <!-- Rendered dynamically -->
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- ========================================================= -->
+                    <!-- RINGKASAN PEMELIHARAAN (BAGIAN BAWAH PERSIS SEPERTI GAMBAR)-->
+                    <!-- ========================================================= -->
+                    <div class="maintenance-section">
+                        <div class="maint-header">
+                            <div class="card-title-group">
+                                <i class="fa-solid fa-wrench text-crimson"></i>
+                                <h4>Ringkasan Pemeliharaan</h4>
+                            </div>
+                            <a href="reports.html" class="card-link">
+                                Lihat Semua &rarr;
+                            </a>
+                        </div>
+                        <div class="maint-cards-grid">
+                            <div class="m-card">
+                                <div class="m-icon bg-blue"><i class="fa-regular fa-calendar-check"></i></div>
+                                <div class="m-info">
+                                    <h3 class="m-val">12</h3>
+                                    <span class="m-lbl">Jadwal Pemeliharaan</span>
+                                </div>
+                            </div>
+                            <div class="m-card">
+                                <div class="m-icon bg-amber"><i class="fa-solid fa-gear fa-spin"></i></div>
+                                <div class="m-info">
+                                    <h3 class="m-val text-yellow">7</h3>
+                                    <span class="m-lbl">Sedang Berlangsung</span>
+                                </div>
+                            </div>
+                            <div class="m-card">
+                                <div class="m-icon bg-red"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                                <div class="m-info">
+                                    <h3 class="m-val text-red">3</h3>
+                                    <span class="m-lbl">Terlambat</span>
+                                </div>
+                            </div>
+                            <div class="m-card">
+                                <div class="m-icon bg-green"><i class="fa-regular fa-circle-check"></i></div>
+                                <div class="m-info">
+                                    <h3 class="m-val text-green">2</h3>
+                                    <span class="m-lbl">Selesai Minggu Ini</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Notification Overlay -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Core Scripts -->
+    <script src="apiService.js"></script>
+    <script src="app.js"></script>
+    <script>
+        function scrollToAlerts() {
+            const el = document.getElementById('alerts-section-card');
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
 </body>
 </html>

@@ -108,7 +108,7 @@
       <div class="search-filter-container-aziz">
         <div class="search-bar-wide">
           <i class="fa-solid fa-magnifying-glass"></i>
-          <input type="text" id="devSearch" placeholder="Cari nama perangkat, IP, kode aset, PIC..." oninput="filterDeviceRows()">
+          <input type="text" id="devSearch" placeholder="Cari nama perangkat, IP, kode perangkat, PIC..." oninput="filterDeviceRows()">
         </div>
         <div class="filter-dropdown-pair">
           <select id="filterCat" class="dropdown-filter-select" onchange="filterDeviceRows()">
@@ -144,7 +144,7 @@
           <thead>
             <tr>
               <th>NO</th>
-              <th>KODE ASET</th>
+              <th>KODE PERANGKAT</th>
               <th>NAMA PERANGKAT</th>
               <th>KATEGORI</th>
               <th>STATUS</th>
@@ -264,19 +264,19 @@
     <div class="modal-card-mobile">
       <div class="m-modal-top">
         <button class="m-back-btn" onclick="closeDetailModal()"><i class="fa-solid fa-arrow-left"></i></button>
-        <span class="m-modal-title">Detail Aset</span>
+        <span class="m-modal-title">Detail Perangkat</span>
         <button class="m-close-btn" onclick="closeDetailModal()"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div class="m-modal-scroll">
         <div class="m-asset-hero">
           <div class="m-asset-icon-box"><i class="fa-solid fa-server"></i></div>
           <h2 id="m-code">SRV-DC-01</h2>
-          <p id="m-name-sub">Server Utama · AST-SRV-001</p>
+          <p id="m-name-sub">Server Utama · NET-SRV-01</p>
           <span class="tag-status-pill online" id="m-status-pill">● ONLINE</span>
         </div>
         <div class="m-section-card">
           <div class="m-sec-title"><i class="fa-solid fa-circle-info text-blue"></i> Kelengkapan Data Spesifikasi (12 Field PDF)</div>
-          <div class="m-info-row"><span>Kode Aset</span><strong id="m-code-val">AST-SRV-001</strong></div>
+          <div class="m-info-row"><span>Kode Perangkat</span><strong id="m-code-val">NET-SRV-01</strong></div>
           <div class="m-info-row"><span>Nama Perangkat</span><strong id="m-name-val">SRV-DC-01</strong></div>
           <div class="m-info-row"><span>Kategori</span><strong id="m-cat">Server</strong></div>
           <div class="m-info-row"><span>IP Address</span><strong id="m-ip" class="font-mono text-blue">192.168.10.1</strong></div>
