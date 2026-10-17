@@ -1,7 +1,7 @@
 # T-AIMS Infrastructure Security Checklist & Hardening Guide
 **Penanggung Jawab:** Wafian (*DevOps, Server & Security Engineer*)  
-**Pembaruan Terakhir:** 16 Oktober 2026 (Shift 2)  
-**Status Audit:** Hardened & Compliant dengan Panduan Operasional PKL
+**Pembaruan Terakhir:** 17 Oktober 2026 (Shift 2)  
+**Status Audit:** Hardened & Compliant dengan Panduan Operasional PKL (Lihat: `evaluasi-keamanan-data.md`)
 
 ---
 
