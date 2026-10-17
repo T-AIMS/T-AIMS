@@ -398,11 +398,11 @@ body {
     background-color: var(--bg-void);
 }
 
-/* SIDEBAR KIRI (Gradasi Ambient Merah Teknolab Sesuai Mockup Referensi) */
+/* SIDEBAR KIRI (Gradasi Tipis di Bagian Kiri ke Tengah Dikit Sesuai Permintaan) */
 .sidebar {
     width: 275px;
-    background: radial-gradient(circle at 45% 95px, rgba(225, 29, 72, 0.40) 0%, rgba(159, 18, 57, 0.20) 36%, rgba(7, 11, 20, 0.98) 72%), #070B14;
-    border-right: 1px solid rgba(225, 29, 72, 0.2);
+    background: linear-gradient(90deg, rgba(190, 18, 60, 0.22) 0%, rgba(136, 19, 55, 0.10) 32%, rgba(7, 11, 20, 0) 65%), #070B14;
+    border-right: 1px solid rgba(225, 29, 72, 0.18);
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -413,19 +413,20 @@ body {
     z-index: 100;
 }
 
-/* Logo Teknolab di Bagian Atas Sidebar (Besar & Jelas Sesuai Referensi Gambar) */
+/* Logo Teknolab di Bagian Atas Sidebar (Besar & Jelas Sesuai Permintaan) */
 .sidebar-header {
-    padding: 24px 20px 16px 20px;
+    padding: 22px 14px 14px 14px;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 .brand-logo-img {
-    height: 110px !important;
-    max-height: 110px !important;
+    height: 135px !important;
+    max-height: 135px !important;
     width: auto;
+    max-width: 170px !important;
     object-fit: contain;
-    filter: drop-shadow(0 0 18px rgba(225, 29, 72, 0.45));
+    filter: drop-shadow(0 0 16px rgba(225, 29, 72, 0.45));
 }
 
 /* Navigasi Utama */
@@ -503,31 +504,89 @@ body {
     box-shadow: 0 0 10px rgba(225, 29, 72, 0.5);
 }
 
-/* Status Sistem di Bagian Bawah Sidebar (Persis Sesuai Mockup) */
+/* Status Sistem & Ganti Bahasa di Bawah Sidebar (Persis Sesuai Mockup Gambar 1) */
 .sidebar-footer {
     margin-top: auto;
-    padding: 16px 18px 20px 18px;
-    border-top: 1px solid rgba(255, 255, 255, 0.07);
-}
-
-.system-status-pill {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-size: 0.8rem;
-}
-.status-texts {
+    padding: 16px 16px 20px 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
     display: flex;
     flex-direction: column;
-    line-height: 1.25;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    text-align: center;
 }
-.status-label {
-    font-size: 0.65rem;
-    color: var(--text-muted);
+
+.lang-switcher-capsule {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: var(--radius-full);
+    padding: 6px 16px;
+    backdrop-filter: blur(8px);
+    transition: var(--transition);
 }
-.status-val {
-    font-size: 0.78rem;
+.lang-switcher-capsule:hover {
+    border-color: rgba(0, 229, 255, 0.35);
+    background: rgba(255, 255, 255, 0.09);
+}
+
+.lang-globe-icon {
+    color: #38BDF8;
+    font-size: 1.1rem;
+}
+
+.lang-toggle-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.lang-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 0.84rem;
     font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: var(--transition);
+    font-family: inherit;
+}
+
+.lang-btn.active {
+    background: #0D1629;
+    color: #FFFFFF;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(0, 229, 255, 0.25);
+}
+
+.lang-btn:hover:not(.active) {
+    color: #FFFFFF;
+}
+
+.lang-divider {
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 0.85rem;
+    user-select: none;
+}
+
+.system-status-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.status-online-text {
+    font-size: 0.86rem;
+    font-weight: 700;
+    color: #FFFFFF;
+    letter-spacing: 0.3px;
 }
 
 /* ==========================================================================
@@ -856,11 +915,7 @@ body {
 }
 
 .banner-sub-actions {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-top: 10px;
-    flex-wrap: wrap;
+    display: none !important; /* Dihilangkan sesuai instruksi user (Gambar 3: Mode, Simulasi, Asisten) */
 }
 .role-status-chip {
     display: inline-flex;

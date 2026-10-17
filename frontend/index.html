@@ -189,7 +189,7 @@
                         <a href="javascript:void(0)" class="nav-link" onclick="switchPage('page-alerts')">
                             <i class="fa-regular fa-bell"></i>
                             <span>Peringatan</span>
-                            <span class="nav-badge" id="sidebar-alert-badge">12</span>
+                            <span class="nav-badge" id="sidebar-alert-badge">5</span>
                         </a>
                     </li>
                     <li class="nav-item" data-page="page-reports">
@@ -214,14 +214,22 @@
                 </ul>
             </nav>
 
-            <!-- Status Sistem di Bagian Bawah Sidebar (Persis Sesuai Mockup) -->
+            <!-- Status Sistem & Fitur Ganti Bahasa di Bagian Bawah Sidebar (Tengah Sesuai Gambar 1) -->
             <div class="sidebar-footer">
-                <div class="system-status-pill">
-                    <span class="dot green pulse"></span>
-                    <div class="status-texts">
-                        <span class="status-label">Sistem</span>
-                        <span class="status-val text-green">Berjalan Normal</span>
+                <!-- Kapsul Fitur Ganti Bahasa -->
+                <div class="lang-switcher-capsule">
+                    <i class="fa-solid fa-globe lang-globe-icon"></i>
+                    <div class="lang-toggle-wrap">
+                        <button type="button" class="lang-btn active" id="lang-btn-id" onclick="setLanguage('id')">ID</button>
+                        <span class="lang-divider">|</span>
+                        <button type="button" class="lang-btn" id="lang-btn-en" onclick="setLanguage('en')">EN</button>
                     </div>
+                </div>
+
+                <!-- Tulisan Status Sistem Online di Bagian Tengah -->
+                <div class="system-status-center">
+                    <span class="dot green pulse" id="footer-status-dot"></span>
+                    <span class="status-online-text" id="footer-status-text">Sistem Online</span>
                 </div>
             </div>
         </aside>
@@ -329,22 +337,6 @@
                         <div class="banner-left">
                             <h2 class="banner-title">T-AIMS Dashboard</h2>
                             <p class="banner-desc">Ringkasan monitoring aset dan infrastruktur Teknolab secara real-time</p>
-                            <!-- Status Role Badge & Simulasi Sensor -->
-                            <div class="banner-sub-actions">
-                                <span class="role-status-chip" id="banner-role-badge">
-                                    <i class="fa-solid fa-shield-halved"></i> Administrator (Kontrol Penuh)
-                                </span>
-                                <button class="btn-simulasi-chip" onclick="triggerDeviceSimulation()" title="Uji coba perubahan status sensor elektro secara acak">
-                                    <i class="fa-solid fa-bolt-lightning text-yellow"></i> Simulasi Sensor Elektro
-                                </button>
-                                
-                                <button class="btn-simulasi-chip" onclick="openAiModal()" title="Buka Rekomendasi Asisten AI Infrastruktur (PDF Hal. 4 & 11)">
-                                    <i class="fa-solid fa-brain text-cyan"></i> AI Assistant
-                                </button>
-                                <button class="btn-simulasi-chip admin-only" onclick="openAddDeviceModal()">
-                                    <i class="fa-solid fa-plus text-cyan"></i> Tambah Perangkat
-                                </button>
-                            </div>
                         </div>
                         <div class="banner-right">
                             <div class="slogan-box">

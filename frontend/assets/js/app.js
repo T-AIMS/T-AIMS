@@ -1940,3 +1940,26 @@ window.addEventListener('resize', () => {
     if (APP_STATE.homeMap) APP_STATE.homeMap.invalidateSize();
     if (APP_STATE.fullMap) APP_STATE.fullMap.invalidateSize();
 });
+
+// Fitur Ganti Bahasa (ID / EN) di Bawah Sidebar Sesuai Gambar Referensi
+function setLanguage(lang) {
+    APP_STATE.currentLang = lang;
+    const btnId = document.getElementById('lang-btn-id');
+    const btnEn = document.getElementById('lang-btn-en');
+    const statusText = document.getElementById('footer-status-text');
+
+    if (btnId && btnEn) {
+        if (lang === 'id') {
+            btnId.classList.add('active');
+            btnEn.classList.remove('active');
+            if (statusText) statusText.textContent = 'Sistem Online';
+            if (typeof showToast === 'function') showToast('Bahasa dialihkan ke Bahasa Indonesia', 'info');
+        } else {
+            btnEn.classList.add('active');
+            btnId.classList.remove('active');
+            if (statusText) statusText.textContent = 'System Online';
+            if (typeof showToast === 'function') showToast('Language switched to English', 'info');
+        }
+    }
+}
+
