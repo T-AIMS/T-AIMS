@@ -11,34 +11,34 @@
     --bg-content: #070B14;
     --bg-card: #0D1629;
     --bg-card-surface: #101B33;
-    --border-dark: rgba(255, 255, 255, 0.08);
-    --border-subtle: rgba(0, 229, 255, 0.12);
-    --border-cyan: rgba(0, 229, 255, 0.35);
+    --border-dark: rgba(255, 255, 255, 0.16);
+    --border-subtle: rgba(0, 229, 255, 0.25);
+    --border-cyan: rgba(0, 229, 255, 0.50);
 
-    /* Aksen Warna */
-    --cyan-neon: #00E5FF;
-    --cyan-dim: #06B6D4;
-    --cyan-glow: rgba(0, 229, 255, 0.35);
+    /* Aksen Warna Cerah & Menyala */
+    --cyan-neon: #00F0FF;
+    --cyan-dim: #00E5FF;
+    --cyan-glow: rgba(0, 240, 255, 0.55);
 
-    --tekno-red: #E11D48;
-    --tekno-crimson: #BE123C;
-    --red-glow: rgba(225, 29, 72, 0.35);
+    --tekno-red: #FF1744;
+    --tekno-crimson: #E11D48;
+    --red-glow: rgba(255, 23, 68, 0.55);
 
-    --tekno-gold: #F59E0B;
+    --tekno-gold: #FFC107;
 
-    /* Indikator Status Elektro Standar */
-    --status-online: #10B981;
-    --status-online-glow: rgba(16, 185, 129, 0.7);
-    --status-warning: #F59E0B;
-    --status-warning-glow: rgba(245, 158, 11, 0.7);
-    --status-offline: #EF4444;
-    --status-offline-glow: rgba(239, 68, 68, 0.7);
+    /* Indikator Status Elektro - Super Cerah & Hidup (Tidak Butek) */
+    --status-online: #00FF9D;
+    --status-online-glow: rgba(0, 255, 157, 0.85);
+    --status-warning: #FFD600;
+    --status-warning-glow: rgba(255, 214, 0, 0.85);
+    --status-offline: #FF1744;
+    --status-offline-glow: rgba(255, 23, 68, 0.85);
 
-    /* Tipografi & Teks */
+    /* Tipografi & Teks - Semua Jadi Cerah Tidak Butek */
     --text-pure: #FFFFFF;
-    --text-primary: #E2E8F0;
-    --text-secondary: #94A3B8;
-    --text-muted: #64748B;
+    --text-primary: #FFFFFF;
+    --text-secondary: #FFFFFF; /* Ganti warna putih untuk warna kedua sesuai instruksi */
+    --text-muted: #E2E8F0; /* Terang dan jelas, bukan abu-abu kusam */
 
     /* Shadow & Radius */
     --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.4);
@@ -401,8 +401,8 @@ body {
 /* SIDEBAR KIRI (Gradasi Tipis di Bagian Kiri ke Tengah Dikit Sesuai Permintaan) */
 .sidebar {
     width: 275px;
-    background: linear-gradient(90deg, rgba(190, 18, 60, 0.22) 0%, rgba(136, 19, 55, 0.10) 32%, rgba(7, 11, 20, 0) 65%), #070B14;
-    border-right: 1px solid rgba(225, 29, 72, 0.18);
+    background: linear-gradient(90deg, rgba(225, 29, 72, 0.28) 0%, rgba(180, 20, 60, 0.12) 35%, rgba(7, 11, 20, 0) 70%), #070B14;
+    border-right: 1px solid rgba(225, 29, 72, 0.25);
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -457,7 +457,7 @@ body {
     align-items: center;
     gap: 16px;
     padding: 10px 16px;
-    color: var(--text-secondary);
+    color: #FFFFFF; /* Ganti warna putih warna kedua, cerah dan tajam tidak butek */
     text-decoration: none;
     font-size: 0.94rem;
     font-weight: 600;
@@ -468,26 +468,27 @@ body {
 .nav-item .nav-link i {
     width: 24px;
     text-align: center;
-    font-size: 1.1rem;
-    color: var(--text-secondary);
+    font-size: 1.15rem;
+    color: #E2E8F0; /* Cerah menyala tidak butek */
     transition: var(--transition);
 }
 
 .nav-item:hover .nav-link {
-    background: rgba(255, 255, 255, 0.05);
-    color: var(--text-pure);
+    background: rgba(255, 255, 255, 0.10);
+    color: #FFFFFF;
 }
 .nav-item:hover .nav-link i {
-    color: var(--text-pure);
+    color: var(--cyan-neon);
 }
 
-/* Menu Aktif (Badge Merah Rounded Gradasi & Glow Sesuai Referensi Gambar) */
+/* Menu Aktif (Gradasi Merah Mewah dengan Bevel Neon di Tepi Kiri Sesuai Gambar 1) */
 .nav-item.active .nav-link {
-    background: linear-gradient(90deg, #B91C1C 0%, #7F1D1D 100%);
+    background: linear-gradient(90deg, #A81B34 0%, #7A1224 55%, #35050F 100%);
     color: #FFFFFF;
     font-weight: 700;
-    box-shadow: 0 4px 16px rgba(225, 29, 72, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.2);
-    border: 1px solid rgba(244, 63, 94, 0.3);
+    box-shadow: inset 4px 0 0 #FF1744, inset 10px 0 20px rgba(255, 23, 68, 0.5), 0 4px 20px rgba(225, 29, 72, 0.45);
+    border: 1px solid rgba(255, 23, 68, 0.45);
+    position: relative;
 }
 .nav-item.active .nav-link i {
     color: #FFFFFF;
@@ -504,11 +505,11 @@ body {
     box-shadow: 0 0 10px rgba(225, 29, 72, 0.5);
 }
 
-/* Status Sistem & Ganti Bahasa di Bawah Sidebar (Persis Sesuai Mockup Gambar 1) */
+/* Status Sistem & Ganti Bahasa di Bawah Sidebar (Persis Sesuai Mockup Gambar 1 & 2) */
 .sidebar-footer {
     margin-top: auto;
     padding: 16px 16px 20px 16px;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -522,21 +523,23 @@ body {
     align-items: center;
     justify-content: center;
     gap: 10px;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(13, 22, 41, 0.9);
+    border: 1.5px solid rgba(0, 240, 255, 0.45);
     border-radius: var(--radius-full);
     padding: 6px 16px;
     backdrop-filter: blur(8px);
     transition: var(--transition);
+    box-shadow: 0 0 16px rgba(0, 240, 255, 0.25);
 }
 .lang-switcher-capsule:hover {
-    border-color: rgba(0, 229, 255, 0.35);
-    background: rgba(255, 255, 255, 0.09);
+    border-color: var(--cyan-neon);
+    box-shadow: 0 0 20px var(--cyan-glow);
 }
 
 .lang-globe-icon {
-    color: #38BDF8;
-    font-size: 1.1rem;
+    color: var(--cyan-neon);
+    font-size: 1.15rem;
+    filter: drop-shadow(0 0 8px var(--cyan-glow));
 }
 
 .lang-toggle-wrap {
@@ -548,9 +551,9 @@ body {
 .lang-btn {
     background: transparent;
     border: none;
-    color: var(--text-secondary);
+    color: #FFFFFF;
     font-size: 0.84rem;
-    font-weight: 700;
+    font-weight: 800;
     padding: 3px 10px;
     border-radius: 6px;
     cursor: pointer;
@@ -559,18 +562,18 @@ body {
 }
 
 .lang-btn.active {
-    background: #0D1629;
-    color: #FFFFFF;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(0, 229, 255, 0.25);
+    background: var(--cyan-neon);
+    color: #070B14;
+    font-weight: 900;
+    box-shadow: 0 0 12px var(--cyan-glow);
 }
 
 .lang-btn:hover:not(.active) {
-    color: #FFFFFF;
+    color: var(--cyan-neon);
 }
 
 .lang-divider {
-    color: rgba(255, 255, 255, 0.3);
+    color: rgba(255, 255, 255, 0.4);
     font-size: 0.85rem;
     user-select: none;
 }
@@ -583,10 +586,11 @@ body {
 }
 
 .status-online-text {
-    font-size: 0.86rem;
-    font-weight: 700;
-    color: #FFFFFF;
-    letter-spacing: 0.3px;
+    font-size: 0.88rem;
+    font-weight: 800;
+    color: var(--status-online);
+    text-shadow: 0 0 12px var(--status-online-glow);
+    letter-spacing: 0.4px;
 }
 
 /* ==========================================================================
@@ -1178,36 +1182,37 @@ body {
 }
 .mockup-table th {
     padding: 8px 10px;
-    color: var(--text-muted);
-    font-weight: 600;
-    font-size: 0.7rem;
+    color: #FFFFFF;
+    font-weight: 700;
+    font-size: 0.72rem;
     text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 .mockup-table tbody tr {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     cursor: pointer;
     transition: var(--transition);
 }
-.mockup-table tbody tr:hover { background: rgba(0, 229, 255, 0.04); }
+.mockup-table tbody tr:hover { background: rgba(0, 240, 255, 0.08); }
 .mockup-table td {
     padding: 8px 10px;
-    color: var(--text-secondary);
+    color: #FFFFFF;
     vertical-align: middle;
 }
-.device-name-text { font-weight: 600; color: #FFF; }
-.ip-mono { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--cyan-dim); }
+.device-name-text { font-weight: 700; color: #FFFFFF; }
+.ip-mono { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--cyan-neon); font-weight: 600; }
 
 .status-pill {
     display: inline-flex;
     align-items: center;
-    padding: 2px 7px;
+    padding: 2px 8px;
     border-radius: var(--radius-full);
-    font-size: 0.7rem;
-    font-weight: 600;
+    font-size: 0.72rem;
+    font-weight: 700;
 }
-.status-pill.online  { background: rgba(16, 185, 129, 0.12); color: var(--status-online); border: 1px solid rgba(16, 185, 129, 0.3); }
-.status-pill.warning { background: rgba(245, 158, 11, 0.12); color: var(--status-warning); border: 1px solid rgba(245, 158, 11, 0.3); }
-.status-pill.offline { background: rgba(239, 68, 68, 0.12); color: var(--status-offline); border: 1px solid rgba(239, 68, 68, 0.3); }
+.status-pill.online  { background: rgba(0, 255, 157, 0.18); color: var(--status-online); border: 1px solid rgba(0, 255, 157, 0.5); text-shadow: 0 0 8px var(--status-online-glow); }
+.status-pill.warning { background: rgba(255, 214, 0, 0.18); color: var(--status-warning); border: 1px solid rgba(255, 214, 0, 0.5); text-shadow: 0 0 8px var(--status-warning-glow); }
+.status-pill.offline { background: rgba(255, 23, 68, 0.18); color: var(--status-offline); border: 1px solid rgba(255, 23, 68, 0.5); text-shadow: 0 0 8px var(--status-offline-glow); }
 
 /* PETA INTERAKTIF INDONESIA */
 .map-body-inner {
@@ -1272,19 +1277,19 @@ body {
     border-bottom: 1px solid rgba(255, 255, 255, 0.04);
     font-size: 0.74rem;
 }
-.alert-row:hover { background: rgba(0, 229, 255, 0.03); }
-.a-time { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--text-muted); min-width: 36px; }
+.alert-row:hover { background: rgba(0, 240, 255, 0.08); }
+.a-time { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--cyan-neon); min-width: 38px; font-weight: 700; }
 .a-body { flex: 1; }
-.a-body strong { display: block; color: #FFF; line-height: 1.2; }
-.a-body span { color: var(--text-muted); font-size: 0.68rem; }
+.a-body strong { display: block; color: #FFFFFF; font-weight: 700; line-height: 1.25; font-size: 0.78rem; }
+.a-body span { color: #FFFFFF; font-size: 0.7rem; font-weight: 500; }
 .a-badge {
-    padding: 2px 6px;
+    padding: 2px 7px;
     border-radius: var(--radius-sm);
-    font-size: 0.62rem;
-    font-weight: 700;
+    font-size: 0.65rem;
+    font-weight: 800;
 }
-.a-badge.kritis { background: rgba(239, 68, 68, 0.2); border: 1px solid var(--status-offline); color: #FCA5A5; }
-.a-badge.peringatan { background: rgba(245, 158, 11, 0.2); border: 1px solid var(--status-warning); color: #FCD34D; }
+.a-badge.kritis { background: rgba(255, 23, 68, 0.25); border: 1px solid var(--status-offline); color: #FF4D6D; text-shadow: 0 0 6px rgba(255, 23, 68, 0.6); }
+.a-badge.peringatan { background: rgba(255, 214, 0, 0.25); border: 1px solid var(--status-warning); color: #FFE066; text-shadow: 0 0 6px rgba(255, 214, 0, 0.6); }
 
 /* RINGKASAN PEMELIHARAAN */
 .maintenance-section {
@@ -1306,7 +1311,7 @@ body {
     gap: 12px;
 }
 .m-card {
-    background: rgba(8, 13, 24, 0.6);
+    background: rgba(13, 22, 41, 0.85);
     border: 1px solid var(--border-dark);
     border-radius: var(--radius-md);
     padding: 10px 12px;
@@ -1315,17 +1320,17 @@ body {
     gap: 12px;
 }
 .m-icon {
-    width: 34px;
-    height: 34px;
+    width: 36px;
+    height: 36px;
     border-radius: var(--radius-sm);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.95rem;
+    font-size: 1.05rem;
 }
 .m-info { display: flex; flex-direction: column; }
-.m-val { font-size: 1.25rem; font-weight: 800; color: #FFF; line-height: 1; }
-.m-lbl { font-size: 0.68rem; color: var(--text-muted); }
+.m-val { font-size: 1.35rem; font-weight: 800; color: #FFFFFF; line-height: 1; }
+.m-lbl { font-size: 0.74rem; color: #FFFFFF; font-weight: 600; }
 
 /* ==========================================================================
    HALAMAN TAMBAHAN (DAFTAR PERANGKAT, MONITORING, NOTIFIKASI, LAPORAN)
@@ -2734,11 +2739,15 @@ body {
   }
 
   .m-val {
-    font-size: 1.15rem !important;
+    font-size: 1.25rem !important;
+    color: #FFFFFF !important;
+    font-weight: 800 !important;
   }
 
   .m-lbl {
-    font-size: 0.68rem !important;
+    font-size: 0.74rem !important;
+    color: #FFFFFF !important;
+    font-weight: 600 !important;
   }
 }
 
