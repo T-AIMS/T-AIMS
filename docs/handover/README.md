@@ -12,6 +12,7 @@ Folder ini merupakan repositori terpadu seluruh berkas serah terima harian (*Dai
 | **Hari 3** | 14 Okt 2026 | [`handover-hari-3.md`](handover-hari-3.md) | Service logs, startup bat, security checklist, backup script |
 | **Hari 4** | 15–16 Okt 2026 | [`handover-hari-4.md`](handover-hari-4.md) | Integrasi 16 aset live, full-stack docker compose, SSL reverse proxy, hardening |
 | **Hari 5** | 16 Okt 2026 | [`handover-hari-5.md`](handover-hari-5.md) | Final Milestone: Pengoperasian Sistem, Perlindungan Data, Evaluasi Keamanan & Tag v1.0.0-gold |
+| **Hari 6** | 17 Okt 2026 | [`handover-hari-6.md`](handover-hari-6.md) | Evaluasi Perlindungan Data, Secrets Hygiene, Database Hashing & Standby Server CloudPanel |
 
 ---
 
