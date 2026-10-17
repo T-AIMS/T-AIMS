@@ -27,6 +27,7 @@
 | **15** | Pengujian E2E Data 16 Aset | Dzakwan | Dika & Wafian | 15/10/2026 | ✅ | Tampil akurat di UI dashboard port 3001. |
 | **16** | Finalisasi Video Demonstrasi | Mentor | Reza Tri | 16/10/2026 | ✅ | Skenario pengujian lengkap, sistem bebas bug & siap rekam demo. |
 | **17** | Health Checker Otomatis v1.3 | Dzakwan | Wafian | 16/10/2026 | ✅ | Skrip `verify_integration.py` 15/15 OK (100% HIJAU). |
+| **18** | Akses & IP Server Produksi | Wafian (DevOps) | PT Teknolab Caraka Int. | Menunggu | ⏳ | Standby Local Staging. Mengacu pada [DEVOPS_INTEGRATION_CONTRACT_DZAKWAN.md](DEVOPS_INTEGRATION_CONTRACT_DZAKWAN.md). |
 
 *Keterangan Status:* ✅ Selesai | ⏳ Menunggu | ❌ Belum Ada
 
