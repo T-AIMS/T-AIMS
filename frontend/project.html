@@ -2,13 +2,349 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="refresh" content="0; url=index.html#page-project-info">
-  <title>T-AIMS &bull; Memuat Halaman...</title>
-  <script>
-    window.location.replace("index.html#page-project-info");
-  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>T-AIMS · Informasi Projek & Tim</title>
+  <link rel="icon" type="image/png" href="logo-teknolab.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .editable-locked { pointer-events: none; }
+    .editable-unlocked { outline: 2px solid #3B82F6; background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 2px 6px; pointer-events: auto; }
+    .btn-action-edit { background: #3B82F6; border: none; color: #fff; font-weight: 800; padding: 10px 20px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+    .btn-action-edit.saving { background: #10B981; }
+  </style>
 </head>
-<body style="background:#060A12; color:#00E5FF; font-family:sans-serif; display:flex; align-items:center; justify-content:center; height:100vh; margin:0;">
-  <p>Memuat antarmuka T-AIMS... <a href="index.html#page-project-info" style="color:#00E5FF;">Klik di sini jika tidak beralih otomatis</a></p>
+<body class="dashboard-body">
+  <div class="app-shell-container">
+    <aside class="desktop-sidebar">
+      <div class="sidebar-logo-zone">
+        <a href="dashboard.html"><img src="logo-teknolab.png" alt="Teknolab" class="brand-clean-blend"></a>
+        <button class="sidebar-close-btn" onclick="toggleMobileSidebar()" aria-label="Tutup Menu"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <nav class="sidebar-nav-menu">
+        <a href="dashboard.html" class="sidebar-link"><i class="fa-solid fa-house"></i> <span>Dashboard</span></a>
+        <a href="devices.html" class="sidebar-link"><i class="fa-solid fa-microchip"></i> <span>Perangkat</span></a>
+        <a href="network.html" class="sidebar-link"><i class="fa-solid fa-network-wired"></i> <span>Jaringan</span></a>
+        <a href="topology.html" class="sidebar-link"><i class="fa-solid fa-location-dot"></i> <span>Lokasi</span></a>
+        <a href="history.html" class="sidebar-link"><i class="fa-regular fa-bell"></i> <span>Peringatan</span> <span class="alert-pill-red">5</span></a>
+        <a href="reports.html" class="sidebar-link"><i class="fa-solid fa-chart-simple"></i> <span>Laporan</span></a>
+        <a href="project.html" class="sidebar-link active"><i class="fa-solid fa-circle-info"></i> <span>Informasi Projek</span></a>
+        <a href="users.html" class="sidebar-link"><i class="fa-solid fa-users"></i> <span>Pengguna</span></a>
+        <a href="settings.html" class="sidebar-link" style="margin-top:14px;"><i class="fa-solid fa-gear"></i> <span>Pengaturan</span></a>
+      </nav>
+      <div class="sidebar-status-box"><span class="status-pulse-dot"></span><div class="sidebar-status-box-text"><small>Sistem</small><strong>Berjalan Normal</strong></div></div>
+    </aside>
+
+    <main class="main-viewport">
+      <div class="desktop-top-navbar">
+        <button class="mobile-menu-toggle" id="mobileMenuToggle" onclick="toggleMobileSidebar()" aria-label="Buka Menu Navigasi"><i class="fa-solid fa-bars"></i></button>
+        <div class="topbar-left-meta"><strong>T-AIMS</strong><span>|</span><p>Teknolab Asset & Infrastructure Monitoring System</p></div>
+        <div class="topbar-center-search"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="Cari perangkat, IP, PIC..."></div>
+        <div class="topbar-right-meta">
+          <div class="topbar-clock-chip"><i class="fa-regular fa-calendar"></i><div><span>Rabu, 14 Okt 2026</span><strong>23:30 WIB</strong></div></div>
+          <div class="topbar-notif-btn" onclick="location.href='history.html'"><i class="fa-regular fa-bell"></i><span class="notif-bubble">5</span></div>
+          <div class="topbar-profile-dropdown" onclick="location.href='users.html'">
+            <div class="profile-avatar-circle" id="topbarAvatar">A</div>
+            <div class="profile-meta-text"><strong id="topbarRoleName">Ahmad Reza Fahmi</strong><small id="topbarRoleSub">Administrator</small></div>
+            <i class="fa-solid fa-chevron-down caret-icon"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="subpage-header-row">
+        <div>
+          <div class="badge-sub-green"><i class="fa-solid fa-shield-halved"></i> DOKUMENTASI RESMI • TIM PENGEMBANG PKL</div>
+          <h2>Informasi Pengguna & Tim PKL Teknolab</h2>
+          <p>Klik tombol "Edit Tim" untuk mengubah data, atau "Tambah Anggota" untuk mendaftarkan personel tim baru.</p>
+        </div>
+        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+          <button class="btn-action-edit" id="btnEditToggle" onclick="toggleEditMode()"><i class="fa-solid fa-pen-to-square"></i> Edit Tim</button>
+          <button class="btn-action-edit btn-add-member" onclick="openAddMemberModal()"><i class="fa-solid fa-user-plus"></i> Tambah Anggota</button>
+        </div>
+      </div>
+
+      <!-- SHIFT 1 -->
+      <div class="shift-banner-gold">
+        <div class="shift-title-group"><i class="fa-solid fa-sun text-amber"></i><div><strong>SHIFT 1 — PAGI (07.00 - 16.00 WIB)</strong><small>System Core, Backend, Database, Hardware & Network</small></div></div>
+        <span class="badge-member-count" id="countShift1">5 Anggota</span>
+      </div>
+
+      <div class="team-cards-grid-aziz" id="gridShift1">
+        <div class="member-card-aziz">
+          <div class="member-card-top"><div class="member-avatar-box" style="background: rgba(14, 165, 233, 0.15); color: #38BDF8;"><i class="fa-solid fa-user-tie"></i></div><div><h4 class="editable-field editable-locked" data-key="name_1">DAMAR MUNAJAD</h4><span class="editable-field editable-locked member-role-sub text-cyan" data-key="role_1">Project Coordinator & System Analyst</span></div></div>
+          <div class="member-contacts"><span class="editable-field editable-locked" data-key="phone_1"><i class="fa-solid fa-phone"></i> 0851-5866-6985</span><span class="editable-field editable-locked" data-key="email_1"><i class="fa-solid fa-envelope"></i> damarmunajad7@gmail.com</span></div>
+          <p class="editable-field editable-locked member-job-desc" data-key="desc_1">Menyusun requirement system dan scope pekerjaan. Membuat System Architecture, Block Diagram, dan Data Flow.</p>
+          <div class="member-card-footer"><small>Shift 1</small></div>
+        </div>
+        <div class="member-card-aziz">
+          <div class="member-card-top"><div class="member-avatar-box" style="background: rgba(59, 130, 246, 0.15); color: #60A5FA;"><i class="fa-solid fa-server"></i></div><div><h4 class="editable-field editable-locked" data-key="name_2">AHMAD REZA FAHMI</h4><span class="editable-field editable-locked member-role-sub text-blue" data-key="role_2">Backend & API Developer</span></div></div>
+          <div class="member-contacts"><span class="editable-field editable-locked" data-key="phone_2"><i class="fa-solid fa-phone"></i> 0857-0724-8435</span><span class="editable-field editable-locked" data-key="email_2"><i class="fa-solid fa-envelope"></i> rzafahmi351@gmail.com</span></div>
+          <p class="editable-field editable-locked member-job-desc" data-key="desc_2">Membangun backend Express.js penghubung perangkat, database, dan dashboard port 3000.</p>
+          <div class="member-card-footer"><small>Shift 1</small></div>
+        </div>
+        <div class="member-card-aziz">
+          <div class="member-card-top"><div class="member-avatar-box" style="background: rgba(245, 158, 11, 0.15); color: #FBBF24;"><i class="fa-solid fa-database"></i></div><div><h4 class="editable-field editable-locked" data-key="name_3">FAIDA TRISMA AMELIA</h4><span class="editable-field editable-locked member-role-sub text-amber" data-key="role_3">Database & Asset Management Engineer</span></div></div>
+          <div class="member-contacts"><span class="editable-field editable-locked" data-key="phone_3"><i class="fa-solid fa-phone"></i> 0857-3946-0210</span><span class="editable-field editable-locked" data-key="email_3"><i class="fa-solid fa-envelope"></i> faidatrismaamelia@gmail.com</span></div>
+          <p class="editable-field editable-locked member-job-desc" data-key="desc_3">Merancang skema database relasional MySQL, menjaga konsistensi data perangkat dan log.</p>
+          <div class="member-card-footer"><small>Shift 1</small></div>
+        </div>
+        <div class="member-card-aziz">
+          <div class="member-card-top"><div class="member-avatar-box" style="background: rgba(16, 185, 129, 0.15); color: #34D399;"><i class="fa-solid fa-microchip"></i></div><div><h4 class="editable-field editable-locked" data-key="name_4">ILVINA MUVARIKA</h4><span class="editable-field editable-locked member-role-sub text-green" data-key="role_4">IoT & Device Integration Engineer</span></div></div>
+          <div class="member-contacts"><span class="editable-field editable-locked" data-key="phone_4"><i class="fa-solid fa-phone"></i> 0857-0480-4181</span><span class="editable-field editable-locked" data-key="email_4"><i class="fa-solid fa-envelope"></i> ilfinamufarika4@gmail.com</span></div>
+          <p class="editable-field editable-locked member-job-desc" data-key="desc_4">Membuat firmware heartbeat untuk ESP32 dan modul relay, mengirim telemetry sensor suhu.</p>
+          <div class="member-card-footer"><small>Shift 1</small></div>
+        </div>
+        <div class="member-card-aziz">
+          <div class="member-card-top"><div class="member-avatar-box" style="background: rgba(139, 92, 246, 0.15); color: #A78BFA;"><i class="fa-solid fa-network-wired"></i></div><div><h4 class="editable-field editable-locked" data-key="name_5">ANANDA DWI SUSANTI</h4><span class="editable-field editable-locked member-role-sub text-purple" data-key="role_5">Network & Device Monitoring Engineer</span></div></div>
+          <div class="member-contacts"><span class="editable-field editable-locked" data-key="phone_5"><i class="fa-solid fa-phone"></i> 0857-3231-0315</span><span class="editable-field editable-locked" data-key="email_5"><i class="fa-solid fa-envelope"></i> c11anandadwisusanti@gmail.com</span></div>
+          <p class="editable-field editable-locked member-job-desc" data-key="desc_5">Membangun monitoring engine jaringan, konfigurasi SNMP v2/v3, dan aturan pengecekan ping.</p>
+          <div class="member-card-footer"><small>Shift 1</small></div>
+        </div>
+      </div>
+
+      <!-- SHIFT 2 -->
+      <div class="shift-banner-gold" style="margin-top:32px; border-color: rgba(59, 130, 246, 0.5);">
+        <div class="shift-title-group"><i class="fa-solid fa-moon text-blue"></i><div><strong>SHIFT 2 — SORE / MALAM (16.00 - 01.00 WIB)</strong><small>Frontend Dashboard, Automation, Security, Testing & System Integration</small></div></div>
+        <span class="badge-member-count" id="countShift2" style="background: rgba(59, 130, 246, 0.2); color: #60A5FA;">6 Anggota</span>
+      </div>
+
+      <div class="team-cards-grid-aziz" id="gridShift2">
+        <div class="member-card-aziz">
+          <div class="member-card-top"><div class="member-avatar-box" style="background: rgba(14, 165, 233, 0.15); color: #38BDF8;"><i class="fa-solid fa-diagram-project"></i></div><div><h4 class="editable-field editable-locked" data-key="name_6">DZAKWAN</h4><span class="editable-field editable-locked member-role-sub text-cyan" data-key="role_6">Shift Lead & System Integration</span></div></div>
+          <div class="member-contacts"><span class="editable-field editable-locked" data-key="phone_6"><i class="fa-solid fa-phone"></i> 0857-3192-9204</span><span class="editable-field editable-locked" data-key="email_6"><i class="fa-solid fa-envelope"></i> awangtgprofesional@gmail.com</span></div>
+          <p class="editable-field editable-locked member-job-desc" data-key="desc_6">Memimpin operasional Shift 2, mengoordinasikan integrasi antar-modul frontend dan backend.</p>
+          <div class="member-card-footer"><small>Shift 2</small></div>
+        </div>
+        <div class="member-card-aziz" style="border: 1px solid rgba(59, 130, 246, 0.4);">
+          <div class="member-card-top"><div class="member-avatar-box" style="background: rgba(59, 130, 246, 0.2); color: #60A5FA;"><i class="fa-solid fa-code"></i></div><div><h4 class="editable-field editable-locked" data-key="name_7">DIKA YOGA PRATAMA</h4><span class="editable-field editable-locked member-role-sub text-blue" data-key="role_7">Frontend Dashboard Developer</span></div></div>
+          <div class="member-contacts"><span class="editable-field editable-locked" data-key="phone_7"><i class="fa-solid fa-phone"></i> 0856-4866-1847</span><span class="editable-field editable-locked" data-key="email_7"><i class="fa-solid fa-envelope"></i> dikayogapratama18@gmail.com</span></div>
+          <p class="editable-field editable-locked member-job-desc" data-key="desc_7">Mengembangkan arsitektur multi-halaman dashboard T-AIMS port 3001, modal detail perangkat, dan GIS peta.</p>
+          <div class="member-card-footer"><small>Shift 2</small></div>
+        </div>
+        <div class="member-card-aziz">
+          <div class="member-card-top"><div class="member-avatar-box" style="background: rgba(139, 92, 246, 0.15); color: #A78BFA;"><i class="fa-solid fa-palette"></i></div><div><h4 class="editable-field editable-locked" data-key="name_8">AHMAD AZIZ</h4><span class="editable-field editable-locked member-role-sub" data-key="role_8">UI/UX & Data Visualization Engineer</span></div></div>
+          <div class="member-contacts"><span class="editable-field editable-locked" data-key="phone_8"><i class="fa-solid fa-phone"></i> 0816-1560-2298</span><span class="editable-field editable-locked" data-key="email_8"><i class="fa-solid fa-envelope"></i> ahzizsaputra@gmail.com</span></div>
+          <p class="editable-field editable-locked member-job-desc" data-key="desc_8">Merancang antarmuka dashboard di Figma, palet warna Cyber-Electric Dark Mountain, dan Chart.js.</p>
+          <div class="member-card-footer"><small>Shift 2</small></div>
+        </div>
+        <div class="member-card-aziz">
+          <div class="member-card-top"><div class="member-avatar-box" style="background: rgba(245, 158, 11, 0.15); color: #FBBF24;"><i class="fa-solid fa-bell"></i></div><div><h4 class="editable-field editable-locked" data-key="name_9">ARICK FERDIANSYAH</h4><span class="editable-field editable-locked member-role-sub" data-key="role_9">Automation & Notification Engineer</span></div></div>
+          <div class="member-contacts"><span class="editable-field editable-locked" data-key="phone_9"><i class="fa-solid fa-phone"></i> 0838-4168-7522</span><span class="editable-field editable-locked" data-key="email_9"><i class="fa-solid fa-envelope"></i> arickferdiansyah@gmail.com</span></div>
+          <p class="editable-field editable-locked member-job-desc" data-key="desc_9">Mengembangkan otomatisasi notifikasi, webhook pengiriman alarm insiden jaringan secara real-time.</p>
+          <div class="member-card-footer"><small>Shift 2</small></div>
+        </div>
+        <div class="member-card-aziz">
+          <div class="member-card-top"><div class="member-avatar-box" style="background: rgba(239, 68, 68, 0.15); color: #EF4444;"><i class="fa-solid fa-shield-halved"></i></div><div><h4 class="editable-field editable-locked" data-key="name_10">WAFIAN</h4><span class="editable-field editable-locked member-role-sub" data-key="role_10">DevOps, Server & Security Engineer</span></div></div>
+          <div class="member-contacts"><span class="editable-field editable-locked" data-key="phone_10"><i class="fa-solid fa-phone"></i> 0858-0421-4958</span><span class="editable-field editable-locked" data-key="email_10"><i class="fa-solid fa-envelope"></i> wafianzaidan@gmail.com</span></div>
+          <p class="editable-field editable-locked member-job-desc" data-key="desc_10">Mengelola infrastruktur server, keamanan port, pemantauan soket perangkat, dan stabilitas gateway.</p>
+          <div class="member-card-footer"><small>Shift 2</small></div>
+        </div>
+        <div class="member-card-aziz">
+          <div class="member-card-top"><div class="member-avatar-box" style="background: rgba(16, 185, 129, 0.15); color: #34D399;"><i class="fa-solid fa-file-circle-check"></i></div><div><h4 class="editable-field editable-locked" data-key="name_11">REZA TRI WARDANA</h4><span class="editable-field editable-locked member-role-sub" data-key="role_11">QA, Testing & Documentation Engineer</span></div></div>
+          <div class="member-contacts"><span class="editable-field editable-locked" data-key="phone_11"><i class="fa-solid fa-phone"></i> 0851-3681-1164</span><span class="editable-field editable-locked" data-key="email_11"><i class="fa-solid fa-envelope"></i> rezatriwardana7@gmail.com</span></div>
+          <p class="editable-field editable-locked member-job-desc" data-key="desc_11">Menjalankan pengujian fungsionalitas fitur (QA), kepatuhan modul PKL, dan penyusunan dokumentasi.</p>
+          <div class="member-card-footer"><small>Shift 2</small></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- MODAL TAMBAH ANGGOTA TIM BARU -->
+  <div class="modal-overlay" id="addMemberModal" style="display: none;">
+    <div class="modal-card-mobile" style="max-width: 480px;">
+      <div class="m-modal-top">
+        <span class="m-modal-title"><i class="fa-solid fa-user-plus text-cyan"></i> Tambah Anggota Tim PKL</span>
+        <button class="m-close-btn" onclick="closeAddMemberModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="m-modal-scroll" style="padding: 22px;">
+        <form onsubmit="saveNewMember(event)" style="display:flex; flex-direction:column; gap:14px;">
+          <div>
+            <label style="font-size:11.5px;font-weight:700;color:var(--text-muted);display:block;margin-bottom:6px;">Pilih Shift Kerja</label>
+            <select id="newMemShift" style="width:100%;background:#090E1A;border:1px solid var(--border-card);padding:10px;border-radius:8px;color:#fff;" required>
+              <option value="1">Shift 1 — Pagi (07.00 - 16.00 WIB)</option>
+              <option value="2" selected>Shift 2 — Sore/Malam (16.00 - 01.00 WIB)</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:11.5px;font-weight:700;color:var(--text-muted);display:block;margin-bottom:6px;">Nama Lengkap</label>
+            <input type="text" id="newMemName" placeholder="Contoh: DIKA YOGA PRATAMA" style="width:100%;background:#090E1A;border:1px solid var(--border-card);padding:10px;border-radius:8px;color:#fff;" required>
+          </div>
+          <div>
+            <label style="font-size:11.5px;font-weight:700;color:var(--text-muted);display:block;margin-bottom:6px;">Peran / Job Title</label>
+            <input type="text" id="newMemRole" placeholder="Contoh: Frontend Dashboard Developer" style="width:100%;background:#090E1A;border:1px solid var(--border-card);padding:10px;border-radius:8px;color:#fff;" required>
+          </div>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+            <div>
+              <label style="font-size:11.5px;font-weight:700;color:var(--text-muted);display:block;margin-bottom:6px;">No. Telepon / WA</label>
+              <input type="text" id="newMemPhone" placeholder="08xx-xxxx-xxxx" style="width:100%;background:#090E1A;border:1px solid var(--border-card);padding:10px;border-radius:8px;color:#fff;" required>
+            </div>
+            <div>
+              <label style="font-size:11.5px;font-weight:700;color:var(--text-muted);display:block;margin-bottom:6px;">Email</label>
+              <input type="email" id="newMemEmail" placeholder="nama@email.com" style="width:100%;background:#090E1A;border:1px solid var(--border-card);padding:10px;border-radius:8px;color:#fff;" required>
+            </div>
+          </div>
+          <div>
+            <label style="font-size:11.5px;font-weight:700;color:var(--text-muted);display:block;margin-bottom:6px;">Deskripsi Tanggung Jawab</label>
+            <textarea id="newMemDesc" rows="3" placeholder="Jelaskan ruang lingkup tugas anggota tim ini..." style="width:100%;background:#090E1A;border:1px solid var(--border-card);padding:10px;border-radius:8px;color:#fff;resize:vertical;" required></textarea>
+          </div>
+          <button type="submit" class="btn-action-edit" style="width:100%;justify-content:center;padding:12px;margin-top:6px;">
+            <i class="fa-solid fa-user-plus"></i> Simpan & Daftarkan Anggota
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let isEditing = false;
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const fields = document.querySelectorAll('.editable-field');
+      fields.forEach(field => {
+        const key = field.getAttribute('data-key');
+        const saved = localStorage.getItem('taims_team_' + key);
+        if (saved) field.innerText = saved;
+      });
+      renderCustomMembers();
+      applyRoleSession();
+    });
+
+    function toggleEditMode() {
+      isEditing = !isEditing;
+      const fields = document.querySelectorAll('.editable-field');
+      const btn = document.getElementById('btnEditToggle');
+
+      if (isEditing) {
+        fields.forEach(f => {
+          f.classList.remove('editable-locked');
+          f.classList.add('editable-unlocked');
+          f.setAttribute('contenteditable', 'true');
+        });
+        btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan';
+        btn.classList.add('saving');
+      } else {
+        fields.forEach(f => {
+          f.classList.remove('editable-unlocked');
+          f.classList.add('editable-locked');
+          f.removeAttribute('contenteditable');
+          const key = f.getAttribute('data-key');
+          localStorage.setItem('taims_team_' + key, f.innerText.trim());
+        });
+        btn.innerHTML = '<i class="fa-solid fa-pen-to-square"></i> Edit Tim';
+        btn.classList.remove('saving');
+        alert('Berhasil! Perubahan data tim telah disimpan secara permanen di browser Anda.');
+      }
+    }
+
+    function openAddMemberModal() {
+      document.getElementById('addMemberModal').style.display = 'flex';
+    }
+    function closeAddMemberModal() {
+      document.getElementById('addMemberModal').style.display = 'none';
+    }
+
+    function saveNewMember(e) {
+      e.preventDefault();
+      const shift = document.getElementById('newMemShift').value;
+      const name = document.getElementById('newMemName').value.trim();
+      const role = document.getElementById('newMemRole').value.trim();
+      const phone = document.getElementById('newMemPhone').value.trim();
+      const email = document.getElementById('newMemEmail').value.trim();
+      const desc = document.getElementById('newMemDesc').value.trim();
+
+      const newMem = { id: Date.now(), shift, name, role, phone, email, desc };
+      const existing = JSON.parse(localStorage.getItem('taims_custom_members') || '[]');
+      existing.push(newMem);
+      localStorage.setItem('taims_custom_members', JSON.stringify(existing));
+
+      renderCustomMembers();
+      closeAddMemberModal();
+      e.target.reset();
+      alert(`Anggota tim ${name} berhasil didaftarkan ke Shift ${shift}!`);
+    }
+
+    function renderCustomMembers() {
+      const existing = JSON.parse(localStorage.getItem('taims_custom_members') || '[]');
+      document.querySelectorAll('.dynamic-member-card').forEach(c => c.remove());
+
+      let s1Count = 5;
+      let s2Count = 6;
+
+      existing.forEach(m => {
+        const card = document.createElement('div');
+        card.className = 'member-card-aziz dynamic-member-card';
+        const isShift1 = m.shift === '1';
+        if (isShift1) s1Count++; else s2Count++;
+
+        const color = isShift1 ? '#38BDF8' : '#60A5FA';
+        const bg = isShift1 ? 'rgba(14, 165, 233, 0.15)' : 'rgba(59, 130, 246, 0.15)';
+
+        card.innerHTML = `
+          <div class="member-card-top">
+            <div class="member-avatar-box" style="background: ${bg}; color: ${color};">
+              <i class="fa-solid fa-user-check"></i>
+            </div>
+            <div>
+              <h4>${m.name}</h4>
+              <span class="member-role-sub text-cyan">${m.role}</span>
+            </div>
+          </div>
+          <div class="member-contacts">
+            <span><i class="fa-solid fa-phone"></i> ${m.phone}</span>
+            <span><i class="fa-solid fa-envelope"></i> ${m.email}</span>
+          </div>
+          <p class="member-job-desc">${m.desc}</p>
+          <div class="member-card-footer" style="display:flex; justify-content:space-between; align-items:center;">
+            <small>Shift ${m.shift}</small>
+            <button onclick="deleteCustomMember(${m.id})" style="background:none;border:none;color:#EF4444;font-size:10px;cursor:pointer;font-weight:700;"><i class="fa-solid fa-trash"></i> Hapus</button>
+          </div>
+        `;
+
+        const targetGrid = isShift1 ? document.getElementById('gridShift1') : document.getElementById('gridShift2');
+        if (targetGrid) targetGrid.appendChild(card);
+      });
+
+      const c1 = document.getElementById('countShift1');
+      const c2 = document.getElementById('countShift2');
+      if (c1) c1.innerText = `${s1Count} Anggota`;
+      if (c2) c2.innerText = `${s2Count} Anggota`;
+    }
+
+    function deleteCustomMember(id) {
+      if (!confirm('Hapus anggota tim ini?')) return;
+      let existing = JSON.parse(localStorage.getItem('taims_custom_members') || '[]');
+      existing = existing.filter(m => m.id !== id);
+      localStorage.setItem('taims_custom_members', JSON.stringify(existing));
+      renderCustomMembers();
+    }
+
+    function applyRoleSession() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const role = urlParams.get('role');
+      if (role === 'admin') {
+        localStorage.setItem('taims_user_role', 'admin');
+      } else if (role === 'guest') {
+        localStorage.setItem('taims_user_role', 'guest');
+      }
+
+      const activeRole = localStorage.getItem('taims_user_role') || 'guest';
+      const nameEl = document.getElementById('topbarRoleName');
+      const subEl = document.getElementById('topbarRoleSub');
+      const avatarEl = document.getElementById('topbarAvatar');
+
+      if (activeRole === 'admin') {
+        if (nameEl) nameEl.innerText = "Ahmad Reza Fahmi";
+        if (subEl) subEl.innerText = "Administrator";
+        if (avatarEl) avatarEl.innerHTML = '<i class="fa-solid fa-shield-halved"></i>';
+      } else {
+        if (nameEl) nameEl.innerText = "Tamu / Viewer";
+        if (subEl) subEl.innerText = "Viewer (Hanya Lihat)";
+        if (avatarEl) avatarEl.innerHTML = '<i class="fa-regular fa-user"></i>';
+      }
+    }
+  </script>
+  <script src="apiService.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>

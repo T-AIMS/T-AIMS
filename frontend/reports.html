@@ -2,13 +2,975 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="refresh" content="0; url=index.html#page-reports">
-  <title>T-AIMS &bull; Memuat Halaman...</title>
-  <script>
-    window.location.replace("index.html#page-reports");
-  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>T-AIMS · Laporan Kinerja & Pemeliharaan Perangkat</title>
+  <link rel="icon" type="image/png" href="logo-teknolab.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* RBAC CONTROLLER BAR & CRUD ENHANCEMENTS */
+    .rbac-control-bar {
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.85));
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      padding: 14px 20px;
+      margin-bottom: 22px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 14px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+    .rbac-role-buttons {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .btn-role-chip {
+      background: #090E1A;
+      border: 1px solid var(--border-card);
+      color: var(--text-muted);
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      transition: all 0.2s;
+    }
+    .btn-role-chip:hover {
+      background: #131E35;
+      color: #fff;
+      transform: translateY(-1px);
+    }
+    .btn-role-chip.active-superadmin {
+      background: linear-gradient(90deg, #DC2626 0%, #991B1B 100%);
+      color: #fff;
+      border-color: #EF4444;
+      box-shadow: 0 0 12px rgba(220, 38, 38, 0.4);
+    }
+    .btn-role-chip.active-admin {
+      background: linear-gradient(90deg, #2563EB 0%, #1D4ED8 100%);
+      color: #fff;
+      border-color: #3B82F6;
+      box-shadow: 0 0 12px rgba(37, 99, 235, 0.4);
+    }
+    .btn-role-chip.active-user {
+      background: linear-gradient(90deg, #475569 0%, #334155 100%);
+      color: #fff;
+      border-color: #64748B;
+      box-shadow: 0 0 12px rgba(100, 116, 139, 0.4);
+    }
+    .rbac-badge-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+    }
+    .rbac-pill-matrix {
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 10.5px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+    }
+    .rbac-pill-matrix.superadmin {
+      background: rgba(220, 38, 38, 0.2);
+      border: 1px solid #DC2626;
+      color: #FCA5A5;
+    }
+    .rbac-pill-matrix.admin {
+      background: rgba(37, 99, 235, 0.2);
+      border: 1px solid #2563EB;
+      color: #93C5FD;
+    }
+    .rbac-pill-matrix.user {
+      background: rgba(148, 163, 184, 0.15);
+      border: 1px solid #64748B;
+      color: #CBD5E1;
+    }
+
+    /* ACTION BUTTONS IN TABLE */
+    .btn-action-row {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 6px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      font-size: 11.5px;
+      transition: all 0.2s;
+      background: #0F172A;
+    }
+    .btn-action-row.view {
+      color: var(--accent-cyan);
+      border-color: rgba(6, 182, 212, 0.3);
+    }
+    .btn-action-row.view:hover {
+      background: var(--accent-cyan);
+      color: #000;
+    }
+    .btn-action-row.edit {
+      color: var(--accent-amber);
+      border-color: rgba(245, 158, 11, 0.3);
+    }
+    .btn-action-row.edit:hover {
+      background: var(--accent-amber);
+      color: #000;
+    }
+    .btn-action-row.delete {
+      color: var(--accent-red);
+      border-color: rgba(239, 68, 68, 0.3);
+    }
+    .btn-action-row.delete:hover {
+      background: var(--accent-red);
+      color: #fff;
+    }
+    .badge-urgensi {
+      font-size: 10px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 6px;
+      display: inline-block;
+    }
+    .urgensi-kritis { background: rgba(239,68,68,0.2); color: #FCA5A5; border: 1px solid rgba(239,68,68,0.4); }
+    .urgensi-tinggi { background: rgba(245,158,11,0.2); color: #FCD34D; border: 1px solid rgba(245,158,11,0.4); }
+    .urgensi-sedang { background: rgba(59,130,246,0.2); color: #93C5FD; border: 1px solid rgba(59,130,246,0.4); }
+    .urgensi-rendah { background: rgba(16,185,129,0.2); color: #6EE7B7; border: 1px solid rgba(16,185,129,0.4); }
+
+    .search-filter-report-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-card);
+      flex-wrap: wrap;
+    }
+  </style>
 </head>
-<body style="background:#060A12; color:#00E5FF; font-family:sans-serif; display:flex; align-items:center; justify-content:center; height:100vh; margin:0;">
-  <p>Memuat antarmuka T-AIMS... <a href="index.html#page-reports" style="color:#00E5FF;">Klik di sini jika tidak beralih otomatis</a></p>
+<body class="dashboard-body">
+  <div class="app-shell-container">
+    <aside class="desktop-sidebar">
+      <div class="sidebar-logo-zone">
+        <a href="dashboard.html"><img src="logo-teknolab.png" alt="Teknolab" class="brand-clean-blend"></a>
+        <button class="sidebar-close-btn" onclick="toggleMobileSidebar()" aria-label="Tutup Menu"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <nav class="sidebar-nav-menu">
+        <a href="dashboard.html" class="sidebar-link"><i class="fa-solid fa-house"></i> <span>Dashboard</span></a>
+        <a href="devices.html" class="sidebar-link"><i class="fa-solid fa-microchip"></i> <span>Perangkat</span></a>
+        <a href="network.html" class="sidebar-link"><i class="fa-solid fa-network-wired"></i> <span>Jaringan</span></a>
+        <a href="topology.html" class="sidebar-link"><i class="fa-solid fa-location-dot"></i> <span>Lokasi</span></a>
+        <a href="history.html" class="sidebar-link"><i class="fa-regular fa-bell"></i> <span>Peringatan</span> <span class="alert-pill-red">5</span></a>
+        <a href="reports.html" class="sidebar-link active"><i class="fa-solid fa-chart-simple"></i> <span>Laporan</span></a>
+        <a href="project.html" class="sidebar-link"><i class="fa-solid fa-circle-info"></i> <span>Informasi Projek</span></a>
+        <a href="users.html" class="sidebar-link"><i class="fa-solid fa-users"></i> <span>Pengguna</span></a>
+        <a href="settings.html" class="sidebar-link" style="margin-top:14px;"><i class="fa-solid fa-gear"></i> <span>Pengaturan</span></a>
+      </nav>
+      <div class="sidebar-status-box">
+        <span class="status-pulse-dot"></span>
+        <div class="status-text"><small>Sistem</small><strong>Berjalan Normal</strong></div>
+      </div>
+    </aside>
+
+    <main class="main-viewport">
+      <div class="desktop-top-navbar">
+        <button class="mobile-menu-toggle" id="mobileMenuToggle" onclick="toggleMobileSidebar()" aria-label="Buka Menu Navigasi"><i class="fa-solid fa-bars"></i></button>
+        <div class="topbar-left-meta">
+          <strong>T-AIMS</strong><span>|</span><p>Teknolab Asset & Infrastructure Monitoring System</p>
+        </div>
+        <div class="topbar-center-search">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" placeholder="Cari evaluasi, perangkat...">
+        </div>
+        <div class="topbar-right-meta">
+          <div class="topbar-clock-chip">
+            <i class="fa-regular fa-calendar"></i>
+            <div><span>Rabu, 14 Okt 2026</span><strong>20:55 WIB</strong></div>
+          </div>
+          <div class="topbar-notif-btn" onclick="location.href='history.html'">
+            <i class="fa-regular fa-bell"></i>
+            <span class="notif-bubble">5</span>
+          </div>
+          <div class="topbar-profile-dropdown" onclick="location.href='users.html'">
+            <div class="profile-avatar-circle" id="topbarAvatar"><i class="fa-solid fa-shield-halved"></i></div>
+            <div class="profile-meta-text">
+              <strong id="topbarRoleName">Dika Yoga Pratama</strong>
+              <small id="topbarRoleSub">Frontend Developer</small>
+            </div>
+            <i class="fa-solid fa-chevron-down caret-icon"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- HEADER UTAMA LAPORAN DENGAN HAK AKSES ASLI DARI LOGIN -->
+      <div class="subpage-header-row">
+        <div>
+          <div id="rbacLiveBadge" class="badge-sub-green" style="margin-bottom:8px; display:inline-flex; align-items:center; gap:6px;">
+            <i class="fa-solid fa-crown text-amber"></i> <span>Hak Akses: Super Administrator (Create, Read, Add, Delete)</span>
+          </div>
+          <h2><i class="fa-solid fa-file-lines text-cyan"></i> Laporan Insiden & Pemeliharaan Perangkat</h2>
+          <p>Manajemen laporan pemeliharaan, audit insiden, dan rekapitulasi uptime perangkat dengan kontrol hak akses akun resmi.</p>
+        </div>
+        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+          <button class="btn-action-edit" id="btnOpenAddReport" onclick="openAddReportModal()" style="display:inline-flex;">
+            <i class="fa-solid fa-plus"></i> Tambah Laporan Baru
+          </button>
+          <div class="btn-group-export">
+            <button class="btn-export-pdf" onclick="window.print()"><i class="fa-solid fa-file-pdf"></i> Export PDF</button>
+            <button class="btn-export-excel" onclick="exportReportsToExcel()"><i class="fa-solid fa-file-excel"></i> Export Excel</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI RECOMMENDATION ENGINE -->
+      <div class="ai-recommend-card">
+        <div class="ai-title"><i class="fa-solid fa-robot text-cyan"></i> T-AIMS AI Recommendation Engine:</div>
+        <p>Berdasarkan analisis log operasional 30 hari PKL: <strong>CCTV 1 (Gate HO)</strong> mengalami anomali paket data RTSP (100% loss) akibat suplai adaptor daya yang tidak stabil. <strong>WIFI 2 (Marketing Office Kos Kiki)</strong> mengalami lonjakan latensi hingga 210 ms pada jam sibuk. Disarankan pengecekan regulator adaptor 12V pada CCTV 1 dan penerapan limitasi bandwidth QoS pada router MO.</p>
+      </div>
+
+      <!-- 4 KARTU STATISTIK OPERASIONAL -->
+      <div class="report-summary-box">
+        <h4>Ringkasan Laporan Operasional Sistem T-AIMS</h4>
+        <div class="report-stats-grid">
+          <div class="rep-stat-cell">
+            <small>Total Unit Dipantau</small>
+            <h2 id="repTotalDevices">9 Perangkat</h2>
+          </div>
+          <div class="rep-stat-cell">
+            <small>Total Laporan Insiden</small>
+            <h2 class="text-red" id="repTotalIncidents">5 Laporan</h2>
+          </div>
+          <div class="rep-stat-cell">
+            <small>Ketersediaan Sistem</small>
+            <h2 class="text-amber" id="repAvailPct">99.2%</h2>
+          </div>
+          <div class="rep-stat-cell">
+            <small>Rata-Rata Respons</small>
+            <h2 class="text-cyan" id="repAvgLatency">4 ms</h2>
+          </div>
+        </div>
+      </div>
+
+      <!-- TABEL 1: CRUD LAPORAN PEMELIHARAAN SISTEM (CREATE, READ, ADD, DELETE + RBAC) -->
+      <div class="card-table-panel" style="margin-top:22px;">
+        <div class="search-filter-report-row">
+          <div>
+            <h4 style="font-size:14px; font-weight:800; color:#fff; display:flex; align-items:center; gap:8px;">
+              <i class="fa-solid fa-clipboard-list text-red"></i> Manajemen Laporan Insiden & Pemeliharaan (CRUD Live)
+            </h4>
+            <span style="font-size:11px; color:var(--text-dim);" id="rbacSubtitleNote">Hak Akses Super Admin: Create, Read, Add, Delete</span>
+          </div>
+          <div style="display:flex; gap:10px; align-items:center;">
+            <div style="background:#090E1A; border:1px solid var(--border-card); border-radius:8px; padding:6px 12px; display:flex; align-items:center; gap:8px;">
+              <i class="fa-solid fa-magnifying-glass text-dim" style="font-size:11px;"></i>
+              <input type="text" id="reportSearchInput" placeholder="Cari kode, judul, teknisi..." oninput="filterReportRows()" style="background:transparent; border:none; outline:none; color:#fff; font-size:11.5px; width:180px;">
+            </div>
+            <select id="reportFilterUrgensi" onchange="filterReportRows()" style="background:#090E1A; border:1px solid var(--border-card); color:#fff; font-size:11.5px; padding:7px 12px; border-radius:8px;">
+              <option value="ALL">Semua Urgensi</option>
+              <option value="Kritis">Kritis</option>
+              <option value="Tinggi">Tinggi</option>
+              <option value="Sedang">Sedang</option>
+              <option value="Rendah">Rendah</option>
+            </select>
+          </div>
+        </div>
+
+        <table class="data-table-full">
+          <thead>
+            <tr>
+              <th style="width:40px;">NO</th>
+              <th>KODE LAPORAN</th>
+              <th>JUDUL MASALAH / INSIDEN</th>
+              <th>PERANGKAT TERKAIT</th>
+              <th>PELAPOR & TANGGAL</th>
+              <th>URGENSI</th>
+              <th>STATUS</th>
+              <th style="text-align:center; min-width:110px;">AKSI</th>
+            </tr>
+          </thead>
+          <tbody id="crudReportsTableBody">
+            <!-- Rendered by JavaScript dynamically -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- TABEL 2: REKAPITULASI DETAIL 9 PERANGKAT AKTIF PKL -->
+      <div class="card-table-panel" style="margin-top:26px;">
+        <div style="padding:16px 20px; border-bottom:1px solid var(--border-card); display:flex; justify-content:space-between; align-items:center;">
+          <h4 style="font-size:13.5px; font-weight:800; color:#fff;"><i class="fa-solid fa-clipboard-check text-green"></i> Evaluasi Kinerja & Riwayat Pemeliharaan (9 Unit Aktif)</h4>
+          <span style="font-size:11px; color:var(--text-dim);">Periode Evaluasi: 15 Sep 2026 - 14 Okt 2026</span>
+        </div>
+        <table class="data-table-full">
+          <thead>
+            <tr>
+              <th>NO</th>
+              <th>NAMA PERANGKAT</th>
+              <th>LOKASI OPERASIONAL</th>
+              <th>UPTIME 30 HARI</th>
+              <th>RATA-RATA RESPON</th>
+              <th>GANGGUAN</th>
+              <th>STATUS</th>
+              <th>TINDAKAN REKOMENDASI</th>
+            </tr>
+          </thead>
+          <tbody id="repTableBody">
+            <tr>
+              <td>1</td>
+              <td><strong>CCTV 1</strong><br><small class="font-mono text-cyan">192.168.1.102</small></td>
+              <td>Head Office (Jl. Cibodas No. 03)</td>
+              <td>88.2%</td>
+              <td>-</td>
+              <td><span class="badge-kritis">4 Kali</span></td>
+              <td><span class="status-pill offline">Offline</span></td>
+              <td>Ganti adaptor power supply 12V 2A &amp; terminasi RJ45 ulang</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td><strong>PC 1 (Workstation Dika)</strong><br><small class="font-mono text-cyan">192.168.1.103</small></td>
+              <td>Head Office (Jl. Cibodas No. 03)</td>
+              <td>99.9%</td>
+              <td>4 ms</td>
+              <td>0 Kali</td>
+              <td><span class="status-pill online">Online</span></td>
+              <td>Performa normal, Live Server port 3001 berjalan stabil</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td><strong>PC 2 (Workstation Admin)</strong><br><small class="font-mono text-cyan">192.168.1.105</small></td>
+              <td>Head Office (Jl. Cibodas No. 03)</td>
+              <td>99.7%</td>
+              <td>5 ms</td>
+              <td>0 Kali</td>
+              <td><span class="status-pill online">Online</span></td>
+              <td>Kondisi prima untuk administrasi data dan inventaris</td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td><strong>WIFI 1 (Core Router HO)</strong><br><small class="font-mono text-cyan">192.168.1.1</small></td>
+              <td>Head Office (Jl. Cibodas No. 03)</td>
+              <td>100.0%</td>
+              <td>2 ms</td>
+              <td>0 Kali</td>
+              <td><span class="status-pill online">Online</span></td>
+              <td>Gateway utama berjalan stabil dengan 0% packet loss</td>
+            </tr>
+            <tr>
+              <td>5</td>
+              <td><strong>ESP 1 (Sensor Suhu Server)</strong><br><small class="font-mono text-cyan">192.168.1.101</small></td>
+              <td>Head Office (Jl. Cibodas No. 03)</td>
+              <td>99.4%</td>
+              <td>18 ms</td>
+              <td>1 Kali</td>
+              <td><span class="status-pill online">Online</span></td>
+              <td>Lakukan re-kalibrasi probe sensor DHT/Relay berkala</td>
+            </tr>
+            <tr>
+              <td>6</td>
+              <td><strong>RASPBERRY PI 1 (Server Hub)</strong><br><small class="font-mono text-cyan">192.168.1.10</small></td>
+              <td>Head Office (Jl. Cibodas No. 03)</td>
+              <td>99.9%</td>
+              <td>1 ms</td>
+              <td>0 Kali</td>
+              <td><span class="status-pill online">Online</span></td>
+              <td>Backend Express port 3000 merespons HTTP 200 OK</td>
+            </tr>
+            <tr>
+              <td>7</td>
+              <td><strong>CCTV 2 (Lobi Depan MO)</strong><br><small class="font-mono text-cyan">192.168.5.12</small></td>
+              <td>Marketing Office (Kos Kiki, Jl. Ciliwung)</td>
+              <td>99.5%</td>
+              <td>12 ms</td>
+              <td>1 Kali</td>
+              <td><span class="status-pill online">Online</span></td>
+              <td>Streaming RTSP lancar tanpa frame dropping</td>
+            </tr>
+            <tr>
+              <td>8</td>
+              <td><strong>WIFI 2 (Router Utama MO)</strong><br><small class="font-mono text-cyan">192.168.1.2</small></td>
+              <td>Marketing Office (Kos Kiki, Jl. Ciliwung)</td>
+              <td>94.6%</td>
+              <td>210 ms</td>
+              <td>3 Kali</td>
+              <td><span class="status-pill warning">Warning</span></td>
+              <td>Terapkan pembatasan bandwidth QoS client jam kerja</td>
+            </tr>
+            <tr>
+              <td>9</td>
+              <td><strong>WIFI 3 (Sub-Router Lab AI)</strong><br><small class="font-mono text-cyan">192.168.1.3</small></td>
+              <td>Marketing Office (Kos Kiki, Jl. Ciliwung)</td>
+              <td>99.8%</td>
+              <td>3 ms</td>
+              <td>0 Kali</td>
+              <td><span class="status-pill online">Online</span></td>
+              <td>Koneksi inter-office aman dan terisolasi dengan baik</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+
+  <!-- MODAL 1: CREATE / ADD LAPORAN BARU (SUPER ADMIN & ADMIN) -->
+  <div class="modal-overlay" id="addReportModal" style="display:none;">
+    <div class="modal-card-mobile" style="max-width: 520px;">
+      <div class="m-modal-top">
+        <span class="m-modal-title"><i class="fa-solid fa-file-circle-plus text-red"></i> Buat Laporan Insiden Baru</span>
+        <button class="m-close-btn" onclick="closeAddReportModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="m-modal-scroll" style="padding: 20px;">
+        <form onsubmit="handleCreateReport(event)" style="display:flex; flex-direction:column; gap:14px;">
+          <div>
+            <label style="display:block; font-size:11.5px; font-weight:700; color:var(--text-muted); margin-bottom:6px;">Judul Laporan / Insiden</label>
+            <input type="text" id="newRepTitle" placeholder="Contoh: Overheating Core Switch Ruang Server" style="width:100%; background:#090E1A; border:1px solid var(--border-card); padding:10px 14px; border-radius:8px; color:#fff; font-size:12px;" required>
+          </div>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+            <div>
+              <label style="display:block; font-size:11.5px; font-weight:700; color:var(--text-muted); margin-bottom:6px;">Kategori</label>
+              <select id="newRepCategory" style="width:100%; background:#090E1A; border:1px solid var(--border-card); padding:10px 14px; border-radius:8px; color:#fff; font-size:12px;">
+                <option value="Jaringan & Gateway">Jaringan &amp; Gateway</option>
+                <option value="Keamanan Fisik">Keamanan Fisik</option>
+                <option value="Server & Database">Server &amp; Database</option>
+                <option value="Telemetri IoT">Telemetri IoT</option>
+                <option value="Keamanan Siber">Keamanan Siber</option>
+                <option value="Hardware Elektro">Hardware Elektro</option>
+              </select>
+            </div>
+            <div>
+              <label style="display:block; font-size:11.5px; font-weight:700; color:var(--text-muted); margin-bottom:6px;">Tingkat Urgensi</label>
+              <select id="newRepUrgency" style="width:100%; background:#090E1A; border:1px solid var(--border-card); padding:10px 14px; border-radius:8px; color:#fff; font-size:12px;">
+                <option value="Kritis">Kritis (Segera)</option>
+                <option value="Tinggi">Tinggi</option>
+                <option value="Sedang" selected>Sedang</option>
+                <option value="Rendah">Rendah (Rutin)</option>
+              </select>
+            </div>
+          </div>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+            <div>
+              <label style="display:block; font-size:11.5px; font-weight:700; color:var(--text-muted); margin-bottom:6px;">Perangkat Terkait</label>
+              <input type="text" id="newRepDevice" placeholder="Contoh: NET-SRV-01" style="width:100%; background:#090E1A; border:1px solid var(--border-card); padding:10px 14px; border-radius:8px; color:#fff; font-size:12px;" required>
+            </div>
+            <div>
+              <label style="display:block; font-size:11.5px; font-weight:700; color:var(--text-muted); margin-bottom:6px;">Teknisi / Pelapor</label>
+              <input type="text" id="newRepReporter" value="Dika Yoga Pratama" style="width:100%; background:#090E1A; border:1px solid var(--border-card); padding:10px 14px; border-radius:8px; color:#fff; font-size:12px;" required>
+            </div>
+          </div>
+          <div>
+            <label style="display:block; font-size:11.5px; font-weight:700; color:var(--text-muted); margin-bottom:6px;">Deskripsi Permasalahan</label>
+            <textarea id="newRepDesc" rows="3" placeholder="Jelaskan detail kronologi, gejala, atau temuan teknis..." style="width:100%; background:#090E1A; border:1px solid var(--border-card); padding:10px 14px; border-radius:8px; color:#fff; font-size:12px; resize:vertical;" required></textarea>
+          </div>
+          <div>
+            <label style="display:block; font-size:11.5px; font-weight:700; color:var(--text-muted); margin-bottom:6px;">Tindakan / Solusi yang Diterapkan</label>
+            <textarea id="newRepAction" rows="2" placeholder="Tindakan penanganan yang sudah atau akan dilakukan..." style="width:100%; background:#090E1A; border:1px solid var(--border-card); padding:10px 14px; border-radius:8px; color:#fff; font-size:12px; resize:vertical;" required></textarea>
+          </div>
+          <button type="submit" style="background:var(--accent-red); border:none; color:#fff; font-weight:800; padding:12px; border-radius:8px; cursor:pointer; margin-top:6px; display:flex; align-items:center; justify-content:center; gap:8px;">
+            <i class="fa-solid fa-floppy-disk"></i> Simpan & Terbitkan Laporan
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 2: READ / VIEW DETAIL LAPORAN (SUPER ADMIN, ADMIN, USER) -->
+  <div class="modal-overlay" id="viewReportModal" style="display:none;">
+    <div class="modal-card-mobile" style="max-width: 560px;">
+      <div class="m-modal-top">
+        <span class="m-modal-title"><i class="fa-solid fa-file-lines text-cyan"></i> Lembar Detail Laporan Resmi</span>
+        <button class="m-close-btn" onclick="closeViewReportModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="m-modal-scroll" style="padding: 20px;" id="viewReportContent">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 3: EDIT LAPORAN (HANYA SUPER ADMIN) -->
+  <div class="modal-overlay" id="editReportModal" style="display:none;">
+    <div class="modal-card-mobile" style="max-width: 520px;">
+      <div class="m-modal-top">
+        <span class="m-modal-title"><i class="fa-solid fa-pen-to-square text-amber"></i> Edit Data Laporan (Super Admin)</span>
+        <button class="m-close-btn" onclick="closeEditReportModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="m-modal-scroll" style="padding: 20px;">
+        <form onsubmit="handleSaveEditReport(event)" style="display:flex; flex-direction:column; gap:14px;">
+          <input type="hidden" id="editRepId">
+          <div>
+            <label style="display:block; font-size:11.5px; font-weight:700; color:var(--text-muted); margin-bottom:6px;">Judul Laporan</label>
+            <input type="text" id="editRepTitle" style="width:100%; background:#090E1A; border:1px solid var(--border-card); padding:10px 14px; border-radius:8px; color:#fff; font-size:12px;" required>
+          </div>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+            <div>
+              <label style="display:block; font-size:11.5px; font-weight:700; color:var(--text-muted); margin-bottom:6px;">Status Laporan</label>
+              <select id="editRepStatus" style="width:100%; background:#090E1A; border:1px solid var(--border-card); padding:10px 14px; border-radius:8px; color:#fff; font-size:12px;">
+                <option value="Selesai">Selesai</option>
+                <option value="Investigasi">Investigasi</option>
+                <option value="Terjadwal">Terjadwal</option>
+              </select>
+            </div>
+            <div>
+              <label style="display:block; font-size:11.5px; font-weight:700; color:var(--text-muted); margin-bottom:6px;">Tingkat Urgensi</label>
+              <select id="editRepUrgency" style="width:100%; background:#090E1A; border:1px solid var(--border-card); padding:10px 14px; border-radius:8px; color:#fff; font-size:12px;">
+                <option value="Kritis">Kritis</option>
+                <option value="Tinggi">Tinggi</option>
+                <option value="Sedang">Sedang</option>
+                <option value="Rendah">Rendah</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label style="display:block; font-size:11.5px; font-weight:700; color:var(--text-muted); margin-bottom:6px;">Deskripsi Permasalahan</label>
+            <textarea id="editRepDesc" rows="3" style="width:100%; background:#090E1A; border:1px solid var(--border-card); padding:10px 14px; border-radius:8px; color:#fff; font-size:12px; resize:vertical;" required></textarea>
+          </div>
+          <div>
+            <label style="display:block; font-size:11.5px; font-weight:700; color:var(--text-muted); margin-bottom:6px;">Tindakan / Solusi</label>
+            <textarea id="editRepAction" rows="2" style="width:100%; background:#090E1A; border:1px solid var(--border-card); padding:10px 14px; border-radius:8px; color:#fff; font-size:12px; resize:vertical;" required></textarea>
+          </div>
+          <button type="submit" style="background:var(--accent-amber); border:none; color:#000; font-weight:800; padding:12px; border-radius:8px; cursor:pointer; margin-top:6px;">
+            <i class="fa-solid fa-check"></i> Simpan Perubahan (Super Admin)
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="apiService.js"></script>
+  <script src="app.js"></script>
+  <script>
+    // =========================================================================
+    // DATA SEED AWAL LAPORAN TEKNIK PKL TEKNOLAB (PERSISTEN DI LOCALSTORAGE)
+    // =========================================================================
+    const DEFAULT_REPORTS = [
+      {
+        id: "rep-001",
+        code: "LAP-2026-001",
+        title: "Insiden Lonjakan Latensi & Jitter Router MO",
+        category: "Jaringan & Gateway",
+        device: "NET-RTR-02 (Marketing Office)",
+        date: "14 Okt 2026",
+        reporter: "Dika Yoga Pratama",
+        urgency: "Tinggi",
+        status: "Selesai",
+        desc: "Terjadi lonjakan latensi hingga 210 ms pada router Kos Kiki saat streaming video HD bersamaan. Dilakukan tuning QoS limit bandwidth 15 Mbps per user.",
+        action: "Konfigurasi queue tree MikroTik & isolasi traffic streaming."
+      },
+      {
+        id: "rep-002",
+        code: "LAP-2026-002",
+        title: "Koneksi Kamera Gerbang HO Terputus (Offline)",
+        category: "Keamanan Fisik",
+        device: "SEC-CCTV-01 (Head Office Gate)",
+        date: "13 Okt 2026",
+        reporter: "Reza Tri Wardana",
+        urgency: "Kritis",
+        status: "Investigasi",
+        desc: "Kamera CCTV 1 di gerbang HO mati mendadak. Hasil pengecekan voltmeter menunjukkan adaptor 12V 2A mengalami drop voltase ke 8.4V.",
+        action: "Penggantian unit adaptor switching 12V 3A dan crimping ulang RJ45."
+      },
+      {
+        id: "rep-003",
+        code: "LAP-2026-003",
+        title: "Pemeliharaan Rutin Server Hub Raspberry Pi",
+        category: "Server & Database",
+        device: "NET-SRV-01 (Ruang Server HO)",
+        date: "11 Okt 2026",
+        reporter: "Ahmad Aziz",
+        urgency: "Rendah",
+        status: "Terjadwal",
+        desc: "Pembersihan debu heatsink kipas fan argon ONE case dan backup berkala database SQLite/PostgreSQL log telemetri.",
+        action: "Thermal paste diganti, backup database terenkripsi ke SSD eksternal."
+      },
+      {
+        id: "rep-004",
+        code: "LAP-2026-004",
+        title: "Kalibrasi Ulang Sensor Suhu & Kelembaban DHT22",
+        category: "Telemetri IoT",
+        device: "IOT-ESP-01 (Lab IoT)",
+        date: "09 Okt 2026",
+        reporter: "Ilvina Muvarika",
+        urgency: "Sedang",
+        status: "Selesai",
+        desc: "Bacaan kelembaban udara menunjukkan deviasi +8% dibanding sensor analog acuan di ruang lab elektro.",
+        action: "Offset software diaplikasikan pada firmware ESP32 via OTA update."
+      },
+      {
+        id: "rep-005",
+        code: "LAP-2026-005",
+        title: "Audit Port Terbuka & Firewall pfSense",
+        category: "Keamanan Siber",
+        device: "NET-RTR-01 (Core HO)",
+        date: "07 Okt 2026",
+        reporter: "Ananda Dwi Susanti",
+        urgency: "Sedang",
+        status: "Selesai",
+        desc: "Port scanning internal Nmap untuk memastikan hanya port 80, 443, 3000, dan SSH terfilter yang aktif.",
+        action: "Semua port manajemen ditutup dari akses luar dan dibatasi ke subnet teknisi."
+      }
+    ];
+
+    let reportsData = JSON.parse(localStorage.getItem('taims_reports_data')) || JSON.parse(JSON.stringify(DEFAULT_REPORTS));
+    
+    // =========================================================================
+    // 1. RBAC CONTROLLER LOGIC (TERIKAT LANGSUNG DENGAN SESI LOGIN ASLI)
+    // =========================================================================
+    function getActiveReportRole() {
+      if (typeof window.getAppRole === 'function') return window.getAppRole();
+      return localStorage.getItem('taims_user_role') || 'super_admin';
+    }
+
+    function updateRbacUI() {
+      const activeRole = getActiveReportRole();
+      const badge = document.getElementById('rbacLiveBadge');
+      const btnAdd = document.getElementById('btnOpenAddReport');
+      const note = document.getElementById('rbacSubtitleNote');
+
+      if (activeRole === 'super_admin') {
+        if (badge) badge.innerHTML = '<i class="fa-solid fa-crown text-amber"></i> <span>Hak Akses: Super Administrator (Create, Read, Add, Delete)</span>';
+        if (btnAdd) btnAdd.style.display = 'inline-flex';
+        if (note) note.innerText = 'Hak Akses Super Admin: Anda memiliki kontrol penuh untuk Create, Read, Add, dan Delete laporan.';
+      } else if (activeRole === 'admin') {
+        if (badge) {
+          badge.className = 'badge-sub-green';
+          badge.style.borderColor = '#2563EB';
+          badge.innerHTML = '<i class="fa-solid fa-shield-halved text-blue"></i> <span>Hak Akses: Administrator (Add, Read, Delete)</span>';
+        }
+        if (btnAdd) btnAdd.style.display = 'inline-flex';
+        if (note) note.innerText = 'Hak Akses Admin: Anda dapat Menambah (Add), Membaca (Read), dan Menghapus (Delete) laporan.';
+      } else {
+        if (badge) {
+          badge.className = 'badge-sub-green';
+          badge.style.borderColor = '#64748B';
+          badge.style.color = '#CBD5E1';
+          badge.innerHTML = '<i class="fa-solid fa-eye text-cyan"></i> <span>Hak Akses: Tamu / User (Hanya Lihat - Read Only)</span>';
+        }
+        if (btnAdd) btnAdd.style.display = 'none';
+        if (note) note.innerText = 'Hak Akses Tamu: Mode hanya baca (Read-Only). Tombol Tambah, Edit, dan Hapus dinonaktifkan.';
+      }
+    }
+
+    // =========================================================================
+    // 2. RENDER TABLE CRUD & FILTERING
+    // =========================================================================
+    function renderReportsTable() {
+      const currentReportRole = getActiveReportRole();
+      const tbody = document.getElementById('crudReportsTableBody');
+      if (!tbody) return;
+
+      const q = (document.getElementById('reportSearchInput')?.value || '').toLowerCase().trim();
+      const urgFilter = document.getElementById('reportFilterUrgensi')?.value || 'ALL';
+
+      const filtered = reportsData.filter(r => {
+        const matchQ = r.title.toLowerCase().includes(q) || 
+                       r.code.toLowerCase().includes(q) || 
+                       r.device.toLowerCase().includes(q) ||
+                       r.reporter.toLowerCase().includes(q);
+        const matchUrg = (urgFilter === 'ALL') || (r.urgency === urgFilter);
+        return matchQ && matchUrg;
+      });
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="8" style="text-align:center; padding:32px; color:var(--text-dim);">
+              <i class="fa-solid fa-folder-open" style="font-size:24px; margin-bottom:8px; display:block;"></i>
+              Tidak ada data laporan yang cocok dengan kriteria pencarian.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map((r, idx) => {
+        let urgClass = 'urgensi-sedang';
+        if (r.urgency === 'Kritis') urgClass = 'urgensi-kritis';
+        else if (r.urgency === 'Tinggi') urgClass = 'urgensi-tinggi';
+        else if (r.urgency === 'Rendah') urgClass = 'urgensi-rendah';
+
+        let statPill = 'status-pill online';
+        if (r.status === 'Investigasi') statPill = 'status-pill offline';
+        else if (r.status === 'Terjadwal') statPill = 'status-pill warning';
+
+        // Tentukan tombol aksi berdasarkan RBAC
+        let actionsHtml = '';
+        
+        // 1. Read (Lihat Detail) - Selalu ada untuk semua (super_admin, admin, user)
+        actionsHtml += `
+          <button class="btn-action-row view" onclick="openViewReportModal('${r.id}')" title="Lihat Detail Laporan (Read)">
+            <i class="fa-solid fa-eye"></i>
+          </button>
+        `;
+
+        // 2. Edit - Hanya untuk Super Admin
+        if (currentReportRole === 'super_admin') {
+          actionsHtml += `
+            <button class="btn-action-row edit" onclick="openEditReportModal('${r.id}')" title="Edit Laporan (Super Admin)">
+              <i class="fa-solid fa-pen"></i>
+            </button>
+          `;
+        }
+
+        // 3. Delete - Untuk Super Admin dan Admin
+        if (currentReportRole === 'super_admin' || currentReportRole === 'admin') {
+          actionsHtml += `
+            <button class="btn-action-row delete" onclick="handleDeleteReport('${r.id}')" title="Hapus Laporan (Delete)">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          `;
+        }
+
+        if (currentReportRole === 'user') {
+          actionsHtml += `<span style="font-size:9.5px; color:var(--text-dim); margin-left:4px;">Read Only</span>`;
+        }
+
+        return `
+          <tr style="animation: fadeInUp 0.3s ease;">
+            <td>${idx + 1}</td>
+            <td><strong class="font-mono text-cyan">${r.code}</strong></td>
+            <td>
+              <strong>${r.title}</strong><br>
+              <small class="text-dim"><i class="fa-solid fa-tag"></i> ${r.category}</small>
+            </td>
+            <td><span class="font-mono text-blue">${r.device}</span></td>
+            <td>
+              <span style="font-weight:600;">${r.reporter}</span><br>
+              <small class="text-dim"><i class="fa-regular fa-clock"></i> ${r.date}</small>
+            </td>
+            <td><span class="badge-urgensi ${urgClass}">${r.urgency}</span></td>
+            <td><span class="${statPill}">${r.status}</span></td>
+            <td style="text-align:center;">
+              <div style="display:inline-flex; gap:6px; align-items:center;">
+                ${actionsHtml}
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      // Update counter stat card
+      const elInc = document.getElementById('repTotalIncidents');
+      if (elInc) elInc.innerText = `${reportsData.length} Laporan`;
+    }
+
+    function filterReportRows() {
+      renderReportsTable();
+    }
+
+    // =========================================================================
+    // 3. CRUD HANDLERS: CREATE / ADD
+    // =========================================================================
+    function openAddReportModal() {
+      const role = getActiveReportRole();
+      if (role === 'user' || role === 'guest') {
+        alert('Akses Ditolak: Role User (Guest) hanya memiliki izin Read-Only!');
+        return;
+      }
+      document.getElementById('addReportModal').style.display = 'flex';
+      document.getElementById('newRepTitle').value = '';
+      document.getElementById('newRepDevice').value = '';
+      document.getElementById('newRepDesc').value = '';
+      document.getElementById('newRepAction').value = '';
+    }
+
+    function closeAddReportModal() {
+      document.getElementById('addReportModal').style.display = 'none';
+    }
+
+    function handleCreateReport(e) {
+      e.preventDefault();
+      const role = getActiveReportRole();
+      if (role === 'user' || role === 'guest') {
+        alert('Akses Ditolak: Role User tidak diizinkan menambahkan laporan!');
+        return;
+      }
+
+      const title = document.getElementById('newRepTitle').value.trim();
+      const cat = document.getElementById('newRepCategory').value;
+      const urg = document.getElementById('newRepUrgency').value;
+      const dev = document.getElementById('newRepDevice').value.trim();
+      const reporter = document.getElementById('newRepReporter').value.trim();
+      const desc = document.getElementById('newRepDesc').value.trim();
+      const action = document.getElementById('newRepAction').value.trim();
+
+      const newId = 'rep-' + Date.now();
+      const nextNum = reportsData.length + 1;
+      const code = `LAP-2026-0${nextNum < 10 ? '0' + nextNum : nextNum}`;
+
+      const dateStr = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+
+      const newReport = {
+        id: newId,
+        code: code,
+        title: title,
+        category: cat,
+        device: dev,
+        date: dateStr,
+        reporter: reporter,
+        urgency: urg,
+        status: 'Investigasi',
+        desc: desc,
+        action: action
+      };
+
+      reportsData.unshift(newReport);
+      localStorage.setItem('taims_reports_data', JSON.stringify(reportsData));
+      closeAddReportModal();
+      renderReportsTable();
+      alert(`✅ Laporan baru "${code} - ${title}" berhasil diterbitkan ke sistem!`);
+    }
+
+    // =========================================================================
+    // 4. CRUD HANDLERS: READ / VIEW
+    // =========================================================================
+    function openViewReportModal(id) {
+      const rep = reportsData.find(r => r.id === id);
+      if (!rep) return;
+
+      const container = document.getElementById('viewReportContent');
+      container.innerHTML = `
+        <div style="background:#090E1A; border:1px solid var(--border-card); border-radius:10px; padding:18px; margin-bottom:16px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <span class="font-mono text-cyan" style="font-size:13px; font-weight:800;">${rep.code}</span>
+            <span class="badge-urgensi ${rep.urgency === 'Kritis' ? 'urgensi-kritis' : (rep.urgency === 'Tinggi' ? 'urgensi-tinggi' : 'urgensi-sedang')}">${rep.urgency}</span>
+          </div>
+          <h3 style="color:#fff; font-size:16px; font-weight:800; margin-bottom:6px;">${rep.title}</h3>
+          <p style="font-size:12px; color:var(--text-dim); margin-bottom:14px;"><i class="fa-solid fa-tag"></i> ${rep.category} • <i class="fa-solid fa-server"></i> ${rep.device}</p>
+          
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; font-size:11.5px; border-top:1px solid rgba(255,255,255,0.08); padding-top:12px;">
+            <div><span style="color:var(--text-dim);">Pelapor / Teknisi:</span><br><strong style="color:#fff;">${rep.reporter}</strong></div>
+            <div><span style="color:var(--text-dim);">Tanggal Dicatat:</span><br><strong style="color:#fff;">${rep.date}</strong></div>
+            <div><span style="color:var(--text-dim);">Status Insiden:</span><br><strong class="text-cyan">${rep.status}</strong></div>
+            <div><span style="color:var(--text-dim);">Tingkat Dampak:</span><br><strong class="text-amber">${rep.urgency === 'Kritis' ? 'Sistem Terganggu' : 'Operasional Normal'}</strong></div>
+          </div>
+        </div>
+
+        <div style="margin-bottom:14px;">
+          <h5 style="color:#fff; font-size:12.5px; font-weight:700; margin-bottom:6px;"><i class="fa-solid fa-circle-question text-red"></i> Deskripsi Kronologi Masalah</h5>
+          <div style="background:#090E1A; border-left:3px solid var(--accent-red); padding:10px 14px; border-radius:6px; font-size:12px; color:var(--text-main); line-height:1.5;">
+            ${rep.desc}
+          </div>
+        </div>
+
+        <div style="margin-bottom:18px;">
+          <h5 style="color:#fff; font-size:12.5px; font-weight:700; margin-bottom:6px;"><i class="fa-solid fa-screwdriver-wrench text-green"></i> Tindakan / Rekomendasi Solusi</h5>
+          <div style="background:#090E1A; border-left:3px solid var(--accent-green); padding:10px 14px; border-radius:6px; font-size:12px; color:var(--text-main); line-height:1.5;">
+            ${rep.action}
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:10px;">
+          <button onclick="window.print()" style="background:#1E293B; border:1px solid var(--border-card); color:#fff; padding:8px 16px; border-radius:6px; font-size:11.5px; font-weight:700; cursor:pointer;">
+            <i class="fa-solid fa-print"></i> Cetak Dokumen
+          </button>
+          <button onclick="closeViewReportModal()" style="background:var(--accent-cyan); border:none; color:#000; padding:8px 16px; border-radius:6px; font-size:11.5px; font-weight:800; cursor:pointer;">
+            Tutup
+          </button>
+        </div>
+      `;
+      document.getElementById('viewReportModal').style.display = 'flex';
+    }
+
+    function closeViewReportModal() {
+      document.getElementById('viewReportModal').style.display = 'none';
+    }
+
+    // =========================================================================
+    // 5. CRUD HANDLERS: UPDATE / EDIT (SUPER ADMIN ONLY)
+    // =========================================================================
+    function openEditReportModal(id) {
+      const role = getActiveReportRole();
+      if (role !== 'super_admin') {
+        alert('Akses Ditolak: Fitur Edit hanya dapat diakses oleh Super Admin!');
+        return;
+      }
+      const rep = reportsData.find(r => r.id === id);
+      if (!rep) return;
+
+      document.getElementById('editRepId').value = rep.id;
+      document.getElementById('editRepTitle').value = rep.title;
+      document.getElementById('editRepStatus').value = rep.status;
+      document.getElementById('editRepUrgency').value = rep.urgency;
+      document.getElementById('editRepDesc').value = rep.desc;
+      document.getElementById('editRepAction').value = rep.action;
+
+      document.getElementById('editReportModal').style.display = 'flex';
+    }
+
+    function closeEditReportModal() {
+      document.getElementById('editReportModal').style.display = 'none';
+    }
+
+    function handleSaveEditReport(e) {
+      e.preventDefault();
+      const role = getActiveReportRole();
+      if (role !== 'super_admin') {
+        alert('Akses Ditolak: Hanya Super Admin yang dapat menyimpan perubahan edit!');
+        return;
+      }
+
+      const id = document.getElementById('editRepId').value;
+      const rep = reportsData.find(r => r.id === id);
+      if (rep) {
+        rep.title = document.getElementById('editRepTitle').value.trim();
+        rep.status = document.getElementById('editRepStatus').value;
+        rep.urgency = document.getElementById('editRepUrgency').value;
+        rep.desc = document.getElementById('editRepDesc').value.trim();
+        rep.action = document.getElementById('editRepAction').value.trim();
+
+        localStorage.setItem('taims_reports_data', JSON.stringify(reportsData));
+        closeEditReportModal();
+        renderReportsTable();
+        alert(`✅ Perubahan laporan "${rep.code}" berhasil disimpan oleh Super Admin!`);
+      }
+    }
+
+    // =========================================================================
+    // 6. CRUD HANDLERS: DELETE (SUPER ADMIN & ADMIN)
+    // =========================================================================
+    function handleDeleteReport(id) {
+      const role = getActiveReportRole();
+      if (role === 'user' || role === 'guest') {
+        alert('Akses Ditolak: Role User tidak memiliki izin untuk menghapus laporan!');
+        return;
+      }
+
+      const rep = reportsData.find(r => r.id === id);
+      if (!rep) return;
+
+      if (confirm(`Apakah Anda yakin ingin menghapus laporan "${rep.code} - ${rep.title}"?`)) {
+        reportsData = reportsData.filter(r => r.id !== id);
+        localStorage.setItem('taims_reports_data', JSON.stringify(reportsData));
+        renderReportsTable();
+        alert(`🗑️ Laporan "${rep.code}" berhasil dihapus dari sistem!`);
+      }
+    }
+
+    function exportReportsToExcel() {
+      let csvContent = "data:text/csv;charset=utf-8,NO,KODE,JUDUL,KATEGORI,PERANGKAT,PELAPOR,TANGGAL,URGENSI,STATUS\n";
+      reportsData.forEach((r, idx) => {
+        csvContent += `${idx + 1},"${r.code}","${r.title}","${r.category}","${r.device}","${r.reporter}","${r.date}","${r.urgency}","${r.status}"\n`;
+      });
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", `LAPORAN_T-AIMS_${new Date().toISOString().slice(0,10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    // =========================================================================
+    // 7. INISIALISASI HALAMAN SAAT DOM SIAP
+    // =========================================================================
+    document.addEventListener("DOMContentLoaded", () => {
+      updateRbacUI();
+      renderReportsTable();
+    });
+  </script>
 </body>
 </html>

@@ -2,13 +2,165 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="refresh" content="0; url=index.html#page-settings">
-  <title>T-AIMS &bull; Memuat Halaman...</title>
-  <script>
-    window.location.replace("index.html#page-settings");
-  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>T-AIMS · Pengaturan Sistem</title>
+  <link rel="icon" type="image/png" href="logo-teknolab.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
 </head>
-<body style="background:#060A12; color:#00E5FF; font-family:sans-serif; display:flex; align-items:center; justify-content:center; height:100vh; margin:0;">
-  <p>Memuat antarmuka T-AIMS... <a href="index.html#page-settings" style="color:#00E5FF;">Klik di sini jika tidak beralih otomatis</a></p>
+<body class="dashboard-body">
+  <div class="app-shell-container">
+    <aside class="desktop-sidebar">
+      <div class="sidebar-logo-zone">
+        <a href="dashboard.html"><img src="logo-teknolab.png" alt="Teknolab" class="brand-clean-blend"></a>
+        <button class="sidebar-close-btn" onclick="toggleMobileSidebar()" aria-label="Tutup Menu"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <nav class="sidebar-nav-menu">
+        <a href="dashboard.html" class="sidebar-link"><i class="fa-solid fa-house"></i> <span>Dashboard</span></a>
+        <a href="devices.html" class="sidebar-link"><i class="fa-solid fa-microchip"></i> <span>Perangkat</span></a>
+        <a href="network.html" class="sidebar-link"><i class="fa-solid fa-network-wired"></i> <span>Jaringan</span></a>
+        <a href="topology.html" class="sidebar-link"><i class="fa-solid fa-location-dot"></i> <span>Lokasi</span></a>
+        <a href="history.html" class="sidebar-link"><i class="fa-regular fa-bell"></i> <span>Peringatan</span> <span class="alert-pill-red">5</span></a>
+        <a href="reports.html" class="sidebar-link"><i class="fa-solid fa-chart-simple"></i> <span>Laporan</span></a>
+        <a href="project.html" class="sidebar-link"><i class="fa-solid fa-circle-info"></i> <span>Informasi Projek</span></a>
+        <a href="users.html" class="sidebar-link"><i class="fa-solid fa-users"></i> <span>Pengguna</span></a>
+        <a href="settings.html" class="sidebar-link active" style="margin-top:14px;"><i class="fa-solid fa-gear"></i> <span>Pengaturan</span></a>
+      </nav>
+      <div class="sidebar-status-box">
+        <span class="status-pulse-dot"></span>
+        <div class="status-text"><small>Sistem</small><strong>Berjalan Normal</strong></div>
+      </div>
+    </aside>
+
+    <main class="main-viewport">
+      <div class="desktop-top-navbar">
+        <button class="mobile-menu-toggle" id="mobileMenuToggle" onclick="toggleMobileSidebar()" aria-label="Buka Menu Navigasi"><i class="fa-solid fa-bars"></i></button>
+        <div class="topbar-left-meta"><strong>T-AIMS</strong><span>|</span><p>Teknolab Asset & Infrastructure Monitoring System</p></div>
+        <div class="topbar-center-search"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="Cari aset, perangkat, lokasi..."></div>
+        <div class="topbar-right-meta">
+          <div class="topbar-clock-chip"><i class="fa-regular fa-calendar"></i><div><span id="dt-live-date">Jumat, 16 Okt 2026</span><strong id="dt-live-time">20:55 WIB</strong></div></div>
+          <div class="topbar-notif-btn" onclick="location.href='history.html'"><i class="fa-regular fa-bell"></i><span class="notif-bubble">5</span></div>
+          <div class="topbar-profile-dropdown">
+            <div class="profile-avatar-circle" id="topbarAvatar"><i class="fa-solid fa-shield-halved"></i></div>
+            <div class="profile-meta-text"><strong id="topbarRoleName">Ahmad Reza Fahmi</strong><small id="topbarRoleSub">Administrator</small></div>
+            <i class="fa-solid fa-chevron-down caret-icon"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="subpage-header-row">
+        <div>
+          <h2><i class="fa-solid fa-sliders text-cyan"></i> Pengaturan Sistem T-AIMS</h2>
+          <p>Konfigurasi interval auto-refresh, ambang batas suhu kritis, dan preferensi sistem (Khusus Administrator).</p>
+        </div>
+        <button class="btn-save-red" id="btnSaveSettings" type="button" onclick="saveSettingsPermanently(event)">
+          <i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan
+        </button>
+      </div>
+
+      <!-- STATUS BANNER AKTIF -->
+      <div id="activeConfigBanner" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 10px; padding: 12px 18px; margin-bottom: 18px; font-size: 12px; color: #34D399; display: flex; justify-content: space-between; align-items: center;">
+        <span><i class="fa-solid fa-circle-check"></i> <strong>Konfigurasi Aktif Saat Ini:</strong> Interval Auto-Refresh <strong id="lblActiveInterval" style="color:#fff; background:rgba(16,185,129,0.3); padding:2px 8px; border-radius:4px;">10</strong> Detik | Ambang Suhu Kritis <strong id="lblActiveTemp" style="color:#fff; background:rgba(239,68,68,0.3); padding:2px 8px; border-radius:4px;">32</strong>°C</span>
+        <small style="color: var(--text-muted);"><i class="fa-solid fa-database"></i> Sinkron Permanen LocalStorage</small>
+      </div>
+
+      <div class="settings-form-panel">
+        <div class="setting-group-box">
+          <label>Interval Auto-Refresh Monitoring (Detik)</label>
+          <input type="number" id="inputRefreshInterval" class="setting-input-text" value="10" min="1" max="3600" oninput="previewIntervalChange(this.value)">
+          <small style="color: var(--text-dim); font-size: 10.5px; display: block; margin-top: 6px;">Mengatur jeda waktu penarikan data otomatis dari server backend (Port 3000).</small>
+        </div>
+        <div class="setting-group-box">
+          <label>Ambang Batas Suhu Kritis Server (°C)</label>
+          <input type="number" id="inputCriticalTemp" class="setting-input-text" value="32" min="15" max="100">
+        </div>
+        <div class="setting-group-box">
+          <label>Zona Waktu Monitoring</label>
+          <select id="inputTimezone" class="setting-select-box">
+            <option value="Asia/Jakarta (WIB - UTC+7)">Asia/Jakarta (WIB - UTC+7)</option>
+            <option value="Asia/Makassar (WITA - UTC+8)">Asia/Makassar (WITA - UTC+8)</option>
+            <option value="Asia/Jayapura (WIT - UTC+9)">Asia/Jayapura (WIT - UTC+9)</option>
+          </select>
+        </div>
+        <div class="setting-group-box">
+          <label>Mode Tema Dashboard</label>
+          <select id="inputThemeMode" class="setting-select-box" onchange="onThemeSelectChange(this.value)">
+            <option value="Opsi 2 - Cyber-Electric Dark (Aktif)">Opsi 2 - Cyber-Electric Dark (Aktif)</option>
+            <option value="Opsi 1 - Minimalist Midnight">Opsi 1 - Minimalist Midnight</option>
+          </select>
+          <small style="color: var(--text-dim); font-size: 10.5px; display: block; margin-top: 6px;">Pilih tema untuk mengubah palet visual antarmuka secara instan (Cyber-Electric Dark atau Minimalist Midnight).</small>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="apiService.js"></script>
+  <script src="app.js"></script>
+  <script>
+    function loadSavedSettings() {
+      const savedInt = localStorage.getItem('taims_refresh_interval') || '10';
+      const savedTemp = localStorage.getItem('taims_critical_temp') || '32';
+      const savedTz = localStorage.getItem('taims_timezone') || 'Asia/Jakarta (WIB - UTC+7)';
+      const savedTheme = localStorage.getItem('taims_theme_mode') || 'Opsi 2 - Cyber-Electric Dark (Aktif)';
+
+      const inputInt = document.getElementById('inputRefreshInterval');
+      const inputTemp = document.getElementById('inputCriticalTemp');
+      const inputTz = document.getElementById('inputTimezone');
+      const inputTheme = document.getElementById('inputThemeMode');
+
+      if (inputInt) inputInt.value = savedInt;
+      if (inputTemp) inputTemp.value = savedTemp;
+      if (inputTz) inputTz.value = savedTz;
+      if (inputTheme) inputTheme.value = savedTheme;
+
+      const lblInt = document.getElementById('lblActiveInterval');
+      const lblTemp = document.getElementById('lblActiveTemp');
+      if (lblInt) lblInt.innerText = savedInt;
+      if (lblTemp) lblTemp.innerText = savedTemp;
+    }
+
+    function previewIntervalChange(val) {
+      if (val) {
+        const lbl = document.getElementById('lblActiveInterval');
+        if (lbl) lbl.innerText = val;
+      }
+    }
+
+    function onThemeSelectChange(newTheme) {
+      if (typeof window.applyThemeMode === 'function') {
+        window.applyThemeMode(newTheme);
+      } else {
+        const themeKey = (newTheme || '').toLowerCase().includes('midnight') ? 'midnight' : 'cyber';
+        document.documentElement.setAttribute('data-theme', themeKey);
+        localStorage.setItem('taims_theme_mode', newTheme);
+      }
+    }
+
+    function saveSettingsPermanently(e) {
+      if (e) e.preventDefault();
+      
+      const newInt = document.getElementById('inputRefreshInterval').value.trim() || '10';
+      const newTemp = document.getElementById('inputCriticalTemp').value.trim() || '32';
+      const newTz = document.getElementById('inputTimezone').value;
+      const newTheme = document.getElementById('inputThemeMode').value;
+
+      localStorage.setItem('taims_refresh_interval', newInt);
+      localStorage.setItem('taims_critical_temp', newTemp);
+      localStorage.setItem('taims_timezone', newTz);
+      localStorage.setItem('taims_theme_mode', newTheme);
+
+      if (typeof window.applyThemeMode === 'function') {
+        window.applyThemeMode(newTheme);
+      }
+
+      loadSavedSettings();
+      alert(`✅ Pengaturan Berhasil Disimpan Permanen!\n\n• Interval Auto-Refresh: ${newInt} Detik\n• Ambang Suhu Kritis: ${newTemp}°C\n• Zona Waktu: ${newTz}\n• Mode Tema: ${newTheme}\n\nPengaturan ini akan tetap aktif bahkan setelah berpindah menu atau membuka sesi baru.`);
+    }
+
+    // Jalankan segera dan saat DOM siap
+    loadSavedSettings();
+    document.addEventListener("DOMContentLoaded", loadSavedSettings);
+  </script>
 </body>
 </html>

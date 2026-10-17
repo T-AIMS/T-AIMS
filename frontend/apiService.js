@@ -30,9 +30,7 @@ const FALLBACK_ASSETS = [
     current_status: "offline",
     priority: 1,
     last_seen: "15 Okt 2026 13:20",
-    description: "Router gateway utama lab Teknolab",
-    installation_date: "12 Okt 2026",
-    response_time_ms: 12
+    description: "Router gateway utama lab Teknolab"
   },
   {
     asset_id: 16,
@@ -49,9 +47,7 @@ const FALLBACK_ASSETS = [
     current_status: "offline",
     priority: 1,
     last_seen: "15 Okt 2026 13:20",
-    description: "Router Marketing Office",
-    installation_date: "12 Okt 2026",
-    response_time_ms: 12
+    description: "Router Marketing Office"
   },
   {
     asset_id: 3,
@@ -68,9 +64,7 @@ const FALLBACK_ASSETS = [
     current_status: "unknown",
     priority: 2,
     last_seen: "-",
-    description: "Switch distribusi lantai 1 dan workstation lab",
-    installation_date: "12 Okt 2026",
-    response_time_ms: 12
+    description: "Switch distribusi lantai 1 dan workstation lab"
   },
   {
     asset_id: 4,
@@ -87,9 +81,7 @@ const FALLBACK_ASSETS = [
     current_status: "unknown",
     priority: 2,
     last_seen: "-",
-    description: "Switch koneksi kabel PC peserta lab",
-    installation_date: "12 Okt 2026",
-    response_time_ms: 12
+    description: "Switch koneksi kabel PC peserta lab"
   },
   {
     asset_id: 5,
@@ -106,9 +98,7 @@ const FALLBACK_ASSETS = [
     current_status: "offline",
     priority: 2,
     last_seen: "15 Okt 2026 13:19",
-    description: "Wi-Fi access point area laboratorium utama",
-    installation_date: "12 Okt 2026",
-    response_time_ms: 12
+    description: "Wi-Fi access point area laboratorium utama"
   },
   {
     asset_id: 7,
@@ -125,9 +115,7 @@ const FALLBACK_ASSETS = [
     current_status: "offline",
     priority: 1,
     last_seen: "15 Okt 2026 13:19",
-    description: "Server host aplikasi web monitoring T-AIMS",
-    installation_date: "12 Okt 2026",
-    response_time_ms: 12
+    description: "Server host aplikasi web monitoring T-AIMS"
   },
   {
     asset_id: 8,
@@ -144,9 +132,7 @@ const FALLBACK_ASSETS = [
     current_status: "offline",
     priority: 1,
     last_seen: "15 Okt 2026 13:20",
-    description: "Edge firewall dan traffic monitoring lab",
-    installation_date: "12 Okt 2026",
-    response_time_ms: 12
+    description: "Edge firewall dan traffic monitoring lab"
   },
   {
     asset_id: 9,
@@ -163,9 +149,7 @@ const FALLBACK_ASSETS = [
     current_status: "unknown",
     priority: 1,
     last_seen: "-",
-    description: "Layanan resolusi domain dan DHCP internal lab",
-    installation_date: "12 Okt 2026",
-    response_time_ms: 12
+    description: "Layanan resolusi domain dan DHCP internal lab"
   },
   {
     asset_id: 10,
@@ -182,9 +166,7 @@ const FALLBACK_ASSETS = [
     current_status: "offline",
     priority: 2,
     last_seen: "15 Okt 2026 13:19",
-    description: "Penyimpanan cadangan file dan backup database",
-    installation_date: "12 Okt 2026",
-    response_time_ms: 12
+    description: "Penyimpanan cadangan file dan backup database"
   },
   {
     asset_id: 11,
@@ -201,9 +183,7 @@ const FALLBACK_ASSETS = [
     current_status: "offline",
     priority: 2,
     last_seen: "13 Okt 2026 23:29",
-    description: "Sensor DHT22 pemantau suhu ruangan lab utama",
-    installation_date: "12 Okt 2026",
-    response_time_ms: 12
+    description: "Sensor DHT22 pemantau suhu ruangan lab utama"
   },
   {
     asset_id: 17,
@@ -220,9 +200,7 @@ const FALLBACK_ASSETS = [
     current_status: "offline",
     priority: 1,
     last_seen: "15 Okt 2026 13:20",
-    description: "CCTV Head Office",
-    installation_date: "12 Okt 2026",
-    response_time_ms: 12
+    description: "CCTV Head Office"
   },
   {
     asset_id: 18,
@@ -239,9 +217,7 @@ const FALLBACK_ASSETS = [
     current_status: "unknown",
     priority: 1,
     last_seen: "-",
-    description: "CCTV Marketing Office",
-    installation_date: "12 Okt 2026",
-    response_time_ms: 12
+    description: "CCTV Marketing Office"
   },
   {
     asset_id: 19,
@@ -258,9 +234,7 @@ const FALLBACK_ASSETS = [
     current_status: "offline",
     priority: 2,
     last_seen: "15 Okt 2026 13:20",
-    description: "Smart TV Xiaomi Head Office",
-    installation_date: "12 Okt 2026",
-    response_time_ms: 12
+    description: "Smart TV Xiaomi Head Office"
   },
   {
     asset_id: 20,
@@ -277,9 +251,7 @@ const FALLBACK_ASSETS = [
     current_status: "offline",
     priority: 2,
     last_seen: "15 Okt 2026 13:20",
-    description: "PC Head Office 01",
-    installation_date: "12 Okt 2026",
-    response_time_ms: 12
+    description: "PC Head Office 01"
   },
   {
     asset_id: 21,
@@ -296,9 +268,7 @@ const FALLBACK_ASSETS = [
     current_status: "unknown",
     priority: 2,
     last_seen: "-",
-    description: "PC Head Office 02",
-    installation_date: "12 Okt 2026",
-    response_time_ms: 12
+    description: "PC Head Office 02"
   },
   {
     asset_id: 22,
@@ -315,9 +285,7 @@ const FALLBACK_ASSETS = [
     current_status: "offline",
     priority: 2,
     last_seen: "13 Okt 2026 23:52",
-    description: "Raspberry Pi Smart Home",
-    installation_date: "12 Okt 2026",
-    response_time_ms: 12
+    description: "Raspberry Pi Smart Home"
   }
 ];
 
@@ -623,44 +591,6 @@ async function sendPing(assetId, status = 'online', responseTimeMs = 15, details
   }
 }
 
-/**
- * 14. Dapatkan Rekomendasi AI (GET /api/ai/recommendation)
- */
-async function getAiRecommendation() {
-  try {
-    const res = await apiFetch('/ai/recommendation');
-    if (res && res.data) return res;
-  } catch (error) {
-    console.warn("Backend AI endpoint belum aktif / fallback lokal:", error);
-  }
-
-  // Dynamic intelligent analysis fallback berdasarkan status riil perangkat
-  const assets = (typeof MASTER_DEVICES !== 'undefined' && MASTER_DEVICES.length > 0) ? MASTER_DEVICES : FALLBACK_ASSETS;
-  const offlineList = assets.filter(a => (a.current_status || a.status || '').toLowerCase() === 'offline');
-  const warningList = assets.filter(a => (a.current_status || a.status || '').toLowerCase() === 'unknown' || (a.current_status || a.status || '').toLowerCase() === 'warning');
-  const onlineList = assets.filter(a => (a.current_status || a.status || '').toLowerCase() === 'online');
-  const total = assets.length;
-  const online = onlineList.length;
-  const avail = total > 0 ? ((online / total) * 100).toFixed(1) : "0.0";
-  const troubled = offlineList.map(a => a.asset_code || a.asset_name).slice(0, 3).join(', ') || 'Tidak ada anomali kritis';
-
-  return {
-    success: true,
-    data: {
-      total_devices: total,
-      online_devices: online,
-      offline_devices: offlineList.length,
-      warning_devices: warningList.length,
-      availability_percent: avail,
-      troubled_devices: troubled,
-      status_network: offlineList.length > 0 ? 'STABIL DENGAN PERINGATAN (WARNING)' : 'NORMAL & OPTIMAL (STABIL)',
-      recommendation: offlineList.length > 0
-        ? `Lakukan pengecekan fisik catu daya adaptor 12V pada ${troubled} dan periksa redaman kabel LAN serta kualitas koneksi Wi-Fi Access Point.`
-        : 'Seluruh perangkat beroperasi normal tanpa anomali. Lanjutkan rutinitas pemantauan otomatis dan pemeliharaan berkala.'
-    }
-  };
-}
-
 // Pasang ke window agar bisa diakses secara global di semua file html
 window.apiService = {
   BASE_URL,
@@ -676,7 +606,6 @@ window.apiService = {
   updateAsset,
   sendHeartbeat,
   sendPing,
-  getAiRecommendation,
   FALLBACK_ASSETS
 };
 
@@ -691,4 +620,3 @@ window.createAsset = createAsset;
 window.updateAsset = updateAsset;
 window.sendHeartbeat = sendHeartbeat;
 window.sendPing = sendPing;
-window.getAiRecommendation = getAiRecommendation;

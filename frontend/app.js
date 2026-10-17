@@ -1,2139 +1,657 @@
 /**
- * T-AIMS | Teknolab Asset & Infrastructure Monitoring System
- * Script Aplikasi Lengkap: Multi-Halaman, Autentikasi, GIS Peta Blitar, Modul Aset & Tim Projek
+ * =====================================================================
+ * T-AIMS GLOBAL SESSION, RBAC PERMISSION, DYNAMIC INTERVAL & CHARTS
+ * =====================================================================
+ * Terintegrasi ke Backend Express.js (Port 3000) & Database MySQL (16 Aset)
+ * =====================================================================
  */
 
-const DEFAULT_TEAM_MEMBERS = [
-    // =========================================================================
-    // SHIFT 1 — PAGI (07.00 - 16.00 WIB)
-    // System Core, Backend, Database, Hardware & Network
-    // =========================================================================
-    {
-        id: 'TM-01',
-        name: 'DAMAR MUNAJAD',
-        role: 'Project Coordinator & System Analyst',
-        shift: '1',
-        shiftLabel: 'Shift 1',
-        phone: '0851-5866-6985',
-        email: 'damarmunajad7@gmail.com',
-        description: 'Menyusun requirement system dan scope pekerjaan. Membuat System Architecture, Block Diagram, dan Data Flow.',
-        icon: 'fa-user',
-        iconBg: '#132644',
-        iconColor: '#38BDF8'
-    },
-    {
-        id: 'TM-02',
-        name: 'AHMAD REZA FAHMI',
-        role: 'Backend & API Developer',
-        shift: '1',
-        shiftLabel: 'Shift 1',
-        phone: '0857-0724-8435',
-        email: 'rzafahmi351@gmail.com',
-        description: 'Membangun backend Express.js penghubung perangkat, database, dan dashboard port 3000.',
-        icon: 'fa-server',
-        iconBg: '#132644',
-        iconColor: '#38BDF8'
-    },
-    {
-        id: 'TM-03',
-        name: 'FAIDA TRISMA AMELIA',
-        role: 'Database & Asset Management Engineer',
-        shift: '1',
-        shiftLabel: 'Shift 1',
-        phone: '0857-3946-0210',
-        email: 'faidatrismaamelia@gmail.com',
-        description: 'Merancang database T-AIMS dan relasi antar tabel, inventarisasi aset Teknolab, dan konsistensi data monitoring log.',
-        icon: 'fa-database',
-        iconBg: '#132644',
-        iconColor: '#38BDF8'
-    },
-    {
-        id: 'TM-04',
-        name: 'ILVINA MUVARIKA',
-        role: 'IoT & Device Integration Engineer',
-        shift: '1',
-        shiftLabel: 'Shift 1',
-        phone: '0857-0480-4181',
-        email: 'ilfnamufarika4@gmail.com',
-        description: 'Membuat firmware heartbeat untuk ESP32 dan modul relay, mengirim telemetry sensor suhu.',
-        icon: 'fa-microchip',
-        iconBg: '#132644',
-        iconColor: '#38BDF8'
-    },
-    {
-        id: 'TM-05',
-        name: 'ANANDA DWI SUSANTI',
-        role: 'Network & Device Monitoring Engineer',
-        shift: '1',
-        shiftLabel: 'Shift 1',
-        phone: '0857-3231-0315',
-        email: 'c11anandadwisusanti@gmail.com',
-        description: 'Membangun monitoring engine jaringan, konfigurasi SNMP v2/v3, dan aturan pengecekan ping.',
-        icon: 'fa-network-wired',
-        iconBg: '#132644',
-        iconColor: '#38BDF8'
-    },
+let MASTER_DEVICES = (typeof FALLBACK_ASSETS !== 'undefined') ? FALLBACK_ASSETS : [];
+let dashboardTimerId = null;
+let devicesTimerId = null;
 
-    // =========================================================================
-    // SHIFT 2 — SORE / MALAM (16.00 - 01.00 WIB)
-    // Frontend Dashboard, Automation, Security, Testing & System Integration
-    // =========================================================================
-    {
-        id: 'TM-06',
-        name: 'DZAKWAN',
-        role: 'Shift Lead & System Integration',
-        shift: '2',
-        shiftLabel: 'Shift 2',
-        phone: '0857-3192-9204',
-        email: 'awangtgprofesional@gmail.com',
-        description: 'Memimpin operasional Shift 2, mengoordinasikan integrasi antar-modul frontend dan backend.',
-        icon: 'fa-diagram-project',
-        iconBg: '#132644',
-        iconColor: '#38BDF8'
-    },
-    {
-        id: 'TM-07',
-        name: 'DIKA YOGA PRATAMA',
-        role: 'Frontend Dashboard Developer',
-        shift: '2',
-        shiftLabel: 'Shift 2',
-        phone: '0856-4866-1847',
-        email: 'dikayogapratama18@gmail.com',
-        description: 'Mengembangkan arsitektur multi-halaman dashboard T-AIMS port 3001, modal detail perangkat, dan GIS peta.',
-        icon: 'fa-code',
-        iconBg: '#132644',
-        iconColor: '#38BDF8'
-    },
-    {
-        id: 'TM-08',
-        name: 'AHMAD AZIZ',
-        role: 'UI/UX & Data Visualization Engineer',
-        shift: '2',
-        shiftLabel: 'Shift 2',
-        phone: '0816-1560-2298',
-        email: 'ahzizsaputra@gmail.com',
-        description: 'Merancang antarmuka dashboard di Figma, palet warna Cyber-Electric Dark Mountain, dan Chart.js.',
-        icon: 'fa-palette',
-        iconBg: '#2B1B47',
-        iconColor: '#C084FC'
-    },
-    {
-        id: 'TM-09',
-        name: 'ARICK FERDIANSYAH',
-        role: 'Automation & Notification Engineer',
-        shift: '2',
-        shiftLabel: 'Shift 2',
-        phone: '0838-4168-7522',
-        email: 'arickferdiansyah@gmail.com',
-        description: 'Mengembangkan otomatisasi notifikasi, webhook pengiriman alarm insiden jaringan secara real-time.',
-        icon: 'fa-bell',
-        iconBg: '#3D3012',
-        iconColor: '#FBBF24'
-    },
-    {
-        id: 'TM-10',
-        name: 'WAFIAN',
-        role: 'DevOps, Server & Security Engineer',
-        shift: '2',
-        shiftLabel: 'Shift 2',
-        phone: '0858-0421-4958',
-        email: 'wafianzaidan@gmail.com',
-        description: 'Mengelola infrastruktur server, keamanan port, pemantauan soket perangkat, dan stabilitas gateway.',
-        icon: 'fa-shield-halved',
-        iconBg: '#451218',
-        iconColor: '#F87171'
-    },
-    {
-        id: 'TM-11',
-        name: 'REZA TRI WARDANA',
-        role: 'QA, Testing & Documentation Engineer',
-        shift: '2',
-        shiftLabel: 'Shift 2',
-        phone: '0851-3681-1164',
-        email: 'rezatriwardana7@gmail.com',
-        description: 'Menjalankan pengujian fungsionalitas fitur (QA), kepatuhan modul PKL, dan penyusunan dokumentasi.',
-        icon: 'fa-clipboard-check',
-        iconBg: '#133827',
-        iconColor: '#34D399'
-    }
-];
+// Ambil nilai interval dari Pengaturan (Default: 10 detik)
+function getActiveRefreshIntervalMs() {
+  const savedSec = parseInt(localStorage.getItem('taims_refresh_interval') || '10', 10);
+  const validSec = (isNaN(savedSec) || savedSec < 1) ? 10 : savedSec;
+  return validSec * 1000;
+}
 
-const APP_STATE = {
-    currentUser: null,
-    currentPage: 'page-dashboard',
-    selectedDeviceId: null,
-    homeMap: null,
-    fullMap: null,
-    homeMarkers: [],
-    fullMarkers: [],
-    tempMarker: null,
-    activeCoord: { lat: -8.0988, lng: 112.1652 },
+window.getActiveRefreshIntervalMs = getActiveRefreshIntervalMs;
 
-    // Database Perangkat Berfokus pada Wilayah Kota & Kabupaten Blitar (Jawa Timur)
-        devices: [
-        {
-            id: 'DEV-001',
-            code: 'NET-SRV-01',
-            name: 'SRV-DC-01',
-            category: 'Server',
-            district: 'Kepanjenkidul',
-            location: 'Pusat Data HO',
-            lat: -8.07385,
-            lng: 112.17350,
-            ip: '192.168.10.20',
-            mac: '00:1B:44:11:3A:B7',
-            status: 'online',
-            lastSeen: '24 Apr 2024 14:31',
-            ping: '2 ms',
-            uptime: '99.8%',
-            method: 'Ping & SNMP',
-            pic: 'Ahmad Reza Fahmi',
-            installDate: '12 Jan 2024',
-            value: 'Rp 35.000.000',
-            condition: 'Baik',
-            warranty: 'Hingga Jan 2027'
-        },
-        {
-            id: 'DEV-002',
-            code: 'NET-RTR-01',
-            name: 'SW-Core-01',
-            category: 'Network Device',
-            district: 'Kepanjenkidul',
-            location: 'Area Lab Utama HO',
-            lat: -8.07375,
-            lng: 112.17345,
-            ip: '192.168.10.1',
-            mac: '00:1B:44:22:8C:F1',
-            status: 'online',
-            lastSeen: '24 Apr 2024 14:32',
-            ping: '1 ms',
-            uptime: '99.9%',
-            method: 'Ping & SNMP',
-            pic: 'Ananda Dwi Susanti',
-            installDate: '15 Jan 2024',
-            value: 'Rp 14.500.000',
-            condition: 'Baik',
-            warranty: 'Hingga Mar 2026'
-        },
-        {
-            id: 'DEV-003',
-            code: 'SEC-CCTV-01',
-            name: 'CCTV-HO-01',
-            category: 'CCTV & Security',
-            district: 'Kepanjenkidul',
-            location: 'Gerbang Depan HO',
-            lat: -8.07360,
-            lng: 112.17320,
-            ip: '192.168.10.31',
-            mac: '00:1B:44:55:09:A1',
-            status: 'offline',
-            lastSeen: '24 Apr 2024 11:24',
-            ping: 'Timeout',
-            uptime: '89.2%',
-            method: 'Ping (ICMP)',
-            pic: 'Ananda Dwi Susanti',
-            installDate: '20 Jan 2024',
-            value: 'Rp 3.200.000',
-            condition: 'Perlu Perbaikan',
-            warranty: 'Hingga Jan 2025'
-        },
-        {
-            id: 'DEV-004',
-            code: 'NET-AP-01',
-            name: 'AP-LB-01',
-            category: 'Network Device',
-            district: 'Kepanjenkidul',
-            location: 'Koridor Lab HO',
-            lat: -8.07380,
-            lng: 112.17330,
-            ip: '192.168.10.11',
-            mac: '00:1B:44:66:33:DE',
-            status: 'online',
-            lastSeen: '24 Apr 2024 14:12',
-            ping: '4 ms',
-            uptime: '99.1%',
-            method: 'Ping (ICMP)',
-            pic: 'Ananda Dwi Susanti',
-            installDate: '18 Jan 2024',
-            value: 'Rp 2.800.000',
-            condition: 'Baik',
-            warranty: 'Hingga Feb 2026'
-        },
-        {
-            id: 'DEV-005',
-            code: 'SRV-APP-01',
-            name: 'SRV-APP-02',
-            category: 'Server',
-            district: 'Kepanjenkidul',
-            location: 'Data Center HO',
-            lat: -8.07385,
-            lng: 112.17355,
-            ip: '192.168.10.5',
-            mac: '00:1B:44:77:88:99',
-            status: 'online',
-            lastSeen: '24 Apr 2024 14:30',
-            ping: '3 ms',
-            uptime: '99.7%',
-            method: 'Ping & HTTP',
-            pic: 'Ahmad Reza Fahmi',
-            installDate: '22 Jan 2024',
-            value: 'Rp 28.000.000',
-            condition: 'Baik',
-            warranty: 'Hingga Des 2026'
-        },
-        {
-            id: 'DEV-006',
-            code: 'NET-RTR-02',
-            name: 'Router-MO-02',
-            category: 'Network Device',
-            district: 'Sananwetan',
-            location: 'Ruang Marketing MO',
-            lat: -8.08630,
-            lng: 112.16450,
-            ip: '192.168.10.2',
-            mac: '00:1B:44:22:9D:02',
-            status: 'warning',
-            lastSeen: '24 Apr 2024 14:28',
-            ping: '68 ms',
-            uptime: '96.4%',
-            method: 'Ping & SNMP',
-            pic: 'Ahmad Reza Fahmi',
-            installDate: '16 Jan 2024',
-            value: 'Rp 8.500.000',
-            condition: 'Cukup',
-            warranty: 'Hingga Apr 2025'
-        },
-        {
-            id: 'DEV-007',
-            code: 'IOT-ESP-01',
-            name: 'ESP32-Surya-01',
-            category: 'IoT Sensor',
-            district: 'Kepanjenkidul',
-            location: 'Ruang Server HO',
-            lat: -8.07390,
-            lng: 112.17340,
-            ip: '192.168.10.101',
-            mac: 'A4:CF:12:88:31:01',
-            status: 'online',
-            lastSeen: '24 Apr 2024 14:32',
-            ping: '8 ms',
-            uptime: '98.9%',
-            method: 'HTTP / API',
-            pic: 'Ilvina Muvarika',
-            installDate: '01 Feb 2024',
-            value: 'Rp 1.200.000',
-            condition: 'Baik',
-            warranty: 'Hingga Feb 2025'
-        },
-        {
-            id: 'DEV-008',
-            code: 'IOT-ENV-02',
-            name: 'ESP32-Suhu-02',
-            category: 'IoT Sensor',
-            district: 'Kepanjenkidul',
-            location: 'Ruang Server HO',
-            lat: -8.07390,
-            lng: 112.17345,
-            ip: '192.168.10.102',
-            mac: 'A4:CF:12:88:31:02',
-            status: 'online',
-            lastSeen: '24 Apr 2024 14:31',
-            ping: '9 ms',
-            uptime: '98.5%',
-            method: 'HTTP / API',
-            pic: 'Ilvina Muvarika',
-            installDate: '01 Feb 2024',
-            value: 'Rp 950.000',
-            condition: 'Baik',
-            warranty: 'Hingga Feb 2025'
-        },
-        {
-            id: 'DEV-009',
-            code: 'SEC-CCTV-02',
-            name: 'CCTV-MO-02',
-            category: 'CCTV & Security',
-            district: 'Sananwetan',
-            location: 'Lobi Depan MO',
-            lat: -8.08620,
-            lng: 112.16440,
-            ip: '192.168.10.32',
-            mac: '00:1B:44:55:09:A2',
-            status: 'online',
-            lastSeen: '24 Apr 2024 14:29',
-            ping: '12 ms',
-            uptime: '99.0%',
-            method: 'Ping (ICMP)',
-            pic: 'Ananda Dwi Susanti',
-            installDate: '20 Jan 2024',
-            value: 'Rp 3.200.000',
-            condition: 'Baik',
-            warranty: 'Hingga Jan 2025'
-        },
-        {
-            id: 'DEV-010',
-            code: 'PC-WS-01',
-            name: 'PC-Lead-01',
-            category: 'Workstation',
-            district: 'Kepanjenkidul',
-            location: 'Ruang Kerja 1 HO',
-            lat: -8.07370,
-            lng: 112.17330,
-            ip: '192.168.10.41',
-            mac: '00:1B:44:88:01:41',
-            status: 'online',
-            lastSeen: '24 Apr 2024 14:32',
-            ping: '2 ms',
-            uptime: '99.5%',
-            method: 'Ping (ICMP)',
-            pic: 'Dika Yoga Pratama',
-            installDate: '10 Jan 2024',
-            value: 'Rp 18.000.000',
-            condition: 'Baik',
-            warranty: 'Hingga Jan 2026'
-        },
-        {
-            id: 'DEV-011',
-            code: 'PC-WS-02',
-            name: 'PC-Admin-02',
-            category: 'Workstation',
-            district: 'Kepanjenkidul',
-            location: 'Ruang Admin HO',
-            lat: -8.07380,
-            lng: 112.17335,
-            ip: '192.168.10.42',
-            mac: '00:1B:44:88:01:42',
-            status: 'online',
-            lastSeen: '24 Apr 2024 14:32',
-            ping: '2 ms',
-            uptime: '99.5%',
-            method: 'Ping (ICMP)',
-            pic: 'Ananda Dwi Susanti',
-            installDate: '10 Jan 2024',
-            value: 'Rp 16.500.000',
-            condition: 'Baik',
-            warranty: 'Hingga Jan 2026'
-        },
-        {
-            id: 'DEV-012',
-            code: 'PC-DEV-03',
-            name: 'PC-Dev-03',
-            category: 'Workstation',
-            district: 'Sananwetan',
-            location: 'Ruang Lab AI MO',
-            lat: -8.08640,
-            lng: 112.16460,
-            ip: '192.168.10.40',
-            mac: '00:1B:44:88:01:40',
-            status: 'online',
-            lastSeen: '24 Apr 2024 14:25',
-            ping: '14 ms',
-            uptime: '98.0%',
-            method: 'Ping (ICMP)',
-            pic: 'Budi Santoso',
-            installDate: '12 Jan 2024',
-            value: 'Rp 22.000.000',
-            condition: 'Baik',
-            warranty: 'Hingga Feb 2026'
-        },
-        {
-            id: 'DEV-013',
-            code: 'SRV-DB-01',
-            name: 'SRV-DB-01',
-            category: 'Server',
-            district: 'Kepanjenkidul',
-            location: 'Ruang Server HO',
-            lat: -8.07385,
-            lng: 112.17350,
-            ip: '192.168.10.30',
-            mac: '00:1B:44:33:44:55',
-            status: 'online',
-            lastSeen: '24 Apr 2024 14:32',
-            ping: '1 ms',
-            uptime: '99.9%',
-            method: 'Ping & Port',
-            pic: 'Ahmad Reza Fahmi',
-            installDate: '14 Jan 2024',
-            value: 'Rp 32.000.000',
-            condition: 'Baik',
-            warranty: 'Hingga Des 2026'
-        },
-        {
-            id: 'DEV-014',
-            code: 'SRV-DC-02',
-            name: 'SRV-NAS-02',
-            category: 'Server',
-            district: 'Kepanjenkidul',
-            location: 'Ruang Server HO',
-            lat: -8.07385,
-            lng: 112.17360,
-            ip: '192.168.10.254',
-            mac: '00:1B:44:FE:DC:BA',
-            status: 'online',
-            lastSeen: '24 Apr 2024 14:30',
-            ping: '2 ms',
-            uptime: '99.4%',
-            method: 'Ping & SNMP',
-            pic: 'Ahmad Reza Fahmi',
-            installDate: '14 Jan 2024',
-            value: 'Rp 19.500.000',
-            condition: 'Baik',
-            warranty: 'Hingga Jan 2026'
-        },
-        {
-            id: 'DEV-015',
-            code: 'SW-CORE-01',
-            name: 'SW-Managed-01',
-            category: 'Network Device',
-            district: 'Kepanjenkidul',
-            location: 'Rack Panel HO',
-            lat: -8.07375,
-            lng: 112.17345,
-            ip: '192.168.10.4',
-            mac: '00:1B:44:CC:DD:04',
-            status: 'online',
-            lastSeen: '24 Apr 2024 14:32',
-            ping: '1 ms',
-            uptime: '99.9%',
-            method: 'Ping & SNMP',
-            pic: 'Ananda Dwi Susanti',
-            installDate: '15 Jan 2024',
-            value: 'Rp 6.800.000',
-            condition: 'Baik',
-            warranty: 'Hingga Mar 2026'
-        },
-        {
-            id: 'DEV-016',
-            code: 'WIFI-MO-03',
-            name: 'WIFI-MO-03',
-            category: 'Lainnya',
-            district: 'Sananwetan',
-            location: 'Ruang Divisi MO',
-            lat: -8.08640,
-            lng: 112.16460,
-            ip: '192.168.10.3',
-            mac: '00:1B:44:99:88:03',
-            status: 'online',
-            lastSeen: '24 Apr 2024 14:26',
-            ping: '15 ms',
-            uptime: '97.8%',
-            method: 'Ping (ICMP)',
-            pic: 'Budi Santoso',
-            installDate: '16 Jan 2024',
-            value: 'Rp 3.500.000',
-            condition: 'Baik',
-            warranty: 'Hingga Apr 2025'
-        }
-    ],
+// Inisialisasi Tema Global (Cyber-Electric Dark vs Minimalist Midnight)
+function initGlobalTheme() {
+  const savedTheme = localStorage.getItem('taims_theme_mode') || 'Opsi 2 - Cyber-Electric Dark (Aktif)';
+  const themeKey = savedTheme.toLowerCase().includes('midnight') ? 'midnight' : 'cyber';
+  document.documentElement.setAttribute('data-theme', themeKey);
+  if (document.body) document.body.setAttribute('data-theme', themeKey);
+}
 
-    // Riwayat Insiden & Notifikasi (Fokus Wilayah Blitar)
-        alerts: [
-        { id: 'ALT-101', time: '14:22', title: 'CCTV-HO-01 Offline', location: 'Gerbang Depan HO', level: 'kritis', read: false },
-        { id: 'ALT-102', time: '13:48', title: 'CPU Tinggi 92% SRV-APP-02', location: 'Data Center HO', level: 'peringatan', read: false },
-        { id: 'ALT-103', time: '11:24', title: 'Router-MO-02 Latensi 68ms', location: 'Ruang Marketing MO', level: 'peringatan', read: false },
-        { id: 'ALT-104', time: '10:17', title: 'Suhu Server Naik 32.8°C', location: 'Ruang Server HO', level: 'peringatan', read: false },
-        { id: 'ALT-105', time: '09:03', title: 'Baterai UPS 22%', location: 'Panel Listrik HO', level: 'peringatan', read: false }
-    ],
+function applyThemeMode(themeName) {
+  const themeKey = (themeName || '').toLowerCase().includes('midnight') ? 'midnight' : 'cyber';
+  document.documentElement.setAttribute('data-theme', themeKey);
+  if (document.body) document.body.setAttribute('data-theme', themeKey);
+  localStorage.setItem('taims_theme_mode', themeName);
+}
 
-    teamMembers: [],
+window.applyThemeMode = applyThemeMode;
+initGlobalTheme();
 
-    charts: {
-        trendChart: null,
-        categoryDonut: null
-    }
-};
+document.addEventListener("DOMContentLoaded", async () => {
+  initGlobalTheme();
+  initGlobalSession();
+  initLiveClock();
+  initMobileResponsive();
 
-// =============================================================================
-// INISIALISASI
-// =============================================================================
-document.addEventListener('DOMContentLoaded', () => {
-    initClock();
-    loadTeamData();
-    renderHomeDevicesTable();
-    renderFullDevicesTable();
-    renderAssetsTable();
-    renderAlerts();
-    renderTeamCards();
-    renderBlitarNodesList();
+  const intervalMs = getActiveRefreshIntervalMs();
 
-    // Inisialisasi Peta Leaflet Blitar setelah DOM siap
-    setTimeout(() => {
-        initBlitarMaps();
-    }, 150);
+  // 1. Jika di Dashboard: Muat statistik dan chart realtime sesuai interval pengaturan
+  if (document.getElementById('kpi-total-devices') || document.getElementById('categoryDonutChart')) {
+    await initDashboard();
+    if (dashboardTimerId) clearInterval(dashboardTimerId);
+    dashboardTimerId = setInterval(initDashboard, intervalMs);
+  }
 
-    // Cek URL params (?role=admin atau ?role=guest)
-    const urlParams = new URLSearchParams(window.location.search);
-    const paramRole = urlParams.get('role');
-    if (paramRole === 'admin' || paramRole === 'superadmin') {
-        loginSuccess({
-            username: 'superadmin',
-            name: 'Ahmad Rizki',
-            role: 'superadmin',
-            title: 'Administrator'
-        });
-        return;
-    } else if (paramRole === 'guest' || paramRole === 'tamu') {
-        enterAsGuest();
-        return;
-    }
-
-    // Cek sesi tersimpan
-    const saved = sessionStorage.getItem('taims_session');
-    if (saved) {
-        try {
-            const user = JSON.parse(saved);
-            loginSuccess(user);
-        } catch (e) {
-            sessionStorage.removeItem('taims_session');
-        }
-    }
+  // 2. Jika di Halaman Devices: Muat tabel 16 aset realtime sesuai interval pengaturan
+  if (document.getElementById('devicesTableBody')) {
+    await initDevicesTable();
+    if (devicesTimerId) clearInterval(devicesTimerId);
+    devicesTimerId = setInterval(initDevicesTable, intervalMs);
+  }
 });
 
-// =============================================================================
-// NAVIGASI MULTI-HALAMAN SIDEBAR (BUG ASET & PERANGKAT DIPERBAIKI)
-// =============================================================================
-function switchPage(pageId) {
-    APP_STATE.currentPage = pageId;
+// =====================================================================
+// 1. GLOBAL SESSION, POJOK KANAN ATAS & KUNCI AKSES TIGA ROLE (SUPER ADMIN, ADMIN, USER)
+// =====================================================================
+function initGlobalSession() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const roleParam = urlParams.get('role');
+  if (roleParam) {
+    localStorage.setItem('taims_user_role', roleParam);
+  }
 
-    // Sembunyikan semua halaman
-    document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
+  const activeRole = localStorage.getItem('taims_user_role') || 'super_admin';
+  const isSuperAdmin = (activeRole === 'super_admin');
+  const isAdmin = (activeRole === 'admin');
+  const isUser = (activeRole === 'user' || activeRole === 'guest');
 
-    // Tampilkan halaman tujuan
-    const targetPage = document.getElementById(pageId);
-    if (targetPage) {
-        targetPage.classList.add('active');
-    }
+  // Sinkronisasi teks dan ikon profil di pojok kanan atas pada SEMUA halaman
+  const nameEls = document.querySelectorAll('#topbarRoleName, .profile-meta-text strong');
+  const subEls = document.querySelectorAll('#topbarRoleSub, .profile-meta-text small');
+  const avatarEls = document.querySelectorAll('#topbarAvatar, .profile-avatar-circle');
 
-    // Update class active di sidebar: Hanya item yang cocok persis yang aktif!
-    document.querySelectorAll('.sidebar .nav-item').forEach(item => {
-        if (item.getAttribute('data-page') === pageId) {
-            item.classList.add('active');
-        } else {
-            item.classList.remove('active');
-        }
-    });
+  nameEls.forEach(el => {
+    if (isSuperAdmin) el.innerText = "Dika Yoga Pratama";
+    else if (isAdmin) el.innerText = "Ahmad Reza Fahmi";
+    else el.innerText = "Tamu / Pengunjung";
+  });
 
-    // Handle aksi spesifik setiap halaman & kontrol scroll
-    const mainEl = document.querySelector('.main-content');
-    const contentEl = document.querySelector('.content-container');
-    if (pageId === 'page-dashboard') {
-        if (mainEl) mainEl.style.overflow = 'hidden';
-        if (contentEl) contentEl.style.overflow = 'hidden';
-        setTimeout(() => {
-            initCharts();
-            if (APP_STATE.homeMap) APP_STATE.homeMap.invalidateSize();
-        }, 80);
+  subEls.forEach(el => {
+    if (isSuperAdmin) el.innerText = "Super Administrator";
+    else if (isAdmin) el.innerText = "Administrator";
+    else el.innerText = "Tamu (Hanya Lihat)";
+  });
+
+  avatarEls.forEach(el => {
+    if (isSuperAdmin) {
+      el.innerHTML = '<i class="fa-solid fa-crown"></i>';
+      el.style.background = 'linear-gradient(135deg, #DC2626, #B91C1C)';
+      el.style.boxShadow = '0 0 10px rgba(220, 38, 38, 0.5)';
+    } else if (isAdmin) {
+      el.innerHTML = '<i class="fa-solid fa-shield-halved"></i>';
+      el.style.background = 'linear-gradient(135deg, #2563EB, #1D4ED8)';
+      el.style.boxShadow = '0 0 10px rgba(37, 99, 235, 0.5)';
     } else {
-        if (mainEl) mainEl.style.overflow = 'auto';
-        if (contentEl) contentEl.style.overflow = 'auto';
-        if (pageId === 'page-location') {
-            setTimeout(() => {
-                if (APP_STATE.fullMap) {
-                    APP_STATE.fullMap.invalidateSize();
-                } else {
-                    initBlitarMaps();
-                }
-            }, 120);
-        } else if (pageId === 'page-assets') {
-            renderAssetsTable();
-        } else if (pageId === 'page-devices') {
-            renderFullDevicesTable();
-        } else if (pageId === 'page-project-info') {
-            renderTeamCards();
-        }
+      el.innerHTML = '<i class="fa-regular fa-user"></i>';
+      el.style.background = 'linear-gradient(135deg, #64748B, #334155)';
+      el.style.boxShadow = 'none';
     }
+  });
 
-    // Tutup mobile sidebar jika terbuka
-    const sidebar = document.getElementById('app-sidebar');
-    if (sidebar) sidebar.classList.remove('mobile-open');
+  // Tampilkan Dropdown Profil untuk Logout / Ganti Akun
+  const profileBoxes = document.querySelectorAll('.topbar-profile-dropdown');
+  profileBoxes.forEach(box => {
+    box.style.cursor = 'pointer';
+    box.title = `Login sebagai: ${isSuperAdmin ? 'Super Admin' : (isAdmin ? 'Admin' : 'Tamu')}. Klik untuk Keluar / Ganti Akun.`;
+    box.onclick = (e) => {
+      e.preventDefault();
+      let menu = document.getElementById('globalProfileDropdownMenu');
+      if (!menu) {
+        menu = document.createElement('div');
+        menu.id = 'globalProfileDropdownMenu';
+        menu.style.position = 'absolute';
+        menu.style.top = '60px';
+        menu.style.right = '20px';
+        menu.style.background = '#0B1222';
+        menu.style.border = '1px solid var(--border-card)';
+        menu.style.borderRadius = '12px';
+        menu.style.padding = '14px';
+        menu.style.width = '240px';
+        menu.style.boxShadow = '0 12px 35px rgba(0,0,0,0.6)';
+        menu.style.zIndex = '99999';
+        document.body.appendChild(menu);
+      }
 
-    // Scroll ke atas halaman
-    if (mainEl) mainEl.scrollTop = 0;
+      menu.innerHTML = `
+        <div style="border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:10px; margin-bottom:10px;">
+          <small style="color:var(--text-dim); font-size:10px; text-transform:uppercase;">Akun Aktif</small>
+          <strong style="display:block; color:#fff; font-size:12.5px;">${isSuperAdmin ? 'Dika Yoga Pratama' : (isAdmin ? 'Ahmad Reza Fahmi' : 'Tamu / Pengunjung')}</strong>
+          <span style="font-size:10px; font-weight:800; color:${isSuperAdmin ? '#F87171' : (isAdmin ? '#60A5FA' : '#94A3B8')};">
+            ${isSuperAdmin ? '👑 Super Admin (Full CRUD)' : (isAdmin ? '🛡️ Admin (Add & Delete)' : '👤 Tamu (Read-Only)')}
+          </span>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:6px;">
+          <button onclick="localStorage.setItem('taims_user_role','super_admin'); location.reload();" style="background:#090E1A; border:1px solid var(--border-card); color:#fff; padding:7px 10px; border-radius:6px; font-size:11px; text-align:left; cursor:pointer; display:flex; align-items:center; gap:6px;">
+            <i class="fa-solid fa-crown text-amber"></i> Masuk Super Admin
+          </button>
+          <button onclick="localStorage.setItem('taims_user_role','admin'); location.reload();" style="background:#090E1A; border:1px solid var(--border-card); color:#fff; padding:7px 10px; border-radius:6px; font-size:11px; text-align:left; cursor:pointer; display:flex; align-items:center; gap:6px;">
+            <i class="fa-solid fa-shield-halved text-blue"></i> Masuk Admin
+          </button>
+          <button onclick="localStorage.setItem('taims_user_role','user'); location.reload();" style="background:#090E1A; border:1px solid var(--border-card); color:#fff; padding:7px 10px; border-radius:6px; font-size:11px; text-align:left; cursor:pointer; display:flex; align-items:center; gap:6px;">
+            <i class="fa-solid fa-user text-muted"></i> Masuk Mode Tamu
+          </button>
+          <hr style="border:none; border-top:1px solid rgba(255,255,255,0.08); margin:4px 0;">
+          <a href="index.html" style="background:var(--accent-red); color:#fff; padding:8px 10px; border-radius:6px; font-size:11px; font-weight:700; text-align:center; text-decoration:none; display:flex; align-items:center; justify-content:center; gap:6px;">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i> Keluar ke Login Portal
+          </a>
+        </div>
+      `;
+
+      menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+    };
+  });
+
+  // Tutup dropdown jika klik di luar
+  document.addEventListener('click', (e) => {
+    const menu = document.getElementById('globalProfileDropdownMenu');
+    const profileBox = document.querySelector('.topbar-profile-dropdown');
+    if (menu && menu.style.display === 'block' && !menu.contains(e.target) && !profileBox.contains(e.target)) {
+      menu.style.display = 'none';
+    }
+  });
+
+  // HAK AKSES PER ELEMEN UI SESUAI ROLE ASLI
+  // 1. Tombol Tambah (Hanya Super Admin & Admin)
+  const addButtons = document.querySelectorAll(
+    '#btnOpenAddReport, #btnAddDevice, #btnOpenAddDevice, #btnAddUser, #btnAddDenahPin'
+  );
+  addButtons.forEach(btn => {
+    btn.style.display = (isSuperAdmin || isAdmin) ? 'inline-flex' : 'none';
+  });
+
+  // 2. Tombol Edit (Hanya Super Admin)
+  const editButtons = document.querySelectorAll('.btn-edit-only, .btn-action-edit-row');
+  editButtons.forEach(btn => {
+    btn.style.display = isSuperAdmin ? 'inline-flex' : 'none';
+  });
+
+  // 3. Tombol Hapus (Super Admin & Admin)
+  const deleteButtons = document.querySelectorAll('.btn-delete-only, .btn-action-delete-row');
+  deleteButtons.forEach(btn => {
+    btn.style.display = (isSuperAdmin || isAdmin) ? 'inline-flex' : 'none';
+  });
+
+  // 4. Mode Edit Denah (Super Admin & Admin)
+  const denahEditButtons = document.querySelectorAll('#btnDenahEditMode, #btnAdminMode');
+  denahEditButtons.forEach(btn => {
+    btn.style.display = (isSuperAdmin || isAdmin) ? 'inline-flex' : 'none';
+  });
+
+  // 5. Kunci form Pengaturan jika Tamu
+  const settingInputs = document.querySelectorAll('.setting-input-text, .setting-select-box');
+  settingInputs.forEach(input => {
+    input.disabled = isUser;
+    input.style.opacity = isUser ? '0.5' : '1';
+    input.style.cursor = isUser ? 'not-allowed' : 'text';
+  });
+
+  // 6. Update lencana role di banner Dashboard
+  const bannerRoleBadge = document.querySelector('.pill-admin');
+  if (bannerRoleBadge) {
+    if (isSuperAdmin) {
+      bannerRoleBadge.innerHTML = '<i class="fa-solid fa-crown text-amber"></i> Super Administrator (Kontrol Penuh)';
+      bannerRoleBadge.style.background = 'rgba(220, 38, 38, 0.25)';
+      bannerRoleBadge.style.borderColor = '#DC2626';
+      bannerRoleBadge.style.color = '#FCA5A5';
+    } else if (isAdmin) {
+      bannerRoleBadge.innerHTML = '<i class="fa-solid fa-shield-halved text-blue"></i> Administrator (Add & Delete)';
+      bannerRoleBadge.style.background = 'rgba(37, 99, 235, 0.25)';
+      bannerRoleBadge.style.borderColor = '#2563EB';
+      bannerRoleBadge.style.color = '#93C5FD';
+    } else {
+      bannerRoleBadge.innerHTML = '<i class="fa-regular fa-eye"></i> Mode Tamu / User (Hanya Lihat)';
+      bannerRoleBadge.style.background = 'rgba(100, 116, 139, 0.25)';
+      bannerRoleBadge.style.borderColor = '#64748B';
+      bannerRoleBadge.style.color = '#CBD5E1';
+    }
+  }
+
+  // Sinkronisasi lencana notifikasi jika sudah ditandai dibaca
+  if (localStorage.getItem('taims_alerts_read') === 'true') {
+    document.querySelectorAll('.notif-bubble, .alert-pill-red').forEach(b => b.style.display = 'none');
+  }
 }
+
+window.getAppRole = function() {
+  return localStorage.getItem('taims_user_role') || 'super_admin';
+};
+
+window.isCurrentUserAdmin = function() {
+  const r = window.getAppRole();
+  return (r === 'admin' || r === 'super_admin');
+};
+
+window.isCurrentUserSuperAdmin = function() {
+  return window.getAppRole() === 'super_admin';
+};
+
+// =====================================================================
+// MOBILE SIDEBAR RESPONSIVE & CLICKABLE INTERACTION
+// =====================================================================
+function initMobileResponsive() {
+  // 1. Pastikan backdrop overlay sudah ada di DOM
+  let backdrop = document.getElementById('sidebarBackdrop');
+  if (!backdrop) {
+    backdrop = document.createElement('div');
+    backdrop.id = 'sidebarBackdrop';
+    backdrop.className = 'sidebar-backdrop';
+    document.body.appendChild(backdrop);
+  }
+  backdrop.onclick = closeMobileSidebar;
+
+  // 2. Jika tombol hamburger belum ada di topbar, sisipkan secara otomatis
+  const topbar = document.querySelector('.desktop-top-navbar');
+  if (topbar && !document.getElementById('mobileMenuToggle')) {
+    const toggleBtn = document.createElement('button');
+    toggleBtn.id = 'mobileMenuToggle';
+    toggleBtn.className = 'mobile-menu-toggle';
+    toggleBtn.setAttribute('aria-label', 'Buka Menu Navigasi');
+    toggleBtn.setAttribute('type', 'button');
+    toggleBtn.innerHTML = '<i class="fa-solid fa-bars"></i>';
+    toggleBtn.onclick = toggleMobileSidebar;
+    topbar.prepend(toggleBtn);
+  }
+
+  // 3. Jika tombol close X belum ada di sidebar logo zone, sisipkan secara otomatis
+  const logoZone = document.querySelector('.sidebar-logo-zone');
+  if (logoZone && !document.querySelector('.sidebar-close-btn')) {
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'sidebar-close-btn';
+    closeBtn.setAttribute('aria-label', 'Tutup Menu');
+    closeBtn.setAttribute('type', 'button');
+    closeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+    closeBtn.onclick = closeMobileSidebar;
+    logoZone.appendChild(closeBtn);
+  }
+
+  // 4. Tutup drawer otomatis saat link sidebar diklik pada layar kecil
+  document.querySelectorAll('.sidebar-link').forEach(link => {
+    link.addEventListener('click', () => {
+      if (window.innerWidth <= 992) {
+        closeMobileSidebar();
+      }
+    });
+  });
+
+  // 5. Tutup dengan tombol Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeMobileSidebar();
+  });
+}
+window.initMobileResponsive = initMobileResponsive;
 
 function toggleMobileSidebar() {
-    const sidebar = document.getElementById('app-sidebar');
-    if (sidebar) sidebar.classList.toggle('mobile-open');
+  const isOpen = document.body.classList.toggle('sidebar-open');
+  const sidebar = document.querySelector('.desktop-sidebar');
+  if (sidebar) sidebar.classList.toggle('open', isOpen);
 }
+window.toggleMobileSidebar = toggleMobileSidebar;
 
-// =============================================================================
-// AUTENTIKASI: LOGIN ADMIN VS TAMU
-// =============================================================================
-function handleLogin() {
-    const u = document.getElementById('login-username').value.trim();
-    const p = document.getElementById('login-password').value.trim();
-    const alertBox = document.getElementById('auth-alert');
-    const alertText = document.getElementById('auth-alert-text');
-
-    if ((u.toLowerCase().includes('admin') || u.toLowerCase() === 'superadmin') && p === 'admin123') {
-        loginSuccess({
-            username: u,
-            name: 'Ahmad Rizki',
-            role: 'superadmin',
-            title: 'Administrator'
-        });
-    } else if (u.toLowerCase().includes('operator') && p === 'operator123') {
-        loginSuccess({
-            username: u,
-            name: 'Siswa Elektro PKL',
-            role: 'admin',
-            title: 'Operator Elektro'
-        });
-    } else {
-        alertBox.classList.remove('hidden');
-        alertText.textContent = 'Email/Username atau sandi tidak cocok!';
-        setTimeout(() => alertBox.classList.add('hidden'), 4000);
-    }
+function closeMobileSidebar() {
+  document.body.classList.remove('sidebar-open');
+  const sidebar = document.querySelector('.desktop-sidebar');
+  if (sidebar) sidebar.classList.remove('open');
 }
+window.closeMobileSidebar = closeMobileSidebar;
 
-function enterAsGuest() {
-    loginSuccess({
-        username: 'guest',
-        name: 'Tamu / Viewer',
-        role: 'guest',
-        title: 'Viewer (Hanya Lihat)'
-    });
+function toggleNavDrawer() {
+  toggleMobileSidebar();
 }
+window.toggleNavDrawer = toggleNavDrawer;
 
-function loginSuccess(user) {
-    APP_STATE.currentUser = user;
-    sessionStorage.setItem('taims_session', JSON.stringify(user));
-
-    // Update UI Tampilan
-    const topName = document.getElementById('topbar-user-name');
-    const topRole = document.getElementById('topbar-user-role');
-    const dropName = document.getElementById('dropdown-user-name');
-    const dropRole = document.getElementById('dropdown-user-role');
-    const bannerBadge = document.getElementById('banner-role-badge');
-
-    if (topName) topName.textContent = user.name;
-    if (topRole) topRole.textContent = user.title;
-    if (dropName) dropName.textContent = user.name;
-    if (dropRole) dropRole.textContent = user.title;
-
-    // Batasi tombol jika mode Tamu
-    const adminBtns = document.querySelectorAll('.admin-only');
-    if (user.role === 'guest') {
-        if (bannerBadge) {
-            bannerBadge.innerHTML = '<i class="fa-solid fa-eye text-yellow"></i> Mode Tamu (Hanya Melihat)';
-            bannerBadge.style.color = 'var(--tekno-gold)';
-        }
-        adminBtns.forEach(b => b.classList.add('hidden'));
-        showToast('Mode Tamu Aktif', 'Anda masuk sebagai Tamu. Klik profil di kanan atas untuk kembali ke login admin.', 'info');
-    } else {
-        if (bannerBadge) {
-            bannerBadge.innerHTML = '<i class="fa-solid fa-shield-halved text-cyan"></i> ' + user.title + ' (Kontrol Penuh)';
-            bannerBadge.style.color = 'var(--cyan-neon)';
-        }
-        adminBtns.forEach(b => b.classList.remove('hidden'));
-        showToast('Login Berhasil!', `Selamat datang, ${user.name}. Akses manajemen aktif.`, 'success');
-    }
-
-    document.getElementById('auth-screen').classList.add('hidden');
-    document.getElementById('main-dashboard').classList.remove('hidden');
-
-    initCharts();
-}
-
-function logoutToAuth() {
-    sessionStorage.removeItem('taims_session');
-    APP_STATE.currentUser = null;
-    document.getElementById('login-password').value = '';
-
-    document.getElementById('main-dashboard').classList.add('hidden');
-    document.getElementById('auth-screen').classList.remove('hidden');
-
-    // Tutup dropdown menu
-    const menu = document.getElementById('user-menu-dropdown');
-    if (menu) menu.classList.add('hidden');
-
-    showToast('Kembali ke Login', 'Silakan masukkan username dan sandi yang benar.', 'info');
-}
-
-function quickFillCredentials(user, pass) {
-    document.getElementById('login-username').value = user;
-    document.getElementById('login-password').value = pass;
-    showToast('Kredensial Terisi', `Username: ${user}, Sandi: ${pass}. Klik tombol Masuk.`, 'info');
-}
-
-function fillDefaultAdmin() {
-    quickFillCredentials('admin@teknolab.id', 'admin123');
-}
-
-function togglePasswordVisibility() {
-    const pwd = document.getElementById('login-password');
-    const eye = document.getElementById('toggle-pwd-btn');
-    if (pwd.type === 'password') {
-        pwd.type = 'text';
-        eye.classList.replace('fa-eye-slash', 'fa-eye');
-    } else {
-        pwd.type = 'password';
-        eye.classList.replace('fa-eye', 'fa-eye-slash');
-    }
-}
-
-function toggleUserMenu() {
-    const m = document.getElementById('user-menu-dropdown');
-    if (m) m.classList.toggle('hidden');
-}
-
-// =============================================================================
-// JAM DIGITAL WIB REALTIME (Format Referensi: 19:56:45 | Sabtu, 17 Oktober 2026)
-// =============================================================================
-function initClock() {
-    function tick() {
-        const now = new Date();
-        const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-        const months = [
-            'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-            'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
-        ];
-
-        const h = String(now.getHours()).padStart(2, '0');
-        const m = String(now.getMinutes()).padStart(2, '0');
-        const s = String(now.getSeconds()).padStart(2, '0');
-        const tStr = `${h}:${m}:${s}`;
-
-        const dStr = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
-
-        const dEl = document.getElementById('live-date');
-        const tEl = document.getElementById('live-time');
-        if (dEl) dEl.textContent = dStr;
-        if (tEl) tEl.textContent = tStr;
-    }
-    tick();
-    setInterval(tick, 1000);
-}
-
-// =============================================================================
-// TABEL MOCKUP DASHBOARD UTAMA (PERSIS SEPERTI GAMBAR REFERENSI)
-// =============================================================================
-function renderHomeDevicesTable() {
-    const tbody = document.getElementById('home-devices-table-body');
-    if (!tbody) return;
-
-    tbody.innerHTML = '';
-    // Ambil 6 perangkat pertama sesuai mockup
-    const items = APP_STATE.devices.slice(0, 6);
-
-    items.forEach(dev => {
-        const tr = document.createElement('tr');
-        tr.onclick = () => openDeviceDetailModal(dev.id);
-
-        let icon = 'fa-server';
-        if (dev.category === 'Network Device') icon = 'fa-network-wired';
-        else if (dev.category === 'CCTV & Security') icon = 'fa-video';
-        else if (dev.category === 'IoT Sensor') icon = 'fa-microchip';
-
-        let badge = '';
-        if (dev.status === 'online') badge = '<span class="status-pill online"><span class="dot green"></span> Online</span>';
-        else if (dev.status === 'warning') badge = '<span class="status-pill warning"><span class="dot yellow"></span> Peringatan</span>';
-        else badge = '<span class="status-pill offline"><span class="dot red"></span> Offline</span>';
-
-        tr.innerHTML = `
-            <td>
-                <span class="device-name-text"><i class="fa-solid ${icon} text-muted mr-1"></i> ${dev.name}</span>
-            </td>
-            <td>${dev.location}</td>
-            <td><span class="ip-mono">${dev.ip}</span></td>
-            <td>${badge}</td>
-            <td><span class="text-muted text-sm">${dev.lastSeen}</span></td>
-            <td class="text-right">
-                <i class="fa-solid fa-ellipsis text-muted" onclick="event.stopPropagation(); openQuickStatusModal('${dev.id}')" title="Ubah status"></i>
-            </td>
-        `;
-        tbody.appendChild(tr);
-    });
-}
-
-// =============================================================================
-// TABEL LENGKAP HALAMAN "DAFTAR PERANGKAT" (REQUIREMENT PT 4)
-// =============================================================================
-function renderFullDevicesTable() {
-    const tbody = document.getElementById('full-devices-tbody');
-    if (!tbody) return;
-
-    const q = (document.getElementById('dev-page-search')?.value || '').toLowerCase();
-    const cat = document.getElementById('filter-category')?.value || 'all';
-    const stat = document.getElementById('filter-status-select')?.value || 'all';
-
-    const filtered = APP_STATE.devices.filter(d => {
-        const matchQ = !q || d.name.toLowerCase().includes(q) || d.ip.includes(q) || d.code.toLowerCase().includes(q) || d.pic.toLowerCase().includes(q);
-        const matchCat = cat === 'all' || d.category === cat;
-        const matchStat = stat === 'all' || d.status === stat;
-        return matchQ && matchCat && matchStat;
-    });
-
-    tbody.innerHTML = '';
-
-    filtered.forEach((dev, index) => {
-        const tr = document.createElement('tr');
-        tr.onclick = () => openDeviceDetailModal(dev.id);
-
-        let badge = '';
-        if (dev.status === 'online') badge = '<span class="status-pill online"><span class="dot green"></span> Online</span>';
-        else if (dev.status === 'warning') badge = '<span class="status-pill warning"><span class="dot yellow"></span> Warning</span>';
-        else badge = '<span class="status-pill offline"><span class="dot red"></span> Offline</span>';
-
-        tr.innerHTML = `
-            <td>${index + 1}</td>
-            <td><span class="ip-mono">${dev.code}</span></td>
-            <td><strong>${dev.name}</strong></td>
-            <td>${dev.category}</td>
-            <td>${badge}</td>
-            <td><span class="ip-mono">${dev.ip}</span></td>
-            <td>${dev.location}</td>
-            <td>${dev.method}</td>
-            <td>${dev.pic}</td>
-            <td class="text-right" onclick="event.stopPropagation()">
-                <button class="btn btn-outline-cyber btn-sm" onclick="openDeviceDetailModal('${dev.id}')">Detail</button>
-            </td>
-        `;
-        tbody.appendChild(tr);
-    });
-}
-
-function filterFullDevicesTable() {
-    renderFullDevicesTable();
-}
-
-function handleGlobalSearch(val) {
-    if (val.trim().length > 0) {
-        switchPage('page-devices');
-        const s = document.getElementById('dev-page-search');
-        if (s) {
-            s.value = val;
-            renderFullDevicesTable();
-        }
-        document.getElementById('search-clear-btn')?.classList.remove('hidden');
-    }
-}
-
-function clearGlobalSearch() {
-    const input = document.getElementById('global-search-input');
-    if (input) input.value = '';
-    document.getElementById('search-clear-btn')?.classList.add('hidden');
-}
-
-// =============================================================================
-// MODAL DETAIL PERANGKAT (REQUIREMENT DOKUMEN PT 5)
-// =============================================================================
-function openDeviceDetailModal(deviceId) {
-    const dev = APP_STATE.devices.find(d => d.id === deviceId);
-    if (!dev) return;
-
-    APP_STATE.selectedDeviceId = deviceId;
-
-    document.getElementById('detail-dev-name').textContent = dev.name;
-    document.getElementById('detail-dev-code').textContent = `KODE ASET: ${dev.code}`;
-    document.getElementById('detail-dev-category').textContent = dev.category;
-    document.getElementById('detail-dev-ip').textContent = dev.ip;
-    document.getElementById('detail-dev-mac').textContent = dev.mac;
-    document.getElementById('detail-dev-location').textContent = dev.location;
-    document.getElementById('detail-dev-pic').textContent = dev.pic;
-    document.getElementById('detail-dev-method').textContent = dev.method;
-    document.getElementById('detail-dev-lastseen').textContent = dev.lastSeen;
-    document.getElementById('detail-dev-ping').textContent = dev.ping;
-
-    const badgeWrap = document.getElementById('detail-dev-status-badge');
-    if (dev.status === 'online') {
-        badgeWrap.innerHTML = '<span class="status-pill online text-lg"><span class="dot green pulse"></span> ONLINE (AKTIF)</span>';
-    } else if (dev.status === 'warning') {
-        badgeWrap.innerHTML = '<span class="status-pill warning text-lg"><span class="dot yellow pulse"></span> WARNING (PERINGATAN)</span>';
-    } else {
-        badgeWrap.innerHTML = '<span class="status-pill offline text-lg"><span class="dot red pulse"></span> OFFLINE (MATI)</span>';
-    }
-
-    document.getElementById('device-detail-modal').classList.remove('hidden');
-}
-
-function closeDeviceDetailModal() {
-    document.getElementById('device-detail-modal').classList.add('hidden');
-}
-
-function openQuickStatusFromDetail() {
-    closeDeviceDetailModal();
-    if (APP_STATE.selectedDeviceId) {
-        openQuickStatusModal(APP_STATE.selectedDeviceId);
-    }
-}
-
-// =============================================================================
-// MODAL GANTI STATUS ELEKTRO CEPAT (ON / OFF / WARNING)
-// =============================================================================
-function openQuickStatusModal(deviceId) {
-    if (APP_STATE.currentUser && APP_STATE.currentUser.role === 'guest') {
-        showToast('Akses Terkunci (Mode Tamu)', 'Harap login sebagai Administrator untuk mengubah status alat elektro.', 'error');
-        return;
-    }
-
-    const dev = APP_STATE.devices.find(d => d.id === deviceId);
-    if (!dev) return;
-
-    APP_STATE.selectedDeviceId = deviceId;
-    document.getElementById('quick-device-name').textContent = dev.name;
-    document.getElementById('quick-device-ip').textContent = `${dev.category} • IP: ${dev.ip} (${dev.location})`;
-    document.getElementById('quick-status-modal').classList.remove('hidden');
-}
-
-function closeQuickStatusModal() {
-    document.getElementById('quick-status-modal').classList.add('hidden');
-}
-
-function setQuickStatus(newStatus) {
-    if (!APP_STATE.selectedDeviceId) return;
-
-    const dev = APP_STATE.devices.find(d => d.id === APP_STATE.selectedDeviceId);
-    if (dev) {
-        dev.status = newStatus;
-        const now = new Date();
-        dev.lastSeen = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')} WIB (Baru)`;
-
-        if (newStatus === 'offline') {
-            addAlertLog(`Perangkat ${dev.name} terputus / MATI (OFF)`, dev.location, 'kritis');
-        } else if (newStatus === 'warning') {
-            addAlertLog(`Peringatan beban tinggi pada ${dev.name}`, dev.location, 'peringatan');
-        }
-
-        renderHomeDevicesTable();
-        renderFullDevicesTable();
-        closeQuickStatusModal();
-
-        const labels = { online: '🟢 ONLINE (ON)', warning: '🟡 PERINGATAN', offline: '🔴 OFFLINE (OFF)' };
-        showToast('Status Diperbarui', `${dev.name} sekarang berstatus ${labels[newStatus]}.`, 'success');
-    }
-}
-
-// =============================================================================
-// MODAL TAMBAH PERANGKAT BARU (ADMIN ONLY)
-// =============================================================================
-function openAddDeviceModal() {
-    if (APP_STATE.currentUser && APP_STATE.currentUser.role === 'guest') {
-        showToast('Akses Dibatasi', 'Mode Tamu tidak dapat menambah perangkat. Silakan login sebagai Admin.', 'error');
-        return;
-    }
-    document.getElementById('device-form').reset();
-    document.getElementById('device-modal').classList.remove('hidden');
-}
-
-function closeDeviceModal() {
-    document.getElementById('device-modal').classList.add('hidden');
-}
-
-function handleSaveDevice() {
-    const name = document.getElementById('dev-name').value.trim();
-    const category = document.getElementById('dev-category').value;
-    const ip = document.getElementById('dev-ip').value.trim();
-    const location = document.getElementById('dev-location').value.trim();
-    const method = document.getElementById('dev-method').value;
-    const status = document.getElementById('dev-status').value;
-    const pic = document.getElementById('dev-pic').value.trim() || 'Teknisi PKL';
-
-    const num = String(APP_STATE.devices.length + 1).padStart(3, '0');
-    const newDev = {
-        id: `DEV-${num}`,
-        code: `AST-${category.slice(0,3).toUpperCase()}-${num}`,
-        name,
-        category,
-        location,
-        ip,
-        mac: '00:1B:44:' + Math.floor(Math.random()*89+10) + ':AA:' + Math.floor(Math.random()*89+10),
-        status,
-        lastSeen: 'Baru saja',
-        ping: '10 ms',
-        uptime: '100%',
-        method,
-        pic,
-        installDate: 'Hari ini'
-    };
-
-    APP_STATE.devices.unshift(newDev);
-    renderHomeDevicesTable();
-    renderFullDevicesTable();
-    closeDeviceModal();
-    showToast('Perangkat Didaftarkan', `${name} (${ip}) berhasil disimpan.`, 'success');
-}
-
-// =============================================================================
-// RIWAYAT GANGGUAN & NOTIFIKASI
-// =============================================================================
-function renderAlerts() {
-    // 1. Dashboard Mockup List
-    const homeList = document.getElementById('home-alerts-list');
-    if (homeList) {
-        homeList.innerHTML = '';
-        APP_STATE.alerts.forEach(alt => {
-            const row = document.createElement('div');
-            row.className = 'alert-row';
-            row.innerHTML = `
-                <span class="a-time">${alt.time}</span>
-                <div class="a-body">
-                    <strong>${alt.title}</strong>
-                    <span><i class="fa-solid fa-location-dot"></i> ${alt.location}</span>
-                </div>
-                <span class="a-badge ${alt.level}">${alt.level === 'kritis' ? 'Kritis' : 'Peringatan'}</span>
-            `;
-            homeList.appendChild(row);
-        });
-    }
-
-    // 2. Full Alerts Page List
-    const fullList = document.getElementById('full-alerts-container');
-    if (fullList) {
-        fullList.innerHTML = '';
-        APP_STATE.alerts.forEach(alt => {
-            const item = document.createElement('div');
-            item.className = 'alert-row p-3';
-            item.innerHTML = `
-                <span class="a-time text-base">${alt.time} WIB</span>
-                <div class="a-body">
-                    <strong class="text-base">${alt.title}</strong>
-                    <span class="text-secondary"><i class="fa-solid fa-location-dot"></i> ${alt.location}</span>
-                </div>
-                <span class="a-badge ${alt.level}">${alt.level === 'kritis' ? 'Gangguan Kritis' : 'Peringatan'}</span>
-            `;
-            fullList.appendChild(item);
-        });
-    }
-
-    // 3. Dropdown List
-    const dropList = document.getElementById('notif-items-list');
-    if (dropList) {
-        dropList.innerHTML = '';
-        APP_STATE.alerts.slice(0, 4).forEach(alt => {
-            const div = document.createElement('div');
-            div.className = 'notif-item';
-            div.innerHTML = `
-                <span class="dot ${alt.level === 'kritis' ? 'red' : 'yellow'}"></span>
-                <div class="notif-text">
-                    <strong>${alt.title}</strong>
-                    <span>${alt.location} &bull; ${alt.time} WIB</span>
-                </div>
-            `;
-            dropList.appendChild(div);
-        });
-    }
-
-    const count = APP_STATE.alerts.filter(a => !a.read).length;
-    const badgeSidebar = document.getElementById('sidebar-alert-badge');
-    const badgeTop = document.getElementById('topbar-alert-count');
-    const unreadEl = document.getElementById('notif-unread-count');
-
-    if (badgeSidebar) badgeSidebar.textContent = count;
-    if (badgeTop) badgeTop.textContent = count;
-    if (unreadEl) unreadEl.textContent = `${count} Baru`;
-}
-
-function markAllAlertsRead() {
-    APP_STATE.alerts.forEach(a => a.read = true);
-    renderAlerts();
-    showToast('Notifikasi', 'Semua peringatan telah ditandai sebagai dibaca.', 'info');
-}
-
-function addAlertLog(title, location, level) {
+// =====================================================================
+// 2. JAM LIVE REAL-TIME
+// =====================================================================
+function initLiveClock() {
+  function update() {
     const now = new Date();
-    const time = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
-    APP_STATE.alerts.unshift({
-        id: `ALT-${Date.now()}`,
-        time,
-        title,
-        location,
-        level,
-        read: false
-    });
-    renderAlerts();
+    const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+    const dStr = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+    const h = String(now.getHours()).padStart(2, '0');
+    const m = String(now.getMinutes()).padStart(2, '0');
+    const s = String(now.getSeconds()).padStart(2, '0');
+    const tStr = `${h}:${m}:${s} WIB`;
+
+    document.querySelectorAll('.topbar-clock-chip span, #dt-live-date').forEach(el => el.innerText = dStr);
+    document.querySelectorAll('.topbar-clock-chip strong, #dt-live-time, #m-live-time').forEach(el => el.innerText = tStr);
+  }
+  update();
+  setInterval(update, 1000);
 }
 
-function toggleNotifDropdown() {
-    document.getElementById('notif-dropdown')?.classList.toggle('hidden');
-}
+// =====================================================================
+// 3. DASHBOARD LOGIC (KPI STATS, CHARTS, RECENT TABLE)
+// =====================================================================
+let categoryDonutChartInstance = null;
+let trendChartInstance = null;
 
-// =============================================================================
-// MODUL PETA GIS AREA BLITAR & GEOLOKASI (LEAFLET + FALLBACK)
-// =============================================================================
-function initBlitarMaps() {
-    if (typeof L === 'undefined') {
-        console.warn('Leaflet library belum dimuat, menggunakan fallback.');
-        return;
-    }
+async function initDashboard() {
+  let stats = null;
+  if (typeof getDashboardStats === 'function') {
+    stats = await getDashboardStats();
+  }
 
-    const blitarCenter = [-8.0983, 112.1681]; // Alun-Alun Kota Blitar
-
-    // 1. Inisialisasi Peta Mini di Dashboard (#home-blitar-map)
-    const homeEl = document.getElementById('home-blitar-map');
-    if (homeEl && !APP_STATE.homeMap) {
-        try {
-            APP_STATE.homeMap = L.map('home-blitar-map', {
-                preferCanvas: true,
-                center: [-8.0988, 112.1652],
-                zoom: 13,
-                zoomControl: false,
-                attributionControl: false
-            });
-
-            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-                attribution: '&copy; OpenStreetMap'
-            }).addTo(APP_STATE.homeMap);
-
-            L.control.zoom({ position: 'bottomright' }).addTo(APP_STATE.homeMap);
-
-            // Tambahkan markers ke Home Map
-            APP_STATE.homeMarkers = [];
-            APP_STATE.devices.forEach(dev => {
-                const iconHtml = `<div class="blitar-marker-pin ${dev.status}"><div class="pin-radar"></div><div class="pin-core"></div></div>`;
-                const customIcon = L.divIcon({
-                    html: iconHtml,
-                    className: 'custom-blitar-icon',
-                    iconSize: [28, 28],
-                    iconAnchor: [14, 14]
-                });
-
-                const marker = L.marker([dev.lat, dev.lng], { icon: customIcon }).addTo(APP_STATE.homeMap);
-                marker.on('click', () => {
-                    selectMapNode(dev.name, `${dev.ip} (${dev.district})`, `${dev.lat.toFixed(4)}, ${dev.lng.toFixed(4)}`, `${dev.ping} • ${dev.status.toUpperCase()}`);
-                });
-                APP_STATE.homeMarkers.push(marker);
-            });
-
-            setTimeout(() => { if (APP_STATE.homeMap) APP_STATE.homeMap.invalidateSize(); }, 200);
-            setTimeout(() => { if (APP_STATE.homeMap) APP_STATE.homeMap.invalidateSize(); }, 600);
-
-        } catch (e) {
-            console.error('Gagal inisialisasi home map:', e);
-        }
-    }
-
-    // 2. Inisialisasi Peta Lengkap di Halaman Lokasi (#full-blitar-map)
-    const fullEl = document.getElementById('full-blitar-map');
-    if (fullEl && !APP_STATE.fullMap) {
-        try {
-            APP_STATE.fullMap = L.map('full-blitar-map', {
-                center: blitarCenter,
-                zoom: 12,
-                attributionControl: false
-            });
-
-            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-                attribution: '&copy; OpenStreetMap'
-            }).addTo(APP_STATE.fullMap);
-
-            // Klik di mana saja pada peta Blitar untuk mendapatkan koordinat presisi
-            APP_STATE.fullMap.on('click', (e) => {
-                const lat = e.latlng.lat;
-                const lng = e.latlng.lng;
-                APP_STATE.activeCoord = { lat, lng };
-
-                const coordText = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
-                const el = document.getElementById('active-map-coord');
-                if (el) el.textContent = coordText;
-
-                // Tampilkan marker sementara inspector
-                if (APP_STATE.tempMarker) {
-                    APP_STATE.fullMap.removeLayer(APP_STATE.tempMarker);
-                }
-
-                const inspectIcon = L.divIcon({
-                    html: `<div class="blitar-marker-pin warning"><div class="pin-radar"></div><div class="pin-core"></div></div>`,
-                    className: 'custom-blitar-icon',
-                    iconSize: [28, 28],
-                    iconAnchor: [14, 14]
-                });
-
-                APP_STATE.tempMarker = L.marker([lat, lng], { icon: inspectIcon }).addTo(APP_STATE.fullMap);
-                APP_STATE.tempMarker.bindPopup(`
-                    <div style="font-family: inherit;">
-                        <strong class="text-yellow"><i class="fa-solid fa-location-crosshairs"></i> Titik Koordinat Baru:</strong>
-                        <div class="popup-coord-pill my-1">${coordText}</div>
-                        <p class="text-xs text-muted mb-2">Wilayah Blitar, Jawa Timur</p>
-                        <button onclick="copyCoordinates(${lat}, ${lng})" class="btn-sm btn-outline-cyber w-full py-1">
-                            <i class="fa-solid fa-copy"></i> Salin Titik Ini
-                        </button>
-                    </div>
-                `).openPopup();
-
-                showToast('Titik Koordinat Terdeteksi', `Lat: ${lat.toFixed(5)}, Lng: ${lng.toFixed(5)}`, 'info');
-            });
-
-            renderBlitarMapMarkers();
-        } catch (e) {
-            console.error('Gagal inisialisasi full map:', e);
-        }
-    }
-}
-
-function renderBlitarMapMarkers(filteredDevices = null) {
-    if (!APP_STATE.fullMap) return;
-
-    // Bersihkan marker lama
-    APP_STATE.fullMarkers.forEach(m => APP_STATE.fullMap.removeLayer(m));
-    APP_STATE.fullMarkers = [];
-
-    const devs = filteredDevices || APP_STATE.devices;
-
-    devs.forEach(dev => {
-        const iconHtml = `<div class="blitar-marker-pin ${dev.status}"><div class="pin-radar"></div><div class="pin-core"></div></div>`;
-        const customIcon = L.divIcon({
-            html: iconHtml,
-            className: 'custom-blitar-icon',
-            iconSize: [28, 28],
-            iconAnchor: [14, 14]
-        });
-
-        const statusLabel = dev.status === 'online' ? '<span class="text-green">ONLINE</span>' : (dev.status === 'warning' ? '<span class="text-yellow">WARNING</span>' : '<span class="text-red">OFFLINE</span>');
-
-        const marker = L.marker([dev.lat, dev.lng], { icon: customIcon }).addTo(APP_STATE.fullMap);
-        marker.bindPopup(`
-            <div style="font-family: inherit; min-width: 220px;">
-                <div class="popup-cyber-title">
-                    <span>${dev.name}</span>
-                    <small class="font-mono text-cyan">${dev.code}</small>
-                </div>
-                <div class="popup-coord-pill">
-                    <i class="fa-solid fa-location-crosshairs"></i> ${dev.lat.toFixed(4)}, ${dev.lng.toFixed(4)}
-                </div>
-                <div style="font-size: 0.74rem; color: #94A3B8; margin: 4px 0;">
-                    <div><i class="fa-solid fa-map-pin text-cyan"></i> <strong>${dev.district}</strong> - ${dev.location}</div>
-                    <div><i class="fa-solid fa-network-wired text-muted"></i> IP: <span class="font-mono text-white">${dev.ip}</span> (${dev.ping})</div>
-                    <div><i class="fa-solid fa-circle-dot text-muted"></i> Status: ${statusLabel}</div>
-                    <div><i class="fa-solid fa-user-gear text-muted"></i> PIC: <strong>${dev.pic}</strong></div>
-                </div>
-                <div style="display: flex; gap: 6px; margin-top: 8px;">
-                    <button onclick="copyCoordinates(${dev.lat}, ${dev.lng})" class="btn-sm btn-outline-cyber py-1 flex-1">
-                        <i class="fa-solid fa-copy"></i> Salin Koordinat
-                    </button>
-                    <button onclick="openDeviceDetail('${dev.id}')" class="btn-sm btn-primary-cyber py-1 flex-1">
-                        <i class="fa-solid fa-eye"></i> Detail
-                    </button>
-                </div>
-            </div>
-        `);
-
-        marker.on('click', () => {
-            const el = document.getElementById('active-map-coord');
-            if (el) el.textContent = `${dev.lat.toFixed(5)}, ${dev.lng.toFixed(5)}`;
-            APP_STATE.activeCoord = { lat: dev.lat, lng: dev.lng };
-        });
-
-        APP_STATE.fullMarkers.push(marker);
-    });
-}
-
-function selectMapNode(title, statDev, coord, statUp) {
-    const box = document.getElementById('map-callout-overlay');
-    if (box) {
-        document.getElementById('callout-node-name').innerHTML = `<i class="fa-solid fa-building"></i> ${title}`;
-        document.getElementById('callout-node-coord').textContent = coord || '-8.0988, 112.1652';
-        document.getElementById('callout-stat-dev').textContent = statDev;
-        document.getElementById('callout-stat-up').textContent = statUp;
-        box.classList.remove('hidden');
-    }
-    showToast('Node Terpilih', `${title} (${coord})`, 'info');
-}
-
-function renderBlitarNodesList(filteredList = null) {
-    const listEl = document.getElementById('blitar-nodes-container');
-    const badgeEl = document.getElementById('blitar-active-badge');
-    if (!listEl) return;
-
-    const list = filteredList || APP_STATE.devices;
-    if (badgeEl) badgeEl.textContent = `${list.length} Node`;
-
-    listEl.innerHTML = '';
-    if (list.length === 0) {
-        listEl.innerHTML = '<div class="p-3 text-center text-muted text-xs">Tidak ada perangkat yang cocok di area Blitar.</div>';
-        return;
-    }
-
-    list.forEach(dev => {
-        const item = document.createElement('div');
-        item.className = 'blitar-node-item';
-        item.onclick = () => focusBlitarNode(dev.id);
-
-        item.innerHTML = `
-            <div class="bni-top">
-                <span class="bni-name"><span class="dot ${dev.status === 'online' ? 'green' : (dev.status === 'warning' ? 'yellow' : 'red')}"></span> ${dev.name}</span>
-                <span class="bni-coord"><i class="fa-solid fa-location-crosshairs"></i> ${dev.lat.toFixed(4)}, ${dev.lng.toFixed(4)}</span>
-            </div>
-            <div class="bni-desc">${dev.district} &bull; ${dev.location}</div>
-            <div class="bni-meta">
-                <span>IP: <strong>${dev.ip}</strong> (${dev.ping})</span>
-                <button class="btn-copy-chip" onclick="event.stopPropagation(); copyCoordinates(${dev.lat}, ${dev.lng})">
-                    <i class="fa-solid fa-copy"></i> Salin
-                </button>
-            </div>
-        `;
-        listEl.appendChild(item);
-    });
-}
-
-function focusBlitarNode(deviceId) {
-    const dev = APP_STATE.devices.find(d => d.id === deviceId);
-    if (!dev) return;
-
-    APP_STATE.activeCoord = { lat: dev.lat, lng: dev.lng };
-    const el = document.getElementById('active-map-coord');
-    if (el) el.textContent = `${dev.lat.toFixed(5)}, ${dev.lng.toFixed(5)}`;
-
-    if (APP_STATE.fullMap) {
-        APP_STATE.fullMap.flyTo([dev.lat, dev.lng], 15, { animate: true, duration: 1 });
-        const marker = APP_STATE.fullMarkers.find(m => {
-            const pos = m.getLatLng();
-            return Math.abs(pos.lat - dev.lat) < 0.0001 && Math.abs(pos.lng - dev.lng) < 0.0001;
-        });
-        if (marker) setTimeout(() => marker.openPopup(), 600);
-    }
-    showToast('Fokus Marker', `Mengarahkan peta ke ${dev.name} (${dev.district})`, 'info');
-}
-
-function filterBlitarNodes() {
-    const q = (document.getElementById('blitar-node-search')?.value || '').toLowerCase().trim();
-    const dist = document.getElementById('blitar-district-filter')?.value || 'all';
-    const status = document.getElementById('blitar-status-filter')?.value || 'all';
-
-    const filtered = APP_STATE.devices.filter(d => {
-        const matchQ = d.name.toLowerCase().includes(q) || d.ip.includes(q) || d.district.toLowerCase().includes(q) || d.code.toLowerCase().includes(q);
-        const matchDist = (dist === 'all') || (d.district.toLowerCase() === dist.toLowerCase());
-        const matchStatus = (status === 'all') || (d.status === status);
-        return matchQ && matchDist && matchStatus;
-    });
-
-    renderBlitarNodesList(filtered);
-    renderBlitarMapMarkers(filtered);
-}
-
-function resetHomeBlitarView() {
-    if (APP_STATE.homeMap) {
-        APP_STATE.homeMap.setView([-8.0988, 112.1652], 13);
-        showToast('Reset Tampilan', 'Peta Dashboard kembali ke pusat Blitar.', 'info');
-    }
-}
-
-function resetFullBlitarView() {
-    if (APP_STATE.fullMap) {
-        APP_STATE.fullMap.setView([-8.0983, 112.1681], 12);
-        const el = document.getElementById('blitar-district-filter');
-        if (el) el.value = 'all';
-        const st = document.getElementById('blitar-status-filter');
-        if (st) st.value = 'all';
-        const sr = document.getElementById('blitar-node-search');
-        if (sr) sr.value = '';
-        renderBlitarNodesList();
-        renderBlitarMapMarkers();
-        showToast('Pusat Blitar', 'Peta di-reset ke wilayah seluruh Blitar.', 'info');
-    }
-}
-
-function copyCoordinates(lat, lng) {
-    const text = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
-    if (navigator.clipboard) {
-        navigator.clipboard.writeText(text).then(() => {
-            showToast('Koordinat Disalin!', `Titik [${text}] berhasil disalin ke clipboard.`, 'success');
-        });
-    } else {
-        showToast('Koordinat', text, 'info');
-    }
-}
-
-function copyCurrentCoord() {
-    copyCoordinates(APP_STATE.activeCoord.lat, APP_STATE.activeCoord.lng);
-}
-
-function toggleGisFloorplanView(mode) {
-    const gisTab = document.getElementById('btn-tab-gis');
-    const floorTab = document.getElementById('btn-tab-floor');
-    const mapEl = document.getElementById('full-blitar-map');
-    const floorEl = document.getElementById('blitar-floorplan-view');
-
-    if (mode === 'gis') {
-        gisTab?.classList.add('active');
-        floorTab?.classList.remove('active');
-        mapEl?.classList.remove('hidden');
-        floorEl?.classList.add('hidden');
-        if (APP_STATE.fullMap) APP_STATE.fullMap.invalidateSize();
-    } else {
-        floorTab?.classList.add('active');
-        gisTab?.classList.remove('active');
-        mapEl?.classList.add('hidden');
-        floorEl?.classList.remove('hidden');
-    }
-}
-
-function selectFloorRack(rackName, devName, loc, info) {
-    showToast(`Denah ${rackName}`, `Perangkat: ${devName} di Ruang Server (${loc}) - ${info}`, 'info');
-}
-
-// =============================================================================
-// MODUL INVENTARIS ASET IT (PAGE-ASSETS)
-// =============================================================================
-function renderAssetsTable(filteredList = null) {
-    const tbody = document.getElementById('assets-tbody');
-    if (!tbody) return;
-
-    const list = filteredList || APP_STATE.devices;
-    tbody.innerHTML = '';
-
-    if (list.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="10" class="text-center p-4 text-muted">Tidak ada data aset IT yang sesuai dengan filter.</td></tr>';
-        return;
-    }
-
-    list.forEach((dev, idx) => {
-        const tr = document.createElement('tr');
-        const condClass = dev.condition === 'Baik' ? 'good' : (dev.condition === 'Perlu Servis' ? 'warning' : 'danger');
-
-        tr.innerHTML = `
-            <td>${idx + 1}</td>
-            <td><strong class="font-mono text-cyan">${dev.code}</strong></td>
-            <td>
-                <div class="device-name-text">${dev.name}</div>
-                <small class="text-muted">${dev.category} &bull; MAC: ${dev.mac}</small>
-            </td>
-            <td>${dev.category}</td>
-            <td>
-                <div><i class="fa-solid fa-map-pin text-crimson"></i> <strong>${dev.district}</strong></div>
-                <small class="text-muted">${dev.location}</small>
-            </td>
-            <td><strong class="text-white">${dev.value || 'Rp 10.000.000'}</strong></td>
-            <td><span class="condition-pill ${condClass}">${dev.condition || 'Baik'}</span></td>
-            <td><small class="text-secondary">${dev.warranty || 'Hingga 2026'}</small></td>
-            <td><strong>${dev.pic}</strong></td>
-            <td class="text-right">
-                <div style="display: inline-flex; gap: 4px;">
-                    <button class="btn-sm btn-outline-cyber" onclick="openAssetQrModal('${dev.code}', '${dev.name}', '${dev.district}')" title="Cetak Label QR Tag">
-                        <i class="fa-solid fa-qrcode text-cyan"></i> Label QR
-                    </button>
-                    <button class="btn-sm btn-outline-cyber" onclick="openDeviceDetail('${dev.id}')" title="Detail Spek">
-                        <i class="fa-solid fa-circle-info"></i>
-                    </button>
-                </div>
-            </td>
-        `;
-        tbody.appendChild(tr);
-    });
-}
-
-function filterAssetsTable() {
-    const q = (document.getElementById('assets-search-input')?.value || '').toLowerCase().trim();
-    const cat = document.getElementById('assets-cat-select')?.value || 'all';
-    const cond = document.getElementById('assets-cond-select')?.value || 'all';
-
-    const filtered = APP_STATE.devices.filter(d => {
-        const matchQ = d.code.toLowerCase().includes(q) || d.name.toLowerCase().includes(q) || d.district.toLowerCase().includes(q) || d.pic.toLowerCase().includes(q);
-        const matchCat = (cat === 'all') || (d.category === cat);
-        const matchCond = (cond === 'all') || (d.condition === cond);
-        return matchQ && matchCat && matchCond;
-    });
-
-    renderAssetsTable(filtered);
-}
-
-function openAddAssetModal() {
-    if (APP_STATE.currentUser && APP_STATE.currentUser.role === 'guest') {
-        showToast('Akses Dibatasi', 'Harap login sebagai Administrator untuk menambah data aset.', 'error');
-        return;
-    }
-    document.getElementById('asset-form')?.reset();
-    document.getElementById('asset-modal')?.classList.remove('hidden');
-}
-
-function closeAssetModal() {
-    document.getElementById('asset-modal')?.classList.add('hidden');
-}
-
-function handleSaveAsset() {
-    const code = document.getElementById('ast-code').value.trim();
-    const name = document.getElementById('ast-name').value.trim();
-    const category = document.getElementById('ast-category').value;
-    const location = document.getElementById('ast-location').value.trim();
-    const value = document.getElementById('ast-value').value.trim() || 'Rp 10.000.000';
-    const condition = document.getElementById('ast-condition').value;
-    const warranty = document.getElementById('ast-warranty').value.trim() || 'Hingga Des 2026';
-    const pic = document.getElementById('ast-pic').value.trim() || 'Tim Elektro';
-
-    const num = String(APP_STATE.devices.length + 1).padStart(3, '0');
-    const newDev = {
-        id: `DEV-${num}`,
-        code,
-        name,
-        category,
-        district: location.split(',')[0].trim() || 'Kota Blitar',
-        location: `${location}, Blitar`,
-        lat: -8.0988 + (Math.random() - 0.5) * 0.05,
-        lng: 112.1652 + (Math.random() - 0.5) * 0.05,
-        ip: `192.168.1.${Math.floor(Math.random()*150+50)}`,
-        mac: '00:1B:44:' + Math.floor(Math.random()*89+10) + ':BB:' + Math.floor(Math.random()*89+10),
-        status: 'online',
-        lastSeen: 'Baru didaftarkan',
-        ping: '8 ms',
-        uptime: '100%',
-        method: 'Ping (ICMP)',
-        pic,
-        installDate: 'Hari ini',
-        value,
-        condition,
-        warranty
+  if (!stats) {
+    stats = {
+      total_devices: MASTER_DEVICES.length,
+      online: MASTER_DEVICES.filter(d => (d.current_status || '').toLowerCase() === 'online').length,
+      offline: MASTER_DEVICES.filter(d => (d.current_status || '').toLowerCase() === 'offline').length,
+      unknown: MASTER_DEVICES.filter(d => (d.current_status || '').toLowerCase() === 'unknown').length,
+      maintenance: 0,
+      availability_percent: 0,
+      by_category: {}
     };
+    stats.availability_percent = stats.total_devices > 0 ? ((stats.online / stats.total_devices) * 100).toFixed(2) : 0;
+    MASTER_DEVICES.forEach(d => {
+      stats.by_category[d.category] = (stats.by_category[d.category] || 0) + 1;
+    });
+  }
 
-    APP_STATE.devices.unshift(newDev);
-    renderAssetsTable();
-    renderHomeDevicesTable();
-    renderFullDevicesTable();
-    renderBlitarNodesList();
-    renderBlitarMapMarkers();
-    closeAssetModal();
-    showToast('Aset Terdaftar!', `Aset ${name} (${code}) berhasil disimpan ke database.`, 'success');
+  const online = Number(stats.online) || 0;
+  const offline = Number(stats.offline) || 0;
+  const unknown = Number(stats.unknown) || 0;
+  const maintenance = Number(stats.maintenance) || 0;
+  const warning = unknown + maintenance;
+  const total = Number(stats.total_devices) || (online + offline + warning);
+  const uptime = Number(stats.availability_percent) || 0;
+
+  const pctOnline = total > 0 ? ((online / total) * 100).toFixed(1) : "0.0";
+  const pctOffline = total > 0 ? ((offline / total) * 100).toFixed(1) : "0.0";
+  const pctWarning = total > 0 ? ((warning / total) * 100).toFixed(1) : "0.0";
+
+  const elTot = document.getElementById('kpi-total-devices');
+  const elOn = document.getElementById('kpi-online-devices');
+  const elOff = document.getElementById('kpi-offline-devices');
+  const elWarn = document.getElementById('kpi-warning-devices');
+  const elUptime = document.getElementById('kpi-uptime');
+
+  if (elTot) elTot.innerText = total;
+  if (elOn) elOn.innerText = online;
+  if (elOff) elOff.innerText = offline;
+  if (elWarn) elWarn.innerText = warning;
+  if (elUptime) elUptime.innerText = `${uptime}%`;
+
+  const barOn = document.getElementById('kpi-bar-online');
+  const subOn = document.getElementById('kpi-sub-online');
+  if (barOn) barOn.style.width = `${pctOnline}%`;
+  if (subOn) subOn.innerHTML = `<strong>${pctOnline}%</strong> normal beroperasi`;
+
+  const barOff = document.getElementById('kpi-bar-offline');
+  const subOff = document.getElementById('kpi-sub-offline');
+  if (barOff) barOff.style.width = `${pctOffline}%`;
+  if (subOff) subOff.innerHTML = `<strong>${pctOffline}%</strong> offline fault`;
+
+  const barWarn = document.getElementById('kpi-bar-warning');
+  const subWarn = document.getElementById('kpi-sub-warning');
+  if (barWarn) barWarn.style.width = `${pctWarning}%`;
+  if (subWarn) subWarn.innerHTML = `<strong>${pctWarning}%</strong> belum termonitor (${unknown} unknown)`;
+
+  const barUp = document.getElementById('kpi-bar-uptime');
+  if (barUp) barUp.style.width = `${uptime}%`;
+
+  initDashboardCharts({ total, online, offline, unknown, warning, maintenance, by_category: stats.by_category });
+
+  if (typeof getAssets === 'function') {
+    const assetsRes = await getAssets({ limit: 50 });
+    if (assetsRes && assetsRes.data) {
+      MASTER_DEVICES = assetsRes.data;
+      renderRecentDevicesTable(assetsRes.data.slice(0, 4));
+    }
+  } else {
+    renderRecentDevicesTable(MASTER_DEVICES.slice(0, 4));
+  }
 }
 
-function openAssetQrModal(code, name, loc) {
-    document.getElementById('qr-modal-code').textContent = code;
-    document.getElementById('qr-modal-name').textContent = name;
-    document.getElementById('qr-modal-loc').textContent = `Wilayah: ${loc}, Blitar`;
-    document.getElementById('asset-qr-modal')?.classList.remove('hidden');
-}
+function initDashboardCharts(stats) {
+  const online = stats.online;
+  const offline = stats.offline;
+  const warning = stats.warning;
 
-function closeAssetQrModal() {
-    document.getElementById('asset-qr-modal')?.classList.add('hidden');
-}
-
-function printAssetLabel() {
-    showToast('Cetak Label', 'Mengirim perintah cetak label barcode & QR Tag ke printer...', 'info');
-    setTimeout(() => {
-        window.print();
-    }, 400);
-}
-
-function exportAssetsList() {
-    showToast('Ekspor Data Aset', 'Mengunduh rekapitulasi data inventaris aset IT (CSV/Excel)...', 'success');
-}
-
-// =============================================================================
-// MODUL INFORMASI PENGGUNA & TIM PKL TEKNOLAB (PERSIS GAMBAR 1 & 2)
-// =============================================================================
-function loadTeamData() {
-    try {
-        const saved = localStorage.getItem('taims_team_members_v3');
-        if (saved) {
-            const parsed = JSON.parse(saved);
-            if (Array.isArray(parsed) && parsed.length >= 11 && parsed.some(m => m.name.includes('DIKA YOGA PRATAMA'))) {
-                APP_STATE.teamMembers = parsed;
-            } else {
-                APP_STATE.teamMembers = JSON.parse(JSON.stringify(DEFAULT_TEAM_MEMBERS));
-                saveTeamData();
-            }
-        } else {
-            APP_STATE.teamMembers = JSON.parse(JSON.stringify(DEFAULT_TEAM_MEMBERS));
-            saveTeamData();
+  const ctxTrend = document.getElementById('trendChart');
+  if (ctxTrend && typeof Chart !== 'undefined') {
+    if (!trendChartInstance) {
+      trendChartInstance = new Chart(ctxTrend, {
+        type: 'line',
+        data: {
+          labels: ['10 Okt', '11 Okt', '12 Okt', '13 Okt', '14 Okt', '15 Okt', 'Hari Ini'],
+          datasets: [
+            { label: 'Online', data: [5, 6, 6, 7, 7, 6, online], borderColor: '#10B981', borderWidth: 2, tension: 0.3, pointRadius: 3 },
+            { label: 'Offline', data: [2, 3, 3, 4, 5, 5, offline], borderColor: '#EF4444', borderWidth: 1.5, borderDash: [3, 3], pointRadius: 2, tension: 0.3 },
+            { label: 'Unknown', data: [9, 7, 7, 5, 4, 5, warning], borderColor: '#F59E0B', borderWidth: 1.5, borderDash: [4, 4], pointRadius: 2, tension: 0.3 }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { grid: { color: '#131B30' }, ticks: { color: '#64748B', font: { size: 9 } } },
+            y: { grid: { color: '#131B30' }, ticks: { color: '#64748B', font: { size: 9 } }, min: 0, max: 18 }
+          }
         }
-    } catch (e) {
-        APP_STATE.teamMembers = JSON.parse(JSON.stringify(DEFAULT_TEAM_MEMBERS));
-    }
-}
-
-function saveTeamData() {
-    try {
-        localStorage.setItem('taims_team_members_v3', JSON.stringify(APP_STATE.teamMembers));
-    } catch (e) {
-        console.error('Gagal menyimpan data tim:', e);
-    }
-}
-
-function copyContactText(text, label) {
-    if (!text || text === '-') {
-        showToast('Pemberitahuan', 'Kontak belum tersedia.', 'warning');
-        return;
-    }
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text).then(() => {
-            showToast('Tersalin!', `${label} "${text}" berhasil disalin ke clipboard.`, 'success');
-        }).catch(() => {
-            fallbackCopyContact(text, label);
-        });
+      });
     } else {
-        fallbackCopyContact(text, label);
+      trendChartInstance.data.datasets[0].data[6] = online;
+      trendChartInstance.data.datasets[1].data[6] = offline;
+      trendChartInstance.data.datasets[2].data[6] = warning;
+      trendChartInstance.update();
     }
+  }
+
+  const ctxDonut = document.getElementById('categoryDonutChart');
+  if (ctxDonut && typeof Chart !== 'undefined') {
+    const catMap = stats.by_category || {};
+    const labels = Object.keys(catMap).length > 0 ? Object.keys(catMap) : ['Router', 'Switch Manageable', 'Access Point', 'Server', 'Storage', 'CCTV', 'IoT Node', 'Firewall', 'PC', 'TV'];
+    const dataVals = labels.map(lbl => Number(catMap[lbl]) || 0);
+    const colorPalette = ['#EF4444', '#F59E0B', '#06B6D4', '#10B981', '#3B82F6', '#8B5CF6', '#EC4899', '#14B8A6', '#6366F1', '#A855F7'];
+
+    const totalCount = dataVals.reduce((a, b) => a + b, 0);
+    const donutTotalEl = document.getElementById('donutTotalCount');
+    if (donutTotalEl) donutTotalEl.innerText = totalCount || stats.total || 16;
+
+    if (categoryDonutChartInstance) {
+      categoryDonutChartInstance.destroy();
+    }
+
+    categoryDonutChartInstance = new Chart(ctxDonut, {
+      type: 'doughnut',
+      data: {
+        labels: labels,
+        datasets: [{
+          data: dataVals,
+          backgroundColor: colorPalette.slice(0, labels.length),
+          borderColor: '#0D1424',
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '72%',
+        plugins: { legend: { display: false } }
+      }
+    });
+
+    const listEl = document.getElementById('donutCategoryStatsList');
+    if (listEl) {
+      listEl.innerHTML = labels.map((lbl, idx) => {
+        const cnt = Number(catMap[lbl]) || 0;
+        const pct = totalCount > 0 ? ((cnt / totalCount) * 100).toFixed(1) : 0;
+        const color = colorPalette[idx % colorPalette.length];
+        return `
+          <div class="stat-category-item">
+            <div class="cat-label-title">
+              <span class="sq-dot" style="background:${color};"></span> ${lbl}
+            </div>
+            <div class="cat-numbers">
+              <strong>${cnt}</strong> <small>${pct}%</small>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+  }
 }
 
-function fallbackCopyContact(text, label) {
-    try {
-        const temp = document.createElement('input');
-        temp.value = text;
-        document.body.appendChild(temp);
-        temp.select();
-        document.execCommand('copy');
-        document.body.removeChild(temp);
-        showToast('Tersalin!', `${label} "${text}" berhasil disalin ke clipboard.`, 'success');
-    } catch (err) {
-        prompt(`Salin ${label} manual:`, text);
-    }
-}
+function renderRecentDevicesTable(devices) {
+  const tbody = document.getElementById('dashboardRecentDevices');
+  if (!tbody || !devices) return;
 
-function createMemberCardHtml(tm) {
-    const rawPhone = (tm.phone || '').replace(/[^0-9]/g, '');
-    const waPhone = rawPhone.startsWith('0') ? '62' + rawPhone.slice(1) : rawPhone;
-    const waLink = waPhone ? `https://wa.me/${waPhone}` : '#';
-    const mailLink = tm.email ? `mailto:${tm.email}` : '#';
+  tbody.innerHTML = devices.map(d => {
+    const code = d.asset_code || d.assetCode;
+    const name = d.asset_name || d.assetName;
+    const loc = d.location_name || d.siteFull || 'Head Office';
+    const ip = d.ip_address || d.fullIp || '-';
+    const rawStat = (d.current_status || d.status || 'unknown').toLowerCase();
+    const statBadge = rawStat === 'online'
+      ? '<span class="badge-mini-stat online">● Online</span>'
+      : (rawStat === 'offline' ? '<span class="badge-mini-stat offline">● Offline</span>' : '<span class="badge-mini-stat warning">● Unknown</span>');
 
     return `
-    <div class="team-member-card" id="card-${tm.id}">
-        <div class="tm-header">
-            <div class="tm-avatar" style="background-color: ${tm.iconBg || '#132644'}; color: ${tm.iconColor || '#38BDF8'};">
-                <i class="fa-solid ${tm.icon || 'fa-user'}"></i>
-            </div>
-            <div class="tm-info">
-                <h4 class="tm-name">${tm.name}</h4>
-                <p class="tm-role">${tm.role}</p>
-            </div>
-        </div>
-
-        <div class="tm-contacts">
-            <div class="tm-contact-row" onclick="copyContactText('${tm.phone}', 'Nomor HP')" title="Klik untuk salin / chat WA">
-                <i class="fa-solid fa-phone"></i>
-                <a href="${waLink}" target="_blank" onclick="event.stopPropagation()">${tm.phone}</a>
-            </div>
-            <div class="tm-contact-row" onclick="copyContactText('${tm.email}', 'Email')" title="Klik untuk salin / kirim email">
-                <i class="fa-solid fa-envelope"></i>
-                <a href="${mailLink}" onclick="event.stopPropagation()">${tm.email}</a>
-            </div>
-        </div>
-
-        <p class="tm-desc">${tm.description}</p>
-
-        <div class="tm-footer">
-            <span class="tm-shift-pill">${tm.shiftLabel || ('Shift ' + tm.shift)}</span>
-            <button type="button" class="btn-card-edit" onclick="openEditSingleMemberModal('${tm.id}')" title="Edit Data Anggota">
-                <i class="fa-solid fa-pen-to-square"></i>
-            </button>
-        </div>
-    </div>
+      <tr onclick="location.href='devices.html'" style="cursor:pointer;">
+        <td><strong>${code}</strong><br><small>${name}</small></td>
+        <td>${loc}</td>
+        <td class="font-mono text-blue">${ip}</td>
+        <td>${statBadge}</td>
+      </tr>
     `;
+  }).join('');
 }
 
-function renderTeamCards() {
-    const s1Grid = document.getElementById('shift-1-cards-container');
-    const s2Grid = document.getElementById('shift-2-cards-container');
-    if (!s1Grid || !s2Grid) return;
+// =====================================================================
+// 4. DEVICES PAGE TABLE LOGIC (16 ASET TERDAFTAR)
+// =====================================================================
+let devicesTableInitialized = false;
 
-    s1Grid.innerHTML = '';
-    s2Grid.innerHTML = '';
+async function initDevicesTable() {
+  const tbody = document.getElementById('devicesTableBody');
+  if (!tbody) return;
 
-    const members = APP_STATE.teamMembers || DEFAULT_TEAM_MEMBERS;
-    members.forEach(tm => {
-        const cardHtml = createMemberCardHtml(tm);
-        if (String(tm.shift) === '1') {
-            s1Grid.insertAdjacentHTML('beforeend', cardHtml);
-        } else {
-            s2Grid.insertAdjacentHTML('beforeend', cardHtml);
-        }
-    });
+  if (!devicesTableInitialized) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="10" style="text-align:center; padding:30px; color:var(--text-dim);">
+          <i class="fa-solid fa-spinner fa-spin"></i> Memuat data 16 aset dari Backend T-AIMS...
+        </td>
+      </tr>
+    `;
+  }
 
-    populateMemberSelectOptions();
-}
-
-function populateMemberSelectOptions() {
-    const select = document.getElementById('tm-select-member');
-    if (!select) return;
-
-    select.innerHTML = '';
-    const members = APP_STATE.teamMembers || DEFAULT_TEAM_MEMBERS;
-    members.forEach(tm => {
-        const opt = document.createElement('option');
-        opt.value = tm.id;
-        opt.textContent = `[Shift ${tm.shift}] ${tm.name} — ${tm.role}`;
-        select.appendChild(opt);
-    });
-}
-
-function openEditTeamModal() {
-    const members = APP_STATE.teamMembers || DEFAULT_TEAM_MEMBERS;
-    populateMemberSelectOptions();
-    if (members.length > 0) {
-        onSelectMemberToEdit(members[0].id);
+  let assetList = MASTER_DEVICES;
+  if (typeof getAssets === 'function') {
+    const res = await getAssets({ limit: 50 });
+    if (res && res.data && res.data.length > 0) {
+      assetList = res.data;
+      MASTER_DEVICES = assetList;
     }
-    const modal = document.getElementById('team-modal');
-    if (modal) modal.classList.remove('hidden');
+  }
+
+  tbody.innerHTML = assetList.map((d, idx) => {
+    const code = d.asset_code || d.assetCode;
+    const name = d.asset_name || d.assetName;
+    const cat = d.category || 'General';
+    const rawStat = (d.current_status || d.status || 'unknown').toLowerCase();
+    const ip = d.ip_address || d.fullIp || '-';
+    const loc = d.location_name || d.siteFull || 'Head Office';
+    const method = d.monitoring_method || d.monitoringMethod || 'Ping';
+    const pic = d.pic_name || d.pic || 'Ananda Dwi Susanti';
+
+    let pillClass = 'status-pill warning';
+    let pillText = '● Unknown';
+    if (rawStat === 'online') { pillClass = 'status-pill online'; pillText = '● Online'; }
+    else if (rawStat === 'offline') { pillClass = 'status-pill offline'; pillText = '● Offline'; }
+
+    return `
+      <tr class="row-dev" data-cat="${cat}" data-stat="${rawStat}">
+        <td>${idx + 1}</td>
+        <td class="font-mono text-cyan">${code}</td>
+        <td><strong>${name}</strong></td>
+        <td>${cat}</td>
+        <td><span class="${pillClass}">${pillText}</span></td>
+        <td class="font-mono text-blue">${ip}</td>
+        <td>${loc}</td>
+        <td>${method}</td>
+        <td>${pic}</td>
+        <td><button class="btn-detail-white" onclick="openDetailModal('${code}')">Detail</button></td>
+      </tr>
+    `;
+  }).join('');
+
+  devicesTableInitialized = true;
+  if (typeof filterDeviceRows === 'function') {
+    filterDeviceRows();
+  }
 }
 
-function openEditSingleMemberModal(id) {
-    populateMemberSelectOptions();
-    const select = document.getElementById('tm-select-member');
-    if (select) select.value = id;
-    onSelectMemberToEdit(id);
-    const modal = document.getElementById('team-modal');
-    if (modal) modal.classList.remove('hidden');
+// =====================================================================
+// 5. DETAIL MODAL & AI INSIGHT REFRESH
+// =====================================================================
+function openDetailModal(code) {
+  const d = MASTER_DEVICES.find(x => (x.asset_code === code || x.assetCode === code)) || MASTER_DEVICES[0];
+  if (!d) return;
+
+  const codeVal = d.asset_code || d.assetCode || 'N/A';
+  const nameVal = d.asset_name || d.assetName || 'N/A';
+  const catVal = d.category || 'N/A';
+  const ipVal = d.ip_address || d.fullIp || '-';
+  const macVal = d.mac_address || d.macAddress || '-';
+  const locVal = d.location_name || d.siteFull || 'Head Office';
+  const picVal = d.pic_name || d.pic || 'Ananda Dwi Susanti';
+  const methodVal = d.monitoring_method || d.monitoringMethod || 'Ping';
+  const seenVal = d.last_seen || d.lastSeen || 'Online Baru Saja';
+  const rawStat = (d.current_status || d.status || 'unknown').toLowerCase();
+
+  if (document.getElementById("m-code")) document.getElementById("m-code").innerText = codeVal;
+  if (document.getElementById("m-name-sub")) document.getElementById("m-name-sub").innerText = `${nameVal} · ${catVal}`;
+  if (document.getElementById("m-ip")) document.getElementById("m-ip").innerText = ipVal;
+  if (document.getElementById("m-mac")) document.getElementById("m-mac").innerText = macVal;
+  if (document.getElementById("m-cat")) document.getElementById("m-cat").innerText = catVal;
+  if (document.getElementById("m-loc")) document.getElementById("m-loc").innerText = locVal;
+  if (document.getElementById("m-pic")) document.getElementById("m-pic").innerText = picVal;
+  if (document.getElementById("m-method")) document.getElementById("m-method").innerText = methodVal;
+  if (document.getElementById("m-seen")) document.getElementById("m-seen").innerText = seenVal;
+
+  const elPill = document.getElementById("m-status-pill");
+  if (elPill) {
+    elPill.className = `tag-status-pill ${rawStat === 'online' ? 'online' : 'offline'}`;
+    elPill.innerText = `● ${rawStat.toUpperCase()}`;
+  }
+
+  const modalEl = document.getElementById("device-modal");
+  if (modalEl) modalEl.style.display = "flex";
 }
 
-function onSelectMemberToEdit(id) {
-    const members = APP_STATE.teamMembers || DEFAULT_TEAM_MEMBERS;
-    const member = members.find(m => m.id === id);
-    if (!member) return;
-
-    document.getElementById('tm-id').value = member.id;
-    document.getElementById('tm-name').value = member.name;
-    document.getElementById('tm-shift').value = member.shift || '1';
-    document.getElementById('tm-role').value = member.role;
-    document.getElementById('tm-phone').value = member.phone || '';
-    document.getElementById('tm-email').value = member.email || '';
-    document.getElementById('tm-responsibilities').value = member.description || '';
-
-    const select = document.getElementById('tm-select-member');
-    if (select && select.value !== id) {
-        select.value = id;
-    }
+function closeDetailModal() {
+  const modalEl = document.getElementById("device-modal");
+  if (modalEl) modalEl.style.display = "none";
 }
 
-function closeTeamModal() {
-    const modal = document.getElementById('team-modal');
-    if (modal) modal.classList.add('hidden');
+function refreshAiInsight() {
+  const aiText = document.getElementById('aiInsightText');
+  if (!aiText) return;
+  aiText.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-cyan"></i> Menganalisis telemetri 16 perangkat dari database taims_db...';
+  setTimeout(() => {
+    aiText.innerHTML = `Berdasarkan telemetri terbaru (${new Date().toLocaleTimeString('id-ID')} WIB): Terdeteksi perangkat prioritas <strong>NET-RTR-01</strong> & <strong>SEC-CCTV-01 (HO)</strong> membutuhkan pengecekan suplai adaptor dan konektivitas gateway, serta pemantauan link <strong>NET-RTR-02 (MO Kos Kiki)</strong>.`;
+  }, 500);
 }
-
-function handleSaveTeamMember() {
-    const id = document.getElementById('tm-id').value;
-    const name = document.getElementById('tm-name').value.trim().toUpperCase();
-    const shift = document.getElementById('tm-shift').value;
-    const role = document.getElementById('tm-role').value.trim();
-    const phone = document.getElementById('tm-phone').value.trim();
-    const email = document.getElementById('tm-email').value.trim();
-    const description = document.getElementById('tm-responsibilities').value.trim();
-
-    const member = APP_STATE.teamMembers.find(m => m.id === id);
-    if (member) {
-        member.name = name;
-        member.shift = shift;
-        member.shiftLabel = `Shift ${shift}`;
-        member.role = role;
-        member.phone = phone;
-        member.email = email;
-        member.description = description;
-
-        saveTeamData();
-        renderTeamCards();
-        closeTeamModal();
-        showToast('Data Tim Disimpan!', `Perubahan data untuk ${name} berhasil disimpan.`, 'success');
-    }
-}
-
-function resetTeamDataPrompt() {
-    if (confirm('Kembalikan data seluruh 11 anggota tim ke pengaturan awal (Persis Gambar Referensi)?')) {
-        APP_STATE.teamMembers = JSON.parse(JSON.stringify(DEFAULT_TEAM_MEMBERS));
-        saveTeamData();
-        renderTeamCards();
-        closeTeamModal();
-        showToast('Tim Di-reset', '11 Anggota PKL resmi telah dimuat ulang sesuai data referensi.', 'info');
-    }
-}
-
-function exportProjectBrief() {
-    showToast('Profil Projek', 'Menghasilkan lembar profil resmi dokumen proyek T-AIMS...', 'info');
-    setTimeout(() => {
-        window.print();
-    }, 400);
-}
-
-// =============================================================================
-// SIMULASI TELEMETRY SENSOR ELEKTRO INTERAKTIF
-// =============================================================================
-function triggerDeviceSimulation() {
-    const rndIdx = Math.floor(Math.random() * APP_STATE.devices.length);
-    const target = APP_STATE.devices[rndIdx];
-    const sequence = ['online', 'warning', 'offline'];
-    const curIdx = sequence.indexOf(target.status);
-    const nextStatus = sequence[(curIdx + 1) % sequence.length];
-
-    target.status = nextStatus;
-    const now = new Date();
-    target.lastSeen = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')} WIB (Simulasi)`;
-
-    if (nextStatus === 'offline') {
-        addAlertLog(`[SIMULASI] Sensor ${target.name} terputus daya listrik`, target.location, 'kritis');
-    } else if (nextStatus === 'warning') {
-        addAlertLog(`[SIMULASI] Fluktuasi tegangan terdeteksi pada ${target.name}`, target.location, 'peringatan');
-    }
-
-    renderHomeDevicesTable();
-    renderFullDevicesTable();
-    showToast('Simulasi Berjalan', `Status sensor ${target.name} kini berubah menjadi ${nextStatus.toUpperCase()}.`, 'warning');
-}
-
-// =============================================================================
-// GRAFIK INTERAKTIF (CHART.JS CYBER DARK)
-// =============================================================================
-function initCharts() {
-    // 1. Line Chart: Tren Status Perangkat
-    const trendCtx = document.getElementById('trendChart');
-    if (trendCtx && typeof Chart !== 'undefined') {
-        if (APP_STATE.charts.trendChart) APP_STATE.charts.trendChart.destroy();
-
-        APP_STATE.charts.trendChart = new Chart(trendCtx, {
-            type: 'line',
-            data: {
-                labels: ['25 Mar', '28 Mar', '31 Mar', '03 Apr', '06 Apr', '09 Apr', '12 Apr', '15 Apr', '18 Apr', '21 Apr', '24 Apr'],
-                datasets: [
-                    {
-                        label: 'Online',
-                        data: [13, 13, 14, 14, 14, 13, 14, 14, 14, 14, 14],
-                        borderColor: '#10B981',
-                        backgroundColor: 'rgba(16, 185, 129, 0.12)',
-                        borderWidth: 2,
-                        tension: 0.35,
-                        fill: true,
-                        pointBackgroundColor: '#10B981',
-                        pointRadius: 2.5
-                    },
-                    {
-                        label: 'Offline',
-                        data: [2, 2, 1, 1, 1, 2, 1, 1, 1, 1, 1],
-                        borderColor: '#EF4444',
-                        backgroundColor: 'transparent',
-                        borderWidth: 1.8,
-                        tension: 0.35,
-                        borderDash: [3, 3],
-                        pointBackgroundColor: '#EF4444',
-                        pointRadius: 2.5
-                    },
-                    {
-                        label: 'Peringatan',
-                        data: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-                        borderColor: '#F59E0B',
-                        backgroundColor: 'transparent',
-                        borderWidth: 1.8,
-                        tension: 0.35,
-                        pointBackgroundColor: '#F59E0B',
-                        pointRadius: 2.5
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    x: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#64748B', font: { size: 9 } } },
-                    y: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#64748B', font: { size: 9 } }, min: 0, max: 18, stepSize: 3 }
-                }
-            }
-        });
-    }
-
-    // 2. Donut Chart: Distribusi Kategori
-    const donutCtx = document.getElementById('categoryDonutChart');
-    if (donutCtx && typeof Chart !== 'undefined') {
-        if (APP_STATE.charts.categoryDonut) APP_STATE.charts.categoryDonut.destroy();
-
-        APP_STATE.charts.categoryDonut = new Chart(donutCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Server', 'Network Device', 'CCTV & Security', 'IoT Sensor', 'Workstation', 'Lainnya'],
-                datasets: [{
-                    data: [4, 4, 2, 2, 3, 1],
-                    backgroundColor: ['#EF4444', '#F59E0B', '#0284C7', '#10B981', '#8B5CF6', '#06B6D4'],
-                    borderWidth: 2,
-                    borderColor: '#0D1629'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                cutout: '58%',
-                plugins: { legend: { display: false } }
-            }
-        });
-    }
-}
-
-function updateTrendChartTimeframe(val) {
-    if (!APP_STATE.charts.trendChart) return;
-    const chart = APP_STATE.charts.trendChart;
-
-    if (val === '7') {
-        chart.data.labels = ['18 Apr', '19 Apr', '20 Apr', '21 Apr', '22 Apr', '23 Apr', '24 Apr'];
-        chart.data.datasets[0].data = [14, 14, 13, 14, 14, 14, 14];
-        chart.data.datasets[1].data = [1, 1, 2, 1, 1, 1, 1];
-        chart.data.datasets[2].data = [1, 1, 1, 1, 1, 1, 1];
-    } else if (val === '1') {
-        chart.data.labels = ['00:00', '04:00', '08:00', '12:00', '14:00', 'Sekarang'];
-        chart.data.datasets[0].data = [14, 14, 14, 14, 14, 14];
-        chart.data.datasets[1].data = [1, 1, 1, 1, 1, 1];
-        chart.data.datasets[2].data = [1, 1, 1, 1, 1, 1];
-    } else {
-        chart.data.labels = ['25 Mar', '28 Mar', '31 Mar', '03 Apr', '06 Apr', '09 Apr', '12 Apr', '15 Apr', '18 Apr', '21 Apr', '24 Apr'];
-        chart.data.datasets[0].data = [13, 13, 14, 14, 14, 13, 14, 14, 14, 14, 14];
-        chart.data.datasets[1].data = [2, 2, 1, 1, 1, 2, 1, 1, 1, 1, 1];
-        chart.data.datasets[2].data = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
-    }
-    chart.update();
-    showToast('Rentang Waktu', `Grafik diubah ke rentang ${val === '1' ? '24 Jam' : val + ' Hari'}.`, 'info');
-}
-
-// =============================================================================
-// TOAST NOTIFIKASI
-// =============================================================================
-let toastTimer = null;
-function showToast(title, msg, type = 'info') {
-    const toast = document.getElementById('toast-notification');
-    const tTitle = document.getElementById('toast-title');
-    const tMsg = document.getElementById('toast-message');
-    const tIcon = document.getElementById('toast-icon');
-
-    if (!toast) return;
-    if (toastTimer) clearTimeout(toastTimer);
-
-    tTitle.textContent = title;
-    tMsg.textContent = msg;
-
-    if (type === 'success') {
-        tIcon.innerHTML = '<i class="fa-solid fa-circle-check text-green"></i>';
-        toast.style.borderColor = 'var(--status-online)';
-    } else if (type === 'error') {
-        tIcon.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-red"></i>';
-        toast.style.borderColor = 'var(--status-offline)';
-    } else if (type === 'warning') {
-        tIcon.innerHTML = '<i class="fa-solid fa-bolt text-yellow"></i>';
-        toast.style.borderColor = 'var(--status-warning)';
-    } else {
-        tIcon.innerHTML = '<i class="fa-solid fa-circle-info text-cyan"></i>';
-        toast.style.borderColor = 'var(--cyan-neon)';
-    }
-
-    toast.classList.remove('hidden');
-    toastTimer = setTimeout(() => toast.classList.add('hidden'), 4000);
-}
-
-function exportReport(format) {
-    showToast('Export Dokumen', `Menghasilkan file Laporan T-AIMS ${format}... Unduhan siap.`, 'success');
-}
-
-
-// =============================================================================
-// ASISTEN AI INFRASTRUCTURE (PDF HAL. 4 & HAL. 11)
-// =============================================================================
-function openAiModal() {
-    const modal = document.getElementById('ai-assistant-modal');
-    if (modal) {
-        modal.classList.remove('hidden');
-        loadAiRecommendation();
-    }
-}
-
-function closeAiModal() {
-    const modal = document.getElementById('ai-assistant-modal');
-    if (modal) modal.classList.add('hidden');
-}
-
-async function loadAiRecommendation(isManual = false) {
-    const spin = document.getElementById('ai-modal-spin');
-    if (spin) spin.classList.add('fa-spin');
-
-    try {
-        if (typeof getAiRecommendation === 'function') {
-            const res = await getAiRecommendation();
-            if (res && res.data) {
-                const prob = document.getElementById('ai-modal-problem');
-                const rec = document.getElementById('ai-modal-recommendation');
-                if (prob && res.data.troubled_devices) {
-                    prob.innerText = `Perangkat ${res.data.troubled_devices} berstatus ${res.data.status_network}.`;
-                }
-                if (rec && res.data.recommendation) {
-                    rec.innerHTML = res.data.recommendation.replace(/\n/g, '<br>');
-                }
-            }
-        }
-        if (isManual) {
-            showToast('AI Diagnostik Selesai', 'Rekomendasi otomatis dimutakhirkan berdasarkan status 16 perangkat.', 'success');
-        }
-    } catch (e) {
-        console.warn("AI error:", e);
-    } finally {
-        if (spin) spin.classList.remove('fa-spin');
-    }
-}
-
-// =============================================================================
-// EXPORT EXCEL REAL (CSV UTF-8 BOM) & PDF EXPORT (PDF HAL. 4 & 16)
-// =============================================================================
-function exportReport(format) {
-    if (format === 'pdf') {
-        window.print();
-        return;
-    }
-    
-    // Format Excel / CSV
-    let csv = "\uFEFF"; // UTF-8 BOM for Excel
-    csv += "NO,KODE PERANGKAT,NAMA PERANGKAT,KATEGORI,STATUS,IP ADDRESS,LOKASI,METODE,PIC,TERAKHIR TERLIHAT,LATENCY\n";
-    
-    APP_STATE.devices.forEach((d, idx) => {
-        csv += `"${idx + 1}","${d.code}","${d.name}","${d.category}","${d.status}","${d.ip}","${d.location}","${d.method}","${d.pic}","${d.lastSeen}","${d.ping}"\n`;
-    });
-    
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.setAttribute("href", url);
-    link.setAttribute("download", `Laporan_Perangkat_T-AIMS_${new Date().toISOString().slice(0,10)}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-    
-    showToast("Ekspor Berhasil", "File spreadsheet Excel (CSV) telah berhasil diunduh.", "success");
-}
-
-// =============================================================================
-// ROUTING HASH & AUTO ENTER DARI URL (SEAMLESS MULTI-PAGE & MENU)
-// =============================================================================
-window.addEventListener('DOMContentLoaded', () => {
-    // 1. Cek hash URL (misal #page-reports, #page-devices)
-    const hash = window.location.hash.replace('#', '');
-    const validPages = ['page-dashboard', 'page-devices', 'page-monitoring', 'page-location', 'page-alerts', 'page-reports', 'page-project-info', 'page-users', 'page-settings'];
-    
-    if (hash && validPages.includes(hash)) {
-        enterAsGuest();
-        setTimeout(() => switchPage(hash), 50);
-    } else {
-        // Cek apakah ada sesi login sebelumnya
-        const saved = sessionStorage.getItem('taims_session');
-        if (saved) {
-            try {
-                loginSuccess(JSON.parse(saved));
-            } catch (e) {
-                // Biarkan auth screen
-            }
-        }
-    }
-});
-
-// Update URL Hash saat ganti halaman
-const origSwitchPage = switchPage;
-switchPage = function(pageId) {
-    window.location.hash = pageId;
-    origSwitchPage(pageId);
-};
-
-// Auto-adjust leaflet map on window resize
-window.addEventListener('resize', () => {
-    if (APP_STATE.homeMap) APP_STATE.homeMap.invalidateSize();
-    if (APP_STATE.fullMap) APP_STATE.fullMap.invalidateSize();
-});
-
-// Fitur Ganti Bahasa (ID / EN) di Bawah Sidebar Sesuai Gambar Referensi
-function setLanguage(lang) {
-    APP_STATE.currentLang = lang;
-    const btnId = document.getElementById('lang-btn-id');
-    const btnEn = document.getElementById('lang-btn-en');
-    const statusText = document.getElementById('footer-status-text');
-
-    if (btnId && btnEn) {
-        if (lang === 'id') {
-            btnId.classList.add('active');
-            btnEn.classList.remove('active');
-            if (statusText) statusText.textContent = 'Sistem Online';
-            if (typeof showToast === 'function') showToast('Bahasa dialihkan ke Bahasa Indonesia', 'info');
-        } else {
-            btnEn.classList.add('active');
-            btnId.classList.remove('active');
-            if (statusText) statusText.textContent = 'System Online';
-            if (typeof showToast === 'function') showToast('Language switched to English', 'info');
-        }
-    }
-}
-

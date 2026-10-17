@@ -2,13 +2,1335 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="refresh" content="0; url=index.html#page-location">
-  <title>T-AIMS &bull; Memuat Halaman...</title>
-  <script>
-    window.location.replace("index.html#page-location");
-  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>T-AIMS · Lokasi GIS & Denah Blueprint Interaktif</title>
+  <link rel="icon" type="image/png" href="logo-teknolab.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    #gis-map { height: 480px; width: 100%; border-radius: 14px; background: #E5E3DF; z-index: 1; }
+    .custom-device-pin {
+      width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 11px; font-weight: 800; box-shadow: 0 0 10px rgba(0,0,0,0.4); border: 2px solid #fff;
+      cursor: pointer; transition: transform 0.2s;
+    }
+    .custom-device-pin:hover { transform: scale(1.3); z-index: 9999 !important; }
+    .pin-online { background: #10B981; box-shadow: 0 0 10px rgba(16, 185, 129, 0.7); }
+    .pin-offline { background: #EF4444; box-shadow: 0 0 10px rgba(239, 68, 68, 0.7); }
+    .pin-warning { background: #F59E0B; box-shadow: 0 0 10px rgba(245, 158, 11, 0.7); }
+
+    .pin-draggable-active {
+      border: 3px dashed #F59E0B !important;
+      cursor: grab !important;
+      animation: pulseDrag 1.5s infinite;
+    }
+    @keyframes pulseDrag {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+
+    .admin-bar-notice {
+      display: none; background: #1C1917; border: 1px solid #78350F; border-radius: 10px;
+      padding: 12px 16px; margin-bottom: 14px; color: #FBBF24; font-size: 11.5px;
+      justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+    }
+    .btn-admin-mode {
+      background: #18233C; border: 1px solid #2B3D66; color: #FBBF24; font-weight: 800;
+      padding: 8px 16px; border-radius: 8px; font-size: 11px; cursor: pointer; display: flex; align-items: center; gap: 6px;
+    }
+    .btn-admin-mode.active {
+      background: #D97706; color: #fff; border-color: #B45309; box-shadow: 0 0 12px rgba(217, 119, 6, 0.6);
+    }
+    .btn-save-coords {
+      background: #10B981; border: none; color: #fff; font-weight: 800; padding: 7px 16px; border-radius: 6px; font-size: 11px; cursor: pointer;
+    }
+    .btn-reset-coords {
+      background: transparent; border: 1px solid #78350F; color: #FCD34D; font-weight: 700; padding: 7px 12px; border-radius: 6px; font-size: 11px; cursor: pointer;
+    }
+    .search-map-floating {
+      display: flex; align-items: center; gap: 10px; background: #0A0F1D; border: 1px solid var(--border-card);
+      padding: 8px 14px; border-radius: 10px; flex: 1; max-width: 320px;
+    }
+    .search-map-floating input {
+      background: transparent; border: none; outline: none; color: #fff; font-size: 11.5px; width: 100%;
+    }
+
+    /* KANVAS DENAH RUANGAN INTERAKTIF DESAIN AZIZ (B&W TEMBOK HITAM - RESPONSIF) */
+    .floorplan-canvas-wrap {
+      position: relative;
+      width: 100%;
+      max-width: 820px;
+      height: 420px;
+      margin: 0 auto;
+      background: #FFFFFF;
+      border: 2px solid #000000;
+      border-radius: 12px;
+      overflow: hidden;
+      user-select: none;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.5);
+      transition: height 0.3s ease;
+    }
+    @media (max-width: 992px) {
+      .floorplan-canvas-wrap {
+        height: 350px !important;
+      }
+    }
+    @media (max-width: 768px) {
+      .floorplan-canvas-wrap {
+        height: 280px !important;
+        border-radius: 8px !important;
+      }
+      .denah-pin-circle {
+        width: 22px !important;
+        height: 22px !important;
+        font-size: 10px !important;
+      }
+      .denah-pin-label {
+        font-size: 7px !important;
+        padding: 1px 4px !important;
+      }
+    }
+    @media (max-width: 480px) {
+      .floorplan-canvas-wrap {
+        height: 230px !important;
+      }
+    }
+    .denah-pin-node {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      z-index: 20;
+      transition: transform 0.15s;
+    }
+    .denah-pin-node:hover {
+      transform: translate(-50%, -50%) scale(1.15);
+      z-index: 100;
+    }
+    .denah-pin-circle {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 13px;
+      border: 2px solid #0F172A;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.35);
+    }
+    .denah-pin-Editable .denah-pin-circle {
+      border: 3px dashed #F59E0B !important;
+      cursor: grab !important;
+      animation: pulseDrag 1.5s infinite;
+    }
+    .denah-pin-label {
+      margin-top: 3px;
+      background: rgba(15, 23, 42, 0.92);
+      color: #F8FAFC;
+      font-size: 9.5px;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 4px;
+      white-space: nowrap;
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+  </style>
 </head>
-<body style="background:#060A12; color:#00E5FF; font-family:sans-serif; display:flex; align-items:center; justify-content:center; height:100vh; margin:0;">
-  <p>Memuat antarmuka T-AIMS... <a href="index.html#page-location" style="color:#00E5FF;">Klik di sini jika tidak beralih otomatis</a></p>
+<body class="dashboard-body">
+  <div class="app-shell-container">
+    <aside class="desktop-sidebar">
+      <div class="sidebar-logo-zone">
+        <a href="dashboard.html"><img src="logo-teknolab.png" alt="Teknolab" class="brand-clean-blend"></a>
+        <button class="sidebar-close-btn" onclick="toggleMobileSidebar()" aria-label="Tutup Menu"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <nav class="sidebar-nav-menu">
+        <a href="dashboard.html" class="sidebar-link"><i class="fa-solid fa-house"></i> <span>Dashboard</span></a>
+        <a href="devices.html" class="sidebar-link"><i class="fa-solid fa-microchip"></i> <span>Perangkat</span></a>
+        <a href="network.html" class="sidebar-link"><i class="fa-solid fa-network-wired"></i> <span>Jaringan</span></a>
+        <a href="topology.html" class="sidebar-link active"><i class="fa-solid fa-location-dot"></i> <span>Lokasi</span></a>
+        <a href="history.html" class="sidebar-link"><i class="fa-regular fa-bell"></i> <span>Peringatan</span> <span class="alert-pill-red">5</span></a>
+        <a href="reports.html" class="sidebar-link"><i class="fa-solid fa-chart-simple"></i> <span>Laporan</span></a>
+        <a href="project.html" class="sidebar-link"><i class="fa-solid fa-circle-info"></i> <span>Informasi Projek</span></a>
+        <a href="users.html" class="sidebar-link"><i class="fa-solid fa-users"></i> <span>Pengguna</span></a>
+        <a href="settings.html" class="sidebar-link" style="margin-top:14px;"><i class="fa-solid fa-gear"></i> <span>Pengaturan</span></a>
+      </nav>
+      <div class="sidebar-status-box">
+        <span class="status-pulse-dot"></span>
+        <div class="status-text"><small>Sistem</small><strong>Berjalan Normal</strong></div>
+      </div>
+    </aside>
+
+    <main class="main-viewport">
+      <div class="desktop-top-navbar">
+        <button class="mobile-menu-toggle" id="mobileMenuToggle" onclick="toggleMobileSidebar()" aria-label="Buka Menu Navigasi"><i class="fa-solid fa-bars"></i></button>
+        <div class="topbar-left-meta">
+          <strong>T-AIMS</strong><span>|</span><p>Teknolab Asset & Infrastructure Monitoring System</p>
+        </div>
+        <div class="topbar-center-search">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="topbarSearchInput" placeholder="Ketik CCTV, Router, PC untuk langsung buka titiknya..." oninput="searchAndFlyToDevice(this.value)">
+        </div>
+        <div class="topbar-right-meta">
+          <div class="topbar-clock-chip">
+            <i class="fa-regular fa-calendar"></i>
+            <div><span id="dt-live-date">Jumat, 16 Okt 2026</span><strong id="dt-live-time">23:30 WIB</strong></div>
+          </div>
+          <div class="topbar-notif-btn" onclick="location.href='history.html'"><i class="fa-regular fa-bell"></i><span class="notif-bubble">5</span></div>
+          <div class="topbar-profile-dropdown">
+            <div class="profile-avatar-circle" id="topbarAvatar"><i class="fa-solid fa-shield-halved"></i></div>
+            <div class="profile-meta-text"><strong id="topbarRoleName">Ahmad Reza Fahmi</strong><small id="topbarRoleSub">Administrator</small></div>
+            <i class="fa-solid fa-chevron-down caret-icon"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- BAGIAN 1: DENAH BLUEPRINT RUANGAN DESAIN AZIZ DENGAN TITIK DEVICE INTERAKTIF (BISA DIGESER & DIEDIT) -->
+      <div class="subpage-header-row">
+        <div>
+          <div class="badge-sub-green"><i class="fa-solid fa-compass-drafting"></i> BLUEPRINT DENAH ARSITEKTUR INFRASTRUKTUR IOT HO &amp; MO</div>
+          <h2>Denah Lokasi Ruangan &amp; Titik Perangkat (Bisa Digeser &amp; Diedit)</h2>
+          <p>Menampilkan tata letak perangkat di dalam ruangan Head Office (HO) dan Marketing Office (MO). Admin dapat menggeser posisi titik device dan mengedit keterangan ruangannya.</p>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <button class="btn-action-edit" id="btnEditRoomNames" onclick="openEditRoomsModal()" style="display:none; padding:8px 14px; font-size:11px; background:rgba(139,92,246,0.15); border:1px solid #8B5CF6; color:#C4B5FD;">
+            <i class="fa-solid fa-pen-to-square"></i> Edit Nama Ruangan (Super Admin)
+          </button>
+          <button class="btn-admin-mode" id="btnDenahEditMode" onclick="toggleDenahEditMode()">
+            <i class="fa-solid fa-arrows-up-down-left-right"></i> Mode Edit Titik Denah (Admin)
+          </button>
+          <button class="btn-action-edit" id="btnAddDenahPin" onclick="addNewPinToDenah()" style="padding:8px 14px;font-size:11px;">
+            <i class="fa-solid fa-plus"></i> Tambah Titik di Denah
+          </button>
+        </div>
+      </div>
+
+      <!-- NOTIFIKASI EDIT DENAH -->
+      <div class="admin-bar-notice" id="denahNoticeBar">
+        <div>
+          <i class="fa-solid fa-hand-pointer"></i>
+          <strong>Mode Edit Denah Aktif:</strong> Klik & tahan (geser) titik perangkat ke ruangan yang diinginkan pada denah, atau klik 2x pada titik untuk mengubah nama/statusnya.
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn-save-coords" onclick="saveDenahPins()"><i class="fa-solid fa-check"></i> Simpan Posisi Denah</button>
+          <button class="btn-reset-coords" onclick="resetDenahPins()"><i class="fa-solid fa-rotate-left"></i> Reset Default</button>
+        </div>
+      </div>
+
+      <div class="chart-glass-panel" style="margin-bottom: 26px;">
+        <div class="panel-header-row">
+          <div class="btn-group-map">
+            <button class="btn-map-switch active" id="tabBtnDenahHO" onclick="switchDenahSite('HO')"><i class="fa-solid fa-building"></i> Denah Head Office (Jl. Cibodas No. 03)</button>
+            <button class="btn-map-switch" id="tabBtnDenahMO" onclick="switchDenahSite('MO')"><i class="fa-solid fa-briefcase"></i> Denah Marketing Office (Kos Kiki, Jl. Ciliwung)</button>
+          </div>
+          <small style="color:var(--text-muted);font-size:11px;"><i class="fa-solid fa-circle-info text-cyan"></i> Klik titik perangkat di atas denah untuk melihat detail / mengedit</small>
+        </div>
+
+        <!-- KANVAS DENAH INTERAKTIF -->
+        <div class="floorplan-canvas-wrap" id="denahCanvas">
+          <!-- Gambar Denah dari File jika ada (denah-ho.png / denah-mo.png) -->
+          <img id="customDenahImg" src="denah-ho.png" style="width:100%;height:100%;object-fit:contain;position:absolute;top:0;left:0;z-index:2;display:none;" onload="this.style.display='block';" onerror="this.style.display='none';">
+
+          <!-- Blueprint SVG HO (Gedung Atas Arsitektur Aziz - Hitam Putih Solid Black) -->
+          <svg id="svgBlueprintHO" viewBox="0 0 960 560" style="width:100%;height:100%;position:absolute;top:0;left:0;z-index:1;">
+            <!-- Latar Putih Bersih -->
+            <rect x="0" y="0" width="960" height="560" fill="#FFFFFF"/>
+            
+            <!-- Grid Halus Arsitektur CAD -->
+            <defs>
+              <pattern id="cadGrid960" width="20" height="20" patternUnits="userSpaceOnUse">
+                <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#F1F5F9" stroke-width="0.8"/>
+              </pattern>
+            </defs>
+            <rect x="0" y="0" width="960" height="560" fill="url(#cadGrid960)"/>
+
+            <!-- BORDER KANVAS DENAH -->
+            <rect x="10" y="10" width="940" height="540" fill="none" stroke="#000000" stroke-width="2"/>
+
+            <!-- KOP GAMBAR TEKNIK / TITLE BLOCK (KANAN) -->
+            <rect x="730" y="10" width="220" height="540" fill="#FFFFFF" stroke="#000000" stroke-width="2"/>
+            <line x1="730" y1="80" x2="950" y2="80" stroke="#000000" stroke-width="1.5"/>
+            <line x1="730" y1="180" x2="950" y2="180" stroke="#000000" stroke-width="1.5"/>
+            <line x1="730" y1="280" x2="950" y2="280" stroke="#000000" stroke-width="1.5"/>
+            <line x1="730" y1="375" x2="950" y2="375" stroke="#000000" stroke-width="1.5"/>
+            <line x1="730" y1="465" x2="950" y2="465" stroke="#000000" stroke-width="1.5"/>
+
+            <!-- Kop Section 1: Perusahaan -->
+            <text x="840" y="38" font-size="12" font-weight="900" text-anchor="middle" fill="#000000">PT TEKNOLAB CARAKA</text>
+            <text x="840" y="55" font-size="9.5" font-weight="800" text-anchor="middle" fill="#2563EB">BLUEPRINT SITE HEAD OFFICE (HO)</text>
+            <text x="840" y="70" font-size="8.5" text-anchor="middle" fill="#475569">Jl. Cibodas No. 03, Kepanjenkidul</text>
+
+            <!-- Kop Section 2: Tim Pengembang -->
+            <text x="745" y="102" font-size="8.5" font-weight="800" fill="#000000">ARSITEK / UI-UX:</text>
+            <text x="745" y="118" font-size="10" font-weight="800" fill="#2563EB">Ahmad Aziz (TEI 1)</text>
+            <text x="745" y="142" font-size="8.5" font-weight="800" fill="#000000">FRONTEND DEVELOPER:</text>
+            <text x="745" y="158" font-size="10" font-weight="800" fill="#059669">Dika Yoga Pratama (Shift 2)</text>
+
+            <!-- Kop Section 3: Reviewer QA -->
+            <text x="745" y="202" font-size="8.5" font-weight="800" fill="#000000">REVIEWER &amp; QA TESTER:</text>
+            <text x="745" y="218" font-size="10" font-weight="800" fill="#DC2626">Reza Tri Wardana</text>
+            <text x="745" y="242" font-size="8.5" font-weight="800" fill="#000000">TIM HARDWARE &amp; IOT:</text>
+            <text x="745" y="258" font-size="9.5" font-weight="700" fill="#334155">Ilvina M. &amp; Ananda D. S.</text>
+
+            <!-- Kop Section 4: Standar Arsitektur CAD -->
+            <text x="745" y="302" font-size="8.5" font-weight="800" fill="#000000">STANDAR DENAH:</text>
+            <text x="745" y="318" font-size="9.5" font-weight="900" fill="#000000">HITAM &amp; PUTIH (B&amp;W CAD)</text>
+            <text x="745" y="336" font-size="8.5" font-weight="700" fill="#475569">Dinding: Solid Black 8px</text>
+            <text x="745" y="353" font-size="8.5" font-weight="700" fill="#475569">Skala: 1 : 100 • Gedung Atas</text>
+
+            <!-- Kop Section 5: Daftar Ruangan HO -->
+            <text x="745" y="396" font-size="8.5" font-weight="800" fill="#000000">ZONA GEDUNG UTAMA (HO):</text>
+            <text x="745" y="412" font-size="8" fill="#334155" id="kopRoomServer">• R. Server &amp; Network HO</text>
+            <text x="745" y="426" font-size="8" fill="#334155" id="kopRoomIot">• Lab IoT &amp; Sensor Elektro</text>
+            <text x="745" y="440" font-size="8" fill="#334155" id="kopRoomWork">• R. Kerja Shift 1 &amp; 2</text>
+            <text x="745" y="454" font-size="8" fill="#334155" id="kopRoomAdmin">• R. Admin &amp; Monitoring</text>
+
+            <!-- Kop Section 6: Area Tambahan HO -->
+            <text x="745" y="486" font-size="8.5" font-weight="800" fill="#000000">FASILITAS PENDUKUNG:</text>
+            <text x="745" y="502" font-size="8" fill="#334155" id="kopRoomLogistik">• Gudang Logistik &amp; Sparepart</text>
+            <text x="745" y="516" font-size="8" fill="#334155" id="kopRoomKanopi">• Teras &amp; Pilar Kanopi Utama</text>
+            <text x="745" y="534" font-size="8.5" font-weight="800" fill="#059669">STATUS: 100% TERVERIFIKASI</text>
+
+            <!-- ========================================================
+                 GEDUNG ATAS BLUEPRINT AHMAD AZIZ (SITE HO)
+                 ======================================================== -->
+
+            <!-- Ruang 1: Ruang Server & Network -->
+            <g class="cad-room-zone" onclick="openSingleRoomModal('server', 'RUANG SERVER &amp; NETWORK', 'HO')">
+              <rect x="50" y="30" width="290" height="95" fill="#FFFFFF" stroke="#000000" stroke-width="8"/>
+              <text x="195" y="80" font-size="11" font-weight="900" fill="#000000" text-anchor="middle" id="txtRoomServer">RUANG SERVER &amp; NETWORK</text>
+              <text x="195" y="98" font-size="8.5" fill="#64748B" text-anchor="middle">Rack Server, Pi-hole &amp; Switch Core</text>
+              <!-- Pintu Ruang 1 ke Koridor -->
+              <line x1="340" y1="55" x2="340" y2="95" stroke="#FFFFFF" stroke-width="12"/>
+              <path d="M 340 55 A 32 32 0 0 1 372 87" fill="none" stroke="#000000" stroke-width="2"/>
+            </g>
+
+            <!-- Ruang 2: Lab IoT & Sensor Elektro -->
+            <g class="cad-room-zone" onclick="openSingleRoomModal('iot', 'LAB IOT &amp; SENSOR ELEKTRO', 'HO')">
+              <rect x="50" y="135" width="290" height="110" fill="#FFFFFF" stroke="#000000" stroke-width="8"/>
+              <text x="195" y="188" font-size="11" font-weight="900" fill="#000000" text-anchor="middle" id="txtRoomIot">LAB IOT &amp; SENSOR ELEKTRO</text>
+              <text x="195" y="206" font-size="8.5" fill="#64748B" text-anchor="middle">Modul ESP32, Sensor Suhu &amp; Panel Surya</text>
+              <!-- Jendela Kiri Ruang 2 -->
+              <line x1="50" y1="165" x2="50" y2="215" stroke="#FFFFFF" stroke-width="12"/>
+              <line x1="50" y1="165" x2="50" y2="215" stroke="#000000" stroke-width="2.5"/>
+              <!-- Pintu Ruang 2 ke Koridor -->
+              <line x1="340" y1="160" x2="340" y2="200" stroke="#FFFFFF" stroke-width="12"/>
+              <path d="M 340 160 A 32 32 0 0 1 372 192" fill="none" stroke="#000000" stroke-width="2"/>
+            </g>
+
+            <!-- Ruang 3: Ruang Kerja Shift 1 & 2 (Dika Yoga & Reza Tri) -->
+            <g class="cad-room-zone" onclick="openSingleRoomModal('work', 'RUANG KERJA SHIFT 1 &amp; 2', 'HO')">
+              <rect x="50" y="255" width="290" height="110" fill="#FFFFFF" stroke="#000000" stroke-width="8"/>
+              <text x="195" y="308" font-size="11" font-weight="900" fill="#000000" text-anchor="middle" id="txtRoomWork">RUANG KERJA SHIFT 1 &amp; 2</text>
+              <text x="195" y="326" font-size="8.5" fill="#64748B" text-anchor="middle">Workstation Frontend (Dika) &amp; QA (Reza)</text>
+              <!-- Jendela Kiri Ruang 3 -->
+              <line x1="50" y1="285" x2="50" y2="335" stroke="#FFFFFF" stroke-width="12"/>
+              <line x1="50" y1="285" x2="50" y2="335" stroke="#000000" stroke-width="2.5"/>
+              <!-- Pintu Ruang 3 ke Koridor -->
+              <line x1="340" y1="280" x2="340" y2="320" stroke="#FFFFFF" stroke-width="12"/>
+              <path d="M 340 280 A 32 32 0 0 1 372 312" fill="none" stroke="#000000" stroke-width="2"/>
+            </g>
+
+            <!-- Ruang 4: Ruang Admin & Monitoring -->
+            <g class="cad-room-zone" onclick="openSingleRoomModal('admin', 'RUANG ADMIN &amp; MONITORING', 'HO')">
+              <rect x="50" y="375" width="390" height="145" fill="#FFFFFF" stroke="#000000" stroke-width="8"/>
+              <text x="245" y="445" font-size="12" font-weight="900" fill="#000000" text-anchor="middle" id="txtRoomAdmin">RUANG ADMIN &amp; MONITORING</text>
+              <text x="245" y="468" font-size="9" fill="#475569" text-anchor="middle">Pusat Kendali CCTV, Workstation Admin &amp; Smart TV T-AIMS</text>
+              <!-- Pintu Bawah Kiri Ruang 4 -->
+              <line x1="70" y1="520" x2="115" y2="520" stroke="#FFFFFF" stroke-width="12"/>
+              <path d="M 70 520 A 36 36 0 0 0 106 484" fill="none" stroke="#000000" stroke-width="2"/>
+              <!-- Jendela Bawah Ruang 4 -->
+              <line x1="220" y1="520" x2="340" y2="520" stroke="#FFFFFF" stroke-width="12"/>
+              <line x1="220" y1="517" x2="340" y2="517" stroke="#000000" stroke-width="2.5"/>
+              <line x1="220" y1="523" x2="340" y2="523" stroke="#000000" stroke-width="2.5"/>
+            </g>
+
+            <!-- Ruang 5: Gudang Logistik & Sparepart (Alcove Kanan Atas) -->
+            <g class="cad-room-zone" onclick="openSingleRoomModal('logistik', 'GUDANG LOGISTIK &amp; SPAREPART', 'HO')">
+              <rect x="470" y="30" width="225" height="180" fill="#FFFFFF" stroke="#000000" stroke-width="8"/>
+              <text x="582" y="115" font-size="11" font-weight="900" fill="#000000" text-anchor="middle" id="txtRoomLogistik">GUDANG LOGISTIK &amp; SPAREPART</text>
+              <text x="582" y="135" font-size="8.5" fill="#64748B" text-anchor="middle">Penyimpanan Komponen &amp; Kabel Fiber</text>
+              <!-- Pintu Gudang ke Koridor Bawah -->
+              <line x1="550" y1="210" x2="610" y2="210" stroke="#FFFFFF" stroke-width="12"/>
+              <path d="M 550 210 A 35 35 0 0 1 585 245" fill="none" stroke="#000000" stroke-width="2"/>
+            </g>
+
+            <!-- Koridor Utama Struktur -->
+            <line x1="340" y1="30" x2="470" y2="30" stroke="#000000" stroke-width="8"/>
+            <line x1="470" y1="210" x2="470" y2="375" stroke="#000000" stroke-width="8"/>
+            <line x1="440" y1="375" x2="470" y2="375" stroke="#000000" stroke-width="8"/>
+            <text x="405" y="275" font-size="11" font-weight="900" fill="#64748B" text-anchor="middle" transform="rotate(-90 405 275)">KORIDOR UTAMA SITE HO</text>
+
+            <!-- Ruang 6: Teras & Pilar Kanopi Depan -->
+            <g class="cad-room-zone" onclick="openSingleRoomModal('kanopi', 'TERAS &amp; PILAR KANOPI UTAMA', 'HO')">
+              <rect x="490" y="375" width="205" height="145" fill="#FAFAFA" stroke="#000000" stroke-width="2" stroke-dasharray="6,6"/>
+              <!-- 4 Pilar Solid Hitam -->
+              <rect x="520" y="400" width="22" height="22" fill="#000000"/>
+              <rect x="640" y="400" width="22" height="22" fill="#000000"/>
+              <rect x="520" y="475" width="22" height="22" fill="#000000"/>
+              <rect x="640" y="475" width="22" height="22" fill="#000000"/>
+              <text x="592" y="445" font-size="10" font-weight="900" fill="#000000" text-anchor="middle" id="txtRoomKanopi">TERAS &amp; PILAR KANOPI</text>
+              <text x="592" y="462" font-size="8" fill="#64748B" text-anchor="middle">Akses Depan Gedung Utama HO</text>
+            </g>
+          </svg>
+
+          <!-- Blueprint SVG MO (Gedung Bawah Arsitektur Aziz - Workshop Elektro & Selasar) -->
+          <svg id="svgBlueprintMO" viewBox="0 0 960 560" style="width:100%;height:100%;position:absolute;top:0;left:0;z-index:1;display:none;">
+            <!-- Latar Putih Bersih -->
+            <rect x="0" y="0" width="960" height="560" fill="#FFFFFF"/>
+            <rect x="0" y="0" width="960" height="560" fill="url(#cadGrid960)"/>
+            <rect x="10" y="10" width="940" height="540" fill="none" stroke="#000000" stroke-width="2"/>
+
+            <!-- Kop Gambar MO (Kanan) -->
+            <rect x="730" y="10" width="220" height="540" fill="#FFFFFF" stroke="#000000" stroke-width="2"/>
+            <line x1="730" y1="80" x2="950" y2="80" stroke="#000000" stroke-width="1.5"/>
+            <line x1="730" y1="180" x2="950" y2="180" stroke="#000000" stroke-width="1.5"/>
+            <line x1="730" y1="280" x2="950" y2="280" stroke="#000000" stroke-width="1.5"/>
+            <line x1="730" y1="375" x2="950" y2="375" stroke="#000000" stroke-width="1.5"/>
+            <line x1="730" y1="465" x2="950" y2="465" stroke="#000000" stroke-width="1.5"/>
+
+            <text x="840" y="38" font-size="12" font-weight="900" text-anchor="middle" fill="#000000">PT TEKNOLAB CARAKA</text>
+            <text x="840" y="55" font-size="9.5" font-weight="800" text-anchor="middle" fill="#7C3AED">BLUEPRINT SITE MARKETING (MO)</text>
+            <text x="840" y="70" font-size="8.5" text-anchor="middle" fill="#475569">Kos Kiki, Jl. Ciliwung No. 247</text>
+
+            <text x="745" y="102" font-size="8.5" font-weight="800" fill="#000000">ARSITEK / UI-UX:</text>
+            <text x="745" y="118" font-size="10" font-weight="800" fill="#2563EB">Ahmad Aziz (TEI 1)</text>
+            <text x="745" y="142" font-size="8.5" font-weight="800" fill="#000000">FRONTEND DEVELOPER:</text>
+            <text x="745" y="158" font-size="10" font-weight="800" fill="#059669">Dika Yoga Pratama (Shift 2)</text>
+
+            <text x="745" y="202" font-size="8.5" font-weight="800" fill="#000000">STANDAR DENAH:</text>
+            <text x="745" y="218" font-size="9.5" font-weight="900" fill="#000000">HITAM &amp; PUTIH (B&amp;W CAD)</text>
+            <text x="745" y="236" font-size="8.5" font-weight="700" fill="#475569">Dinding: Solid Black 8px</text>
+            <text x="745" y="253" font-size="8.5" font-weight="700" fill="#475569">Skala: 1 : 100 • Gedung Bawah</text>
+
+            <text x="745" y="302" font-size="8.5" font-weight="800" fill="#000000">ZONA GEDUNG BAWAH (MO):</text>
+            <text x="745" y="320" font-size="8" fill="#334155" id="kopRoomWorkshop">• Workshop Elektro &amp; Lab HW</text>
+            <text x="745" y="336" font-size="8" fill="#334155" id="kopRoomSelasar">• Selasar &amp; Parkir Operasional</text>
+            <text x="745" y="352" font-size="8" fill="#334155">• Jalur Distribusi &amp; Uji Coba</text>
+
+            <text x="745" y="396" font-size="8.5" font-weight="800" fill="#000000">INTERKONEKSI JARINGAN:</text>
+            <text x="745" y="412" font-size="8" fill="#334155">• Uplink VPN Site-to-Site HO-MO</text>
+            <text x="745" y="426" font-size="8" fill="#334155">• Router MO: 192.168.10.2</text>
+            <text x="745" y="440" font-size="8" fill="#334155">• CCTV Monitoring &amp; AI Lab</text>
+
+            <text x="745" y="486" font-size="8.5" font-weight="800" fill="#000000">STATUS OPERASIONAL:</text>
+            <text x="745" y="504" font-size="9" font-weight="800" fill="#059669">● TERHUBUNG REAL-TIME</text>
+            <text x="745" y="522" font-size="8" fill="#475569">100% Terverifikasi QA Teknolab</text>
+
+            <!-- ========================================================
+                 GEDUNG BAWAH BLUEPRINT AHMAD AZIZ (SITE MO)
+                 ======================================================== -->
+
+            <!-- Ruang 1: Workshop Elektro & Lab Hardware (Ruang Besar di Kanan) -->
+            <g class="cad-room-zone" onclick="openSingleRoomModal('workshop', 'WORKSHOP ELEKTRO &amp; LAB HARDWARE', 'MO')">
+              <rect x="290" y="45" width="400" height="465" fill="#FFFFFF" stroke="#000000" stroke-width="8"/>
+              <text x="490" y="245" font-size="14" font-weight="900" fill="#000000" text-anchor="middle" id="txtRoomWorkshop">WORKSHOP ELEKTRO &amp; LAB HARDWARE</text>
+              <text x="490" y="272" font-size="10.5" fill="#475569" text-anchor="middle">Fasilitas Perakitan, Kalibrasi Sensor, Server Backup &amp; Divisi MO</text>
+              <text x="490" y="295" font-size="9" fill="#0284C7" text-anchor="middle">Titik Perangkat: NET-SRV-02, NET-RTR-02, WIFI-MO-03</text>
+              <!-- Pintu Kiri Atas Workshop -->
+              <line x1="290" y1="90" x2="290" y2="150" stroke="#FFFFFF" stroke-width="12"/>
+              <path d="M 290 90 A 45 45 0 0 1 335 135" fill="none" stroke="#000000" stroke-width="2.5"/>
+              <!-- Jendela Atas Workshop -->
+              <line x1="400" y1="45" x2="580" y2="45" stroke="#FFFFFF" stroke-width="12"/>
+              <line x1="400" y1="42" x2="580" y2="42" stroke="#000000" stroke-width="2.5"/>
+              <line x1="400" y1="48" x2="580" y2="48" stroke="#000000" stroke-width="2.5"/>
+              <!-- Jendela Kanan Workshop -->
+              <line x1="690" y1="180" x2="690" y2="340" stroke="#FFFFFF" stroke-width="12"/>
+              <line x1="687" y1="180" x2="687" y2="340" stroke="#000000" stroke-width="2.5"/>
+              <line x1="693" y1="180" x2="693" y2="340" stroke="#000000" stroke-width="2.5"/>
+            </g>
+
+            <!-- Ruang 2: Selasar & Parkir Operasional (Selasar Berkanopi di Kiri) -->
+            <g class="cad-room-zone" onclick="openSingleRoomModal('selasar', 'SELASAR &amp; PARKIR OPERASIONAL', 'MO')">
+              <line x1="60" y1="45" x2="290" y2="45" stroke="#000000" stroke-width="8"/>
+              <line x1="60" y1="510" x2="290" y2="510" stroke="#000000" stroke-width="8"/>
+              <circle cx="60" cy="45" r="7" fill="#000000"/>
+              <circle cx="60" cy="510" r="7" fill="#000000"/>
+              <!-- Pilar Kanopi Selasar -->
+              <rect x="90" y="160" width="24" height="24" fill="#000000"/>
+              <rect x="90" y="380" width="24" height="24" fill="#000000"/>
+              <text x="175" y="270" font-size="12" font-weight="900" fill="#000000" text-anchor="middle" id="txtRoomSelasar">SELASAR &amp; PARKIR OPERASIONAL</text>
+              <text x="175" y="292" font-size="9" fill="#475569" text-anchor="middle">Akses Gate Masuk &amp; CCTV Monitoring</text>
+              <text x="175" y="312" font-size="8.5" fill="#059669" text-anchor="middle">Titik Perangkat: SEC-CCTV-02</text>
+            </g>
+          </svg>
+
+          <!-- Container Pin Titik Device di Atas Denah -->
+          <div id="denahPinsContainer" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:10;"></div>
+        </div>
+      </div>
+
+      <!-- BAGIAN 2: PETA GEOSPASIAL GIS KOTA BLITAR (ZOOM MO DINAMIS) -->
+      <div class="subpage-header-row" style="margin-top: 10px;">
+        <div>
+          <div class="badge-sub-green"><i class="fa-solid fa-location-crosshairs"></i> GEOLOCATION REAL-TIME • PETA KOTA BLITAR</div>
+          <h2>Peta Geospasial & Koordinat Antar-Site (HO & MO)</h2>
+          <p>Saat titik perangkat MO digeser dan disimpan, tombol Zoom Marketing Office akan otomatis menyesuaikan ke titik koordinat terbaru.</p>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <div class="search-map-floating">
+            <i class="fa-solid fa-magnifying-glass text-blue"></i>
+            <input type="text" id="mapSearchInput" placeholder="Cari titik (CCTV, RTR, PC)..." oninput="searchAndFlyToDevice(this.value)">
+          </div>
+          <button class="btn-admin-mode" id="btnAdminMode" onclick="toggleAdminDragMode()">
+            <i class="fa-solid fa-arrows-up-down-left-right"></i> Mode Edit Titik Peta (Admin)
+          </button>
+        </div>
+      </div>
+
+      <div class="admin-bar-notice" id="adminBarNotice">
+        <div>
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          <strong>Mode Admin Peta Aktif:</strong> Silakan geser (drag) pin perangkat pada peta jalan di bawah, lalu klik Simpan Posisi Baru.
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn-save-coords" onclick="saveCoordinates()"><i class="fa-solid fa-check"></i> Simpan Posisi Baru</button>
+          <button class="btn-reset-coords" onclick="resetDefaultCoordinates()"><i class="fa-solid fa-rotate-left"></i> Reset Posisi Awal</button>
+        </div>
+      </div>
+
+      <div class="map-controls-row" style="flex-wrap: wrap; gap: 10px;">
+        <div class="btn-group-map">
+          <button class="btn-map-switch active" id="btnFocusHO" onclick="focusSite('ho')"><i class="fa-solid fa-building"></i> Zoom Head Office (Jl. Cibodas)</button>
+          <button class="btn-map-switch" id="btnFocusMO" onclick="focusSite('mo')"><i class="fa-solid fa-briefcase"></i> Zoom Marketing Office (Kos Kiki)</button>
+          <button class="btn-map-reset" onclick="fitAll()"><i class="fa-solid fa-expand"></i> Tampilkan Seluruh Kota Blitar</button>
+        </div>
+        <div class="btn-group-map">
+          <button class="btn-map-switch active" id="btnLayerGoogleMap" onclick="setMapLayer('google_map')"><i class="fa-solid fa-map-location-dot"></i> Google Maps Detail (Jalan &amp; Bangunan)</button>
+          <button class="btn-map-switch" id="btnLayerGoogleSat" onclick="setMapLayer('google_sat')"><i class="fa-solid fa-satellite"></i> Google Satelit Hybrid</button>
+        </div>
+      </div>
+
+      <div class="gis-grid-layout">
+        <div class="gis-map-panel">
+          <div id="gis-map"></div>
+        </div>
+
+        <div class="gis-nodes-sidebar">
+          <div class="site-detail-card" style="border-left: 4px solid #3B82F6;">
+            <div class="card-site-header">
+              <div class="badge-site-tag ho"><i class="fa-solid fa-building"></i> HEAD OFFICE (HO)</div>
+              <span class="status-badge-inline online">● Jl. Cibodas No. 03</span>
+            </div>
+            <h4>PT Teknolab Caraka Internasional</h4>
+            <p class="site-addr"><i class="fa-solid fa-map-pin text-red"></i> Jl. Cibodas No. 03, Kel. Tanggung, Kec. Kepanjenkidul</p>
+            <div class="site-peripherals-list">
+              <div class="peri-item" onclick="flyToDevice('SEC-CCTV-01')" style="cursor:pointer;"><span>1. SEC-CCTV-01 (Gate HO)</span><strong class="text-red">● Offline</strong></div>
+              <div class="peri-item" onclick="flyToDevice('PC-WS-01')" style="cursor:pointer;"><span>2. PC-WS-01 (Workstation 01)</span><strong class="text-green">● Online</strong></div>
+              <div class="peri-item" onclick="flyToDevice('PC-WS-02')" style="cursor:pointer;"><span>3. PC-WS-02 (Workstation 02)</span><strong class="text-amber">● Unknown</strong></div>
+              <div class="peri-item" onclick="flyToDevice('NET-RTR-01')" style="cursor:pointer;"><span>4. NET-RTR-01 (MikroTik RB4011)</span><strong class="text-green">● Online</strong></div>
+              <div class="peri-item" onclick="flyToDevice('IOT-ESP-01')" style="cursor:pointer;"><span>5. IOT-ESP-01 (Panel Surya)</span><strong class="text-green">● Online</strong></div>
+              <div class="peri-item" onclick="flyToDevice('NET-SRV-01')" style="cursor:pointer;"><span>6. NET-SRV-01 (Server T-AIMS)</span><strong class="text-green">● Online</strong></div>
+            </div>
+          </div>
+
+          <div class="site-detail-card" style="border-left: 4px solid #8B5CF6;">
+            <div class="card-site-header">
+              <div class="badge-site-tag mo"><i class="fa-solid fa-briefcase"></i> MARKETING OFFICE (MO)</div>
+              <span class="status-badge-inline warn">● Jl. Ciliwung No. 247</span>
+            </div>
+            <h4>Marketing Office Teknolab (Kos Kiki)</h4>
+            <p class="site-addr"><i class="fa-solid fa-map-pin text-purple"></i> Kos Kiki, Jl. Ciliwung No. 247, Kec. Sukorejo</p>
+            <div class="site-peripherals-list">
+              <div class="peri-item" onclick="flyToDevice('SEC-CCTV-02')" style="cursor:pointer;"><span>7. SEC-CCTV-02 (CCTV MO)</span><strong class="text-green">● Online</strong></div>
+              <div class="peri-item" onclick="flyToDevice('NET-RTR-02')" style="cursor:pointer;"><span>8. NET-RTR-02 (Router MO)</span><strong class="text-amber">● Warning</strong></div>
+              <div class="peri-item" onclick="flyToDevice('WIFI-MO-03')" style="cursor:pointer;"><span>9. WIFI-MO-03 (Sub-Router Lab)</span><strong class="text-green">● Online</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- MODAL DETAIL & EDIT TITIK DEVICE -->
+  <div class="modal-overlay" id="device-modal" style="display: none;">
+    <div class="modal-card-mobile">
+      <div class="m-modal-top">
+        <button class="m-back-btn" onclick="closeDetailModal()"><i class="fa-solid fa-arrow-left"></i></button>
+        <span class="m-modal-title">Detail & Edit Titik Perangkat</span>
+        <button class="m-close-btn" onclick="closeDetailModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="m-modal-scroll">
+        <div class="m-asset-hero">
+          <div class="m-asset-icon-box" id="m-icon-box"><i class="fa-solid fa-microchip"></i></div>
+          <h2 id="m-code">NET-RTR-01</h2>
+          <p id="m-name-sub">Router Utama · Head Office</p>
+          <span class="tag-status-pill online" id="m-status-pill">● ONLINE</span>
+        </div>
+        <div class="m-section-card">
+          <div class="m-sec-title"><i class="fa-solid fa-circle-info text-blue"></i> Informasi Geospasial & Ruangan</div>
+          <div class="m-info-row"><span>IP Address</span><strong id="m-ip">192.168.10.1</strong></div>
+          <div class="m-info-row"><span>Lokasi Gedung</span><strong id="m-loc">Head Office (Jl. Cibodas No. 03)</strong></div>
+          <div class="m-info-row"><span>Posisi / Koordinat</span><strong id="m-coord-text">-8.0736, 112.1732</strong></div>
+          <div class="m-info-row"><span>PIC Pengelola</span><strong id="m-pic">Ananda Dwi Susanti</strong></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL EDIT SATU RUANGAN DI KLIK LANGSUNG PADA DENAH -->
+  <div class="modal-overlay" id="modalEditSingleRoom" style="display: none;">
+    <div class="modal-card-mobile" style="max-width: 480px;">
+      <div class="m-modal-top">
+        <span class="m-modal-title"><i class="fa-solid fa-pen-ruler text-cyan"></i> Edit Nama Ruangan Arsitektur CAD</span>
+        <button class="m-close-btn" onclick="closeSingleRoomModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="m-modal-scroll" style="padding: 20px;">
+        <p style="color:var(--text-muted); font-size:12px; margin-bottom:14px;">Klik simpan untuk memperbarui nama ruangan pada denah arsitektur dan kop gambar secara permanen.</p>
+        
+        <div style="background:#070B14; border:1px solid var(--border-card); border-radius:8px; padding:12px 14px; margin-bottom:14px; display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <small style="color:var(--text-dim); display:block; font-size:10px; font-weight:700;">RUANGAN YANG DIPILIH:</small>
+            <strong id="srRoomLabel" style="color:#38BDF8; font-size:13px;">RUANG SERVER &amp; NETWORK</strong>
+          </div>
+          <span id="srSiteBadge" style="font-size:10px; font-weight:800; background:rgba(56,189,248,0.15); color:#38BDF8; padding:3px 8px; border-radius:6px; border:1px solid rgba(56,189,248,0.3);">HEAD OFFICE (HO)</span>
+        </div>
+
+        <div style="margin-bottom:16px;">
+          <label style="font-size:11.5px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:6px;">Nama / Label Ruangan Baru:</label>
+          <input type="text" id="srInputName" class="setting-input-text" style="width:100%; font-size:12px; font-weight:700;" placeholder="Ketik nama ruangan...">
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <button type="button" onclick="saveSingleRoomName()" style="background:linear-gradient(135deg, #10B981, #059669); border:none; color:#fff; font-weight:800; padding:11px; border-radius:8px; cursor:pointer; font-size:12px; display:flex; align-items:center; justify-content:center; gap:8px;">
+            <i class="fa-solid fa-floppy-disk"></i> Simpan Nama Ruangan
+          </button>
+          <button type="button" onclick="resetSingleRoomName()" style="background:rgba(239, 68, 68, 0.12); border:1px solid rgba(239, 68, 68, 0.35); color:#F87171; font-weight:700; padding:10px; border-radius:8px; cursor:pointer; font-size:11.5px; display:flex; align-items:center; justify-content:center; gap:8px;">
+            <i class="fa-solid fa-trash-can"></i> Hapus / Reset ke Default
+          </button>
+          <button type="button" onclick="closeSingleRoomModal()" style="background:#1E293B; border:1px solid #475569; color:#CBD5E1; padding:9px; border-radius:8px; cursor:pointer; font-size:11.5px;">
+            Batal
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL EDIT NAMA SEMUA RUANGAN (SUPER ADMIN ONLY) -->
+  <div class="modal-overlay" id="editRoomsModal" style="display: none;">
+    <div class="modal-card-mobile" style="max-width: 500px;">
+      <div class="m-modal-top">
+        <span class="m-modal-title"><i class="fa-solid fa-pen-to-square text-cyan"></i> Edit Semua Nama Ruangan Blueprint</span>
+        <button class="m-close-btn" onclick="closeEditRoomsModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="m-modal-scroll" style="padding: 20px;">
+        <p style="color:var(--text-muted); font-size:12px; margin-bottom:14px;">Sebagai <strong>Super Administrator</strong>, Anda dapat mengubah seluruh nama ruangan pada denah arsitektur. Perubahan disimpan permanen.</p>
+        <form onsubmit="saveCustomRoomNames(event)" style="display:flex; flex-direction:column; gap:12px;">
+          <div>
+            <label style="font-size:11px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:4px;">1. Ruang Server (HO)</label>
+            <input type="text" id="inpRoomServer" class="setting-input-text" value="RUANG SERVER &amp; NETWORK">
+          </div>
+          <div>
+            <label style="font-size:11px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:4px;">2. Ruang Lab IoT (HO)</label>
+            <input type="text" id="inpRoomIot" class="setting-input-text" value="LAB IOT &amp; SENSOR ELEKTRO">
+          </div>
+          <div>
+            <label style="font-size:11px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:4px;">3. Ruang Kerja Shift 1 &amp; 2 (HO)</label>
+            <input type="text" id="inpRoomWork" class="setting-input-text" value="RUANG KERJA SHIFT 1 &amp; 2">
+          </div>
+          <div>
+            <label style="font-size:11px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:4px;">4. Ruang Admin &amp; Monitoring (HO)</label>
+            <input type="text" id="inpRoomAdmin" class="setting-input-text" value="RUANG ADMIN &amp; MONITORING">
+          </div>
+          <div>
+            <label style="font-size:11px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:4px;">5. Gudang Logistik (HO Kanan Atas)</label>
+            <input type="text" id="inpRoomLogistik" class="setting-input-text" value="GUDANG LOGISTIK &amp; SPAREPART">
+          </div>
+          <div>
+            <label style="font-size:11px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:4px;">6. Gedung Workshop Elektro (MO)</label>
+            <input type="text" id="inpRoomWorkshop" class="setting-input-text" value="WORKSHOP ELEKTRO &amp; LAB HARDWARE">
+          </div>
+          <div>
+            <label style="font-size:11px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:4px;">7. Selasar / Parkir Operasional (MO)</label>
+            <input type="text" id="inpRoomSelasar" class="setting-input-text" value="SELASAR &amp; PARKIR OPERASIONAL">
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
+            <button type="button" onclick="resetAllRoomsToDefault()" style="background:rgba(239, 68, 68, 0.12); border:1px solid rgba(239, 68, 68, 0.35); color:#F87171; padding:8px 14px; border-radius:8px; cursor:pointer; font-weight:700; font-size:11px;">
+              <i class="fa-solid fa-rotate-left"></i> Reset Default
+            </button>
+            <div style="display:flex; gap:8px;">
+              <button type="button" onclick="closeEditRoomsModal()" style="background:#1E293B; border:1px solid #475569; color:#fff; padding:8px 16px; border-radius:8px; cursor:pointer; font-weight:700; font-size:11px;">Batal</button>
+              <button type="submit" style="background:linear-gradient(135deg, #10B981, #059669); border:none; color:#fff; padding:8px 18px; border-radius:8px; cursor:pointer; font-weight:800; font-size:11px;"><i class="fa-solid fa-floppy-disk"></i> Simpan Semua</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <script src="app.js"></script>
+  <script>
+    // =========================================================================
+    // A. LOGIKA DENAH RUANGAN INTERAKTIF DESAIN AZIZ (DRAGGABLE & EDITABLE PINS)
+    // =========================================================================
+    const DEFAULT_DENAH_PINS = [
+      // Denah Head Office (HO) - Gedung Atas Aziz
+      { id: "d1", code: "NET-SRV-01", name: "Server T-AIMS & Pi-hole", room: "Ruang Server HO", site: "HO", x: 20, y: 14, status: "online", icon: "fa-server", ip: "192.168.10.20", pic: "Ahmad Reza Fahmi" },
+      { id: "d2", code: "IOT-ESP-01", name: "ESP32 Panel Surya & RPi", room: "Lab IoT & Sensor", site: "HO", x: 20, y: 34, status: "online", icon: "fa-microchip", ip: "192.168.10.101", pic: "Ilvina Muvarika" },
+      { id: "d3", code: "PC-WS-01", name: "PC Workstation (Dika Yoga)", room: "Ruang Kerja Shift 1 & 2", site: "HO", x: 20, y: 55, status: "online", icon: "fa-desktop", ip: "192.168.10.41", pic: "Dika Yoga Pratama" },
+      { id: "d4", code: "NET-RTR-01", name: "MikroTik RB4011 & pfSense", room: "Ruang Admin & Network", site: "HO", x: 22, y: 80, status: "online", icon: "fa-network-wired", ip: "192.168.10.1", pic: "Ananda Dwi Susanti" },
+      { id: "d5", code: "PC-WS-02", name: "PC Admin & Smart TV Monitor", room: "Ruang Admin & Network", site: "HO", x: 34, y: 80, status: "warning", icon: "fa-tv", ip: "192.168.10.42", pic: "Ananda Dwi Susanti" },
+      { id: "d6", code: "NET-AP-01", name: "UniFi U6-Lite & PoE Switch", room: "Koridor Utama HO", site: "HO", x: 43, y: 45, status: "online", icon: "fa-wifi", ip: "192.168.10.11", pic: "Ananda Dwi Susanti" },
+      { id: "d7", code: "SEC-CCTV-01", name: "CCTV Gate & Teras HO", room: "Teras & Pilar Depan", site: "HO", x: 58, y: 78, status: "offline", icon: "fa-video", ip: "192.168.10.31", pic: "Ananda Dwi Susanti" },
+
+      // Denah Marketing Office (MO) - Gedung Bawah Aziz (Workshop & Selasar)
+      { id: "d8", code: "NET-SRV-02", name: "Server Backup & Switch Workshop", room: "Workshop Elektro & Lab HW", site: "MO", x: 52, y: 35, status: "online", icon: "fa-server", ip: "192.168.10.25", pic: "Reza Tri Wardana" },
+      { id: "d9", code: "NET-RTR-02", name: "Router Marketing Office", room: "Workshop Elektro & Lab HW", site: "MO", x: 52, y: 55, status: "warning", icon: "fa-wifi", ip: "192.168.10.2", pic: "Ahmad Reza Fahmi" },
+      { id: "d10", code: "WIFI-MO-03", name: "Sub-Router Lab AI MO", room: "Workshop Elektro & Lab HW", site: "MO", x: 52, y: 75, status: "online", icon: "fa-network-wired", ip: "192.168.10.3", pic: "Budi Santoso" },
+      { id: "d11", code: "SEC-CCTV-02", name: "CCTV Selasar & Parkir MO", room: "Selasar & Parkir Operasional", site: "MO", x: 18, y: 50, status: "online", icon: "fa-video", ip: "192.168.10.32", pic: "Ananda Dwi Susanti" }
+    ];
+
+    let denahPins = JSON.parse(localStorage.getItem('taims_denah_pins')) || JSON.parse(JSON.stringify(DEFAULT_DENAH_PINS));
+    let activeDenahSite = 'HO';
+    let isDenahEditMode = false;
+
+    function switchDenahSite(site) {
+      activeDenahSite = site;
+      document.getElementById('tabBtnDenahHO').classList.toggle('active', site === 'HO');
+      document.getElementById('tabBtnDenahMO').classList.toggle('active', site === 'MO');
+      document.getElementById('svgBlueprintHO').style.display = (site === 'HO') ? 'block' : 'none';
+      document.getElementById('svgBlueprintMO').style.display = (site === 'MO') ? 'block' : 'none';
+
+      const customImg = document.getElementById('customDenahImg');
+      customImg.src = (site === 'HO') ? 'denah-ho.png' : 'denah-mo.png';
+      renderDenahPins();
+    }
+
+    function renderDenahPins() {
+      const container = document.getElementById('denahPinsContainer');
+      const canvas = document.getElementById('denahCanvas');
+      if (!container || !canvas) return;
+      container.innerHTML = '';
+
+      const filtered = denahPins.filter(p => p.site === activeDenahSite);
+      filtered.forEach(pin => {
+        const el = document.createElement('div');
+        el.className = `denah-pin-node ${isDenahEditMode ? 'denah-pin-Editable' : ''}`;
+        el.style.left = `${pin.x}%`;
+        el.style.top = `${pin.y}%`;
+
+        const colorClass = pin.status === 'online' ? 'pin-online' : (pin.status === 'warning' ? 'pin-warning' : 'pin-offline');
+        el.innerHTML = `
+          <div class="denah-pin-circle ${colorClass}" title="${pin.name} (${pin.room})">
+            <i class="fa-solid ${pin.icon || 'fa-microchip'}"></i>
+          </div>
+          <span class="denah-pin-label">${pin.code}</span>
+        `;
+
+        // Jika mode edit aktif: izinkan drag & drop di atas kanvas denah
+        if (isDenahEditMode) {
+          el.onmousedown = function(ev) {
+            ev.preventDefault();
+            const rect = canvas.getBoundingClientRect();
+            function onMove(moveEv) {
+              let nx = ((moveEv.clientX - rect.left) / rect.width) * 100;
+              let ny = ((moveEv.clientY - rect.top) / rect.height) * 100;
+              nx = Math.max(4, Math.min(76, nx));
+              ny = Math.max(8, Math.min(92, ny));
+              pin.x = parseFloat(nx.toFixed(1));
+              pin.y = parseFloat(ny.toFixed(1));
+              el.style.left = `${pin.x}%`;
+              el.style.top = `${pin.y}%`;
+            }
+            function onUp() {
+              document.removeEventListener('mousemove', onMove);
+              document.removeEventListener('mouseup', onUp);
+            }
+            document.addEventListener('mousemove', onMove);
+            document.addEventListener('mouseup', onUp);
+          };
+
+          // Klik ganda pada titik untuk mengedit nama/ruangan/status
+          el.ondblclick = function() {
+            const newName = prompt("Edit Nama / Label Perangkat di Denah:", pin.name);
+            if (newName !== null && newName.trim() !== "") pin.name = newName.trim();
+            const newRoom = prompt("Edit Nama Ruangan:", pin.room);
+            if (newRoom !== null && newRoom.trim() !== "") pin.room = newRoom.trim();
+            const newStat = prompt("Edit Status (online / warning / offline):", pin.status);
+            if (newStat && ['online','warning','offline'].includes(newStat.toLowerCase())) {
+              pin.status = newStat.toLowerCase();
+            }
+            renderDenahPins();
+          };
+        } else {
+          el.onclick = function() {
+            openDetailDeviceModal(pin.code + ' - ' + pin.name, pin.ip, `${pin.site} (${pin.room})`, pin.status, `Posisi Denah X:${pin.x}%, Y:${pin.y}%`, pin.pic);
+          };
+        }
+
+        container.appendChild(el);
+      });
+    }
+
+    function toggleDenahEditMode() {
+      if (typeof isCurrentUserAdmin === 'function' && !isCurrentUserAdmin()) {
+        alert('Hanya Administrator yang dapat mengedit titik denah!');
+        return;
+      }
+      isDenahEditMode = !isDenahEditMode;
+      const btn = document.getElementById('btnDenahEditMode');
+      const notice = document.getElementById('denahNoticeBar');
+      if (isDenahEditMode) {
+        btn.classList.add('active');
+        btn.innerHTML = '<i class="fa-solid fa-lock-open"></i> Selesai Edit Denah';
+        notice.style.display = 'flex';
+      } else {
+        btn.classList.remove('active');
+        btn.innerHTML = '<i class="fa-solid fa-arrows-up-down-left-right"></i> Mode Edit Titik Denah (Admin)';
+        notice.style.display = 'none';
+      }
+      renderDenahPins();
+    }
+
+    function saveDenahPins() {
+      localStorage.setItem('taims_denah_pins', JSON.stringify(denahPins));
+      alert('✅ Posisi dan data titik perangkat pada Denah Ruangan berhasil disimpan permanen!');
+      if (isDenahEditMode) toggleDenahEditMode();
+    }
+
+    function resetDenahPins() {
+      if (confirm('Kembalikan semua titik pada denah ruangan ke posisi awal?')) {
+        localStorage.removeItem('taims_denah_pins');
+        denahPins = JSON.parse(JSON.stringify(DEFAULT_DENAH_PINS));
+        renderDenahPins();
+      }
+    }
+
+    function addNewPinToDenah() {
+      if (typeof isCurrentUserAdmin === 'function' && !isCurrentUserAdmin()) {
+        alert('Hanya Administrator yang dapat menambah titik denah!');
+        return;
+      }
+      const code = prompt("Masukkan Kode Perangkat Baru (contoh: SEC-CCTV-03):", "AST-NEW-01");
+      if (!code) return;
+      const name = prompt("Masukkan Nama Perangkat:", "Perangkat Baru");
+      const room = prompt("Masukkan Nama Ruangan:", activeDenahSite === 'HO' ? "Area Lab Utama" : "Ruang Marketing");
+      denahPins.push({
+        id: "d" + Date.now(),
+        code: code.toUpperCase(),
+        name: name || code,
+        room: room || "Ruang Utama",
+        site: activeDenahSite,
+        x: 40,
+        y: 50,
+        status: "online",
+        icon: "fa-microchip",
+        ip: "192.168.10.99",
+        pic: "Ahmad Reza Fahmi"
+      });
+      localStorage.setItem('taims_denah_pins', JSON.stringify(denahPins));
+      if (!isDenahEditMode) toggleDenahEditMode();
+      else renderDenahPins();
+    }
+
+    // =========================================================================
+    // B. LOGIKA PETA GEOSPASIAL GIS (ZOOM MO DINAMIS MENGIKUTI TITIK TERBARU)
+    // =========================================================================
+    const DEFAULT_DEVICES = [
+      { id: "1", name: "SEC-CCTV-01", ip: "192.168.10.31", loc: "Gerbang Depan HO", site: "HO (Jl. Cibodas No. 03)", lat: -8.07360, lng: 112.17320, status: "offline", icon: "fa-video", pic: "Ananda Dwi Susanti" },
+      { id: "2", name: "PC-WS-01", ip: "192.168.10.41", loc: "Workstation Dika Yoga", site: "HO (Jl. Cibodas No. 03)", lat: -8.07370, lng: 112.17330, status: "online", icon: "fa-desktop", pic: "Dika Yoga Pratama" },
+      { id: "3", name: "PC-WS-02", ip: "192.168.10.42", loc: "Workstation Admin", site: "HO (Jl. Cibodas No. 03)", lat: -8.07380, lng: 112.17335, status: "warning", icon: "fa-desktop", pic: "Ananda Dwi Susanti" },
+      { id: "4", name: "NET-RTR-01", ip: "192.168.10.1", loc: "Router Utama MikroTik", site: "HO (Jl. Cibodas No. 03)", lat: -8.07375, lng: 112.17345, status: "online", icon: "fa-wifi", pic: "Ananda Dwi Susanti" },
+      { id: "5", name: "IOT-ESP-01", ip: "192.168.10.101", loc: "ESP32 Panel Surya", site: "HO (Jl. Cibodas No. 03)", lat: -8.07390, lng: 112.17340, status: "online", icon: "fa-microchip", pic: "Ilvina Muvarika" },
+      { id: "6", name: "NET-SRV-01", ip: "192.168.10.20", loc: "Server Monitoring T-AIMS", site: "HO (Jl. Cibodas No. 03)", lat: -8.07385, lng: 112.17350, status: "online", icon: "fa-server", pic: "Ahmad Reza Fahmi" },
+
+      { id: "7", name: "SEC-CCTV-02", ip: "192.168.10.32", loc: "Lobi Depan MO", site: "MO (Kos Kiki, Jl. Ciliwung)", lat: -8.08620, lng: 112.16440, status: "online", icon: "fa-video", pic: "Ananda Dwi Susanti" },
+      { id: "8", name: "NET-RTR-02", ip: "192.168.10.2", loc: "Router Marketing Office", site: "MO (Kos Kiki, Jl. Ciliwung)", lat: -8.08630, lng: 112.16450, status: "warning", icon: "fa-wifi", pic: "Ahmad Reza Fahmi" },
+      { id: "9", name: "WIFI-MO-03", ip: "192.168.10.3", loc: "Sub-Router Lab AI", site: "MO (Kos Kiki, Jl. Ciliwung)", lat: -8.08640, lng: 112.16460, status: "online", icon: "fa-wifi", pic: "Budi Santoso" }
+    ];
+
+    let devicesData = JSON.parse(localStorage.getItem('taims_device_coords')) || JSON.parse(JSON.stringify(DEFAULT_DEVICES));
+    let isAdminDragMode = false;
+    const markersMap = {};
+    const buildingLayers = [];
+
+    // =========================================================================
+    // DATA BANGUNAN REAL-LIFE KOTA BLITAR (HEAD OFFICE, MARKETING OFFICE & SEKITAR)
+    // =========================================================================
+    const REAL_BUILDINGS = [
+      {
+        name: "PT TEKNOLAB CARAKA INTERNASIONAL (HEAD OFFICE)",
+        site: "HO",
+        category: "Gedung Pusat Operasional & Riset",
+        address: "Jl. Cibodas No. 03, Kel. Tanggung, Kec. Kepanjenkidul, Kota Blitar",
+        coords: [-8.07375, 112.17335],
+        polygon: [
+          [-8.07345, 112.17300],
+          [-8.07345, 112.17375],
+          [-8.07405, 112.17375],
+          [-8.07405, 112.17300]
+        ],
+        facilities: "Gedung Utama (Server T-AIMS, Lab IoT Sensor, Workstation Shift 1 & 2), Workshop Elektro, Pos Gate",
+        status: "Normal Operational",
+        color: "#2563EB",
+        icon: "fa-building"
+      },
+      {
+        name: "MARKETING OFFICE TEKNOLAB & R&D LAB (KOS KIKI)",
+        site: "MO",
+        category: "Gedung Kantor Pemasaran & RnD",
+        address: "Kos Kiki, Jl. Ciliwung No. 247, Kec. Sukorejo, Kota Blitar",
+        coords: [-8.08630, 112.16450],
+        polygon: [
+          [-8.08610, 112.16420],
+          [-8.08610, 112.16480],
+          [-8.08650, 112.16480],
+          [-8.08650, 112.16420]
+        ],
+        facilities: "Studio Live Streaming & Demo Produk Arduino Indonesia, Lab Edge AI, Sub-Router MikroTik",
+        status: "Normal Operational",
+        color: "#8B5CF6",
+        icon: "fa-briefcase"
+      },
+      {
+        name: "Kantor Kelurahan Tanggung",
+        site: "HO-Area",
+        category: "Fasilitas Pemerintahan & Publik",
+        address: "Jl. Borobudur No. 12, Kel. Tanggung, Kepanjenkidul, Blitar",
+        coords: [-8.07150, 112.17480],
+        facilities: "Pusat Pelayanan Wilayah Head Office Tekno Lab",
+        status: "Aktif",
+        color: "#10B981",
+        icon: "fa-landmark"
+      },
+      {
+        name: "Balai Pelatihan Vokasi & Elektronika",
+        site: "HO-Area",
+        category: "Pusat Vokasi Mitra Teknolab",
+        address: "Jl. Ciliwung Gang Melati, Tanggung, Blitar",
+        coords: [-8.07600, 112.17120],
+        facilities: "Laboratorium Perakitan Komponen & Mitra Kerja Magang PKL",
+        status: "Aktif",
+        color: "#F59E0B",
+        icon: "fa-graduation-cap"
+      },
+      {
+        name: "Trafo Distribusi PLN Ciliwung (Gardu Daya)",
+        site: "MO-Area",
+        category: "Infrastruktur Kelistrikan 3-Phase",
+        address: "Jl. Ciliwung, Sukorejo, Blitar",
+        coords: [-8.08200, 112.16700],
+        facilities: "Penyedia Pasokan Daya Utama Server T-AIMS & Workstation Teknolab",
+        status: "Grid Stabil (220V/380V)",
+        color: "#EF4444",
+        icon: "fa-bolt"
+      },
+      {
+        name: "Tower Pemancar ISP Backbone Fiber Optic",
+        site: "HO-MO",
+        category: "Infrastruktur Jaringan Uplink",
+        address: "Jl. Ciliwung No. 180, Blitar",
+        coords: [-8.07850, 112.16950],
+        facilities: "Tower Backbone Internet Fiber Optic Gigabit Teknolab Interkoneksi",
+        status: "Link Aktif (Ping 1-2 ms)",
+        color: "#06B6D4",
+        icon: "fa-tower-broadcast"
+      },
+      {
+        name: "Masjid Baiturrahim Jl. Ciliwung",
+        site: "MO-Area",
+        category: "Fasilitas Ibadah & Landmark",
+        address: "Jl. Ciliwung, Kepanjenkidul, Blitar",
+        coords: [-8.08450, 112.16520],
+        facilities: "Landmark Acuan Titik Menuju Marketing Office Teknolab",
+        status: "Terbuka",
+        color: "#10B981",
+        icon: "fa-mosque"
+      }
+    ];
+
+    // =========================================================================
+    // LAYER MAPS: GOOGLE MAPS DETAIL & GOOGLE SATELIT HYBRID (KOTA BLITAR & JATIM)
+    // =========================================================================
+    // Restriksi koordinat peta agar tidak bisa di-zoom/pan keluar Jawa Timur
+    const blitarJatimBounds = L.latLngBounds(
+      L.latLng(-8.4500, 111.9000), // South-West (Area Blitar / Jatim Selatan)
+      L.latLng(-7.9000, 112.4500)  // North-East (Area Blitar / Kediri / Malang)
+    );
+
+    const map = L.map('gis-map', {
+      scrollWheelZoom: true,
+      minZoom: 12,
+      maxZoom: 21,
+      maxBounds: blitarJatimBounds,
+      maxBoundsViscosity: 1.0
+    }).setView([-8.0800, 112.1690], 15);
+
+    const layerGoogleMap = L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+      attribution: '&copy; Google Maps',
+      maxZoom: 21
+    });
+
+    const layerGoogleSat = L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+      attribution: '&copy; Google Satellite Hybrid',
+      maxZoom: 21
+    });
+
+    // Default layer: Google Maps Detail
+    layerGoogleMap.addTo(map);
+    let currentTileLayer = layerGoogleMap;
+
+    function setMapLayer(type) {
+      map.removeLayer(currentTileLayer);
+      if (type === 'google_sat') {
+        currentTileLayer = layerGoogleSat;
+      } else {
+        currentTileLayer = layerGoogleMap;
+      }
+      currentTileLayer.addTo(map);
+
+      const btnMap = document.getElementById('btnLayerGoogleMap');
+      const btnSat = document.getElementById('btnLayerGoogleSat');
+      if (btnMap) btnMap.classList.toggle('active', type !== 'google_sat');
+      if (btnSat) btnSat.classList.toggle('active', type === 'google_sat');
+    }
+
+    // =========================================================================
+    // RENDER BANGUNAN REAL-LIFE KOTA BLITAR
+    // =========================================================================
+    function renderBuildings() {
+      buildingLayers.forEach(l => map.removeLayer(l));
+      buildingLayers.length = 0;
+
+      REAL_BUILDINGS.forEach(b => {
+        // 1. Gambar Poligon Perimeter jika tersedia
+        if (b.polygon) {
+          const poly = L.polygon(b.polygon, {
+            color: b.color,
+            weight: 2,
+            fillColor: b.color,
+            fillOpacity: 0.25,
+            dashArray: '4, 4'
+          }).addTo(map);
+
+          poly.bindTooltip(`<strong>${b.name}</strong><br><small>${b.category}</small>`, { sticky: true });
+          buildingLayers.push(poly);
+        }
+
+        // 2. Pasang Marker Ikon Bangunan
+        const bIcon = L.divIcon({
+          className: 'bldg-pin-wrapper',
+          html: `<div style="background:${b.color}; color:#fff; border-radius:8px; padding:5px 8px; font-size:10px; font-weight:800; display:inline-flex; align-items:center; gap:5px; box-shadow:0 3px 10px rgba(0,0,0,0.5); border:1.5px solid #fff; white-space:nowrap;">
+                  <i class="fa-solid ${b.icon}"></i> ${b.name}
+                 </div>`,
+          iconSize: [120, 26],
+          iconAnchor: [60, 13]
+        });
+
+        const bMarker = L.marker(b.coords, { icon: bIcon }).addTo(map);
+        const bldgPopup = `
+          <div class="popup-box" style="min-width:240px;">
+            <div style="font-size:10px; font-weight:800; color:${b.color}; text-transform:uppercase; margin-bottom:4px;">
+              <i class="fa-solid ${b.icon}"></i> ${b.category}
+            </div>
+            <h4 style="font-size:13px; margin:0 0 6px 0; color:#fff;">${b.name}</h4>
+            <p style="font-size:11px; color:#94A3B8; margin:0 0 8px 0;"><i class="fa-solid fa-location-dot" style="color:${b.color};"></i> ${b.address}</p>
+            <div style="background:#070B14; padding:8px 10px; border-radius:6px; font-size:10.5px; color:#E2E8F0; margin-bottom:6px;">
+              <strong>Fasilitas:</strong> ${b.facilities}
+            </div>
+            <span class="popup-badge online" style="font-size:10px;">● ${b.status}</span>
+          </div>
+        `;
+        bMarker.bindPopup(bldgPopup);
+        buildingLayers.push(bMarker);
+      });
+    }
+
+    function renderPins() {
+      Object.values(markersMap).forEach(m => map.removeLayer(m));
+
+      devicesData.forEach(d => {
+        const pinClass = d.status === "online" ? "pin-online" : (d.status === "warning" ? "pin-warning" : "pin-offline");
+        const dragClass = isAdminDragMode ? "pin-draggable-active" : "";
+
+        const customIcon = L.divIcon({
+          className: 'custom-pin-wrapper',
+          html: `<div class="custom-device-pin ${pinClass} ${dragClass}"><i class="fa-solid ${d.icon}"></i></div>`,
+          iconSize: [28, 28],
+          iconAnchor: [14, 14]
+        });
+
+        const marker = L.marker([d.lat, d.lng], {
+          icon: customIcon,
+          draggable: isAdminDragMode
+        }).addTo(map);
+
+        marker.on('dragend', function(e) {
+          const newPos = e.target.getLatLng();
+          d.lat = parseFloat(newPos.lat.toFixed(6));
+          d.lng = parseFloat(newPos.lng.toFixed(6));
+          updatePopup(marker, d);
+        });
+
+        updatePopup(marker, d);
+        markersMap[d.name] = marker;
+      });
+    }
+
+    function updatePopup(marker, d) {
+      const popupHtml = `
+        <div class="popup-box">
+          <h4>${d.name}</h4>
+          <small>${d.loc} • ${d.site}</small>
+          <span class="popup-badge ${d.status}">● ${d.status.toUpperCase()}</span>
+          <div style="font-size:10.5px;margin-top:6px;font-family:monospace;color:#2563EB;">IP: ${d.ip}</div>
+          <div style="font-size:10px;font-family:monospace;color:#64748B;">Lat/Lng: ${d.lat}, ${d.lng}</div>
+          <button class="btn-popup-view" onclick="openDetailDeviceModal('${d.name}', '${d.ip}', '${d.site}', '${d.status}', '${d.lat}, ${d.lng}', '${d.pic}')">Buka Telemetri</button>
+        </div>
+      `;
+      marker.bindPopup(popupHtml);
+    }
+
+    // ZOOM DINAMIS MENGIKUTI KOORDINAT TERBARU
+    function focusSite(site) {
+      const targetList = devicesData.filter(d =>
+        site === 'ho' ? d.site.startsWith('HO') : d.site.startsWith('MO')
+      );
+      if (targetList.length > 0) {
+        const bounds = L.latLngBounds(targetList.map(d => [d.lat, d.lng]));
+        map.flyToBounds(bounds, { padding: [55, 55], maxZoom: 18, animate: true, duration: 1.1 });
+        const mainName = site === 'ho' ? "NET-RTR-01" : "NET-RTR-02";
+        if (markersMap[mainName]) setTimeout(() => markersMap[mainName].openPopup(), 700);
+      }
+    }
+
+    function fitAll() {
+      const allBounds = L.latLngBounds(devicesData.map(d => [d.lat, d.lng]));
+      map.flyToBounds(allBounds, { padding: [50, 50], maxZoom: 15, animate: true, duration: 1.1 });
+    }
+
+    // NAVIGASI TITIK LANGSUNG & HALUS TANPA GETAR-GETAR
+    function flyToDevice(name) {
+      const d = devicesData.find(x => x.name === name);
+      if (d && markersMap[name]) {
+        map.setView([d.lat, d.lng], 19, { animate: true, duration: 0.45 });
+        markersMap[name].openPopup();
+      }
+    }
+
+    let searchDebounceTimer = null;
+    function searchAndFlyToDevice(keyword) {
+      clearTimeout(searchDebounceTimer);
+      searchDebounceTimer = setTimeout(() => {
+        const q = (keyword || "").toLowerCase().trim();
+        if (q.length < 2) return;
+        const match = devicesData.find(d => d.name.toLowerCase().includes(q) || d.ip.includes(q) || d.loc.toLowerCase().includes(q));
+        if (match && markersMap[match.name]) {
+          map.setView([match.lat, match.lng], 19, { animate: true, duration: 0.45 });
+          markersMap[match.name].openPopup();
+        }
+      }, 180);
+    }
+
+    function toggleAdminDragMode() {
+      if (typeof isCurrentUserAdmin === 'function' && !isCurrentUserAdmin()) {
+        alert('Hanya Administrator yang dapat mengubah titik koordinat peta!');
+        return;
+      }
+      isAdminDragMode = !isAdminDragMode;
+      const btn = document.getElementById('btnAdminMode');
+      const notice = document.getElementById('adminBarNotice');
+
+      if (isAdminDragMode) {
+        btn.classList.add('active');
+        btn.innerHTML = '<i class="fa-solid fa-lock-open"></i> Selesai Menggeser';
+        notice.style.display = 'flex';
+      } else {
+        btn.classList.remove('active');
+        btn.innerHTML = '<i class="fa-solid fa-arrows-up-down-left-right"></i> Mode Edit Titik Peta (Admin)';
+        notice.style.display = 'none';
+      }
+      renderPins();
+    }
+
+    function saveCoordinates() {
+      localStorage.setItem('taims_device_coords', JSON.stringify(devicesData));
+      alert('✅ Titik koordinat peta berhasil disimpan! Tombol Zoom HO / Zoom MO otomatis mengikuti posisi terbaru.');
+      if (isAdminDragMode) toggleAdminDragMode();
+    }
+
+    function resetDefaultCoordinates() {
+      if (confirm('Kembalikan semua titik peta ke koordinat awal?')) {
+        localStorage.removeItem('taims_device_coords');
+        devicesData = JSON.parse(JSON.stringify(DEFAULT_DEVICES));
+        renderPins();
+        fitAll();
+      }
+    }
+
+    function openDetailDeviceModal(name, ip, site, status, coords, pic) {
+      document.getElementById('m-code').innerText = name;
+      document.getElementById('m-name-sub').innerText = `${name} · ${site}`;
+      document.getElementById('m-ip').innerText = ip;
+      document.getElementById('m-loc').innerText = site;
+      document.getElementById('m-coord-text').innerText = coords;
+      document.getElementById('m-pic').innerText = pic;
+
+      const pill = document.getElementById('m-status-pill');
+      pill.className = `tag-status-pill ${status === 'online' ? 'online' : 'offline'}`;
+      pill.innerText = `● ${status.toUpperCase()}`;
+
+      document.getElementById('device-modal').style.display = 'flex';
+    }
+
+    function closeDetailModal() {
+      document.getElementById('device-modal').style.display = 'none';
+    }
+
+    // =========================================================================
+    // C. LOGIKA EDIT NAMA RUANGAN DENAH (SUPER ADMIN ONLY)
+    // =========================================================================
+    const DEFAULT_ROOM_NAMES = {
+      server: 'RUANG SERVER & NETWORK',
+      iot: 'LAB IOT & SENSOR ELEKTRO',
+      work: 'RUANG KERJA SHIFT 1 & 2',
+      admin: 'RUANG ADMIN & MONITORING',
+      logistik: 'GUDANG LOGISTIK & SPAREPART',
+      kanopi: 'TERAS & PILAR KANOPI',
+      workshop: 'WORKSHOP ELEKTRO & LAB HARDWARE',
+      selasar: 'SELASAR & PARKIR OPERASIONAL'
+    };
+
+    let currentEditingRoomKey = null;
+
+    function applyRoomNamesToDom(data) {
+      if (!data) return;
+      if (document.getElementById('txtRoomServer')) document.getElementById('txtRoomServer').textContent = data.server || DEFAULT_ROOM_NAMES.server;
+      if (document.getElementById('txtRoomIot')) document.getElementById('txtRoomIot').textContent = data.iot || DEFAULT_ROOM_NAMES.iot;
+      if (document.getElementById('txtRoomWork')) document.getElementById('txtRoomWork').textContent = data.work || DEFAULT_ROOM_NAMES.work;
+      if (document.getElementById('txtRoomAdmin')) document.getElementById('txtRoomAdmin').textContent = data.admin || DEFAULT_ROOM_NAMES.admin;
+      if (document.getElementById('txtRoomLogistik')) document.getElementById('txtRoomLogistik').textContent = data.logistik || DEFAULT_ROOM_NAMES.logistik;
+      if (document.getElementById('txtRoomKanopi')) document.getElementById('txtRoomKanopi').textContent = data.kanopi || DEFAULT_ROOM_NAMES.kanopi;
+      if (document.getElementById('txtRoomWorkshop')) document.getElementById('txtRoomWorkshop').textContent = data.workshop || DEFAULT_ROOM_NAMES.workshop;
+      if (document.getElementById('txtRoomSelasar')) document.getElementById('txtRoomSelasar').textContent = data.selasar || DEFAULT_ROOM_NAMES.selasar;
+
+      if (document.getElementById('kopRoomServer')) document.getElementById('kopRoomServer').textContent = '• ' + (data.server || DEFAULT_ROOM_NAMES.server);
+      if (document.getElementById('kopRoomIot')) document.getElementById('kopRoomIot').textContent = '• ' + (data.iot || DEFAULT_ROOM_NAMES.iot);
+      if (document.getElementById('kopRoomWork')) document.getElementById('kopRoomWork').textContent = '• ' + (data.work || DEFAULT_ROOM_NAMES.work);
+      if (document.getElementById('kopRoomAdmin')) document.getElementById('kopRoomAdmin').textContent = '• ' + (data.admin || DEFAULT_ROOM_NAMES.admin);
+      if (document.getElementById('kopRoomLogistik')) document.getElementById('kopRoomLogistik').textContent = '• ' + (data.logistik || DEFAULT_ROOM_NAMES.logistik);
+      if (document.getElementById('kopRoomKanopi')) document.getElementById('kopRoomKanopi').textContent = '• ' + (data.kanopi || DEFAULT_ROOM_NAMES.kanopi);
+      if (document.getElementById('kopRoomWorkshop')) document.getElementById('kopRoomWorkshop').textContent = '• ' + (data.workshop || DEFAULT_ROOM_NAMES.workshop);
+      if (document.getElementById('kopRoomSelasar')) document.getElementById('kopRoomSelasar').textContent = '• ' + (data.selasar || DEFAULT_ROOM_NAMES.selasar);
+
+      if (document.getElementById('inpRoomServer')) document.getElementById('inpRoomServer').value = data.server || DEFAULT_ROOM_NAMES.server;
+      if (document.getElementById('inpRoomIot')) document.getElementById('inpRoomIot').value = data.iot || DEFAULT_ROOM_NAMES.iot;
+      if (document.getElementById('inpRoomWork')) document.getElementById('inpRoomWork').value = data.work || DEFAULT_ROOM_NAMES.work;
+      if (document.getElementById('inpRoomAdmin')) document.getElementById('inpRoomAdmin').value = data.admin || DEFAULT_ROOM_NAMES.admin;
+      if (document.getElementById('inpRoomLogistik')) document.getElementById('inpRoomLogistik').value = data.logistik || DEFAULT_ROOM_NAMES.logistik;
+      if (document.getElementById('inpRoomWorkshop')) document.getElementById('inpRoomWorkshop').value = data.workshop || DEFAULT_ROOM_NAMES.workshop;
+      if (document.getElementById('inpRoomSelasar')) document.getElementById('inpRoomSelasar').value = data.selasar || DEFAULT_ROOM_NAMES.selasar;
+    }
+
+    function loadCustomRoomNames() {
+      const saved = JSON.parse(localStorage.getItem('taims_room_names')) || Object.assign({}, DEFAULT_ROOM_NAMES);
+      applyRoomNamesToDom(saved);
+    }
+
+    function openSingleRoomModal(roomKey, defaultLabel, site) {
+      const activeRole = localStorage.getItem('taims_user_role') || 'super_admin';
+      if (activeRole !== 'super_admin') {
+        alert('Mode Lihat: Hanya Super Administrator yang berhak mengubah nama ruangan denah blueprint.');
+        return;
+      }
+
+      currentEditingRoomKey = roomKey;
+      const saved = JSON.parse(localStorage.getItem('taims_room_names')) || Object.assign({}, DEFAULT_ROOM_NAMES);
+      const currentName = saved[roomKey] || defaultLabel || DEFAULT_ROOM_NAMES[roomKey] || 'Ruangan';
+
+      document.getElementById('srRoomLabel').innerText = currentName;
+      document.getElementById('srInputName').value = currentName;
+      document.getElementById('srSiteBadge').innerText = (site === 'HO') ? 'HEAD OFFICE (HO)' : 'MARKETING OFFICE (MO)';
+      document.getElementById('modalEditSingleRoom').style.display = 'flex';
+    }
+
+    function closeSingleRoomModal() {
+      document.getElementById('modalEditSingleRoom').style.display = 'none';
+      currentEditingRoomKey = null;
+    }
+
+    function saveSingleRoomName() {
+      if (!currentEditingRoomKey) return;
+      const newName = document.getElementById('srInputName').value.trim();
+      if (!newName) {
+        alert('Mohon ketik nama ruangan!');
+        return;
+      }
+
+      const saved = JSON.parse(localStorage.getItem('taims_room_names')) || Object.assign({}, DEFAULT_ROOM_NAMES);
+      saved[currentEditingRoomKey] = newName.toUpperCase();
+      localStorage.setItem('taims_room_names', JSON.stringify(saved));
+
+      applyRoomNamesToDom(saved);
+      closeSingleRoomModal();
+      alert(`✅ Nama ruangan berhasil diubah menjadi "${newName.toUpperCase()}" dan disimpan permanen!`);
+    }
+
+    function resetSingleRoomName() {
+      if (!currentEditingRoomKey) return;
+      const defName = DEFAULT_ROOM_NAMES[currentEditingRoomKey];
+      if (confirm(`Kembalikan nama ruangan ini ke setelan awal default:\n"${defName}"?`)) {
+        const saved = JSON.parse(localStorage.getItem('taims_room_names')) || Object.assign({}, DEFAULT_ROOM_NAMES);
+        saved[currentEditingRoomKey] = defName;
+        localStorage.setItem('taims_room_names', JSON.stringify(saved));
+
+        applyRoomNamesToDom(saved);
+        closeSingleRoomModal();
+        alert(`✅ Nama ruangan dikembalikan ke default: "${defName}"`);
+      }
+    }
+
+    function openEditRoomsModal() {
+      const activeRole = localStorage.getItem('taims_user_role') || 'super_admin';
+      if (activeRole !== 'super_admin') {
+        alert('Akses Ditolak: Fitur edit nama ruangan denah hanya dapat diakses oleh Super Admin!');
+        return;
+      }
+      document.getElementById('editRoomsModal').style.display = 'flex';
+    }
+
+    function closeEditRoomsModal() {
+      document.getElementById('editRoomsModal').style.display = 'none';
+    }
+
+    function saveCustomRoomNames(e) {
+      if (e) e.preventDefault();
+      const data = {
+        server: document.getElementById('inpRoomServer').value.trim() || DEFAULT_ROOM_NAMES.server,
+        iot: document.getElementById('inpRoomIot').value.trim() || DEFAULT_ROOM_NAMES.iot,
+        work: document.getElementById('inpRoomWork').value.trim() || DEFAULT_ROOM_NAMES.work,
+        admin: document.getElementById('inpRoomAdmin').value.trim() || DEFAULT_ROOM_NAMES.admin,
+        logistik: document.getElementById('inpRoomLogistik').value.trim() || DEFAULT_ROOM_NAMES.logistik,
+        kanopi: DEFAULT_ROOM_NAMES.kanopi,
+        workshop: document.getElementById('inpRoomWorkshop').value.trim() || DEFAULT_ROOM_NAMES.workshop,
+        selasar: document.getElementById('inpRoomSelasar').value.trim() || DEFAULT_ROOM_NAMES.selasar
+      };
+      localStorage.setItem('taims_room_names', JSON.stringify(data));
+      applyRoomNamesToDom(data);
+      closeEditRoomsModal();
+      alert('✅ Semua nama ruangan denah berhasil diperbarui dan disimpan secara permanen!');
+    }
+
+    function resetAllRoomsToDefault() {
+      if (confirm('Kembalikan semua nama ruangan denah arsitektur ke setelan awal?')) {
+        localStorage.removeItem('taims_room_names');
+        applyRoomNamesToDom(DEFAULT_ROOM_NAMES);
+        closeEditRoomsModal();
+        alert('✅ Seluruh nama ruangan dikembalikan ke default.');
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      loadCustomRoomNames();
+      renderDenahPins();
+      renderBuildings();
+      renderPins();
+    });
+  </script>
 </body>
 </html>
