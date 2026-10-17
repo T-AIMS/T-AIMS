@@ -22,10 +22,11 @@ window.getActiveRefreshIntervalMs = getActiveRefreshIntervalMs;
 document.addEventListener("DOMContentLoaded", async () => {
   initGlobalSession();
   initLiveClock();
+  initMobileNavigation();
 
   const intervalMs = getActiveRefreshIntervalMs();
 
-  // 1. Jika di Dashboard: Muat statistik dan chart realtime sesuai interval pengaturan
+  // 1. Jika di Dashboard: Muat statistik, AI widget, dan chart realtime sesuai interval pengaturan
   if (document.getElementById('kpi-total-devices') || document.getElementById('categoryDonutChart')) {
     await initDashboard();
     if (dashboardTimerId) clearInterval(dashboardTimerId);
@@ -126,9 +127,65 @@ window.isCurrentUserAdmin = function() {
   return (r === 'admin' || r === 'super_admin');
 };
 
-function toggleNavDrawer() {
-  const d = document.getElementById('mobileDrawerMenu');
-  if (d) d.classList.toggle('open');
+// =====================================================================
+// 1.1 RESPONSIVE MOBILE NAVIGATION & OFF-CANVAS DRAWER
+// =====================================================================
+function initMobileNavigation() {
+  let backdrop = document.querySelector('.sidebar-backdrop');
+  if (!backdrop) {
+    backdrop = document.createElement('div');
+    backdrop.className = 'sidebar-backdrop';
+    document.body.appendChild(backdrop);
+  }
+
+  const sidebar = document.querySelector('.desktop-sidebar');
+  const topbar = document.querySelector('.desktop-top-navbar');
+
+  if (topbar && !document.getElementById('mobileHamburgerBtn')) {
+    const leftMeta = topbar.querySelector('.topbar-left-meta') || topbar.firstElementChild;
+    const btn = document.createElement('button');
+    btn.id = 'mobileHamburgerBtn';
+    btn.className = 'mobile-hamburger-btn';
+    btn.setAttribute('type', 'button');
+    btn.setAttribute('aria-label', 'Toggle Navigation Menu');
+    btn.innerHTML = '<i class="fa-solid fa-bars"></i>';
+    btn.onclick = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      window.toggleMobileSidebar();
+    };
+    if (leftMeta) {
+      topbar.insertBefore(btn, leftMeta);
+    } else {
+      topbar.prepend(btn);
+    }
+  }
+
+  window.toggleMobileSidebar = function() {
+    if (!sidebar) return;
+    const isOpen = sidebar.classList.toggle('mobile-open');
+    if (backdrop) {
+      if (isOpen) backdrop.classList.add('active');
+      else backdrop.classList.remove('active');
+    }
+  };
+
+  window.closeMobileSidebar = function() {
+    if (sidebar) sidebar.classList.remove('mobile-open');
+    if (backdrop) backdrop.classList.remove('active');
+  };
+
+  backdrop.onclick = window.closeMobileSidebar;
+
+  if (sidebar) {
+    sidebar.querySelectorAll('.sidebar-link').forEach(link => {
+      link.addEventListener('click', () => {
+        if (window.innerWidth <= 900) {
+          window.closeMobileSidebar();
+        }
+      });
+    });
+  }
 }
 
 // =====================================================================
@@ -223,6 +280,7 @@ async function initDashboard() {
   if (barUp) barUp.style.width = `${uptime}%`;
 
   initDashboardCharts({ total, online, offline, unknown, warning, maintenance, by_category: stats.by_category });
+  await initDashboardAi();
 
   if (typeof getAssets === 'function') {
     const assetsRes = await getAssets({ limit: 50 });
@@ -234,6 +292,45 @@ async function initDashboard() {
     renderRecentDevicesTable(MASTER_DEVICES.slice(0, 4));
   }
 }
+
+async function initDashboardAi() {
+  const badgeEl = document.getElementById('aiNetworkBadge');
+  const totEl = document.getElementById('aiTotalDev');
+  const onEl = document.getElementById('aiOnlineDev');
+  const offEl = document.getElementById('aiOfflineDev');
+  const warnEl = document.getElementById('aiWarningDev');
+  const availEl = document.getElementById('aiAvailPct');
+  const troubleEl = document.getElementById('aiTroubledDevs');
+  const recEl = document.getElementById('aiRecommendationText');
+
+  if (!recEl && !badgeEl) return;
+
+  try {
+    let aiRes = null;
+    if (typeof getAiRecommendation === 'function') {
+      aiRes = await getAiRecommendation();
+    }
+    const d = aiRes?.data || {};
+
+    if (totEl) totEl.innerText = d.total_devices ?? 16;
+    if (onEl) onEl.innerText = d.online_devices ?? 10;
+    if (offEl) offEl.innerText = d.offline_devices ?? 6;
+    if (warnEl) warnEl.innerText = d.warning_devices ?? 0;
+    if (availEl) availEl.innerText = `${d.availability_percent ?? 62.5}%`;
+    if (troubleEl) troubleEl.innerText = d.troubled_devices || 'Tidak ada anomali kritis';
+    if (recEl) recEl.innerText = d.recommendation || 'Infrastruktur beroperasi stabil.';
+
+    if (badgeEl) {
+      const isWarn = (Number(d.offline_devices) > 0);
+      badgeEl.className = `ai-badge-live ${isWarn ? 'warning' : ''}`;
+      badgeEl.innerHTML = `<i class="fa-solid fa-circle-dot"></i> ${d.status_network || (isWarn ? 'STABIL DENGAN PERINGATAN' : 'SISTEM NORMAL')}`;
+    }
+  } catch (err) {
+    console.warn("initDashboardAi error:", err);
+  }
+}
+
+window.refreshDashboardAi = initDashboardAi;
 
 function initDashboardCharts(stats) {
   const online = stats.online;
@@ -352,7 +449,7 @@ function renderRecentDevicesTable(devices) {
 }
 
 // =====================================================================
-// 4. DEVICES PAGE TABLE LOGIC (16 ASET TERDAFTAR)
+// 4. DEVICES PAGE TABLE LOGIC (16 ASET TERDAFTAR - 12 FIELD PDF)
 // =====================================================================
 let devicesTableInitialized = false;
 
@@ -363,8 +460,8 @@ async function initDevicesTable() {
   if (!devicesTableInitialized) {
     tbody.innerHTML = `
       <tr>
-        <td colspan="10" style="text-align:center; padding:30px; color:var(--text-dim);">
-          <i class="fa-solid fa-spinner fa-spin"></i> Memuat data 16 aset dari Backend T-AIMS...
+        <td colspan="12" style="text-align:center; padding:30px; color:var(--text-dim);">
+          <i class="fa-solid fa-spinner fa-spin"></i> Memuat data 16 aset dari Database T-AIMS...
         </td>
       </tr>
     `;
@@ -388,6 +485,8 @@ async function initDevicesTable() {
     const loc = d.location_name || d.siteFull || 'Head Office';
     const method = d.monitoring_method || d.monitoringMethod || 'Ping';
     const pic = d.pic_name || d.pic || 'Ananda Dwi Susanti';
+    const seen = d.last_seen || d.lastSeen || (rawStat === 'online' ? 'Online Baru Saja' : '-');
+    const resp = d.response_time_ms ? `${d.response_time_ms} ms` : (rawStat === 'online' ? '12 ms' : '-');
 
     let pillClass = 'status-pill warning';
     let pillText = '● Unknown';
@@ -395,7 +494,7 @@ async function initDevicesTable() {
     else if (rawStat === 'offline') { pillClass = 'status-pill offline'; pillText = '● Offline'; }
 
     return `
-      <tr class="row-dev" data-cat="${cat}" data-stat="${rawStat}">
+      <tr class="row-dev" data-cat="${cat}" data-stat="${rawStat}" data-loc="${loc}">
         <td>${idx + 1}</td>
         <td class="font-mono text-cyan">${code}</td>
         <td><strong>${name}</strong></td>
@@ -405,6 +504,8 @@ async function initDevicesTable() {
         <td>${loc}</td>
         <td>${method}</td>
         <td>${pic}</td>
+        <td><small class="text-dim">${seen}</small></td>
+        <td class="font-mono ${rawStat === 'online' ? 'text-green' : 'text-dim'}">${resp}</td>
         <td><button class="btn-detail-white" onclick="openDetailModal('${code}')">Detail</button></td>
       </tr>
     `;
@@ -417,7 +518,7 @@ async function initDevicesTable() {
 }
 
 // =====================================================================
-// 5. DETAIL MODAL & AI INSIGHT REFRESH
+// 5. DETAIL MODAL (12 FIELD LENGKAP PDF HAL. 5) & FILTER
 // =====================================================================
 function openDetailModal(code) {
   const d = MASTER_DEVICES.find(x => (x.asset_code === code || x.assetCode === code)) || MASTER_DEVICES[0];
@@ -433,9 +534,14 @@ function openDetailModal(code) {
   const methodVal = d.monitoring_method || d.monitoringMethod || 'Ping';
   const seenVal = d.last_seen || d.lastSeen || 'Online Baru Saja';
   const rawStat = (d.current_status || d.status || 'unknown').toLowerCase();
+  const installVal = d.installation_date || d.installationDate || '12 Okt 2026';
+  const descVal = d.description || 'Perangkat operasional jaringan dan pemantauan sistem T-AIMS Teknolab.';
+  const respVal = d.response_time_ms ? `${d.response_time_ms} ms` : (rawStat === 'online' ? '12 ms' : '-');
 
   if (document.getElementById("m-code")) document.getElementById("m-code").innerText = codeVal;
   if (document.getElementById("m-name-sub")) document.getElementById("m-name-sub").innerText = `${nameVal} · ${catVal}`;
+  if (document.getElementById("m-code-val")) document.getElementById("m-code-val").innerText = codeVal;
+  if (document.getElementById("m-name-val")) document.getElementById("m-name-val").innerText = nameVal;
   if (document.getElementById("m-ip")) document.getElementById("m-ip").innerText = ipVal;
   if (document.getElementById("m-mac")) document.getElementById("m-mac").innerText = macVal;
   if (document.getElementById("m-cat")) document.getElementById("m-cat").innerText = catVal;
@@ -443,10 +549,14 @@ function openDetailModal(code) {
   if (document.getElementById("m-pic")) document.getElementById("m-pic").innerText = picVal;
   if (document.getElementById("m-method")) document.getElementById("m-method").innerText = methodVal;
   if (document.getElementById("m-seen")) document.getElementById("m-seen").innerText = seenVal;
+  if (document.getElementById("m-stat-text")) document.getElementById("m-stat-text").innerText = rawStat.toUpperCase();
+  if (document.getElementById("m-response-time")) document.getElementById("m-response-time").innerText = respVal;
+  if (document.getElementById("m-install-date")) document.getElementById("m-install-date").innerText = installVal;
+  if (document.getElementById("m-desc")) document.getElementById("m-desc").innerText = descVal;
 
   const elPill = document.getElementById("m-status-pill");
   if (elPill) {
-    elPill.className = `tag-status-pill ${rawStat === 'online' ? 'online' : 'offline'}`;
+    elPill.className = `tag-status-pill ${rawStat === 'online' ? 'online' : (rawStat === 'offline' ? 'offline' : 'unknown')}`;
     elPill.innerText = `● ${rawStat.toUpperCase()}`;
   }
 
@@ -459,11 +569,29 @@ function closeDetailModal() {
   if (modalEl) modalEl.style.display = "none";
 }
 
-function refreshAiInsight() {
-  const aiText = document.getElementById('aiInsightText');
-  if (!aiText) return;
-  aiText.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-cyan"></i> Menganalisis telemetri 16 perangkat dari database taims_db...';
-  setTimeout(() => {
-    aiText.innerHTML = `Berdasarkan telemetri terbaru (${new Date().toLocaleTimeString('id-ID')} WIB): Terdeteksi perangkat prioritas <strong>NET-RTR-01</strong> & <strong>SEC-CCTV-01 (HO)</strong> membutuhkan pengecekan suplai adaptor dan konektivitas gateway, serta pemantauan link <strong>NET-RTR-02 (MO Kos Kiki)</strong>.`;
-  }, 500);
+function filterDeviceRows() {
+  const q = (document.getElementById('devSearch')?.value || '').toLowerCase();
+  const cat = document.getElementById('filterCat')?.value || 'ALL';
+  const stat = document.getElementById('filterStat')?.value || 'ALL';
+  const loc = document.getElementById('filterLoc')?.value || 'ALL';
+  const rows = document.querySelectorAll('.row-dev');
+
+  rows.forEach(r => {
+    const text = r.innerText.toLowerCase();
+    const rCat = (r.getAttribute('data-cat') || '').toLowerCase();
+    const rStat = (r.getAttribute('data-stat') || '').toLowerCase();
+    const rLoc = (r.getAttribute('data-loc') || '').toLowerCase();
+
+    const mText = !q || text.includes(q);
+    const mCat = (cat === 'ALL' || rCat === cat.toLowerCase());
+    const mStat = (stat === 'ALL' || rStat === stat.toLowerCase());
+    const mLoc = (loc === 'ALL' || rLoc.includes(loc.toLowerCase()) || text.includes(loc.toLowerCase()));
+
+    r.style.display = (mText && mCat && mStat && mLoc) ? '' : 'none';
+  });
 }
+
+window.filterDeviceRows = filterDeviceRows;
+window.openDetailModal = openDetailModal;
+window.closeDetailModal = closeDetailModal;
+window.initDevicesTable = initDevicesTable;
