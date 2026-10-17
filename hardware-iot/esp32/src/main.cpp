@@ -20,6 +20,8 @@ const char* WIFI_PASSWORD   = CONFIG_WIFI_PASS;
 
 const char* MQTT_BROKER     = CONFIG_MQTT_HOST;
 const int   MQTT_PORT       = CONFIG_MQTT_PORT;
+const char* MQTT_USER       = CONFIG_MQTT_USER;
+const char* MQTT_PASS       = CONFIG_MQTT_PASS;
 
 const char* DEVICE_ID       = CONFIG_DEVICE_ID;
 const char* MQTT_TOPIC      = CONFIG_TOPIC_HEARTBEAT;
@@ -68,17 +70,32 @@ void connectMQTT() {
   while (!mqttClient.connected()) {
     Serial.print("[MQTT] Connecting... ");
 
-    // LWT di-set di parameter connect()
-    if (mqttClient.connect(
-        DEVICE_ID,                                              // clientId
-        NULL,                                                   // username
-        NULL,                                                   // password
-        MQTT_TOPIC,                                             // willTopic
-        1,                                                      // willQoS
-        false,                                                  // willRetain
-        "{\"status\":\"offline\",\"reason\":\"connection_lost\"}", // willMessage
-        true                                                    // cleanSession
-    )) {
+    bool ok;
+    if (MQTT_USER != NULL && strlen(MQTT_USER) > 0) {
+      ok = mqttClient.connect(
+          DEVICE_ID,
+          MQTT_USER,
+          MQTT_PASS,
+          MQTT_TOPIC,
+          1,
+          false,
+          "{\"status\":\"offline\",\"reason\":\"connection_lost\"}",
+          true
+      );
+    } else {
+      ok = mqttClient.connect(
+          DEVICE_ID,
+          NULL,
+          NULL,
+          MQTT_TOPIC,
+          1,
+          false,
+          "{\"status\":\"offline\",\"reason\":\"connection_lost\"}",
+          true
+      );
+    }
+
+    if (ok) {
       Serial.println("OK!");
     } else {
       Serial.print("FAILED, rc=");

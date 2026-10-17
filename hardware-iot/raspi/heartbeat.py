@@ -68,6 +68,7 @@ print(f"   Topic   : {TOPIC}")
 print(f"   Interval: {INTERVAL}s")
 print("-" * 45)
 
+client.reconnect_delay_set(min_delay=1, max_delay=10)
 client.connect(MQTT_HOST, MQTT_PORT, 60)
 client.loop_start()
 
