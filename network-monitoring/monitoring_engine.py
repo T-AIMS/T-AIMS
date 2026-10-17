@@ -115,48 +115,48 @@ def send_to_backend(device_name, status, response_time_ms):
 # FUNGSI PING (CROSS-PLATFORM LINUX & WINDOWS)
 # ==========================================
 
-def check_device(ip):
-    start_time = time.perf_counter()
+def check_device(ip, retries=3, delay=1):
     is_windows = platform.system().lower() == "windows"
 
     # Perintah ping adaptif sesuai OS
     if is_windows:
-        cmd = ["ping", "-n", "1", "-w", "2000", ip]
+        cmd = ["ping", "-n", "1", "-w", "1500", ip]
     else:
-        cmd = ["ping", "-c", "1", "-W", "2", ip]
+        cmd = ["ping", "-c", "1", "-W", "1", ip]
 
-    try:
-        result = subprocess.run(
-            cmd,
-            capture_output=True,
-            text=True,
-            timeout=4
-        )
+    for attempt in range(1, retries + 1):
+        start_time = time.perf_counter()
+        print(f"  [+] Percobaan {attempt}/{retries} memeriksa {ip}...")
 
-        elapsed_ms = round(
-            (time.perf_counter() - start_time) * 1000,
-            2
-        )
+        try:
+            result = subprocess.run(
+                cmd,
+                capture_output=True,
+                text=True,
+                timeout=2.5
+            )
 
-        # Deteksi balasan ping sukses
-        stdout_upper = result.stdout.upper()
-        if result.returncode == 0 and ("TTL=" in stdout_upper or "BYTES FROM" in stdout_upper):
-            status = "ONLINE"
-            response_time_ms = elapsed_ms
-        else:
-            status = "OFFLINE"
-            response_time_ms = None
+            elapsed_ms = round(
+                (time.perf_counter() - start_time) * 1000,
+                2
+            )
 
-    except subprocess.TimeoutExpired:
-        status = "OFFLINE"
-        response_time_ms = None
+            # Deteksi balasan ping sukses
+            stdout_upper = result.stdout.upper()
+            if result.returncode == 0 and ("TTL=" in stdout_upper or "BYTES FROM" in stdout_upper):
+                print(f"  [✓] Percobaan {attempt} berhasil: ONLINE ({elapsed_ms} ms)")
+                return "ONLINE", elapsed_ms
 
-    except Exception as error:
-        status = "ERROR"
-        response_time_ms = None
-        print(f"Kesalahan saat memeriksa {ip}: {error}")
+        except subprocess.TimeoutExpired:
+            print(f"  [-] Percobaan {attempt} batas waktu (timeout)")
+        except Exception as error:
+            print(f"  [!] Percobaan {attempt} error: {error}")
 
-    return status, response_time_ms
+        if attempt < retries:
+            time.sleep(delay)
+
+    print(f"  [x] Seluruh {retries} percobaan gagal -> OFFLINE")
+    return "OFFLINE", None
 
 
 # ==========================================
