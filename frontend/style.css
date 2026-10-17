@@ -2465,7 +2465,7 @@ body {
   }
 
   .kpi-grid {
-    grid-template-columns: repeat(5, 1fr) !important;
+    grid-template-columns: repeat(6, 1fr) !important;
     gap: 10px;
     margin-bottom: 0.75rem;
   }
@@ -2590,4 +2590,162 @@ body {
 
 .leaflet-tile {
     filter: brightness(0.9) contrast(1.1) !important;
+}
+
+
+/* ==========================================================================
+   VIVID HUD ENHANCEMENTS: GLOWING ICONS, THICK DONUT, CRISP ONLINE STATUS,
+   AND FULL-BOTTOM VIEWPORT EXTENSION (NO EMPTY BLACK VOID AT BOTTOM)
+   ========================================================================== */
+.main-content {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.content-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 0.75rem 1.4rem 0.6rem 1.4rem !important;
+}
+
+#page-dashboard.page-view.active {
+    flex: 1;
+    display: flex !important;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.maintenance-section {
+    margin-top: auto !important;
+    margin-bottom: 0 !important;
+    padding: 10px 18px !important;
+    background: rgba(13, 22, 41, 0.85) !important;
+    border: 1px solid rgba(225, 29, 72, 0.25) !important;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* 6 KPI GRID PROPORTION */
+.kpi-grid {
+    display: grid !important;
+    grid-template-columns: repeat(6, 1fr) !important;
+    gap: 10px !important;
+    margin-bottom: 0.75rem !important;
+}
+
+/* VIBRANT STATUS PILL: NOT PALE, CRISP & GLOWING */
+.status-pill.online {
+    background: rgba(16, 185, 129, 0.22) !important;
+    border: 1px solid rgba(16, 185, 129, 0.7) !important;
+    color: #10B981 !important;
+    font-weight: 700 !important;
+    padding: 4px 10px !important;
+    border-radius: 9999px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.3) !important;
+}
+
+.status-pill.online .dot.green,
+.dot.green.pulse,
+.pulse-led.online {
+    background: #10B981 !important;
+    box-shadow: 0 0 8px #10B981, 0 0 14px #10B981 !important;
+}
+
+.status-pill.warning {
+    background: rgba(245, 158, 11, 0.22) !important;
+    border: 1px solid rgba(245, 158, 11, 0.7) !important;
+    color: #F59E0B !important;
+    font-weight: 700 !important;
+    box-shadow: 0 0 10px rgba(245, 158, 11, 0.3) !important;
+}
+
+.status-pill.offline {
+    background: rgba(239, 68, 68, 0.22) !important;
+    border: 1px solid rgba(239, 68, 68, 0.7) !important;
+    color: #EF4444 !important;
+    font-weight: 700 !important;
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.3) !important;
+}
+
+/* VIBRANT GLOWING MAINTENANCE ICON BOXES */
+.m-icon.bg-blue {
+    background: rgba(2, 132, 199, 0.25) !important;
+    border: 1px solid rgba(56, 189, 248, 0.6) !important;
+    color: #38BDF8 !important;
+    box-shadow: 0 0 12px rgba(2, 132, 199, 0.4) !important;
+}
+
+.m-icon.bg-amber {
+    background: rgba(245, 158, 11, 0.25) !important;
+    border: 1px solid rgba(251, 191, 36, 0.6) !important;
+    color: #FBBF24 !important;
+    box-shadow: 0 0 12px rgba(245, 158, 11, 0.4) !important;
+}
+
+.m-icon.bg-red {
+    background: rgba(239, 68, 68, 0.25) !important;
+    border: 1px solid rgba(248, 113, 113, 0.6) !important;
+    color: #F87171 !important;
+    box-shadow: 0 0 12px rgba(239, 68, 68, 0.4) !important;
+}
+
+.m-icon.bg-green {
+    background: rgba(16, 185, 129, 0.25) !important;
+    border: 1px solid rgba(52, 211, 153, 0.6) !important;
+    color: #34D399 !important;
+    box-shadow: 0 0 12px rgba(16, 185, 129, 0.4) !important;
+}
+
+/* DONUT CHART SHIFTED LEFT & RICH LEGEND FILLING RIGHT */
+.donut-body {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 22px !important;
+    padding: 8px 16px !important;
+}
+
+.donut-visual-wrap {
+    width: 145px !important;
+    height: 145px !important;
+    flex-shrink: 0 !important;
+    margin-left: 4px !important;
+}
+
+.donut-legend-col {
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 5px !important;
+}
+
+.d-leg-row {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 3px 6px !important;
+    border-radius: 4px !important;
+    background: rgba(255, 255, 255, 0.02) !important;
+}
+
+.d-leg-name {
+    font-size: 0.8rem !important;
+    color: #E2E8F0 !important;
+    font-weight: 600 !important;
+}
+
+.d-leg-val strong {
+    color: #FFFFFF !important;
+    font-size: 0.85rem !important;
+}
+
+.d-leg-val small {
+    color: var(--cyan-dim) !important;
+    font-weight: 600 !important;
+    margin-left: 4px !important;
 }

@@ -62,14 +62,14 @@ const APP_STATE = {
     activeCoord: { lat: -8.0988, lng: 112.1652 },
 
     // Database Perangkat Berfokus pada Wilayah Kota & Kabupaten Blitar (Jawa Timur)
-    devices: [
+        devices: [
         {
             id: 'DEV-001',
             code: 'NET-SRV-01',
-            name: 'SRV-DC-01 (T-AIMS Server)',
+            name: 'SRV-DC-01',
             category: 'Server',
             district: 'Kepanjenkidul',
-            location: 'Pusat Data HO - Jl. Cibodas No. 03, Blitar',
+            location: 'Pusat Data HO',
             lat: -8.07385,
             lng: 112.17350,
             ip: '192.168.10.20',
@@ -88,10 +88,10 @@ const APP_STATE = {
         {
             id: 'DEV-002',
             code: 'NET-RTR-01',
-            name: 'SW-Core-01 & MikroTik RB4011',
+            name: 'SW-Core-01',
             category: 'Network Device',
             district: 'Kepanjenkidul',
-            location: 'Area Lab Utama HO - Jl. Cibodas No. 03, Blitar',
+            location: 'Area Lab Utama HO',
             lat: -8.07375,
             lng: 112.17345,
             ip: '192.168.10.1',
@@ -110,10 +110,10 @@ const APP_STATE = {
         {
             id: 'DEV-003',
             code: 'SEC-CCTV-01',
-            name: 'CCTV-HO-01 (Gerbang Depan)',
+            name: 'CCTV-HO-01',
             category: 'CCTV & Security',
             district: 'Kepanjenkidul',
-            location: 'Gerbang Utama HO - Jl. Cibodas No. 03, Blitar',
+            location: 'Gerbang Depan HO',
             lat: -8.07360,
             lng: 112.17320,
             ip: '192.168.10.31',
@@ -132,10 +132,10 @@ const APP_STATE = {
         {
             id: 'DEV-004',
             code: 'NET-AP-01',
-            name: 'AP-LB-01 (UniFi 6-Lite)',
+            name: 'AP-LB-01',
             category: 'Network Device',
             district: 'Kepanjenkidul',
-            location: 'Koridor Lab HO - Jl. Cibodas No. 03, Blitar',
+            location: 'Koridor Lab HO',
             lat: -8.07380,
             lng: 112.17330,
             ip: '192.168.10.11',
@@ -154,10 +154,10 @@ const APP_STATE = {
         {
             id: 'DEV-005',
             code: 'SRV-APP-01',
-            name: 'SRV-APP-02 (API Backend)',
+            name: 'SRV-APP-02',
             category: 'Server',
             district: 'Kepanjenkidul',
-            location: 'Data Center Rack 02 HO - Jl. Cibodas',
+            location: 'Data Center HO',
             lat: -8.07385,
             lng: 112.17355,
             ip: '192.168.10.5',
@@ -176,10 +176,10 @@ const APP_STATE = {
         {
             id: 'DEV-006',
             code: 'NET-RTR-02',
-            name: 'Router-MO-02 (Marketing Office)',
+            name: 'Router-MO-02',
             category: 'Network Device',
             district: 'Sananwetan',
-            location: 'Ruang Marketing - Jl. Ciliwung MO, Blitar',
+            location: 'Ruang Marketing MO',
             lat: -8.08630,
             lng: 112.16450,
             ip: '192.168.10.2',
@@ -198,10 +198,10 @@ const APP_STATE = {
         {
             id: 'DEV-007',
             code: 'IOT-ESP-01',
-            name: 'ESP32 Panel Surya & Inverter',
+            name: 'ESP32-Surya-01',
             category: 'IoT Sensor',
             district: 'Kepanjenkidul',
-            location: 'Ruang Server HO - Jl. Cibodas No. 03',
+            location: 'Ruang Server HO',
             lat: -8.07390,
             lng: 112.17340,
             ip: '192.168.10.101',
@@ -220,10 +220,10 @@ const APP_STATE = {
         {
             id: 'DEV-008',
             code: 'IOT-ENV-02',
-            name: 'ESP32 Sensor Suhu & AC',
+            name: 'ESP32-Suhu-02',
             category: 'IoT Sensor',
             district: 'Kepanjenkidul',
-            location: 'Ruang Server Rack HO - Jl. Cibodas',
+            location: 'Ruang Server HO',
             lat: -8.07390,
             lng: 112.17345,
             ip: '192.168.10.102',
@@ -242,10 +242,10 @@ const APP_STATE = {
         {
             id: 'DEV-009',
             code: 'SEC-CCTV-02',
-            name: 'CCTV-MO-02 (Lobi Depan)',
+            name: 'CCTV-MO-02',
             category: 'CCTV & Security',
             district: 'Sananwetan',
-            location: 'Lobi Depan MO - Jl. Ciliwung, Blitar',
+            location: 'Lobi Depan MO',
             lat: -8.08620,
             lng: 112.16440,
             ip: '192.168.10.32',
@@ -264,10 +264,10 @@ const APP_STATE = {
         {
             id: 'DEV-010',
             code: 'PC-WS-01',
-            name: 'PC-Lead-Dika (Workstation)',
+            name: 'PC-Lead-01',
             category: 'Workstation',
             district: 'Kepanjenkidul',
-            location: 'Ruang Kerja 1 HO - Jl. Cibodas',
+            location: 'Ruang Kerja 1 HO',
             lat: -8.07370,
             lng: 112.17330,
             ip: '192.168.10.41',
@@ -286,10 +286,10 @@ const APP_STATE = {
         {
             id: 'DEV-011',
             code: 'PC-WS-02',
-            name: 'PC-Admin-Ananda (Workstation)',
+            name: 'PC-Admin-02',
             category: 'Workstation',
             district: 'Kepanjenkidul',
-            location: 'Ruang Admin HO - Jl. Cibodas',
+            location: 'Ruang Admin HO',
             lat: -8.07380,
             lng: 112.17335,
             ip: '192.168.10.42',
@@ -308,10 +308,10 @@ const APP_STATE = {
         {
             id: 'DEV-012',
             code: 'PC-DEV-03',
-            name: 'PC-Dev-Budi (Lab AI MO)',
+            name: 'PC-Dev-03',
             category: 'Workstation',
             district: 'Sananwetan',
-            location: 'Ruang Lab AI MO - Jl. Ciliwung',
+            location: 'Ruang Lab AI MO',
             lat: -8.08640,
             lng: 112.16460,
             ip: '192.168.10.40',
@@ -330,10 +330,10 @@ const APP_STATE = {
         {
             id: 'DEV-013',
             code: 'SRV-DB-01',
-            name: 'SRV-DB-01 (MySQL Master)',
+            name: 'SRV-DB-01',
             category: 'Server',
             district: 'Kepanjenkidul',
-            location: 'Ruang Server HO - Jl. Cibodas',
+            location: 'Ruang Server HO',
             lat: -8.07385,
             lng: 112.17350,
             ip: '192.168.10.30',
@@ -352,10 +352,10 @@ const APP_STATE = {
         {
             id: 'DEV-014',
             code: 'SRV-DC-02',
-            name: 'SRV-NAS-02 (Storage Backup)',
+            name: 'SRV-NAS-02',
             category: 'Server',
             district: 'Kepanjenkidul',
-            location: 'Ruang Server HO - Jl. Cibodas',
+            location: 'Ruang Server HO',
             lat: -8.07385,
             lng: 112.17360,
             ip: '192.168.10.254',
@@ -374,10 +374,10 @@ const APP_STATE = {
         {
             id: 'DEV-015',
             code: 'SW-CORE-01',
-            name: 'SW-Managed-Core 24P',
+            name: 'SW-Managed-01',
             category: 'Network Device',
             district: 'Kepanjenkidul',
-            location: 'Rack Panel HO - Jl. Cibodas',
+            location: 'Rack Panel HO',
             lat: -8.07375,
             lng: 112.17345,
             ip: '192.168.10.4',
@@ -396,10 +396,10 @@ const APP_STATE = {
         {
             id: 'DEV-016',
             code: 'WIFI-MO-03',
-            name: 'WIFI-MO-Gateway (Sub-Router)',
+            name: 'WIFI-MO-03',
             category: 'Lainnya',
             district: 'Sananwetan',
-            location: 'Ruang Divisi MO - Jl. Ciliwung',
+            location: 'Ruang Divisi MO',
             lat: -8.08640,
             lng: 112.16460,
             ip: '192.168.10.3',
@@ -418,47 +418,12 @@ const APP_STATE = {
     ],
 
     // Riwayat Insiden & Notifikasi (Fokus Wilayah Blitar)
-    alerts: [
-        {
-            id: 'ALT-101',
-            time: '14:22',
-            title: 'Perangkat CCTV-BLT-01 tidak merespons (Offline)',
-            location: 'Pos Pantau Gerbang - Kepanjenkidul, Blitar',
-            level: 'kritis',
-            read: false
-        },
-        {
-            id: 'ALT-102',
-            time: '13:48',
-            title: 'CPU usage tinggi (92%) pada SRV-APP-02',
-            location: 'Bendogerit - Sananwetan, Blitar',
-            level: 'peringatan',
-            read: false
-        },
-        {
-            id: 'ALT-103',
-            time: '11:24',
-            title: 'Latensi link wireless tinggi (>145ms) pada AP-KNG-01',
-            location: 'Pusat Pemkab - Kanigoro, Blitar',
-            level: 'peringatan',
-            read: false
-        },
-        {
-            id: 'ALT-104',
-            time: '10:17',
-            title: 'Suhu ruang server melebihi ambang batas (32.8°C)',
-            location: 'Server Room - Sukorejo, Blitar',
-            level: 'peringatan',
-            read: false
-        },
-        {
-            id: 'ALT-105',
-            time: '09:03',
-            title: 'Daya cadangan baterai UPS rendah (22%)',
-            location: 'Pusat Data Teknolab - Jl. Merdeka, Blitar',
-            level: 'peringatan',
-            read: false
-        }
+        alerts: [
+        { id: 'ALT-101', time: '14:22', title: 'CCTV-HO-01 Offline', location: 'Gerbang Depan HO', level: 'kritis', read: false },
+        { id: 'ALT-102', time: '13:48', title: 'CPU Tinggi 92% SRV-APP-02', location: 'Data Center HO', level: 'peringatan', read: false },
+        { id: 'ALT-103', time: '11:24', title: 'Router-MO-02 Latensi 68ms', location: 'Ruang Marketing MO', level: 'peringatan', read: false },
+        { id: 'ALT-104', time: '10:17', title: 'Suhu Server Naik 32.8°C', location: 'Ruang Server HO', level: 'peringatan', read: false },
+        { id: 'ALT-105', time: '09:03', title: 'Baterai UPS 22%', location: 'Panel Listrik HO', level: 'peringatan', read: false }
     ],
 
     teamMembers: [],
@@ -1781,7 +1746,7 @@ function initCharts() {
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                cutout: '72%',
+                cutout: '58%',
                 plugins: { legend: { display: false } }
             }
         });
