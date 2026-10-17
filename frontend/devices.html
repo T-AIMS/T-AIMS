@@ -124,6 +124,11 @@
             <option value="PC">PC Workstation</option>
             <option value="TV">Smart TV</option>
           </select>
+          <select id="filterLoc" class="dropdown-filter-select" onchange="filterDeviceRows()">
+            <option value="ALL">Semua Lokasi</option>
+            <option value="Head Office">Head Office (Jl. Cibodas)</option>
+            <option value="Marketing Office">Marketing Office (Jl. Ciliwung)</option>
+          </select>
           <select id="filterStat" class="dropdown-filter-select" onchange="filterDeviceRows()">
             <option value="ALL">Semua Status</option>
             <option value="online">Online</option>
@@ -147,6 +152,8 @@
               <th>LOKASI</th>
               <th>METODE</th>
               <th>PIC</th>
+              <th>TERAKHIR TERLIHAT</th>
+              <th>RESPON</th>
               <th>AKSI</th>
             </tr>
           </thead>
@@ -268,14 +275,20 @@
           <span class="tag-status-pill online" id="m-status-pill">● ONLINE</span>
         </div>
         <div class="m-section-card">
-          <div class="m-sec-title"><i class="fa-solid fa-circle-info text-blue"></i> Informasi Dasar</div>
+          <div class="m-sec-title"><i class="fa-solid fa-circle-info text-blue"></i> Kelengkapan Data Spesifikasi (12 Field PDF)</div>
+          <div class="m-info-row"><span>Kode Aset</span><strong id="m-code-val">AST-SRV-001</strong></div>
+          <div class="m-info-row"><span>Nama Perangkat</span><strong id="m-name-val">SRV-DC-01</strong></div>
           <div class="m-info-row"><span>Kategori</span><strong id="m-cat">Server</strong></div>
-          <div class="m-info-row"><span>IP Address</span><strong id="m-ip">192.168.10.1</strong></div>
-          <div class="m-info-row"><span>MAC Address</span><strong id="m-mac">-</strong></div>
+          <div class="m-info-row"><span>IP Address</span><strong id="m-ip" class="font-mono text-blue">192.168.10.1</strong></div>
+          <div class="m-info-row"><span>MAC Address</span><strong id="m-mac" class="font-mono text-cyan">-</strong></div>
           <div class="m-info-row"><span>Lokasi</span><strong id="m-loc">Head Office</strong></div>
           <div class="m-info-row"><span>PIC Penanggung Jawab</span><strong id="m-pic">Ananda Dwi Susanti</strong></div>
           <div class="m-info-row"><span>Metode Monitoring</span><strong id="m-method">Ping</strong></div>
-          <div class="m-info-row"><span>Terakhir Terlihat</span><strong id="m-seen">-</strong></div>
+          <div class="m-info-row"><span>Status Operasional</span><strong id="m-stat-text">ONLINE</strong></div>
+          <div class="m-info-row"><span>Terakhir Terlihat (Last Seen)</span><strong id="m-seen">-</strong></div>
+          <div class="m-info-row"><span>Waktu Respon (Latency)</span><strong id="m-response-time" class="text-green">12 ms</strong></div>
+          <div class="m-info-row"><span>Tanggal Instalasi / Pengadaan</span><strong id="m-install-date">12 Okt 2026</strong></div>
+          <div class="m-info-row"><span>Deskripsi Perangkat</span><strong id="m-desc">Perangkat operasional jaringan lab Teknolab.</strong></div>
         </div>
       </div>
     </div>
@@ -283,67 +296,94 @@
 
   <script src="apiService.js"></script>
   <script src="app.js"></script>
-  <script>
-    function filterDeviceRows() {
-      const q = (document.getElementById('devSearch')?.value || '').toLowerCase();
-      const cat = document.getElementById('filterCat')?.value || 'ALL';
-      const stat = document.getElementById('filterStat')?.value || 'ALL';
-      const rows = document.querySelectorAll('.row-dev');
 
-      rows.forEach(r => {
-        const text = r.innerText.toLowerCase();
-        const rCat = (r.getAttribute('data-cat') || '').toLowerCase();
-        const rStat = (r.getAttribute('data-stat') || '').toLowerCase();
-
-        const mText = !q || text.includes(q);
-        const mCat = (cat === 'ALL' || rCat === cat.toLowerCase());
-        const mStat = (stat === 'ALL' || rStat === stat.toLowerCase());
-
-        r.style.display = (mText && mCat && mStat) ? '' : 'none';
-      });
-    }
-  </script>
-
-  <!-- MODAL TAMBAH PERANGKAT INTERAKTIF -->
+  <!-- MODAL TAMBAH PERANGKAT INTERAKTIF (LENGKAP 12 FIELD PDF) -->
   <div class="modal-overlay" id="add-device-modal" style="display: none;">
-    <div class="modal-card-mobile" style="max-width: 480px;">
+    <div class="modal-card-mobile" style="max-width: 520px;">
       <div class="m-modal-top">
-        <span class="m-modal-title"><i class="fa-solid fa-plus-circle text-red"></i> Tambah Perangkat Baru</span>
+        <span class="m-modal-title"><i class="fa-solid fa-plus-circle text-red"></i> Tambah Perangkat Baru (12 Field PDF)</span>
         <button class="m-close-btn" onclick="closeAddDeviceModal()"><i class="fa-solid fa-xmark"></i></button>
       </div>
-      <div class="m-modal-scroll" style="padding: 20px;">
-        <form onsubmit="handleAddNewDevice(event)" style="display:flex; flex-direction:column; gap:14px;">
-          <div>
-            <label style="display:block; font-size:11.5px; font-weight:700; color:var(--text-muted); margin-bottom:6px;">Nama Perangkat</label>
-            <input type="text" id="newDevName" placeholder="Contoh: Router Ruang Meeting" style="width:100%; background:#090E1A; border:1px solid var(--border-card); padding:10px 14px; border-radius:8px; color:#fff; font-size:12px;" required>
+      <div class="m-modal-scroll" style="padding: 18px 22px;">
+        <form onsubmit="handleAddNewDevice(event)" style="display:flex; flex-direction:column; gap:12px;">
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+            <div>
+              <label style="display:block; font-size:11px; font-weight:700; color:var(--text-muted); margin-bottom:5px;">Nama Perangkat *</label>
+              <input type="text" id="newDevName" placeholder="Contoh: Router Ruang Lab" style="width:100%; background:#090E1A; border:1px solid var(--border-card); padding:9px 12px; border-radius:8px; color:#fff; font-size:12px;" required>
+            </div>
+            <div>
+              <label style="display:block; font-size:11px; font-weight:700; color:var(--text-muted); margin-bottom:5px;">Kategori *</label>
+              <select id="newDevCat" style="width:100%; background:#090E1A; border:1px solid var(--border-card); padding:9px 12px; border-radius:8px; color:#fff; font-size:12px;">
+                <option value="Router">Router</option>
+                <option value="Switch Manageable">Switch Manageable</option>
+                <option value="Access Point">Access Point</option>
+                <option value="Server">Server</option>
+                <option value="Storage">Storage</option>
+                <option value="CCTV">CCTV</option>
+                <option value="IoT Node">IoT Node</option>
+                <option value="Firewall">Firewall</option>
+                <option value="PC">PC Workstation</option>
+                <option value="TV">Smart TV</option>
+              </select>
+            </div>
           </div>
-          <div>
-            <label style="display:block; font-size:11.5px; font-weight:700; color:var(--text-muted); margin-bottom:6px;">IP Address</label>
-            <input type="text" id="newDevIp" placeholder="Contoh: 192.168.10.50" style="width:100%; background:#090E1A; border:1px solid var(--border-card); padding:10px 14px; border-radius:8px; color:#fff; font-size:12px;" required>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+            <div>
+              <label style="display:block; font-size:11px; font-weight:700; color:var(--text-muted); margin-bottom:5px;">IP Address *</label>
+              <input type="text" id="newDevIp" placeholder="Contoh: 192.168.10.50" style="width:100%; background:#090E1A; border:1px solid var(--border-card); padding:9px 12px; border-radius:8px; color:#fff; font-size:12px;" required>
+            </div>
+            <div>
+              <label style="display:block; font-size:11px; font-weight:700; color:var(--text-muted); margin-bottom:5px;">MAC Address</label>
+              <input type="text" id="newDevMac" placeholder="Contoh: D4:CA:6D:88:99:AA" style="width:100%; background:#090E1A; border:1px solid var(--border-card); padding:9px 12px; border-radius:8px; color:#fff; font-size:12px;">
+            </div>
           </div>
-          <div>
-            <label style="display:block; font-size:11.5px; font-weight:700; color:var(--text-muted); margin-bottom:6px;">Kategori</label>
-            <select id="newDevCat" style="width:100%; background:#090E1A; border:1px solid var(--border-card); padding:10px 14px; border-radius:8px; color:#fff; font-size:12px;">
-              <option value="Router">Router</option>
-              <option value="Switch Manageable">Switch Manageable</option>
-              <option value="Access Point">Access Point</option>
-              <option value="Server">Server</option>
-              <option value="Storage">Storage</option>
-              <option value="CCTV">CCTV</option>
-              <option value="IoT Node">IoT Node</option>
-              <option value="Firewall">Firewall</option>
-              <option value="PC">PC Workstation</option>
-              <option value="TV">Smart TV</option>
-            </select>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+            <div>
+              <label style="display:block; font-size:11px; font-weight:700; color:var(--text-muted); margin-bottom:5px;">Lokasi Penempatan *</label>
+              <select id="newDevSite" style="width:100%; background:#090E1A; border:1px solid var(--border-card); padding:9px 12px; border-radius:8px; color:#fff; font-size:12px;">
+                <option value="HO">Head Office (Jl. Cibodas No. 03)</option>
+                <option value="MO">Marketing Office (Jl. Ciliwung No. 247)</option>
+              </select>
+            </div>
+            <div>
+              <label style="display:block; font-size:11px; font-weight:700; color:var(--text-muted); margin-bottom:5px;">PIC Penanggung Jawab *</label>
+              <select id="newDevPic" style="width:100%; background:#090E1A; border:1px solid var(--border-card); padding:9px 12px; border-radius:8px; color:#fff; font-size:12px;">
+                <option value="Ananda Dwi Susanti">Ananda Dwi Susanti (Network)</option>
+                <option value="Ahmad Reza Fahmi">Ahmad Reza Fahmi (Backend)</option>
+                <option value="Ilvina Muvarika">Ilvina Muvarika (IoT)</option>
+                <option value="Dzakwan">Dzakwan (Lead Integration)</option>
+                <option value="Damar Munajad">Damar Munajad (Analyst)</option>
+              </select>
+            </div>
           </div>
-          <div>
-            <label style="display:block; font-size:11.5px; font-weight:700; color:var(--text-muted); margin-bottom:6px;">Lokasi Site Blitar</label>
-            <select id="newDevSite" style="width:100%; background:#090E1A; border:1px solid var(--border-card); padding:10px 14px; border-radius:8px; color:#fff; font-size:12px;">
-              <option value="HO">HO - Jl. Cibodas No. 03 (Head Office)</option>
-              <option value="MO">MO - Kos Kiki, Jl. Ciliwung No. 247 (Marketing Office)</option>
-            </select>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+            <div>
+              <label style="display:block; font-size:11px; font-weight:700; color:var(--text-muted); margin-bottom:5px;">Metode Monitoring *</label>
+              <select id="newDevMethod" style="width:100%; background:#090E1A; border:1px solid var(--border-card); padding:9px 12px; border-radius:8px; color:#fff; font-size:12px;">
+                <option value="Ping">Ping (ICMP)</option>
+                <option value="HTTP">HTTP Health Check</option>
+                <option value="MQTT">MQTT Broker</option>
+                <option value="SNMP">SNMP v2/v3</option>
+                <option value="Heartbeat">Heartbeat Daemon</option>
+              </select>
+            </div>
+            <div>
+              <label style="display:block; font-size:11px; font-weight:700; color:var(--text-muted); margin-bottom:5px;">Tanggal Instalasi</label>
+              <input type="date" id="newDevInstallDate" value="2026-10-17" style="width:100%; background:#090E1A; border:1px solid var(--border-card); padding:9px 12px; border-radius:8px; color:#fff; font-size:12px;">
+            </div>
           </div>
-          <button type="submit" id="btnSubmitAddDevice" style="background:var(--accent-red); border:none; color:#fff; font-weight:800; padding:12px; border-radius:8px; cursor:pointer; margin-top:10px;">Simpan & Daftarkan Perangkat</button>
+
+          <div>
+            <label style="display:block; font-size:11px; font-weight:700; color:var(--text-muted); margin-bottom:5px;">Deskripsi / Catatan Perangkat</label>
+            <input type="text" id="newDevDesc" placeholder="Keterangan fungsi, posisi rack, atau nomor seri..." style="width:100%; background:#090E1A; border:1px solid var(--border-card); padding:9px 12px; border-radius:8px; color:#fff; font-size:12px;">
+          </div>
+
+          <button type="submit" id="btnSubmitAddDevice" style="background:var(--accent-red); border:none; color:#fff; font-weight:800; padding:12px; border-radius:8px; cursor:pointer; margin-top:8px;">
+            <i class="fa-solid fa-cloud-arrow-up"></i> Daftarkan Perangkat ke Database
+          </button>
         </form>
       </div>
     </div>
@@ -362,7 +402,13 @@
       const name = document.getElementById('newDevName').value.trim();
       const ip = document.getElementById('newDevIp').value.trim();
       const cat = document.getElementById('newDevCat').value;
+      const mac = document.getElementById('newDevMac').value.trim() || '-';
       const site = document.getElementById('newDevSite').value;
+      const pic = document.getElementById('newDevPic').value;
+      const method = document.getElementById('newDevMethod').value;
+      const installDate = document.getElementById('newDevInstallDate').value || '2026-10-17';
+      const desc = document.getElementById('newDevDesc').value.trim() || 'Perangkat terdaftar pada sistem T-AIMS';
+
       const locId = site === 'HO' ? 2 : 1;
       const prefix = cat === 'CCTV' ? 'SEC-CCTV' : (cat === 'Router' ? 'NET-RTR' : (cat === 'Server' ? 'NET-SRV' : 'AST-DEV'));
       const code = `${prefix}-${Math.floor(10 + Math.random() * 90)}`;
@@ -374,8 +420,12 @@
             asset_name: name,
             category: cat,
             ip_address: ip,
+            mac_address: mac,
             location_id: locId,
-            monitoring_method: 'Ping',
+            pic_name: pic,
+            monitoring_method: method,
+            installation_date: installDate,
+            description: desc,
             priority: 2
           });
           if (res && res.success) {
