@@ -2509,26 +2509,70 @@ body {
   }
 
   .bottom-three-grid {
+    display: grid !important;
+    grid-template-columns: 1.4fr 1.2fr 1fr !important;
     gap: 12px;
     margin-bottom: 0.75rem;
+    flex: 1 1 auto;
+    min-height: 240px;
+  }
+
+  .bottom-three-grid .dashboard-card {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
   }
 
   .status-table-card .card-body {
-    height: 165px;
+    flex: 1 1 auto;
+    height: 250px !important;
+    min-height: 235px;
+    max-height: 290px;
+    overflow-y: auto;
+  }
+
+  .status-table-card .table-responsive {
+    height: 100%;
     overflow-y: auto;
   }
 
   .map-card .card-body {
-    height: 165px;
+    flex: 1 1 auto;
+    height: 250px !important;
+    min-height: 235px;
+    max-height: 290px;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    padding: 8px 10px !important;
+  }
+
+  .map-interactive-container {
+    flex: 1 1 auto !important;
+    position: relative !important;
+    min-height: 195px !important;
+    display: flex !important;
   }
 
   .home-map-leaflet {
-    height: 130px !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 195px !important;
+    flex: 1 !important;
   }
 
   .alerts-card .card-body {
-    height: 165px;
+    flex: 1 1 auto;
+    height: 250px !important;
+    min-height: 235px;
+    max-height: 290px;
     overflow-y: auto;
+  }
+
+  .alerts-timeline-wrap {
+    height: 100% !important;
+    max-height: none !important;
+    overflow-y: auto !important;
   }
 
   .maintenance-section {
@@ -2615,12 +2659,76 @@ body {
     flex: 1;
     display: flex !important;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-start;
+}
+
+/* TIGA KARTU BAWAH DIPERBESAR KE BAWAH MENUTUP RUANG KOSONG (STATUS, PETA, RIWAYAT GANGGUAN) */
+.bottom-three-grid {
+    display: grid !important;
+    grid-template-columns: 1.4fr 1.2fr 1fr !important;
+    gap: 12px !important;
+    flex: 1 1 auto !important;
+    min-height: 250px !important;
+    margin-bottom: 0.75rem !important;
+}
+
+.bottom-three-grid .dashboard-card {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+}
+
+.status-table-card .card-body {
+    flex: 1 1 auto !important;
+    height: 250px !important;
+    min-height: 235px !important;
+    max-height: 290px !important;
+    overflow-y: auto !important;
+}
+
+.map-card .card-body {
+    flex: 1 1 auto !important;
+    height: 250px !important;
+    min-height: 235px !important;
+    max-height: 290px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    padding: 8px 10px !important;
+}
+
+.map-interactive-container {
+    flex: 1 1 auto !important;
+    position: relative !important;
+    min-height: 195px !important;
+    display: flex !important;
+}
+
+.home-map-leaflet {
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 195px !important;
+    flex: 1 !important;
+}
+
+.alerts-card .card-body {
+    flex: 1 1 auto !important;
+    height: 250px !important;
+    min-height: 235px !important;
+    max-height: 290px !important;
+    overflow-y: auto !important;
+}
+
+.alerts-timeline-wrap {
+    height: 100% !important;
+    max-height: none !important;
+    overflow-y: auto !important;
 }
 
 .maintenance-section {
-    margin-top: auto !important;
+    margin-top: 0 !important;
     margin-bottom: 0 !important;
+    flex-shrink: 0 !important;
     padding: 10px 18px !important;
     background: rgba(13, 22, 41, 0.85) !important;
     border: 1px solid rgba(225, 29, 72, 0.25) !important;

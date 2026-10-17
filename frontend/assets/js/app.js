@@ -690,8 +690,8 @@ function renderHomeDevicesTable() {
     if (!tbody) return;
 
     tbody.innerHTML = '';
-    // Ambil 5 perangkat pertama sesuai mockup
-    const items = APP_STATE.devices.slice(0, 5);
+    // Ambil 6 perangkat pertama sesuai mockup
+    const items = APP_STATE.devices.slice(0, 6);
 
     items.forEach(dev => {
         const tr = document.createElement('tr');
@@ -1920,3 +1920,9 @@ switchPage = function(pageId) {
     window.location.hash = pageId;
     origSwitchPage(pageId);
 };
+
+// Auto-adjust leaflet map on window resize
+window.addEventListener('resize', () => {
+    if (APP_STATE.homeMap) APP_STATE.homeMap.invalidateSize();
+    if (APP_STATE.fullMap) APP_STATE.fullMap.invalidateSize();
+});
