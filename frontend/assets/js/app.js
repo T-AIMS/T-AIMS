@@ -1062,9 +1062,9 @@ function initBlitarMaps() {
                 attributionControl: false
             });
 
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 19,
-                subdomains: 'abcd'
+                attribution: '&copy; OpenStreetMap'
             }).addTo(APP_STATE.homeMap);
 
             L.control.zoom({ position: 'bottomright' }).addTo(APP_STATE.homeMap);
@@ -1105,9 +1105,9 @@ function initBlitarMaps() {
                 attributionControl: false
             });
 
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 19,
-                subdomains: 'abcd'
+                attribution: '&copy; OpenStreetMap'
             }).addTo(APP_STATE.fullMap);
 
             // Klik di mana saja pada peta Blitar untuk mendapatkan koordinat presisi

@@ -398,9 +398,9 @@ body {
     background-color: var(--bg-void);
 }
 
-/* SIDEBAR KIRI */
+/* SIDEBAR KIRI (Dilebarkan ke Kanan sampai Garis Biru) */
 .sidebar {
-    width: 220px;
+    width: 275px;
     background-color: var(--bg-sidebar);
     border-right: 1px solid var(--border-dark);
     display: flex;
@@ -413,18 +413,18 @@ body {
     z-index: 100;
 }
 
-/* Logo Teknolab di Bagian Atas Sidebar */
+/* Logo Teknolab di Bagian Atas Sidebar (Diperbesar Sesuai Permintaan) */
 .sidebar-header {
-    padding: 22px 18px 18px 18px;
+    padding: 24px 22px 18px 22px;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 .brand-logo-img {
-    max-height: 75px;
+    max-height: 105px !important;
     width: auto;
     object-fit: contain;
-    filter: drop-shadow(0 0 10px rgba(225, 29, 72, 0.3));
+    filter: drop-shadow(0 0 16px rgba(225, 29, 72, 0.45));
 }
 
 /* Navigasi Utama */
@@ -432,7 +432,7 @@ body {
     flex: 1;
     display: flex;
     flex-direction: column;
-    padding: 8px 12px 12px 12px;
+    padding: 10px 14px 14px 14px;
 }
 
 .nav-menu {
@@ -443,7 +443,7 @@ body {
 }
 
 .nav-item {
-    margin-bottom: 4px;
+    margin-bottom: 8px;
 }
 
 /* Item Pengaturan Dibuat di Bagian Bawah Menu (Sesuai Permintaan & Gambar) */
@@ -455,20 +455,20 @@ body {
 .nav-item .nav-link {
     display: flex;
     align-items: center;
-    gap: 14px;
-    padding: 10px 14px;
+    gap: 16px;
+    padding: 11px 18px;
     color: var(--text-secondary);
     text-decoration: none;
-    font-size: 0.88rem;
-    font-weight: 500;
+    font-size: 0.96rem;
+    font-weight: 600;
     border-radius: var(--radius-md);
     transition: var(--transition);
 }
 
 .nav-item .nav-link i {
-    width: 20px;
+    width: 24px;
     text-align: center;
-    font-size: 0.95rem;
+    font-size: 1.1rem;
     color: var(--text-muted);
     transition: var(--transition);
 }
@@ -485,7 +485,7 @@ body {
 .nav-item.active .nav-link {
     background: linear-gradient(90deg, #A81B34 0%, #7A1224 100%);
     color: #FFFFFF;
-    font-weight: 600;
+    font-weight: 700;
     box-shadow: 0 4px 15px rgba(225, 29, 72, 0.35);
 }
 .nav-item.active .nav-link i {
@@ -496,9 +496,9 @@ body {
     margin-left: auto;
     background: var(--tekno-red);
     color: #FFFFFF;
-    font-size: 0.68rem;
+    font-size: 0.72rem;
     font-weight: 700;
-    padding: 2px 7px;
+    padding: 3px 8px;
     border-radius: var(--radius-full);
 }
 
@@ -2533,32 +2533,32 @@ body {
   }
 
   .charts-row {
-    gap: 8px !important;
-    margin-bottom: 6px !important;
+    gap: 10px !important;
+    margin-bottom: 8px !important;
   }
 
   .charts-row .dashboard-card .card-header {
-    padding: 5px 10px !important;
+    padding: 7px 12px !important;
   }
 
   .chart-body {
-    height: 155px !important;
-    padding: 4px 8px !important;
+    height: 235px !important;
+    padding: 8px 12px !important;
   }
 
   .donut-body {
-    height: 155px !important;
-    padding: 4px 10px !important;
-    gap: 12px !important;
+    height: 235px !important;
+    padding: 8px 16px !important;
+    gap: 18px !important;
   }
 
   .donut-visual-wrap {
-    width: 120px !important;
-    height: 120px !important;
+    width: 155px !important;
+    height: 155px !important;
   }
 
   .donut-center-label strong {
-    font-size: 1.3rem !important;
+    font-size: 1.6rem !important;
   }
 
   .bottom-three-grid {
@@ -2702,7 +2702,7 @@ body {
 }
 
 .leaflet-tile {
-    filter: brightness(0.9) contrast(1.1) !important;
+    filter: brightness(0.65) invert(1) contrast(2.5) hue-rotate(200deg) saturate(0.3) !important;
 }
 
 
