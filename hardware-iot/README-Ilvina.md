@@ -1,4 +1,5 @@
-# T-AIMS IoT Heartbeat - Ilvina
+# T-AIMS IoT Heartbeat - 
+PENANGGUNG JAWAB:Ilvina Muvarika
 
 Mekanisme heartbeat ESP32 & Raspberry Pi untuk T-AIMS.
 
