@@ -68,7 +68,7 @@
         </div>
         <div class="btn-group-export">
           <button class="btn-export-pdf" onclick="window.print()"><i class="fa-solid fa-file-pdf"></i> Export PDF</button>
-          <button class="btn-export-excel" onclick="alert('Export Laporan Excel berhasil disiapkan.')"><i class="fa-solid fa-file-excel"></i> Export Excel</button>
+          <button class="btn-export-excel" onclick="exportReportsToExcel()"><i class="fa-solid fa-file-excel"></i> Export Excel</button>
         </div>
       </div>
 
@@ -271,9 +271,36 @@
       }
     }
 
+    function exportReportsToExcel() {
+      const table = document.querySelector('.data-table-full');
+      if (!table) return;
+
+      let csv = '\uFEFF'; // UTF-8 BOM agar Excel menampilkan aksen dan font secara akurat
+      const rows = table.querySelectorAll('tr');
+      rows.forEach(row => {
+        const cols = row.querySelectorAll('th, td');
+        const rowData = [];
+        cols.forEach(col => {
+          let text = col.innerText.replace(/(\r\n|\n|\r)/gm, ' ').replace(/\s+/g, ' ').trim();
+          text = text.replace(/"/g, '""');
+          rowData.push(`"${text}"`);
+        });
+        csv += rowData.join(';') + '\r\n';
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', `T-AIMS_Laporan_Infrastruktur_Teknolab_${new Date().toISOString().slice(0,10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
     document.addEventListener("DOMContentLoaded", () => {
       loadReportsData();
-setInterval(loadNetworkData, typeof getActiveRefreshIntervalMs === 'function' ? getActiveRefreshIntervalMs() : 10000);
+      setInterval(loadReportsData, typeof getActiveRefreshIntervalMs === 'function' ? getActiveRefreshIntervalMs() : 10000);
     });
   </script>
 </body>
