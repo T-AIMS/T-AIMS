@@ -4,20 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>T-AIMS | Teknolab Asset & Infrastructure Monitoring System</title>
-    <link rel="icon" type="image/png" href="teknolab_logo.png">
     <!-- Google Fonts & Font Awesome Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <!-- Chart.js Support -->
+    <!-- Chart.js Offline & CDN Support -->
     <script src="chart.umd.min.js"></script>
     <script>
         if (typeof Chart === 'undefined') {
             document.write('<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"><\/script>');
         }
     </script>
-    <!-- Leaflet GIS Map Support -->
+    <!-- Leaflet GIS Map Support (Offline & Online) -->
     <link rel="stylesheet" href="leaflet.css">
     <script src="leaflet.js"></script>
     <script>
@@ -30,66 +29,185 @@
 </head>
 <body class="cyber-dark-theme">
 
-    <div id="main-dashboard" class="app-layout">
+    <!-- ========================================================================= -->
+    <!-- VIEW 1: PORTAL AUTENTIKASI / LOGIN SCREEN (SUPERADMIN, ADMIN & TAMU)     -->
+    <!-- ========================================================================= -->
+    <section id="auth-screen" class="auth-wrapper">
+        <div class="auth-bg-ambient">
+            <div class="ambient-glow glow-cyan"></div>
+            <div class="ambient-glow glow-crimson"></div>
+            <div class="circuit-grid-overlay"></div>
+        </div>
 
-        <!-- ============================================================= -->
-        <!-- SIDEBAR NAVIGASI KIRI PERSIS SEPERTI GAMBAR MOCKUP            -->
-        <!-- (CATATAN: MENU ASET DIHILANGKAN SESUAI INSTRUKSI)             -->
-        <!-- ============================================================= -->
+        <div class="auth-card">
+            <!-- Header Card dengan Logo Teknolab -->
+            <div class="auth-brand">
+                <img src="teknolab_logo_dark.png" alt="Teknolab Caraka Internasional Logo" class="auth-logo">
+                <div class="auth-system-badge">
+                    <span class="pulse-led online"></span>
+                    <span>T-AIMS &bull; TEKNOLAB CARAKA INTERNASIONAL</span>
+                </div>
+                <h1 class="auth-system-title">T-AIMS PORTAL</h1>
+                <p class="auth-system-desc">Asset & Infrastructure Monitoring System</p>
+            </div>
+
+            <!-- Pesan Notifikasi Error/Info Login -->
+            <div id="auth-alert" class="auth-alert hidden">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <span id="auth-alert-text">Email/Username atau sandi tidak cocok!</span>
+            </div>
+
+            <!-- Form Login Superadmin / Admin -->
+            <form id="login-form" class="auth-form" onsubmit="event.preventDefault(); handleLogin();">
+                <div class="form-group">
+                    <label for="login-username"><i class="fa-solid fa-envelope"></i> Email / Username Administrator</label>
+                    <div class="input-container">
+                        <input type="text" id="login-username" placeholder="admin@teknolab.id atau username..." autocomplete="username" required>
+                        <i class="fa-solid fa-user input-icon"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="login-password"><i class="fa-solid fa-key"></i> Password</label>
+                    <div class="input-container">
+                        <input type="password" id="login-password" placeholder="Masukkan password..." autocomplete="current-password" required>
+                        <i class="fa-solid fa-eye-slash input-icon toggle-password" id="toggle-pwd-btn" onclick="togglePasswordVisibility()"></i>
+                    </div>
+                </div>
+
+                <div class="form-actions-row">
+                    <label class="remember-checkbox">
+                        <input type="checkbox" id="remember-me" checked>
+                        <span>Ingat sesi ini</span>
+                    </label>
+                    <a href="javascript:void(0)" onclick="fillDefaultAdmin()" class="hint-link">Lupa password?</a>
+                </div>
+
+                <!-- Tombol Masuk Superadmin -->
+                <button type="submit" class="btn btn-primary-cyber w-full">
+                    <i class="fa-solid fa-right-to-bracket"></i>
+                    <span>Masuk sebagai Administrator</span>
+                </button>
+            </form>
+
+            <div class="auth-divider">
+                <span>ATAU AKSES PENGUNJUNG</span>
+            </div>
+
+            <!-- Tombol Masuk sebagai Tamu / Pengguna Biasa (Hanya Lihat) -->
+            <button type="button" class="btn btn-guest-cyber w-full" onclick="enterAsGuest()">
+                <div class="guest-btn-content">
+                    <i class="fa-solid fa-eye"></i>
+                    <div class="guest-text">
+                        <strong>Masuk sebagai Tamu / User Biasa</strong>
+                        <span>(Akses Mode Lihat Monitoring Tanpa Login)</span>
+                    </div>
+                </div>
+                <i class="fa-solid fa-arrow-right-long"></i>
+            </button>
+
+            <!-- Box Akun Demo Bawaan untuk Pengujian Guru/Pembimbing -->
+            <div class="demo-credential-box">
+                <div class="demo-head">
+                    <i class="fa-solid fa-terminal text-cyan"></i>
+                    <span>Akun Demo Cepat (Klik untuk isi otomatis):</span>
+                </div>
+                <div class="demo-buttons">
+                    <button type="button" class="btn-chip" onclick="quickFillCredentials('superadmin', 'admin123')">
+                        <i class="fa-solid fa-shield-halved"></i> <strong>Admin:</strong> superadmin / admin123
+                    </button>
+                    <button type="button" class="btn-chip" onclick="quickFillCredentials('operator', 'operator123')">
+
+                    <button type="button" class="btn-chip" onclick="quickFillCredentials('reza.fahmi@taims.local', 'password123')">
+                        <i class="fa-solid fa-server"></i> <strong>Backend:</strong> reza.fahmi / password123
+                    </button>
+
+                        <i class="fa-solid fa-user-gear"></i> <strong>Teknisi:</strong> operator / operator123
+                    </button>
+                </div>
+            </div>
+
+            
+            <div class="auth-back-action" style="margin-top: 14px; text-align: center;">
+                <button type="button" class="btn-back-home" onclick="enterAsGuest()" style="background: rgba(0, 229, 255, 0.08); border: 1px solid rgba(0, 229, 255, 0.25); color: #00E5FF; padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer;">
+                    <i class="fa-solid fa-arrow-left"></i> Kembali Langsung ke Dashboard Monitoring
+                </button>
+            </div>
+
+            <div class="auth-footer">
+                <p>&copy; PT Teknolab Caraka Internasional &bull; Project PKL Elektro 30 Hari</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- VIEW 2: DASHBOARD UTAMA T-AIMS (PROPORSIONAL PERSIS SEPERTI GAMBAR)       -->
+    <!-- ========================================================================= -->
+    <div id="main-dashboard" class="app-layout hidden">
+
+        <!-- SIDEBAR NAVIGASI KIRI -->
         <aside class="sidebar" id="app-sidebar">
             <!-- Logo Teknolab Caraka Internasional -->
             <div class="sidebar-header">
-                <img src="teknolab_logo_dark.png" alt="Teknolab Caraka Internasional Logo" class="brand-logo-img" onerror="this.src='teknolab_logo.png'">
+                <img src="teknolab_logo_dark.png" alt="Teknolab Caraka Internasional Logo" class="brand-logo-img">
             </div>
 
-            <!-- Menu Navigasi Utama -->
+            <!-- Menu Navigasi Utama (Ukuran & Spasi Proporsional Sesuai Mockup) -->
             <nav class="sidebar-nav">
                 <ul class="nav-menu">
-                    <li class="nav-item active">
-                        <a href="dashboard.html" class="nav-link">
+                    <li class="nav-item active" data-page="page-dashboard">
+                        <a href="javascript:void(0)" class="nav-link" onclick="switchPage('page-dashboard')">
                             <i class="fa-solid fa-house-chimney"></i>
                             <span>Dashboard</span>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a href="devices.html" class="nav-link">
+                    
+                    <li class="nav-item" data-page="page-devices">
+                        <a href="javascript:void(0)" class="nav-link" onclick="switchPage('page-devices')">
                             <i class="fa-solid fa-server"></i>
                             <span>Perangkat</span>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a href="network.html" class="nav-link">
+                    <li class="nav-item" data-page="page-monitoring">
+                        <a href="javascript:void(0)" class="nav-link" onclick="switchPage('page-monitoring')">
                             <i class="fa-solid fa-network-wired"></i>
                             <span>Jaringan</span>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a href="topology.html" class="nav-link">
+                    <li class="nav-item" data-page="page-location">
+                        <a href="javascript:void(0)" class="nav-link" onclick="switchPage('page-location')">
                             <i class="fa-solid fa-location-dot"></i>
                             <span>Lokasi</span>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a href="javascript:void(0)" onclick="scrollToAlerts()" class="nav-link">
+                    <li class="nav-item" data-page="page-alerts">
+                        <a href="javascript:void(0)" class="nav-link" onclick="switchPage('page-alerts')">
                             <i class="fa-regular fa-bell"></i>
                             <span>Peringatan</span>
                             <span class="nav-badge" id="sidebar-alert-badge">12</span>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a href="reports.html" class="nav-link">
+                    <li class="nav-item" data-page="page-reports">
+                        <a href="javascript:void(0)" class="nav-link" onclick="switchPage('page-reports')">
                             <i class="fa-solid fa-chart-column"></i>
                             <span>Laporan</span>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a href="users.html" class="nav-link">
+                    <li class="nav-item" data-page="page-project-info">
+                        <a href="javascript:void(0)" class="nav-link" onclick="switchPage('page-project-info')">
+                            <i class="fa-solid fa-circle-info"></i>
+                            <span>Informasi Projek</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" data-page="page-users">
+                        <a href="javascript:void(0)" class="nav-link" onclick="switchPage('page-users')">
                             <i class="fa-solid fa-users"></i>
                             <span>Pengguna</span>
                         </a>
                     </li>
-                    <li class="nav-item nav-item-settings">
-                        <a href="settings.html" class="nav-link">
+                    <!-- Pengaturan terletak di bawah sesuai referensi gambar -->
+                    <li class="nav-item nav-item-settings" data-page="page-settings">
+                        <a href="javascript:void(0)" class="nav-link" onclick="switchPage('page-settings')">
                             <i class="fa-solid fa-gear"></i>
                             <span>Pengaturan</span>
                         </a>
@@ -128,7 +246,7 @@
                 <div class="topbar-center">
                     <div class="search-box">
                         <i class="fa-solid fa-magnifying-glass"></i>
-                        <input type="text" id="global-search-input" placeholder="Cari perangkat, IP, lokasi..." oninput="handleGlobalSearch(this.value)">
+                        <input type="text" id="global-search-input" placeholder="Cari aset, perangkat, lokasi..." oninput="handleGlobalSearch(this.value)">
                         <button class="search-clear-btn hidden" id="search-clear-btn" onclick="clearGlobalSearch()"><i class="fa-solid fa-xmark"></i></button>
                     </div>
                 </div>
@@ -159,7 +277,7 @@
                                 <!-- Dynamic alerts -->
                             </div>
                             <div class="notif-footer">
-                                <a href="javascript:void(0)" onclick="scrollToAlerts(); toggleNotifDropdown();">Lihat Semua Riwayat Gangguan &rarr;</a>
+                                <a href="javascript:void(0)" onclick="switchPage('page-alerts'); toggleNotifDropdown();">Lihat Semua Riwayat Gangguan &rarr;</a>
                             </div>
                         </div>
                     </div>
@@ -184,14 +302,14 @@
                                 <span id="dropdown-user-role">Administrator</span>
                             </div>
                             <div class="dropdown-divider"></div>
-                            <a href="users.html" class="dropdown-item">
+                            <a href="javascript:void(0)" onclick="switchPage('page-users'); toggleUserMenu();" class="dropdown-item">
                                 <i class="fa-solid fa-user-gear"></i> Kelola Profil
                             </a>
-                            <a href="settings.html" class="dropdown-item">
+                            <a href="javascript:void(0)" onclick="switchPage('page-settings'); toggleUserMenu();" class="dropdown-item">
                                 <i class="fa-solid fa-sliders"></i> Pengaturan
                             </a>
                             <div class="dropdown-divider"></div>
-                            <a href="index.html" class="dropdown-item text-danger">
+                            <a href="javascript:void(0)" onclick="logoutToAuth()" class="dropdown-item text-danger">
                                 <i class="fa-solid fa-right-from-bracket"></i> Kembali ke Login / Ganti Akun
                             </a>
                         </div>
@@ -199,16 +317,19 @@
                 </div>
             </header>
 
-            <!-- CONTAINER DASHBOARD T-AIMS -->
+            <!-- CONTAINER MULTI-HALAMAN T-AIMS -->
             <div class="content-container">
 
+                <!-- ============================================================= -->
+                <!-- HALAMAN 1: DASHBOARD UTAMA (PERSIS SEPERTI GAMBAR REFERENSI)  -->
+                <!-- ============================================================= -->
                 <div id="page-dashboard" class="page-view active">
                     
                     <!-- BANNER UTAMA DENGAN SLOGAN & SIMULASI ELEKTRO -->
                     <div class="banner-hero">
                         <div class="banner-left">
                             <h2 class="banner-title">T-AIMS Dashboard</h2>
-                            <p class="banner-desc">Ringkasan monitoring perangkat dan infrastruktur Teknolab secara real-time</p>
+                            <p class="banner-desc">Ringkasan monitoring aset dan infrastruktur Teknolab secara real-time</p>
                             <!-- Status Role Badge & Simulasi Sensor -->
                             <div class="banner-sub-actions">
                                 <span class="role-status-chip" id="banner-role-badge">
@@ -217,7 +338,11 @@
                                 <button class="btn-simulasi-chip" onclick="triggerDeviceSimulation()" title="Uji coba perubahan status sensor elektro secara acak">
                                     <i class="fa-solid fa-bolt-lightning text-yellow"></i> Simulasi Sensor Elektro
                                 </button>
-                                <button class="btn-simulasi-chip admin-only" onclick="window.location.href='devices.html'">
+                                
+                                <button class="btn-simulasi-chip" onclick="openAiModal()" title="Buka Rekomendasi Asisten AI Infrastruktur (PDF Hal. 4 & 11)">
+                                    <i class="fa-solid fa-brain text-cyan"></i> AI Assistant
+                                </button>
+                                <button class="btn-simulasi-chip admin-only" onclick="openAddDeviceModal()">
                                     <i class="fa-solid fa-plus text-cyan"></i> Tambah Perangkat
                                 </button>
                             </div>
@@ -231,12 +356,9 @@
                         </div>
                     </div>
 
-                    <!-- ========================================================= -->
-                    <!-- KARTU STATISTIK KPI UTAMA (UKURAN & PROPORSI PERSIS GAMBAR) -->
-                    <!-- BAGIAN TOTAL ASET DIHILANGKAN SESUAI INSTRUKSI SPESIFIK     -->
-                    <!-- ========================================================= -->
+                    <!-- 6 KARTU STATISTIK KPI UTAMA (UKURAN & PROPORSI PERSIS SEPERTI GAMBAR) -->
                     <section class="kpi-grid">
-                        <!-- 1. Perangkat Online (HIJAU / ON) -->
+                        <!-- 2. Perangkat Online (HIJAU / ON) -->
                         <div class="kpi-card">
                             <div class="kpi-top">
                                 <div class="kpi-icon-box emerald-bg">
@@ -249,11 +371,11 @@
                             </div>
                             <div class="kpi-bottom">
                                 <span class="kpi-subtext"><span class="text-green font-bold" id="kpi-online-pct">87.5%</span> dari 16 perangkat</span>
-                                <div class="mini-sparkline"><span class="bar-fill" id="kpi-online-bar" style="width: 87.5%; background: #10B981;"></span></div>
+                                <div class="mini-sparkline"><span class="bar-fill" style="width: 71.5%; background: #10B981;"></span></div>
                             </div>
                         </div>
 
-                        <!-- 2. Perangkat Offline (MERAH / OFF) -->
+                        <!-- 3. Perangkat Offline (MERAH / OFF) -->
                         <div class="kpi-card">
                             <div class="kpi-top">
                                 <div class="kpi-icon-box red-bg">
@@ -266,11 +388,11 @@
                             </div>
                             <div class="kpi-bottom">
                                 <span class="kpi-subtext"><span class="text-red font-bold" id="kpi-offline-pct">6.2%</span> dari 16 perangkat</span>
-                                <div class="mini-sparkline"><span class="bar-fill" id="kpi-offline-bar" style="width: 6.2%; background: #EF4444;"></span></div>
+                                <div class="mini-sparkline"><span class="bar-fill" style="width: 10.6%; background: #EF4444;"></span></div>
                             </div>
                         </div>
 
-                        <!-- 3. Peringatan Aktif (KUNING / WARNING) -->
+                        <!-- 4. Peringatan Aktif (KUNING / WARNING) -->
                         <div class="kpi-card">
                             <div class="kpi-top">
                                 <div class="kpi-icon-box amber-bg">
@@ -283,11 +405,11 @@
                             </div>
                             <div class="kpi-bottom">
                                 <span class="kpi-subtext"><span class="text-yellow font-bold" id="kpi-warning-pct">6.2%</span> perlu perhatian</span>
-                                <div class="mini-sparkline"><span class="bar-fill" id="kpi-warning-bar" style="width: 6.2%; background: #F59E0B;"></span></div>
+                                <div class="mini-sparkline"><span class="bar-fill" style="width: 19%; background: #F59E0B;"></span></div>
                             </div>
                         </div>
 
-                        <!-- 4. Lokasi Aktif (BIRU / LOCATION) -->
+                        <!-- 5. Lokasi Aktif -->
                         <div class="kpi-card">
                             <div class="kpi-top">
                                 <div class="kpi-icon-box blue-bg">
@@ -299,12 +421,12 @@
                                 </div>
                             </div>
                             <div class="kpi-bottom">
-                                <span class="kpi-subtext">Kantor HO &amp; MO Blitar</span>
-                                <div class="mini-sparkline"><span class="bar-fill" style="width: 100%; background: #0284C7;"></span></div>
+                                <span class="kpi-subtext">Kantor HO & MO Blitar</span>
+                                <div class="mini-sparkline"><span class="bar-fill" style="width: 78%; background: #0284C7;"></span></div>
                             </div>
                         </div>
 
-                        <!-- 5. Uptime Sistem (UNGU / UPTIME) -->
+                        <!-- 6. Uptime Sistem -->
                         <div class="kpi-card">
                             <div class="kpi-top">
                                 <div class="kpi-icon-box purple-bg">
@@ -322,52 +444,7 @@
                         </div>
                     </section>
 
-                    <!-- ========================================================= -->
-                    <!-- WIDGET PANEL AI INFRASTRUCTURE ASSISTANT (PDF HAL. 4 & 11)-->
-                    <!-- ========================================================= -->
-                    <div class="ai-assistant-widget-panel" id="ai-assistant-panel">
-                        <div class="ai-widget-header">
-                            <div class="ai-widget-title-group">
-                                <div class="ai-pulse-icon">
-                                    <i class="fa-solid fa-brain"></i>
-                                </div>
-                                <div>
-                                    <h3>T-AIMS AI Infrastructure Assistant</h3>
-                                    <small>Otomatisasi Diagnostik &amp; Rekomendasi Preskriptif Perangkat (PDF Hal. 4, 11, 17)</small>
-                                </div>
-                            </div>
-                            <div class="ai-widget-actions">
-                                <span class="ai-badge-live" id="ai-status-badge">
-                                    <span class="pulse-led online"></span> AI Monitoring Aktif
-                                </span>
-                                <button class="btn-ai-refresh" onclick="loadAiInsight(true)" title="Jalankan Diagnostik AI Ulang">
-                                    <i class="fa-solid fa-arrows-rotate" id="ai-refresh-icon"></i> Analisis Ulang
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="ai-digest-strip">
-                            <div class="ai-digest-pill">Target Masalah: <strong id="ai-digest-target">CCTV Gerbang Utama HO</strong></div>
-                            <div class="ai-digest-pill">Status: <strong class="text-red" id="ai-digest-status">Offline (ICMP Ping Timeout)</strong></div>
-                            <div class="ai-digest-pill">Tingkat Urgensi: <strong class="text-yellow" id="ai-digest-urgency">Medium (Keamanan Gerbang)</strong></div>
-                        </div>
-
-                        <div class="ai-insight-content">
-                            <div class="ai-problem-block">
-                                <div class="ai-block-label"><i class="fa-solid fa-circle-exclamation"></i> Diagnosa Masalah Terdeteksi</div>
-                                <p id="ai-problem-text">Perangkat CCTV Head Office (192.168.10.31) tidak merespons request ping selama lebih dari 3 menit. Jalur PoE switch kemungkinan kehilangan daya atau kabel UTP terputus.</p>
-                            </div>
-                            <div class="ai-recommendation-block">
-                                <div class="ai-block-label"><i class="fa-solid fa-lightbulb"></i> Rekomendasi Tindakan Otomatis</div>
-                                <p id="ai-recommendation-text">1. Periksa injektor daya PoE port 7 switch Ruang Server.<br>2. Lakukan soft-restart port via interface managed switch.<br>3. Konfirmasi konektor RJ-45 luar ruangan bila power normal.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- ========================================================= -->
-                    <!-- SECTION GRAFIK TENGAH: TREN STATUS & DONUT KATEGORI        -->
-                    <!-- PERSIS SEPERTI GAMBAR DENGAN BENTUK DONUT DAN 16 PERANGKAT-->
-                    <!-- ========================================================= -->
+                    <!-- SECTION GRAFIK TENGAH (TREN STATUS & DISTRIBUSI KATEGORI) -->
                     <div class="charts-row">
                         <!-- 1. Tren Status Perangkat -->
                         <div class="dashboard-card trend-card">
@@ -394,14 +471,14 @@
                             </div>
                         </div>
 
-                        <!-- 2. Distribusi Kategori Perangkat (Donut Besar Persis Gambar) -->
+                        <!-- 2. Distribusi Kategori Perangkat (Donut) -->
                         <div class="dashboard-card donut-card">
                             <div class="card-header">
                                 <div class="card-title-group">
                                     <i class="fa-solid fa-chart-pie text-crimson"></i>
                                     <h4>Distribusi Kategori Perangkat</h4>
                                 </div>
-                                <a href="devices.html" class="card-link">
+                                <a href="javascript:void(0)" class="card-link" onclick="switchPage('page-devices')">
                                     Lihat Detail &rarr;
                                 </a>
                             </div>
@@ -423,7 +500,7 @@
                                         <span class="d-leg-val"><strong>4</strong> <small>25.0%</small></span>
                                     </div>
                                     <div class="d-leg-row">
-                                        <span class="d-leg-name"><span class="cat-bullet" style="background:#0284C7;"></span> CCTV &amp; Security</span>
+                                        <span class="d-leg-name"><span class="cat-bullet" style="background:#0284C7;"></span> CCTV & Security</span>
                                         <span class="d-leg-val"><strong>2</strong> <small>12.5%</small></span>
                                     </div>
                                     <div class="d-leg-row">
@@ -443,9 +520,7 @@
                         </div>
                     </div>
 
-                    <!-- ========================================================= -->
-                    <!-- SECTION BAWAH: TABEL STATUS, PETA LOKASI, RIWAYAT GANGGUAN-->
-                    <!-- ========================================================= -->
+                    <!-- SECTION BAWAH (TABEL STATUS PERANGKAT, PETA LOKASI, RIWAYAT GANGGUAN) -->
                     <div class="bottom-three-grid">
                         
                         <!-- 1. Status Perangkat Terbaru -->
@@ -455,7 +530,7 @@
                                     <i class="fa-solid fa-server text-crimson"></i>
                                     <h4>Status Perangkat Terbaru</h4>
                                 </div>
-                                <a href="devices.html" class="card-link">
+                                <a href="javascript:void(0)" class="card-link" onclick="switchPage('page-devices')">
                                     Lihat Semua &rarr;
                                 </a>
                             </div>
@@ -480,7 +555,7 @@
                             </div>
                         </div>
 
-                        <!-- 2. Peta Lokasi Infrastruktur (Area Blitar: HO & MO) -->
+                        <!-- 2. Peta Lokasi Infrastruktur (Area Blitar) -->
                         <div class="dashboard-card map-card">
                             <div class="card-header">
                                 <div class="card-title-group">
@@ -488,7 +563,7 @@
                                     <h4>Peta Lokasi Infrastruktur</h4>
                                     <span class="blitar-scope-chip"><i class="fa-solid fa-crosshairs"></i> Area Blitar</span>
                                 </div>
-                                <a href="topology.html" class="card-link">
+                                <a href="javascript:void(0)" class="card-link" onclick="switchPage('page-location')">
                                     Lihat Peta Lengkap &rarr;
                                 </a>
                             </div>
@@ -500,11 +575,11 @@
                                     <!-- Quick Tooltip Popover Sesuai Gambar -->
                                     <div class="map-callout-overlay" id="map-callout-overlay">
                                         <div class="callout-title" id="callout-node-name">
-                                            <i class="fa-solid fa-building"></i> Pusat Data Teknolab Blitar (HO)
+                                            <i class="fa-solid fa-building"></i> Pusat Data Teknolab Blitar
                                         </div>
-                                        <div class="callout-line"><i class="fa-solid fa-location-crosshairs text-cyan"></i> <span id="callout-node-coord">-8.0738, 112.1735</span></div>
-                                        <div class="callout-line"><span class="dot green"></span> <span id="callout-stat-dev">10 perangkat</span></div>
-                                        <div class="callout-line"><span class="dot green"></span> <span id="callout-stat-up">90% online</span></div>
+                                        <div class="callout-line"><i class="fa-solid fa-location-crosshairs text-cyan"></i> <span id="callout-node-coord">-8.0988, 112.1652</span></div>
+                                        <div class="callout-line"><span class="dot green"></span> <span id="callout-stat-dev">32 perangkat</span></div>
+                                        <div class="callout-line"><span class="dot green"></span> <span id="callout-stat-up">100% online</span></div>
                                     </div>
                                 </div>
                                 <div class="map-legend-bar">
@@ -517,13 +592,13 @@
                         </div>
 
                         <!-- 3. Riwayat Gangguan / Peringatan -->
-                        <div class="dashboard-card alerts-card" id="alerts-section-card">
+                        <div class="dashboard-card alerts-card">
                             <div class="card-header">
                                 <div class="card-title-group">
                                     <i class="fa-solid fa-triangle-exclamation text-crimson"></i>
                                     <h4>Riwayat Gangguan / Peringatan</h4>
                                 </div>
-                                <a href="reports.html" class="card-link">
+                                <a href="javascript:void(0)" class="card-link" onclick="switchPage('page-alerts')">
                                     Lihat Semua &rarr;
                                 </a>
                             </div>
@@ -536,16 +611,14 @@
 
                     </div>
 
-                    <!-- ========================================================= -->
-                    <!-- RINGKASAN PEMELIHARAAN (BAGIAN BAWAH PERSIS SEPERTI GAMBAR)-->
-                    <!-- ========================================================= -->
+                    <!-- RINGKASAN PEMELIHARAAN (BAGIAN BAWAH DASHBOARD) -->
                     <div class="maintenance-section">
                         <div class="maint-header">
                             <div class="card-title-group">
                                 <i class="fa-solid fa-wrench text-crimson"></i>
                                 <h4>Ringkasan Pemeliharaan</h4>
                             </div>
-                            <a href="reports.html" class="card-link">
+                            <a href="javascript:void(0)" class="card-link" onclick="switchPage('page-reports')">
                                 Lihat Semua &rarr;
                             </a>
                         </div>
@@ -581,23 +654,1178 @@
                         </div>
                     </div>
 
+                </div> <!-- END PAGE DASHBOARD -->
+
+                <!-- ============================================================= -->
+                <!-- HALAMAN 2: MANAJEMEN INVENTARIS ASET (KHUSUS MENU ASET)       -->
+                <!-- ============================================================= -->
+                <div id="page-devices" class="page-view">
+                    <div class="page-title-row">
+                        <div>
+                            <h2 class="section-heading"><i class="fa-solid fa-server text-cyan"></i> Monitoring Status & Perangkat Live</h2>
+                            <p class="section-subheading">Pantau status operasional realtime (Online, Offline, Warning), IP address, latensi ping, dan kendali perangkat elektro.</p>
+                        </div>
+                        <button class="btn btn-primary-cyber admin-only" onclick="openAddDeviceModal()">
+                            <i class="fa-solid fa-plus"></i> Tambah Perangkat Baru
+                        </button>
+                    </div>
+
+                    <!-- Search & Filter Bar -->
+                    <div class="filter-controls-card">
+                        <div class="filter-search-input">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="dev-page-search" placeholder="Cari nama perangkat, IP, kode aset, PIC..." oninput="filterFullDevicesTable()">
+                        </div>
+                        <div class="filter-select-group">
+                            <select id="filter-category" onchange="filterFullDevicesTable()">
+                                <option value="all">Semua Kategori</option>
+                                <option value="Server">Server</option>
+                                <option value="Network Device">Network Device</option>
+                                <option value="CCTV & Security">CCTV & Security</option>
+                                <option value="IoT Sensor">IoT Sensor</option>
+                                <option value="Workstation">Workstation</option>
+                            </select>
+                            <select id="filter-status-select" onchange="filterFullDevicesTable()">
+                                <option value="all">Semua Status</option>
+                                <option value="online">🟢 Online</option>
+                                <option value="warning">🟡 Warning</option>
+                                <option value="offline">🔴 Offline</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Tabel Lengkap Perangkat -->
+                    <div class="dashboard-card mt-3">
+                        <div class="table-responsive">
+                            <table class="mockup-table full-table">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Kode Aset</th>
+                                        <th>Nama Perangkat</th>
+                                        <th>Kategori</th>
+                                        <th>Status</th>
+                                        <th>IP Address</th>
+                                        <th>Lokasi</th>
+                                        <th>Metode</th>
+                                        <th>PIC</th>
+                                        <th class="text-right">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="full-devices-tbody">
+                                    <!-- Rendered dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
 
-            </div>
+                <!-- ============================================================= -->
+                <!-- HALAMAN 3: MONITORING REAL-TIME (REQUIREMENT DOKUMEN PT 6)    -->
+                <!-- ============================================================= -->
+                <div id="page-monitoring" class="page-view">
+                    <div class="page-title-row">
+                        <div>
+                            <div class="live-indicator-tag">
+                                <span class="dot red pulse"></span>
+                                <strong>LIVE MONITORING</strong>
+                            </div>
+                            <h2 class="section-heading">Monitoring Performa Real-Time</h2>
+                            <p class="section-subheading">Telemetry latensi ICMP, ketersediaan daya, dan statistik uptime per jam.</p>
+                        </div>
+                        <button class="btn btn-secondary-cyber" onclick="triggerDeviceSimulation()">
+                            <i class="fa-solid fa-bolt"></i> Kirim Ping Test
+                        </button>
+                    </div>
+
+                    <!-- Progress Bar Availability 30 Hari -->
+                    <div class="dashboard-card mb-3">
+                        <div class="card-header">
+                            <div class="card-title-group">
+                                <i class="fa-solid fa-gauge-high text-cyan"></i>
+                                <h4>Ketersediaan Sistem (Availability 30 Hari Terakhir)</h4>
+                            </div>
+                            <span class="text-green font-bold text-lg">99.6% (Target: 99.0%)</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="availability-bar-track">
+                                <div class="avail-fill" style="width: 99.6%;"></div>
+                            </div>
+                            <div class="avail-legend mt-2">
+                                <span><strong class="text-green">716 Jam</strong> Uptime Aktif</span>
+                                <span><strong class="text-red">2.8 Jam</strong> Total Gangguan (Downtime)</span>
+                                <span><strong class="text-cyan">14 ms</strong> Rata-Rata Latensi Respon</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ranking Device Paling Bermasalah -->
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <div class="card-title-group">
+                                <i class="fa-solid fa-fire text-red"></i>
+                                <h4>Top 3 Device Paling Bermasalah (Perlu Perhatian Teknisi)</h4>
+                            </div>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="troubled-devices-list">
+                                <div class="trouble-item">
+                                    <div class="t-rank">#1</div>
+                                    <div class="t-info">
+                                        <strong>CCTV-PLG-03 (Palembang)</strong>
+                                        <span>Gangguan RTSP Stream &bull; Total Gangguan: 4 kali &bull; Downtime: 1.5 Jam</span>
+                                    </div>
+                                    <span class="status-pill offline"><span class="dot red pulse"></span> Offline</span>
+                                </div>
+                                <div class="trouble-item">
+                                    <div class="t-rank">#2</div>
+                                    <div class="t-info">
+                                        <strong>SW-MKSR-02 (Branch Makassar)</strong>
+                                        <span>Link Fiber Optik Flapping &bull; Packet Loss 12%</span>
+                                    </div>
+                                    <span class="status-pill offline"><span class="dot red pulse"></span> Offline</span>
+                                </div>
+                                <div class="trouble-item">
+                                    <div class="t-rank">#3</div>
+                                    <div class="t-info">
+                                        <strong>AP-LBJ-01 (Labuan Bajo)</strong>
+                                        <span>Beban Bandwidth Tinggi &bull; Latensi > 150 ms</span>
+                                    </div>
+                                    <span class="status-pill warning"><span class="dot yellow pulse"></span> Peringatan</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============================================================= -->
+                <!-- HALAMAN 5: PETA GEOSPASIAL & INFRASTRUKTUR AREA BLITAR        -->
+                <!-- ============================================================= -->
+                <div id="page-location" class="page-view">
+                    <div class="page-title-row">
+                        <div>
+                            <div class="live-indicator-tag">
+                                <span class="dot green pulse"></span>
+                                <strong>GIS GEOLOCATION &bull; KOTA & KABUPATEN BLITAR</strong>
+                            </div>
+                            <h2 class="section-heading"><i class="fa-solid fa-map-location-dot text-cyan"></i> Peta Sebaran & GIS Infrastruktur (Area Blitar)</h2>
+                            <p class="section-subheading">Pemetaan geospasial real-time, koordinat lintang & bujur (Latitude/Longitude), dan status node perangkat di seluruh wilayah Blitar.</p>
+                        </div>
+                        <div class="coord-inspector-badge">
+                            <i class="fa-solid fa-crosshairs text-yellow"></i>
+                            <span class="ci-lbl">Titik Terpilih:</span>
+                            <strong id="active-map-coord" class="ci-val">-8.0988, 112.1652</strong>
+                            <button class="btn-copy-chip" onclick="copyCurrentCoord()" title="Salin koordinat ke clipboard">
+                                <i class="fa-solid fa-copy"></i> Salin
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Filter & Kontrol Wilayah Blitar -->
+                    <div class="filter-controls-card mb-3">
+                        <div class="filter-search-input">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="blitar-node-search" placeholder="Cari nama perangkat, IP, kecamatan di Blitar..." oninput="filterBlitarNodes()">
+                        </div>
+                        <div class="filter-select-group">
+                            <select id="blitar-district-filter" onchange="filterBlitarNodes()">
+                                <option value="all">Semua Wilayah Blitar</option>
+                                <option value="Kepanjenkidul">Kepanjenkidul (Kota Blitar)</option>
+                                <option value="Sananwetan">Sananwetan (Kota Blitar)</option>
+                                <option value="Sukorejo">Sukorejo (Kota Blitar)</option>
+                                <option value="Kanigoro">Kanigoro (Pusat Pemkab)</option>
+                                <option value="Wlingi">Wlingi (Blitar Timur)</option>
+                                <option value="Srengat">Srengat (Blitar Barat)</option>
+                                <option value="Garum">Garum (Blitar Tengah)</option>
+                                <option value="Sutojayan">Sutojayan / Lodoyo (Blitar Selatan)</option>
+                            </select>
+                            <select id="blitar-status-filter" onchange="filterBlitarNodes()">
+                                <option value="all">Semua Status Node</option>
+                                <option value="online">🟢 Online (Normal)</option>
+                                <option value="warning">🟡 Peringatan (Standby)</option>
+                                <option value="offline">🔴 Offline (Gangguan)</option>
+                            </select>
+                            <button class="btn btn-outline-cyber btn-sm" onclick="resetFullBlitarView()">
+                                <i class="fa-solid fa-arrows-to-dot text-cyan"></i> Reset Pusat Blitar
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- GIS Map & Node List Split Grid -->
+                    <div class="blitar-gis-layout">
+                        <!-- Kolom Utama: Peta Interaktif Leaflet Blitar -->
+                        <div class="gis-map-column">
+                            <div class="dashboard-card h-full">
+                                <div class="card-header">
+                                    <div class="card-title-group">
+                                        <i class="fa-solid fa-satellite text-crimson"></i>
+                                        <h4>Peta Interaktif GIS Blitar (Live Telemetry)</h4>
+                                    </div>
+                                    <div class="view-switch-tabs">
+                                        <button class="v-tab active" id="btn-tab-gis" onclick="toggleGisFloorplanView('gis')">
+                                            <i class="fa-solid fa-map"></i> Peta Satelit / Dark GIS
+                                        </button>
+                                        <button class="v-tab" id="btn-tab-floor" onclick="toggleGisFloorplanView('floor')">
+                                            <i class="fa-solid fa-network-wired"></i> Denah Server Room Blitar
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-body p-0 gis-canvas-container">
+                                    <!-- Leaflet Container -->
+                                    <div id="full-blitar-map" class="full-blitar-map-el"></div>
+
+                                    <!-- Petunjuk Interaksi Koordinat -->
+                                    <div class="map-hint-floating">
+                                        <i class="fa-solid fa-info-circle text-cyan"></i>
+                                        <span>Klik di mana saja pada peta Blitar untuk mendapatkan <strong>titik koordinat akurat</strong>!</span>
+                                    </div>
+
+                                    <!-- Denah Server Room (Alternatif Tampilan) -->
+                                    <div id="blitar-floorplan-view" class="floorplan-mockup hidden">
+                                        <div class="floorplan-grid">
+                                            <div class="floor-zone active-zone" onclick="selectFloorRack('Rack A', 'SRV-DC-01', 'Kepanjenkidul', 'Normal 24°C')">
+                                                <i class="fa-solid fa-server text-cyan"></i>
+                                                <strong>Rack A (Data Center Utama)</strong>
+                                                <span class="status-pill online"><span class="dot green"></span> SRV-DC-01 &bull; 24°C</span>
+                                            </div>
+                                            <div class="floor-zone" onclick="selectFloorRack('Rack B', 'SW-Core-01', 'Sananwetan', 'Normal 26°C')">
+                                                <i class="fa-solid fa-network-wired text-green"></i>
+                                                <strong>Rack B (Core Switch & Fiber)</strong>
+                                                <span class="status-pill online"><span class="dot green"></span> SW-Core-01 &bull; 4ms</span>
+                                            </div>
+                                            <div class="floor-zone" onclick="selectFloorRack('Rack C', 'CCTV-BLT-01', 'Kepanjenkidul', 'OFFLINE')">
+                                                <i class="fa-solid fa-video text-red"></i>
+                                                <strong>Rack C (Security & NVR CCTV)</strong>
+                                                <span class="status-pill offline"><span class="dot red"></span> CCTV-BLT-01 Rusak</span>
+                                            </div>
+                                            <div class="floor-zone" onclick="selectFloorRack('Rack D', 'IOT-TEMP-04', 'Sukorejo', 'Suhu 32°C Warning')">
+                                                <i class="fa-solid fa-temperature-arrow-up text-yellow"></i>
+                                                <strong>Rack D (Sensor Suhu & IoT)</strong>
+                                                <span class="status-pill warning"><span class="dot yellow"></span> IOT-TEMP-04 (32°C)</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Kolom Samping: Daftar Node & Titik Koordinat Blitar -->
+                        <div class="gis-sidebar-column">
+                            <div class="dashboard-card h-full">
+                                <div class="card-header">
+                                    <div class="card-title-group">
+                                        <i class="fa-solid fa-tower-broadcast text-cyan"></i>
+                                        <h4>Node Perangkat Blitar</h4>
+                                    </div>
+                                    <span class="badge-count" id="blitar-active-badge">10 Node</span>
+                                </div>
+                                <div class="card-body p-0">
+                                    <div class="blitar-nodes-list" id="blitar-nodes-container">
+                                        <!-- Rendered dynamically -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============================================================= -->
+                <!-- HALAMAN 5: NOTIFIKASI & ALERT (REQUIREMENT DOKUMEN PT 8)      -->
+                <!-- ============================================================= -->
+                <div id="page-alerts" class="page-view">
+                    <div class="page-title-row">
+                        <div>
+                            <h2 class="section-heading"><i class="fa-solid fa-bell text-crimson"></i> Riwayat Gangguan & Notifikasi</h2>
+                            <p class="section-subheading">Catatan insiden teknis, perubahan status alat elektro, dan log otomatis sistem.</p>
+                        </div>
+                        <button class="btn btn-outline-cyber" onclick="markAllAlertsRead()">
+                            <i class="fa-solid fa-check-double"></i> Tandai Semua Dibaca
+                        </button>
+                    </div>
+
+                    <div class="dashboard-card">
+                        <div class="card-body p-0">
+                            <div class="full-alerts-list" id="full-alerts-container">
+                                <!-- Rendered dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============================================================= -->
+                <!-- HALAMAN 6: LAPORAN & REPORT (REQUIREMENT DOKUMEN PT 9)         -->
+                <!-- ============================================================= -->
+                <div id="page-reports" class="page-view">
+                    <div class="page-title-row">
+                        <div>
+                            <h2 class="section-heading"><i class="fa-solid fa-file-lines text-cyan"></i> Laporan Infrastruktur & Pemeliharaan</h2>
+                            <p class="section-subheading">Rekapitulasi performa bulanan untuk pelaporan kegiatan PKL Teknolab.</p>
+                        </div>
+                        <div class="btn-group">
+                            <button class="btn btn-outline-cyber btn-sm" onclick="exportReport('PDF')"><i class="fa-solid fa-file-pdf text-red"></i> Export PDF</button>
+                            <button class="btn btn-outline-cyber btn-sm" onclick="exportReport('Excel')"><i class="fa-solid fa-file-excel text-green"></i> Export Excel</button>
+                        </div>
+                    </div>
+
+                    <!-- AI Recommendation Box Sesuai Dokumen Kerja -->
+                    <div class="ai-recommendation-card mb-3">
+                        <div class="ai-head">
+                            <i class="fa-solid fa-microchip text-cyan"></i>
+                            <strong>T-AIMS AI Recommendation Engine:</strong>
+                        </div>
+                        <p class="ai-text">
+                            Berdasarkan analisis 30 hari data log PKL: Perangkat <strong>CCTV-PLG-03</strong> mengalami fluktuasi tegangan daya pada jam 11:00-13:00 WIB. Disarankan melakukan pengecekan regulator adaptor dan koneksi kabel UTP di lokasi Palembang.
+                        </p>
+                    </div>
+
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h4>Ringkasan Laporan Operasional 30 Hari PKL</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="report-summary-grid">
+                                <div class="rep-box"><span>Total Perangkat</span><strong>1,248</strong></div>
+                                <div class="rep-box"><span>Total Gangguan</span><strong class="text-red">14 Insiden</strong></div>
+                                <div class="rep-box"><span>Total Downtime</span><strong class="text-yellow">2 Jam 48 Menit</strong></div>
+                                <div class="rep-box"><span>Rata-Rata Respons</span><strong class="text-green">14 ms</strong></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============================================================= -->
+                <!-- HALAMAN 7: INFORMASI PROJEK, TIM & KEGUNAAN ALAT (PROFESIONAL) -->
+                <!-- ============================================================= -->
+                <div id="page-project-info" class="page-view">
+                    <!-- Hero Header Dokumen Projek -->
+                    <div class="project-hero-card mb-3">
+                        <div class="ph-content">
+                            <div class="ph-badge">
+                                <span class="pulse-led online"></span>
+                                <span>DOKUMENTASI RESMI PROYEK PKL ELEKTRO &bull; TEKNOLAB CARAKA INTERNASIONAL</span>
+                            </div>
+                            <h2 class="ph-title">T-AIMS: Teknolab Asset & Infrastructure Monitoring System</h2>
+                            <p class="ph-desc">
+                                Sistem Monitoring Infrastruktur IT, Jaringan, dan Telemetri Sensor Berbasis IoT & GIS Wilayah Blitar.
+                                Dikembangkan sebagai portofolio profesional untuk kegiatan Praktik Kerja Lapangan (PKL) 30 Hari Bidang Teknik Ketenagalistrikan & Elektronika / Rekayasa Perangkat Lunak.
+                            </p>
+                            <div class="ph-meta-row">
+                                <span class="ph-pill"><i class="fa-solid fa-calendar-check text-cyan"></i> Periode PKL: 30 Hari Kerja</span>
+                                <span class="ph-pill"><i class="fa-solid fa-location-dot text-crimson"></i> Wilayah Fokus: Area Blitar, Jawa Timur</span>
+                                <span class="ph-pill"><i class="fa-solid fa-certificate text-green"></i> Standar: Industri IT & Telekomunikasi</span>
+                                <button class="btn btn-outline-cyber btn-sm" onclick="exportProjectBrief()">
+                                    <i class="fa-solid fa-file-pdf text-red"></i> Unduh Lembar Profil Projek
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SUB-NAV TAB: DATA TIM | LATAR BELAKANG | KEGUNAAN ALAT | SOP -->
+                    <div class="project-tab-bar mb-3">
+                        <button class="proj-tab-btn active" onclick="switchProjSection('team')">
+                            <i class="fa-solid fa-users text-cyan"></i> Data & Profil Tim Kami
+                        </button>
+                        <button class="proj-tab-btn" onclick="switchProjSection('purpose')">
+                            <i class="fa-solid fa-bullseye text-crimson"></i> Informasi Kegunaan Alat
+                        </button>
+                        <button class="proj-tab-btn" onclick="switchProjSection('overview')">
+                            <i class="fa-solid fa-microchip text-yellow"></i> Latar Belakang & Arsitektur
+                        </button>
+                        <button class="proj-tab-btn" onclick="switchProjSection('sop')">
+                            <i class="fa-solid fa-list-check text-green"></i> SOP Pengoperasian
+                        </button>
+                    </div>
+
+                    <!-- ========================================== -->
+                    <!-- TAB 1: DATA NAMA & PROFIL TIM PENGEMBANG  -->
+                    <!-- ========================================== -->
+                    <div id="proj-sec-team" class="proj-section-panel active">
+                        <div class="section-title-wrap mb-3">
+                            <div class="flex justify-between items-center flex-wrap gap-2">
+                                <div>
+                                    <h3 class="section-title"><i class="fa-solid fa-user-group text-cyan"></i> Susunan Tim Pengembang Proyek</h3>
+                                    <p class="section-subtitle">Daftar siswa dan penanggung jawab teknis dalam pelaksanaan proyek T-AIMS.</p>
+                                </div>
+                                <div class="btn-group">
+                                    <button class="btn btn-primary-cyber btn-sm admin-only" onclick="openAddTeamMemberModal()">
+                                        <i class="fa-solid fa-user-plus"></i> Tambah Anggota Tim
+                                    </button>
+                                    <button class="btn btn-outline-cyber btn-sm" onclick="resetTeamDataPrompt()">
+                                        <i class="fa-solid fa-rotate-left"></i> Reset Tim Default
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Grid Kartu Profil Tim (Dapat Diedit & Disimpan) -->
+                        <div class="team-cards-grid" id="team-cards-container">
+                            <!-- Rendered dynamically by app.js -->
+                        </div>
+
+                        <!-- Dewan Pembimbing & Advisory -->
+                        <div class="dashboard-card mt-3">
+                            <div class="card-header">
+                                <div class="card-title-group">
+                                    <i class="fa-solid fa-graduation-cap text-yellow"></i>
+                                    <h4>Dewan Pembimbing Proyek PKL</h4>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="advisory-grid">
+                                    <div class="advisor-item">
+                                        <div class="adv-icon bg-blue"><i class="fa-solid fa-building"></i></div>
+                                        <div class="adv-info">
+                                            <strong>PT Teknolab Caraka Internasional</strong>
+                                            <span>Pembimbing Industri Lapangan</span>
+                                            <p class="adv-desc">Supervisi standar industri monitoring infrastruktur, validasi keandalan sensor, dan verifikasi protokol keamanan jaringan.</p>
+                                        </div>
+                                    </div>
+                                    <div class="advisor-item">
+                                        <div class="adv-icon bg-purple"><i class="fa-solid fa-user-tie"></i></div>
+                                        <div class="adv-info">
+                                            <strong>Ir. Hendra Gunawan, S.T., M.Kom.</strong>
+                                            <span>Guru Pembimbing Sekolah (Jurusan Elektro / RPL)</span>
+                                            <p class="adv-desc">Bimbingan metodologi rekayasa, penilaian pencapaian kompetensi 30 hari PKL, dan pengujian kelayakan sistem terintegrasi.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ========================================== -->
+                    <!-- TAB 2: INFORMASI KEGUNAAN & FUNGSI ALAT    -->
+                    <!-- ========================================== -->
+                    <div id="proj-sec-purpose" class="proj-section-panel hidden">
+                        <div class="section-title-wrap mb-3">
+                            <h3 class="section-title"><i class="fa-solid fa-screwdriver-wrench text-crimson"></i> Manfaat, Kegunaan & Keunggulan Alat T-AIMS</h3>
+                            <p class="section-subtitle">Nilai guna profesional sistem T-AIMS dalam pengelolaan infrastruktur industri modern.</p>
+                        </div>
+
+                        <!-- 6 Pilar Kegunaan Utama Industri -->
+                        <div class="utilities-grid">
+                            <div class="utility-card">
+                                <div class="uc-header">
+                                    <div class="uc-num">01</div>
+                                    <div class="uc-icon crimson-bg"><i class="fa-solid fa-heart-pulse"></i></div>
+                                </div>
+                                <h4 class="uc-title">Pemantauan Ketersediaan Real-Time (24/7 Uptime)</h4>
+                                <p class="uc-desc">
+                                    Mendeteksi kondisi alat elektro, server, dan jaringan detik-demi-detik melalui protokol ICMP telemetry dan SNMP. Sistem secara otomatis menandai status <strong>Online (Hijau)</strong>, <strong>Peringatan (Kuning)</strong>, atau <strong>Offline (Merah)</strong> tanpa perlunya inspeksi manual berkala.
+                                </p>
+                                <div class="uc-impact">
+                                    <span class="impact-tag"><i class="fa-solid fa-check"></i> Mengurangi downtime hingga 85%</span>
+                                </div>
+                            </div>
+
+                            <div class="utility-card">
+                                <div class="uc-header">
+                                    <div class="uc-num">02</div>
+                                    <div class="uc-icon cyan-bg"><i class="fa-solid fa-map-location-dot"></i></div>
+                                </div>
+                                <h4 class="uc-title">Pelacakan Geospasial Presisi di Area Blitar</h4>
+                                <p class="uc-desc">
+                                    Menyediakan visualisasi peta geografis dengan titik koordinat lintang dan bujur (Latitude & Longitude) yang presisi di Kota dan Kabupaten Blitar. Teknisi lapangan dapat langsung menuju lokasi tiang BTS, gardu, atau ruang server terdekat saat terjadi insiden.
+                                </p>
+                                <div class="uc-impact">
+                                    <span class="impact-tag"><i class="fa-solid fa-check"></i> Mempercepat respons lapangan &bull; MTTR turun 60%</span>
+                                </div>
+                            </div>
+
+                            <div class="utility-card">
+                                <div class="uc-header">
+                                    <div class="uc-num">03</div>
+                                    <div class="uc-icon amber-bg"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                                </div>
+                                <h4 class="uc-title">Sistem Peringatan Dini (Early Warning System)</h4>
+                                <p class="uc-desc">
+                                    Mencegah kerusakan hardware fatal melalui ambang batas toleransi (threshold). Jika sensor suhu server melampaui 32°C, daya listrik baterai UPS anjlok di bawah 20%, atau latensi melonjak di atas 150ms, alarm instan dan notifikasi darurat langsung dipicu.
+                                </p>
+                                <div class="uc-impact">
+                                    <span class="impact-tag"><i class="fa-solid fa-check"></i> Pencegahan kebakaran & lonjakan beban listrik</span>
+                                </div>
+                            </div>
+
+                            <div class="utility-card">
+                                <div class="uc-header">
+                                    <div class="uc-num">04</div>
+                                    <div class="uc-icon purple-bg"><i class="fa-solid fa-boxes-stacked"></i></div>
+                                </div>
+                                <h4 class="uc-title">Sentralisasi Inventaris & Manajemen Siklus Aset</h4>
+                                <p class="uc-desc">
+                                    Menggabungkan data aset fisik dan perangkat telemetri dalam satu portal. Setiap aset memiliki kode identifikasi (AST-...), nilai perolehan, masa garansi, kondisi kelayakan fisik, serta PIC penanggung jawab untuk audit transparansi.
+                                </p>
+                                <div class="uc-impact">
+                                    <span class="impact-tag"><i class="fa-solid fa-check"></i> Tata kelola inventaris standar ISO 55000</span>
+                                </div>
+                            </div>
+
+                            <div class="utility-card">
+                                <div class="uc-header">
+                                    <div class="uc-num">05</div>
+                                    <div class="uc-icon emerald-bg"><i class="fa-solid fa-microchip"></i></div>
+                                </div>
+                                <h4 class="uc-title">Rekomendasi Prediktif AI untuk Pemeliharaan</h4>
+                                <p class="uc-desc">
+                                    Memanfaatkan analisis data log historis 30 hari untuk menganalisis pola fluktuasi tegangan daya listrik dan packet loss jaringan. Sistem memberikan saran teknis langsung ke teknisi sebelum perangkat mengalami kerusakan total.
+                                </p>
+                                <div class="uc-impact">
+                                    <span class="impact-tag"><i class="fa-solid fa-check"></i> Dari perbaikan reaktif beralih ke preventif</span>
+                                </div>
+                            </div>
+
+                            <div class="utility-card">
+                                <div class="uc-header">
+                                    <div class="uc-num">06</div>
+                                    <div class="uc-icon blue-bg"><i class="fa-solid fa-file-invoice"></i></div>
+                                </div>
+                                <h4 class="uc-title">Pelaporan Otomatis Siap Cetak (Audit Compliance)</h4>
+                                <p class="uc-desc">
+                                    Mengotomatisasi pembuatan laporan ketersediaan sistem, rekapitulasi gangguan, dan buku log pemeliharaan dalam format PDF dan Excel. Memudahkan pelaporan harian/mingguan ke pihak sekolah dan pimpinan instansi.
+                                </p>
+                                <div class="uc-impact">
+                                    <span class="impact-tag"><i class="fa-solid fa-check"></i> Efisiensi administrasi laporan 100% otomatis</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ========================================== -->
+                    <!-- TAB 3: LATAR BELAKANG & ARSITEKTUR TEKNOLOGI -->
+                    <!-- ========================================== -->
+                    <div id="proj-sec-overview" class="proj-section-panel hidden">
+                        <div class="section-title-wrap mb-3">
+                            <h3 class="section-title"><i class="fa-solid fa-diagram-project text-yellow"></i> Latar Belakang & Arsitektur Teknis</h3>
+                            <p class="section-subtitle">Konsep perancangan, landasan teori, dan diagram integrasi perangkat keras dan lunak.</p>
+                        </div>
+
+                        <div class="dashboard-card mb-3">
+                            <div class="card-header">
+                                <h4>Latar Belakang Pembuatan Alat</h4>
+                            </div>
+                            <div class="card-body">
+                                <p class="text-secondary mb-3 leading-relaxed">
+                                    Di era Industri 4.0, stabilitas infrastruktur teknologi dan kelistrikan merupakan tulang punggung operasional setiap perusahaan. PT Teknolab Caraka Internasional mengelola puluhan node infrastruktur yang tersebar di berbagai wilayah, khususnya sentra operasional di wilayah <strong>Blitar, Jawa Timur</strong>.
+                                </p>
+                                <p class="text-secondary mb-3 leading-relaxed">
+                                    Permasalahan klasik yang dihadapi di lapangan meliputi keterlambatan mendeteksi putusnya kabel fiber optik, panas berlebih pada ruangan server yang berujung pada hang sistem, serta pencatatan inventaris perangkat elektro yang masih konvensional dan terpisah-pisah. Proyek <strong>T-AIMS</strong> dirancang sebagai solusi holistik untuk mengatasi seluruh permasalahan tersebut dalam satu layar kendali real-time.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- 3-Tier Architecture Diagram -->
+                        <div class="dashboard-card">
+                            <div class="card-header">
+                                <h4>Arsitektur Sistem Terintegrasi 3-Tier</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="architecture-flow-grid">
+                                    <div class="arch-tier-box">
+                                        <div class="at-head">
+                                            <i class="fa-solid fa-microchip text-yellow"></i>
+                                            <h5>Tier 1: Hardware & Sensor Edge</h5>
+                                        </div>
+                                        <ul class="at-list">
+                                            <li><i class="fa-solid fa-check text-green"></i> Mikrokontroler ESP32 / Industrial Gateway</li>
+                                            <li><i class="fa-solid fa-check text-green"></i> Sensor Suhu & Kelembaban (DHT22 / DS18B20)</li>
+                                            <li><i class="fa-solid fa-check text-green"></i> Sensor Arus & Daya (ACS712 / PZEM-004T)</li>
+                                            <li><i class="fa-solid fa-check text-green"></i> Modul Relai Kontrol Catu Daya</li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="arch-arrow"><i class="fa-solid fa-arrow-right-long text-cyan"></i></div>
+
+                                    <div class="arch-tier-box">
+                                        <div class="at-head">
+                                            <i class="fa-solid fa-network-wired text-cyan"></i>
+                                            <h5>Tier 2: Komunikasi & Protokol</h5>
+                                        </div>
+                                        <ul class="at-list">
+                                            <li><i class="fa-solid fa-check text-green"></i> ICMP Ping Telemetry (Deteksi Latensi & Uptime)</li>
+                                            <li><i class="fa-solid fa-check text-green"></i> Protokol MQTT Broker (Kirim Telemetri Sensor)</li>
+                                            <li><i class="fa-solid fa-check text-green"></i> SNMP v2c/v3 MIB (Monitoring Status Switch/Router)</li>
+                                            <li><i class="fa-solid fa-check text-green"></i> HTTP REST API & WebSockets Transport</li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="arch-arrow"><i class="fa-solid fa-arrow-right-long text-cyan"></i></div>
+
+                                    <div class="arch-tier-box">
+                                        <div class="at-head">
+                                            <i class="fa-solid fa-display text-crimson"></i>
+                                            <h5>Tier 3: Frontend & GIS Dashboard</h5>
+                                        </div>
+                                        <ul class="at-list">
+                                            <li><i class="fa-solid fa-check text-green"></i> Cyber Dark HUD Dashboard (High Visibility)</li>
+                                            <li><i class="fa-solid fa-check text-green"></i> Leaflet GIS Interactive Mapping Area Blitar</li>
+                                            <li><i class="fa-solid fa-check text-green"></i> Visualisasi Analitik Tren Data (Chart.js)</li>
+                                            <li><i class="fa-solid fa-check text-green"></i> Role-Based Access: Administrator & Mode Tamu</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ========================================== -->
+                    <!-- TAB 4: STANDAR OPERASIONAL PROSEDUR (SOP) -->
+                    <!-- ========================================== -->
+                    <div id="proj-sec-sop" class="proj-section-panel hidden">
+                        <div class="section-title-wrap mb-3">
+                            <h3 class="section-title"><i class="fa-solid fa-clipboard-check text-green"></i> Standar Operasional Prosedur (SOP) Penggunaan</h3>
+                            <p class="section-subtitle">Panduan langkah demi langkah pengoperasian sistem monitoring untuk teknisi dan operator.</p>
+                        </div>
+
+                        <div class="sop-steps-grid">
+                            <div class="sop-card">
+                                <div class="sop-step-badge">LANGKAH 1</div>
+                                <h4 class="sop-step-title"><i class="fa-solid fa-id-card-clip text-cyan"></i> Autentikasi & Registrasi Aset</h4>
+                                <p class="sop-text">
+                                    Login sebagai Administrator ke portal T-AIMS. Daftarkan perangkat baru melalui menu <strong>Aset &bull; Tambah Perangkat</strong>, isi kode registrasi (AST-...), IP Address statis, MAC address, serta nama PIC penanggung jawab.
+                                </p>
+                            </div>
+
+                            <div class="sop-card">
+                                <div class="sop-step-badge">LANGKAH 2</div>
+                                <h4 class="sop-step-title"><i class="fa-solid fa-location-crosshairs text-crimson"></i> Penandaan Koordinat Geospasial Blitar</h4>
+                                <p class="sop-text">
+                                    Buka menu <strong>Lokasi</strong>, klik pada peta Blitar di lokasi fisik alat terpasang untuk mendapatkan titik koordinat Latitude dan Longitude secara presisi, lalu simpan koordinat ke dalam profil perangkat.
+                                </p>
+                            </div>
+
+                            <div class="sop-card">
+                                <div class="sop-step-badge">LANGKAH 3</div>
+                                <h4 class="sop-step-title"><i class="fa-solid fa-chart-line text-yellow"></i> Pemantauan Dashboard & Ambang Batas</h4>
+                                <p class="sop-text">
+                                    Pantau grafik tren status dan kartu KPI. Jika terjadi perubahan warna menjadi Kuning (Peringatan) atau Merah (Offline), buka menu <strong>Peringatan</strong> untuk melihat detail gangguan teknis yang terdeteksi.
+                                </p>
+                            </div>
+
+                            <div class="sop-card">
+                                <div class="sop-step-badge">LANGKAH 4</div>
+                                <h4 class="sop-step-title"><i class="fa-solid fa-wrench text-green"></i> Tindakan Teknisi & Ekspor Laporan</h4>
+                                <p class="sop-text">
+                                    Teknisi menuju ke titik lokasi koordinat atau melakukan remote restart melalui tombol kontrol status. Setelah penanganan selesai, generate laporan performa bulanan melalui menu <strong>Laporan &bull; Export PDF/Excel</strong>.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============================================================= -->
+                <!-- HALAMAN 8: PENGGUNA / USER MANAGEMENT (REQUIREMENT PT 10)     -->
+                <!-- ============================================================= -->
+                <div id="page-users" class="page-view">
+                    <div class="page-title-row">
+                        <div>
+                            <h2 class="section-heading"><i class="fa-solid fa-users text-cyan"></i> Manajemen Pengguna</h2>
+                            <p class="section-subheading">Daftar akun administrator dan pembimbing dengan hak akses sistem.</p>
+                        </div>
+                        <button class="btn btn-primary-cyber admin-only" onclick="showToast('Fitur Tambah User', 'Form penambahan user administrator dibuka.', 'info')">
+                            <i class="fa-solid fa-user-plus"></i> Tambah User Baru
+                        </button>
+                    </div>
+
+                    <div class="dashboard-card">
+                        <div class="table-responsive">
+                            <table class="mockup-table">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Nama Pengguna</th>
+                                        <th>Email</th>
+                                        <th>Role / Hak Akses</th>
+                                        <th>Status Akun</th>
+                                        <th class="text-right">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td><strong>Ahmad Rizki</strong></td>
+                                        <td>ahmad.rizki@teknolab.id</td>
+                                        <td><span class="user-role-badge super">Administrator</span></td>
+                                        <td><span class="dot green"></span> Aktif</td>
+                                        <td class="text-right"><button class="btn-sm btn-outline-cyber">Edit</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td><strong>Guru Pembimbing PKL</strong></td>
+                                        <td>pembimbing@smk-elektro.sch.id</td>
+                                        <td><span class="user-role-badge view">Viewer / Pengamat</span></td>
+                                        <td><span class="dot green"></span> Aktif</td>
+                                        <td class="text-right"><button class="btn-sm btn-outline-cyber">Edit</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td>3</td>
+                                        <td><strong>Siswa Elektro PKL</strong></td>
+                                        <td>peserta.pkl@teknolab.id</td>
+                                        <td><span class="user-role-badge super">Operator Elektro</span></td>
+                                        <td><span class="dot green"></span> Aktif</td>
+                                        <td class="text-right"><button class="btn-sm btn-outline-cyber">Edit</button></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============================================================= -->
+                <!-- HALAMAN 8: PENGATURAN SISTEM (REQUIREMENT DOKUMEN)            -->
+                <!-- ============================================================= -->
+                <div id="page-settings" class="page-view">
+                    <div class="page-title-row">
+                        <div>
+                            <h2 class="section-heading"><i class="fa-solid fa-sliders text-cyan"></i> Pengaturan Sistem T-AIMS</h2>
+                            <p class="section-subheading">Konfigurasi interval ping sensor, ambang batas alert, dan kredensial sistem.</p>
+                        </div>
+                        <button class="btn btn-primary-cyber" onclick="showToast('Pengaturan Disimpan', 'Konfigurasi T-AIMS berhasil diperbarui.', 'success')">
+                            <i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan
+                        </button>
+                    </div>
+
+                    <div class="dashboard-card">
+                        <div class="card-body">
+                            <div class="settings-form-grid">
+                                <div class="form-group">
+                                    <label>Interval Auto-Refresh Monitoring (Detik)</label>
+                                    <input type="number" value="10" min="5" max="60">
+                                </div>
+                                <div class="form-group">
+                                    <label>Ambang Batas Suhu Kritis Server (°C)</label>
+                                    <input type="number" value="32" min="20" max="50">
+                                </div>
+                                <div class="form-group">
+                                    <label>Zona Waktu Monitoring</label>
+                                    <select>
+                                        <option selected>Asia/Jakarta (WIB - UTC+7)</option>
+                                        <option>Asia/Makassar (WITA - UTC+8)</option>
+                                        <option>Asia/Jayapura (WIT - UTC+9)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Mode Tema Dashboard</label>
+                                    <select disabled>
+                                        <option selected>Opsi 2 - Cyber-Electric Dark (Aktif)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div> <!-- END CONTENT CONTAINER -->
+
         </main>
     </div>
 
-    <!-- Toast Notification Overlay -->
-    <div id="toast-container" class="toast-container"></div>
+    <!-- ========================================================================= -->
+    <!-- MODAL POPUPS (DETAIL PERANGKAT, TAMBAH PERANGKAT, GANTI STATUS, TOAST)    -->
+    <!-- ========================================================================= -->
+    
+    <!-- Modal 1: Detail Perangkat Lengkap (Requirement Dokumen Poin 5) -->
+    <div class="modal-backdrop hidden" id="device-detail-modal">
+        <div class="modal-card modal-lg">
+            <div class="modal-header">
+                <div class="modal-title-wrap">
+                    <button class="btn-back-modal" onclick="closeDeviceDetailModal()" title="Kembali"><i class="fa-solid fa-arrow-left"></i></button>
+                    <div>
+                        <h4 id="detail-dev-name" class="m-0">SRV-DC-01</h4>
+                        <span class="text-muted text-sm" id="detail-dev-code">KODE: AST-SRV-001</span>
+                    </div>
+                </div>
+                <div id="detail-dev-status-badge">
+                    <span class="status-pill online"><span class="dot green pulse"></span> ONLINE</span>
+                </div>
+            </div>
+            <div class="modal-body">
+                <!-- Info Dasar Grid -->
+                <div class="detail-info-grid">
+                    <div class="detail-info-item">
+                        <span class="d-label">Kategori</span>
+                        <strong class="d-val" id="detail-dev-category">Server</strong>
+                    </div>
+                    <div class="detail-info-item">
+                        <span class="d-label">IP Address</span>
+                        <strong class="d-val ip-text" id="detail-dev-ip">192.168.1.10</strong>
+                    </div>
+                    <div class="detail-info-item">
+                        <span class="d-label">MAC Address</span>
+                        <strong class="d-val ip-text" id="detail-dev-mac">00:1B:44:11:3A:B7</strong>
+                    </div>
+                    <div class="detail-info-item">
+                        <span class="d-label">Lokasi</span>
+                        <strong class="d-val" id="detail-dev-location">Kantor Pusat</strong>
+                    </div>
+                    <div class="detail-info-item">
+                        <span class="d-label">PIC Elektro</span>
+                        <strong class="d-val" id="detail-dev-pic">Ahmad Rizki</strong>
+                    </div>
+                    <div class="detail-info-item">
+                        <span class="d-label">Metode Monitoring</span>
+                        <strong class="d-val" id="detail-dev-method">Ping (ICMP)</strong>
+                    </div>
+                </div>
 
-    <!-- Core Scripts -->
+                <!-- Status Terakhir & Telemetry -->
+                <div class="telemetry-bar-row mt-3">
+                    <div class="tel-box"><span>Last Seen:</span> <strong id="detail-dev-lastseen">24 Apr 2024 14:31</strong></div>
+                    <div class="tel-box"><span>Response Time:</span> <strong class="text-green" id="detail-dev-ping">12 ms</strong></div>
+                    <div class="tel-box"><span>Uptime:</span> <strong class="text-cyan">99.8%</strong></div>
+                    <div class="tel-box"><span>Total Gangguan:</span> <strong class="text-yellow">0 Kali</strong></div>
+                </div>
+
+                <!-- Histori Gangguan -->
+                <div class="detail-history-box mt-3">
+                    <h6 class="mb-2"><i class="fa-solid fa-clock-rotate-left"></i> Histori Perubahan Status</h6>
+                    <div class="mini-history-table">
+                        <div class="hist-row"><span>24 Apr 2024 14:31</span><span class="text-green">ONLINE (Normal)</span><span>30 hari aktif</span></div>
+                        <div class="hist-row"><span>12 Apr 2024 09:15</span><span class="text-yellow">PERINGATAN (Restart)</span><span>5 menit</span></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-cyber" onclick="closeDeviceDetailModal()">Tutup</button>
+                <button type="button" class="btn btn-secondary-cyber admin-only" onclick="openQuickStatusFromDetail()">
+                    <i class="fa-solid fa-power-off"></i> Ubah Status Alat
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 2: Tambah Perangkat Baru (Admin Only) -->
+    <div class="modal-backdrop hidden" id="device-modal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div class="modal-title-wrap">
+                    <i class="fa-solid fa-server text-cyan"></i>
+                    <h5 id="modal-device-title">Tambah Perangkat Baru</h5>
+                </div>
+                <button class="modal-close-btn" onclick="closeDeviceModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="device-form" onsubmit="event.preventDefault(); handleSaveDevice();">
+                <div class="modal-body">
+                    <div class="form-row-2">
+                        <div class="form-group">
+                            <label>Nama Perangkat / Hostname *</label>
+                            <input type="text" id="dev-name" placeholder="Misal: SRV-DC-02" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Kategori Perangkat *</label>
+                            <select id="dev-category" required>
+                                <option value="Server">Server</option>
+                                <option value="Network Device">Network Device</option>
+                                <option value="CCTV & Security">CCTV & Security</option>
+                                <option value="IoT Sensor">IoT Sensor</option>
+                                <option value="Workstation">Workstation</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row-2">
+                        <div class="form-group">
+                            <label>IP Address *</label>
+                            <input type="text" id="dev-ip" placeholder="192.168.1.50" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Lokasi / Site *</label>
+                            <input type="text" id="dev-location" placeholder="Kantor Pusat / Data Center" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row-2">
+                        <div class="form-group">
+                            <label>Metode Monitoring</label>
+                            <select id="dev-method">
+                                <option value="Ping (ICMP)">Ping (ICMP)</option>
+                                <option value="HTTP / API">HTTP / API</option>
+                                <option value="MQTT">MQTT Broker (IoT)</option>
+                                <option value="SNMP">SNMP v2/v3</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Status Perangkat Elektro *</label>
+                            <select id="dev-status">
+                                <option value="online">🟢 Online (Alat ON / Normal)</option>
+                                <option value="warning">🟡 Peringatan (Standby / Overload)</option>
+                                <option value="offline">🔴 Offline (Alat OFF / Gangguan)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>PIC / Teknisi Elektro Penanggung Jawab</label>
+                        <input type="text" id="dev-pic" placeholder="Nama teknisi/peserta PKL...">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-cyber" onclick="closeDeviceModal()">Batal</button>
+                    <button type="submit" class="btn btn-primary-cyber">
+                        <i class="fa-solid fa-floppy-disk"></i> Simpan Perangkat
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 3: Quick Status Toggle Modal (Ubah Status Cepat Elektro) -->
+    <div class="modal-backdrop hidden" id="quick-status-modal">
+        <div class="modal-card modal-sm">
+            <div class="modal-header">
+                <div class="modal-title-wrap">
+                    <i class="fa-solid fa-power-off text-yellow"></i>
+                    <h5>Ubah Status Perangkat</h5>
+                </div>
+                <button class="modal-close-btn" onclick="closeQuickStatusModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body text-center">
+                <p>Ubah kondisi status operasional perangkat:</p>
+                <h4 id="quick-device-name" class="text-cyan my-2">SRV-DC-01</h4>
+                <p class="text-muted text-sm" id="quick-device-ip">192.168.1.10</p>
+
+                <div class="quick-status-selector mt-4">
+                    <button class="btn-status-choice green" onclick="setQuickStatus('online')">
+                        <span class="dot green pulse"></span>
+                        <span>ONLINE (ALAT ON / NORMAL)</span>
+                    </button>
+                    <button class="btn-status-choice yellow" onclick="setQuickStatus('warning')">
+                        <span class="dot yellow pulse"></span>
+                        <span>PERINGATAN (STANDBY / OVERLOAD)</span>
+                    </button>
+                    <button class="btn-status-choice red" onclick="setQuickStatus('offline')">
+                        <span class="dot red pulse"></span>
+                        <span>OFFLINE (ALAT OFF / MATI)</span>
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer justify-center">
+                <button type="button" class="btn btn-outline-cyber btn-sm" onclick="closeQuickStatusModal()">Tutup</button>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop hidden" id="team-modal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div class="modal-title-wrap">
+                    <i class="fa-solid fa-user-pen text-cyan"></i>
+                    <h5 id="team-modal-title">Edit Profil Anggota Tim</h5>
+                </div>
+                <button class="modal-close-btn" onclick="closeTeamModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="team-member-form" onsubmit="event.preventDefault(); handleSaveTeamMember();">
+                <input type="hidden" id="tm-id">
+                <div class="modal-body">
+                    <div class="form-row-2">
+                        <div class="form-group">
+                            <label>Nama Lengkap Anggota *</label>
+                            <input type="text" id="tm-name" placeholder="Misal: Ahmad Rizki Pratama" required>
+                        </div>
+                        <div class="form-group">
+                            <label>NISN / NIM / No. Induk *</label>
+                            <input type="text" id="tm-nisn" placeholder="0067829104" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row-2">
+                        <div class="form-group">
+                            <label>Jabatan / Peran di Tim *</label>
+                            <input type="text" id="tm-role" placeholder="Misal: Hardware & IoT Engineer" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email / Kontak PIC</label>
+                            <input type="email" id="tm-contact" placeholder="nama@teknolab.id">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Tanggung Jawab & Tugas Utama *</label>
+                        <textarea id="tm-responsibilities" rows="3" class="cyber-textarea" placeholder="Deskripsikan peran dan tanggung jawab anggota dalam proyek..." required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Keahlian Teknis (Pisahkan dengan koma)</label>
+                        <input type="text" id="tm-skills" placeholder="ESP32, Sensor Wiring, JavaScript, GIS">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-cyber" onclick="closeTeamModal()">Batal</button>
+                    <button type="submit" class="btn btn-primary-cyber">
+                        <i class="fa-solid fa-floppy-disk"></i> Simpan Data Tim
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 5: Tambah Aset Inventaris Baru -->
+    <div class="modal-backdrop hidden" id="asset-modal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div class="modal-title-wrap">
+                    <i class="fa-solid fa-cubes text-crimson"></i>
+                    <h5>Tambah Aset IT Baru</h5>
+                </div>
+                <button class="modal-close-btn" onclick="closeAssetModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="asset-form" onsubmit="event.preventDefault(); handleSaveAsset();">
+                <div class="modal-body">
+                    <div class="form-row-2">
+                        <div class="form-group">
+                            <label>Kode Aset (Register) *</label>
+                            <input type="text" id="ast-code" placeholder="Misal: AST-SRV-007" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Nama Aset / Hardware *</label>
+                            <input type="text" id="ast-name" placeholder="Misal: Dell PowerEdge R740" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row-2">
+                        <div class="form-group">
+                            <label>Kategori Aset *</label>
+                            <select id="ast-category" required>
+                                <option value="Server">Server</option>
+                                <option value="Network Device">Network Device</option>
+                                <option value="CCTV & Security">CCTV & Security</option>
+                                <option value="IoT Sensor">IoT Sensor</option>
+                                <option value="Workstation">Workstation</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Lokasi Wilayah Blitar *</label>
+                            <input type="text" id="ast-location" placeholder="Kepanjenkidul / Kanigoro / Wlingi..." required>
+                        </div>
+                    </div>
+
+                    <div class="form-row-2">
+                        <div class="form-group">
+                            <label>Estimasi Nilai Perolehan (Rp)</label>
+                            <input type="text" id="ast-value" placeholder="Rp 15.000.000">
+                        </div>
+                        <div class="form-group">
+                            <label>Kondisi Fisik *</label>
+                            <select id="ast-condition">
+                                <option value="Baik">🟢 Sangat Baik (Prima)</option>
+                                <option value="Perlu Servis">🟡 Perlu Servis</option>
+                                <option value="Rusak">🔴 Rusak</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row-2">
+                        <div class="form-group">
+                            <label>Masa Garansi</label>
+                            <input type="text" id="ast-warranty" placeholder="Hingga Des 2026">
+                        </div>
+                        <div class="form-group">
+                            <label>PIC Penanggung Jawab</label>
+                            <input type="text" id="ast-pic" placeholder="Nama teknisi / anggota tim...">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-cyber" onclick="closeAssetModal()">Batal</button>
+                    <button type="submit" class="btn btn-primary-cyber">
+                        <i class="fa-solid fa-floppy-disk"></i> Daftarkan Aset
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 6: Detail Aset & Cetak Label QR Tag -->
+    <div class="modal-backdrop hidden" id="asset-qr-modal">
+        <div class="modal-card modal-sm text-center">
+            <div class="modal-header">
+                <div class="modal-title-wrap">
+                    <i class="fa-solid fa-qrcode text-cyan"></i>
+                    <h5>Label Aset & QR Code Tag</h5>
+                </div>
+                <button class="modal-close-btn" onclick="closeAssetQrModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="qr-preview-box">
+                    <div class="qr-border-frame">
+                        <div class="qr-mock-code">
+                            <i class="fa-solid fa-qrcode"></i>
+                        </div>
+                        <div class="qr-info-meta mt-2">
+                            <strong id="qr-modal-code" class="text-cyan font-mono text-lg">AST-SRV-001</strong>
+                            <p id="qr-modal-name" class="text-white font-bold my-1">SRV-DC-01</p>
+                            <span id="qr-modal-loc" class="text-muted text-xs">Pusat Data - Kepanjenkidul, Blitar</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-secondary text-xs mt-3">Tempelkan label ini pada rangka fisik hardware untuk scan audit inventaris lapangan.</p>
+            </div>
+            <div class="modal-footer justify-center">
+                <button type="button" class="btn btn-outline-cyber btn-sm" onclick="closeAssetQrModal()">Tutup</button>
+                <button type="button" class="btn btn-primary-cyber btn-sm" onclick="printAssetLabel()">
+                    <i class="fa-solid fa-print"></i> Cetak Label Aset
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Popup -->
+    <div id="toast-notification" class="toast-popup hidden">
+        <div class="toast-icon" id="toast-icon"><i class="fa-solid fa-circle-check"></i></div>
+        <div class="toast-content">
+            <h6 id="toast-title">Berhasil!</h6>
+            <p id="toast-message">Operasi selesai dengan sukses.</p>
+        </div>
+    </div>
+
     <script src="apiService.js"></script>
     <script src="app.js"></script>
-    <script>
-        function scrollToAlerts() {
-            const el = document.getElementById('alerts-section-card');
-            if (el) el.scrollIntoView({ behavior: 'smooth' });
-        }
-    </script>
+
+    <!-- ========================================================================= -->
+    <!-- MODAL POPUP AI INFRASTRUCTURE ASSISTANT (PDF HAL. 4 & HAL. 11)           -->
+    <!-- DAPAT DIBUKA TANPA MENGGANGGU TAMPILAN DASHBOARD YANG SCROLL-FREE        -->
+    <!-- ========================================================================= -->
+    <div id="ai-assistant-modal" class="cyber-modal hidden">
+        <div class="modal-overlay" onclick="closeAiModal()"></div>
+        <div class="modal-content-cyber" style="max-width: 620px; border-color: rgba(0, 229, 255, 0.4);">
+            <div class="modal-header">
+                <div class="modal-title-wrap">
+                    <i class="fa-solid fa-brain text-cyan" style="font-size: 18px;"></i>
+                    <h5 style="color: #fff; font-size: 16px; margin: 0;">T-AIMS AI Infrastructure Assistant</h5>
+                </div>
+                <button class="modal-close-btn" onclick="closeAiModal()">&times;</button>
+            </div>
+            <div class="modal-body p-4">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.08);">
+                    <span class="ai-badge-live" style="background: rgba(16, 185, 129, 0.15); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.3); padding: 4px 10px; border-radius: 9999px; font-size: 11px; font-weight: 600;">
+                        <span class="pulse-led online"></span> AI Monitoring Aktif
+                    </span>
+                    <button onclick="loadAiRecommendation(true)" style="background: rgba(0, 229, 255, 0.1); border: 1px solid rgba(0, 229, 255, 0.3); color: #00E5FF; padding: 5px 12px; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer;">
+                        <i class="fa-solid fa-arrows-rotate" id="ai-modal-spin"></i> Analisis Ulang
+                    </button>
+                </div>
+                <div style="background: rgba(6, 10, 18, 0.6); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 12px 16px; margin-bottom: 12px;">
+                    <div style="font-size: 11px; font-weight: 700; color: #EF4444; margin-bottom: 4px; text-transform: uppercase;">
+                        <i class="fa-solid fa-circle-exclamation"></i> Diagnosa Masalah Terdeteksi
+                    </div>
+                    <p id="ai-modal-problem" style="font-size: 12px; color: #CBD5E1; margin: 0; line-height: 1.5;">
+                        Perangkat CCTV Gerbang Depan HO (192.168.10.31) mengalami status Offline akibat ICMP timeout > 3 menit.
+                    </p>
+                </div>
+                <div style="background: rgba(6, 10, 18, 0.6); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 12px 16px;">
+                    <div style="font-size: 11px; font-weight: 700; color: #00E5FF; margin-bottom: 4px; text-transform: uppercase;">
+                        <i class="fa-solid fa-lightbulb"></i> Rekomendasi Preskriptif Otomatis
+                    </div>
+                    <p id="ai-modal-recommendation" style="font-size: 12px; color: #CBD5E1; margin: 0; line-height: 1.6;">
+                        1. Lakukan verifikasi power supply PoE port 7 switch Ruang Server.<br>
+                        2. Jalankan soft-restart interface switch port.<br>
+                        3. Periksa kondisi fisik konektor patch cord RJ-45 outdoor.
+                    </p>
+                </div>
+            </div>
+            <div class="modal-footer" style="padding: 12px 20px; border-top: 1px solid rgba(255,255,255,0.08); text-align: right;">
+                <button type="button" class="btn btn-secondary-cyber" onclick="closeAiModal()">Tutup</button>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>

@@ -2428,3 +2428,130 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+
+/* ==========================================================================
+   COMPACT HUD CYBER DARK DASHBOARD (FIT IN VIEWPORT WITHOUT SCROLLING)
+   ========================================================================== */
+@media (min-height: 700px) {
+  #page-dashboard {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .content-container {
+    padding: 0.8rem 1.4rem 1.2rem;
+  }
+
+  .banner-hero {
+    padding: 12px 18px;
+    margin-bottom: 0.75rem;
+  }
+
+  .banner-title {
+    font-size: 1.35rem;
+    margin-bottom: 2px;
+  }
+
+  .banner-desc {
+    font-size: 0.8rem;
+    margin-bottom: 8px;
+  }
+
+  .slogan-box .slogan-line {
+    font-size: 0.75rem;
+    line-height: 1.2;
+  }
+
+  .kpi-grid {
+    grid-template-columns: repeat(5, 1fr) !important;
+    gap: 10px;
+    margin-bottom: 0.75rem;
+  }
+
+  .kpi-card {
+    padding: 10px 14px;
+  }
+
+  .kpi-value {
+    font-size: 1.4rem;
+  }
+
+  .kpi-icon-box {
+    width: 38px;
+    height: 38px;
+    font-size: 16px;
+  }
+
+  .charts-row {
+    gap: 12px;
+    margin-bottom: 0.75rem;
+  }
+
+  .chart-body {
+    height: 185px !important;
+    padding: 8px 12px;
+  }
+
+  .donut-body {
+    height: 185px !important;
+    padding: 8px 12px;
+  }
+
+  .donut-visual-wrap {
+    width: 140px;
+    height: 140px;
+  }
+
+  .donut-center-label strong {
+    font-size: 1.5rem;
+  }
+
+  .bottom-three-grid {
+    gap: 12px;
+    margin-bottom: 0.75rem;
+  }
+
+  .status-table-card .card-body {
+    height: 165px;
+    overflow-y: auto;
+  }
+
+  .map-card .card-body {
+    height: 165px;
+  }
+
+  .home-map-leaflet {
+    height: 130px !important;
+  }
+
+  .alerts-card .card-body {
+    height: 165px;
+    overflow-y: auto;
+  }
+
+  .maintenance-section {
+    padding: 8px 16px;
+  }
+
+  .maint-header {
+    margin-bottom: 6px;
+  }
+
+  .maint-cards-grid {
+    gap: 10px;
+  }
+
+  .m-card {
+    padding: 8px 14px;
+  }
+
+  .m-val {
+    font-size: 1.25rem;
+  }
+
+  .m-lbl {
+    font-size: 0.75rem;
+  }
+}
