@@ -164,6 +164,7 @@
       </div>
       <nav class="sidebar-nav-menu">
         <a href="dashboard.html" class="sidebar-link"><i class="fa-solid fa-house"></i> <span>Dashboard</span></a>
+        <a href="ai-assistant.html" class="sidebar-link"><i class="fa-solid fa-brain" style="color:#A78BFA;"></i> <span>Asisten AI</span> <span style="background:linear-gradient(135deg,#8B5CF6,#6366F1); color:#fff; font-size:9px; font-weight:800; padding:2px 6px; border-radius:10px; margin-left:auto;">AI</span></a>
         <a href="devices.html" class="sidebar-link"><i class="fa-solid fa-microchip"></i> <span>Perangkat</span></a>
         <a href="network.html" class="sidebar-link"><i class="fa-solid fa-network-wired"></i> <span>Jaringan</span></a>
         <a href="topology.html" class="sidebar-link"><i class="fa-solid fa-location-dot"></i> <span>Lokasi</span></a>
@@ -183,7 +184,12 @@
       <div class="desktop-top-navbar">
         <button class="mobile-menu-toggle" id="mobileMenuToggle" onclick="toggleMobileSidebar()" aria-label="Buka Menu Navigasi"><i class="fa-solid fa-bars"></i></button>
         <div class="topbar-left-meta">
-          <strong>T-AIMS</strong><span>|</span><p>Teknolab Asset & Infrastructure Monitoring System</p>
+          <div class="topbar-corporate-tag">
+            <span class="corp-name">PT TEKNOLAB CARAKA INTERNASIONAL</span>
+            <span class="corp-divider">|</span>
+            <strong class="app-acronym">T-AIMS</strong>
+          </div>
+          <p class="app-sub-desc">Teknolab Asset &amp; Infrastructure Monitoring System</p>
         </div>
         <div class="topbar-center-search">
           <i class="fa-solid fa-magnifying-glass"></i>
@@ -219,20 +225,48 @@
           <p>Manajemen laporan pemeliharaan, audit insiden, dan rekapitulasi uptime perangkat dengan kontrol hak akses akun resmi.</p>
         </div>
         <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
-          <button class="btn-action-edit" id="btnOpenAddReport" onclick="openAddReportModal()" style="display:inline-flex;">
+          <button class="btn-action-add" id="btnOpenAddReport" onclick="openAddReportModal()" style="display:inline-flex;">
             <i class="fa-solid fa-plus"></i> Tambah Laporan Baru
           </button>
-          <div class="btn-group-export">
-            <button class="btn-export-pdf" onclick="window.print()"><i class="fa-solid fa-file-pdf"></i> Export PDF</button>
-            <button class="btn-export-excel" onclick="exportReportsToExcel()"><i class="fa-solid fa-file-excel"></i> Export Excel</button>
-          </div>
         </div>
       </div>
 
-      <!-- AI RECOMMENDATION ENGINE -->
-      <div class="ai-recommend-card">
-        <div class="ai-title"><i class="fa-solid fa-robot text-cyan"></i> T-AIMS AI Recommendation Engine:</div>
-        <p>Berdasarkan analisis log operasional 30 hari PKL: <strong>CCTV 1 (Gate HO)</strong> mengalami anomali paket data RTSP (100% loss) akibat suplai adaptor daya yang tidak stabil. <strong>WIFI 2 (Marketing Office Kos Kiki)</strong> mengalami lonjakan latensi hingga 210 ms pada jam sibuk. Disarankan pengecekan regulator adaptor 12V pada CCTV 1 dan penerapan limitasi bandwidth QoS pada router MO.</p>
+      <!-- T-AIMS AI RECOMMENDATION ENGINE SESUAI SPESIFIKASI FINAL ARIK -->
+      <div class="ai-recommendation-engine-box" id="aiReportCard">
+        <div class="ai-rec-header-row">
+          <div class="ai-rec-title-wrap">
+            <div class="ai-rec-icon"><i class="fa-solid fa-brain"></i></div>
+            <div>
+              <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                <h3 style="margin:0; font-size:14px; font-weight:800; color:#FFFFFF;">T-AIMS AI Recommendation Engine</h3>
+                <span class="ai-status-badge badge-warning" id="aiRepStatusBadge">
+                  <span class="dot-live"></span> <span id="aiRepStatusText">WARNING</span>
+                </span>
+              </div>
+              <small style="color:var(--text-dim); font-size:11px;">Analisis prediktif telemetri otomatis n8n &amp; Gemini AI</small>
+            </div>
+          </div>
+          <div class="ai-rec-time-meta">
+            <span class="ai-updated-badge"><i class="fa-regular fa-clock"></i> Terakhir Diperbarui: <strong id="aiRepUpdatedAt">18 Okt 2026 20:00 WIB</strong></span>
+            <button class="ai-refresh-mini-btn" onclick="fetchAiRecommendation(true)"><i class="fa-solid fa-arrows-rotate"></i> Perbarui AI</button>
+          </div>
+        </div>
+
+        <div class="ai-rec-body">
+          <div class="ai-devices-row">
+            <span class="ai-device-label"><i class="fa-solid fa-triangle-exclamation text-amber"></i> Perangkat Terindikasi Masalah (Maks 3):</span>
+            <div class="ai-device-chips-container" id="aiRepDeviceChips">
+              <span class="ai-chip-device"><i class="fa-solid fa-video text-amber"></i> CCTV 1 (offline 5x)</span>
+              <span class="ai-chip-device"><i class="fa-solid fa-wifi text-amber"></i> WiFi 2 (latency 300ms)</span>
+            </div>
+          </div>
+          <div class="ai-recommendation-content">
+            <div class="ai-quote-bar"></div>
+            <p id="aiRepRecommendationText">
+              CCTV 1 perlu pengecekan kabel LAN dan adaptor daya. WiFi 2 perlu pengecekan interferensi channel frekuensi 2.4 GHz dan pengaturan QoS.
+            </p>
+          </div>
+        </div>
       </div>
 
       <!-- 4 KARTU STATISTIK OPERASIONAL -->
@@ -470,8 +504,8 @@
             <label style="display:block; font-size:11.5px; font-weight:700; color:var(--text-muted); margin-bottom:6px;">Tindakan / Solusi yang Diterapkan</label>
             <textarea id="newRepAction" rows="2" placeholder="Tindakan penanganan yang sudah atau akan dilakukan..." style="width:100%; background:#090E1A; border:1px solid var(--border-card); padding:10px 14px; border-radius:8px; color:#fff; font-size:12px; resize:vertical;" required></textarea>
           </div>
-          <button type="submit" style="background:var(--accent-red); border:none; color:#fff; font-weight:800; padding:12px; border-radius:8px; cursor:pointer; margin-top:6px; display:flex; align-items:center; justify-content:center; gap:8px;">
-            <i class="fa-solid fa-floppy-disk"></i> Simpan & Terbitkan Laporan
+          <button type="submit" style="background:linear-gradient(135deg, #10B981 0%, #059669 100%); border:1px solid #10B981; color:#fff; font-weight:800; padding:12px; border-radius:8px; cursor:pointer; margin-top:6px; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 4px 14px rgba(16,185,129,0.35);">
+            <i class="fa-solid fa-floppy-disk"></i> Simpan &amp; Terbitkan Laporan
           </button>
         </form>
       </div>
@@ -532,7 +566,7 @@
             <label style="display:block; font-size:11.5px; font-weight:700; color:var(--text-muted); margin-bottom:6px;">Tindakan / Solusi</label>
             <textarea id="editRepAction" rows="2" style="width:100%; background:#090E1A; border:1px solid var(--border-card); padding:10px 14px; border-radius:8px; color:#fff; font-size:12px; resize:vertical;" required></textarea>
           </div>
-          <button type="submit" style="background:var(--accent-amber); border:none; color:#000; font-weight:800; padding:12px; border-radius:8px; cursor:pointer; margin-top:6px;">
+          <button type="submit" style="background:linear-gradient(135deg, #10B981 0%, #059669 100%); border:1px solid #10B981; color:#fff; font-weight:800; padding:12px; border-radius:8px; cursor:pointer; margin-top:6px; box-shadow:0 4px 14px rgba(16,185,129,0.35);">
             <i class="fa-solid fa-check"></i> Simpan Perubahan (Super Admin)
           </button>
         </form>

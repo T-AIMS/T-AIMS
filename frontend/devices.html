@@ -21,12 +21,9 @@
       </div>
 
       <nav class="sidebar-nav-menu">
-        <a href="dashboard.html" class="sidebar-link">
-          <i class="fa-solid fa-house"></i> <span>Dashboard</span>
-        </a>
-        <a href="devices.html" class="sidebar-link active">
-          <i class="fa-solid fa-microchip"></i> <span>Perangkat</span>
-        </a>
+        <a href="dashboard.html" class="sidebar-link"><i class="fa-solid fa-house"></i> <span>Dashboard</span></a>
+        <a href="ai-assistant.html" class="sidebar-link"><i class="fa-solid fa-brain" style="color:#A78BFA;"></i> <span>Asisten AI</span> <span style="background:linear-gradient(135deg,#8B5CF6,#6366F1); color:#fff; font-size:9px; font-weight:800; padding:2px 6px; border-radius:10px; margin-left:auto;">AI</span></a>
+        <a href="devices.html" class="sidebar-link active"><i class="fa-solid fa-microchip"></i> <span>Perangkat</span></a>
         <a href="network.html" class="sidebar-link">
           <i class="fa-solid fa-network-wired"></i> <span>Jaringan</span>
         </a>
@@ -64,9 +61,12 @@
       <div class="desktop-top-navbar">
         <button class="mobile-menu-toggle" id="mobileMenuToggle" onclick="toggleMobileSidebar()" aria-label="Buka Menu Navigasi"><i class="fa-solid fa-bars"></i></button>
         <div class="topbar-left-meta">
-          <strong>T-AIMS</strong>
-          <span>|</span>
-          <p>Teknolab Asset & Infrastructure Monitoring System</p>
+          <div class="topbar-corporate-tag">
+            <span class="corp-name">PT TEKNOLAB CARAKA INTERNASIONAL</span>
+            <span class="corp-divider">|</span>
+            <strong class="app-acronym">T-AIMS</strong>
+          </div>
+          <p class="app-sub-desc">Teknolab Asset &amp; Infrastructure Monitoring System</p>
         </div>
 
         <div class="topbar-center-search">
@@ -188,46 +188,93 @@
   </div>
 
   <!-- MODAL 2: TAMBAH PERANGKAT (CREATE / ADD - SUPER ADMIN & ADMIN) -->
+  <!-- MODAL 2: TAMBAH PERANGKAT (CREATE / ADD - FORMAT 4 KOTAK 2x2 + PIC + KODE UNIK OTOMATIS) -->
   <div class="modal-overlay" id="add-device-modal" style="display: none;">
-    <div class="modal-card-mobile" style="max-width: 480px;">
+    <div class="modal-card-mobile" style="max-width: 520px;">
       <div class="m-modal-top">
-        <span class="m-modal-title"><i class="fa-solid fa-plus-circle text-red"></i> Tambah Perangkat Baru</span>
+        <span class="m-modal-title"><i class="fa-solid fa-plus-circle text-blue"></i> Tambah Perangkat Baru</span>
         <button class="m-close-btn" onclick="closeAddDeviceModal()"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div class="m-modal-scroll" style="padding: 20px;">
         <form onsubmit="handleAddNewDevice(event)" style="display:flex; flex-direction:column; gap:14px;">
-          <div>
-            <label style="display:block; font-size:11.5px; font-weight:700; color:var(--text-muted); margin-bottom:6px;">Nama Perangkat</label>
-            <input type="text" id="newDevName" placeholder="Contoh: Router Ruang Meeting" style="width:100%; background:#090E1A; border:1px solid var(--border-card); padding:10px 14px; border-radius:8px; color:#fff; font-size:12px;" required>
-          </div>
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          
+          <!-- KODE UNIK SETIAP PERANGKAT (OTOMATIS GENERATE) -->
+          <div style="background: rgba(56, 189, 248, 0.08); border: 1px dashed var(--accent-blue); padding: 10px 14px; border-radius: 8px; display: flex; align-items: center; justify-content: space-between;">
             <div>
-              <label style="display:block; font-size:11.5px; font-weight:700; color:var(--text-muted); margin-bottom:6px;">IP Address</label>
-              <input type="text" id="newDevIp" placeholder="192.168.10.50" style="width:100%; background:#090E1A; border:1px solid var(--border-card); padding:10px 14px; border-radius:8px; color:#fff; font-size:12px;" required>
+              <span style="font-size: 10px; font-weight: 800; color: var(--accent-blue); text-transform: uppercase; letter-spacing:0.5px;">Kode Unik Perangkat (Auto-Generated)</span>
+              <strong id="newDevCodeDisplay" style="display: block; font-family: monospace; font-size: 13.5px; color: #fff;">T-AIMS-DEV-010</strong>
+              <input type="hidden" id="newDevCode" value="T-AIMS-DEV-010">
             </div>
+            <button type="button" onclick="generateAutoDeviceCode()" style="background: rgba(255,255,255,0.08); border: 1px solid var(--border-card); color: var(--text-muted); font-size: 10.5px; padding: 4px 10px; border-radius: 6px; cursor: pointer;">
+              <i class="fa-solid fa-rotate"></i> Acak Kode
+            </button>
+          </div>
+
+          <!-- 4 KOTAK DIBAGI MENJADI 2 (2x2 GRID) -->
+          <!-- KOTAK 1 & 2 (BARIS ATAS): KATEGORI & RUMAH/LOKASI DEVICE -->
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 12px;">
             <div>
-              <label style="display:block; font-size:11.5px; font-weight:700; color:var(--text-muted); margin-bottom:6px;">Kategori</label>
-              <select id="newDevCat" style="width:100%; background:#090E1A; border:1px solid var(--border-card); padding:10px 14px; border-radius:8px; color:#fff; font-size:12px;">
-                <option value="Router">Router</option>
+              <label style="display:block; font-size:11.5px; font-weight:700; color:var(--text-muted); margin-bottom:6px;">
+                <i class="fa-solid fa-shapes text-blue"></i> Kategori Perangkat
+              </label>
+              <select id="newDevCat" style="width:100%; background:#090E1A; border:1px solid var(--border-card); padding:10px 12px; border-radius:8px; color:#fff; font-size:12px;" required onchange="syncCategoryName(this.value)">
+                <option value="Router">Router (Gateway / Core)</option>
                 <option value="Switch Manageable">Switch Manageable</option>
-                <option value="Access Point">Access Point</option>
-                <option value="Server">Server</option>
+                <option value="Access Point">Access Point (UniFi / TP-Link)</option>
+                <option value="Server">Server (Linux / Raspberry Pi)</option>
                 <option value="CCTV">CCTV &amp; Security</option>
-                <option value="IoT Node">IoT Sensor</option>
+                <option value="IoT Node">IoT Sensor (ESP32)</option>
                 <option value="PC">PC Workstation</option>
+              </select>
+              <input type="hidden" id="newDevName" value="Router MikroTik">
+            </div>
+
+            <div>
+              <label style="display:block; font-size:11.5px; font-weight:700; color:var(--text-muted); margin-bottom:6px;">
+                <i class="fa-solid fa-location-dot text-amber"></i> Rumah / Lokasi Device
+              </label>
+              <select id="newDevLoc" style="width:100%; background:#090E1A; border:1px solid var(--border-card); padding:10px 12px; border-radius:8px; color:#fff; font-size:12px;" required>
+                <option value="Head Office (HO) - Jl. Cibodas No. 03">Head Office (HO) - Jl. Cibodas No. 03</option>
+                <option value="Marketing Office (MO) - Jl. Ciliwung No. 247">Marketing Office (MO) - Jl. Ciliwung No. 247</option>
+                <option value="House of Server (HoS) - Jl. Mastrip No. 12">House of Server (HoS) - Jl. Mastrip No. 12</option>
               </select>
             </div>
           </div>
-          <div>
-            <label style="display:block; font-size:11.5px; font-weight:700; color:var(--text-muted); margin-bottom:6px;">Lokasi Operasional</label>
-            <input type="text" id="newDevLoc" value="Head Office - Jl. Cibodas No. 03" style="width:100%; background:#090E1A; border:1px solid var(--border-card); padding:10px 14px; border-radius:8px; color:#fff; font-size:12px;" required>
+
+          <!-- KOTAK 3 & 4 (BARIS BAWAH): IP ADDRESS & MAC ADDRESS -->
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div>
+              <label style="display:block; font-size:11.5px; font-weight:700; color:var(--text-muted); margin-bottom:6px;">
+                <i class="fa-solid fa-network-wired text-cyan"></i> IP Address
+              </label>
+              <input type="text" id="newDevIp" placeholder="192.168.10.50" style="width:100%; background:#090E1A; border:1px solid var(--border-card); padding:10px 12px; border-radius:8px; color:#fff; font-size:12px; font-family:monospace;" required>
+            </div>
+
+            <div>
+              <label style="display:block; font-size:11.5px; font-weight:700; color:var(--text-muted); margin-bottom:6px;">
+                <i class="fa-solid fa-fingerprint text-purple"></i> MAC Address
+              </label>
+              <input type="text" id="newDevMac" placeholder="B4:E6:2D:10:A4:9C" style="width:100%; background:#090E1A; border:1px solid var(--border-card); padding:10px 12px; border-radius:8px; color:#fff; font-size:12px; font-family:monospace;" value="B4:E6:2D:10:A4:9C">
+            </div>
           </div>
+
+          <!-- BAGIAN BAWAH 4 KOTAK: PENANGGUNG JAWAB (PIC) -->
           <div>
-            <label style="display:block; font-size:11.5px; font-weight:700; color:var(--text-muted); margin-bottom:6px;">PIC Penanggung Jawab</label>
-            <input type="text" id="newDevPic" value="Dika Yoga Pratama" style="width:100%; background:#090E1A; border:1px solid var(--border-card); padding:10px 14px; border-radius:8px; color:#fff; font-size:12px;" required>
+            <label style="display:block; font-size:11.5px; font-weight:700; color:var(--text-muted); margin-bottom:6px;">
+              <i class="fa-solid fa-user-shield text-blue"></i> Penanggung Jawab (PIC)
+            </label>
+            <select id="newDevPic" style="width:100%; background:#090E1A; border:1px solid var(--border-card); padding:10px 12px; border-radius:8px; color:#fff; font-size:12px;">
+              <option value="Dika Yoga Pratama">Dika Yoga Pratama (Frontend Dashboard Developer)</option>
+              <option value="Ahmad Reza Fahmi">Ahmad Reza Fahmi (Backend &amp; API Developer)</option>
+              <option value="Faida Trisma Amelia">Faida Trisma Amelia (Database &amp; Asset Management)</option>
+              <option value="Ilvina Muvarika">Ilvina Muvarika (IoT &amp; Device Integration)</option>
+              <option value="Ananda Dwi Susanti">Ananda Dwi Susanti (Network &amp; Device Monitoring)</option>
+              <option value="Reza Tri Wardana">Reza Tri Wardana (QA, Testing &amp; Documentation)</option>
+            </select>
           </div>
-          <button type="submit" id="btnSubmitAddDevice" style="background:var(--accent-red); border:none; color:#fff; font-weight:800; padding:12px; border-radius:8px; cursor:pointer; margin-top:10px;">
-            <i class="fa-solid fa-floppy-disk"></i> Simpan & Daftarkan Perangkat
+
+          <button type="submit" id="btnSubmitAddDevice" style="background:linear-gradient(135deg, #10B981 0%, #059669 100%); border:1px solid #10B981; color:#fff; font-weight:800; padding:12px; border-radius:8px; cursor:pointer; margin-top:8px; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 4px 14px rgba(16,185,129,0.35);">
+            <i class="fa-solid fa-floppy-disk"></i> Simpan &amp; Daftarkan Perangkat
           </button>
         </form>
       </div>
@@ -464,14 +511,37 @@
     }
 
     // =========================================================================
-    // 2. CRUD HANDLERS: CREATE / ADD PERANGKAT BARU
+    // 2. CRUD HANDLERS: CREATE / ADD PERANGKAT BARU (4 KOTAK + KODE UNIK OTOMATIS)
     // =========================================================================
+    function generateAutoDeviceCode() {
+      const cat = document.getElementById('newDevCat')?.value || 'Router';
+      const prefix = cat === 'CCTV' ? 'SEC-CCTV' : (cat === 'Router' ? 'NET-RTR' : (cat === 'Server' ? 'NET-SRV' : (cat === 'IoT Node' ? 'IOT-ESP' : 'AST-DEV')));
+      const nextNum = (devicesData.length + 1).toString().padStart(2, '0');
+      const code = `${prefix}-${nextNum}`;
+      const codeDisp = document.getElementById('newDevCodeDisplay');
+      const codeInput = document.getElementById('newDevCode');
+      if (codeDisp) codeDisp.innerText = code;
+      if (codeInput) codeInput.value = code;
+      return code;
+    }
+
+    function syncCategoryName(val) {
+      const loc = document.getElementById('newDevLoc')?.value || 'HO';
+      const locTag = loc.includes('HO') ? 'HO' : (loc.includes('MO') ? 'MO' : 'HoS');
+      const nameInput = document.getElementById('newDevName');
+      if (nameInput) nameInput.value = `${val} ${locTag}`;
+      generateAutoDeviceCode();
+    }
+
     function openAddDeviceModal() {
       const role = (typeof window.getAppRole === 'function') ? window.getAppRole() : (localStorage.getItem('taims_user_role') || 'super_admin');
       if (role === 'user' || role === 'guest') {
         alert('Akses Ditolak: Role Tamu (User) tidak memiliki izin menambah perangkat!');
         return;
       }
+      generateAutoDeviceCode();
+      const catVal = document.getElementById('newDevCat')?.value || 'Router';
+      syncCategoryName(catVal);
       document.getElementById('add-device-modal').style.display = 'flex';
     }
 
@@ -487,14 +557,14 @@
         return;
       }
 
-      const name = document.getElementById('newDevName').value.trim();
-      const ip = document.getElementById('newDevIp').value.trim();
       const cat = document.getElementById('newDevCat').value;
       const loc = document.getElementById('newDevLoc').value.trim();
+      const name = document.getElementById('newDevName').value.trim() || `${cat} (${loc})`;
+      const ip = document.getElementById('newDevIp').value.trim();
+      const mac = document.getElementById('newDevMac').value.trim();
       const pic = document.getElementById('newDevPic').value.trim();
+      const code = document.getElementById('newDevCode').value.trim() || generateAutoDeviceCode();
 
-      const prefix = cat === 'CCTV' ? 'SEC-CCTV' : (cat === 'Router' ? 'NET-RTR' : (cat === 'Server' ? 'NET-SRV' : 'AST-DEV'));
-      const code = `${prefix}-0${Math.floor(10 + Math.random() * 89)}`;
       const icon = cat === 'CCTV' ? 'fa-video' : (cat === 'Router' ? 'fa-wifi' : (cat === 'Server' ? 'fa-server' : 'fa-microchip'));
 
       const newDev = {
@@ -503,6 +573,7 @@
         cat: cat,
         status: "online",
         ip: ip,
+        mac: mac,
         loc: loc,
         latency: "2 ms",
         method: "Ping (ICMP)",
@@ -514,7 +585,7 @@
       localStorage.setItem('taims_devices_list', JSON.stringify(devicesData));
       closeAddDeviceModal();
       renderDevices();
-      alert(`✅ Perangkat baru "${name}" (${code}) berhasil didaftarkan ke sistem!`);
+      alert(`✅ Perangkat baru "${name}" [${code}] berhasil didaftarkan ke sistem!`);
     }
 
     // =========================================================================

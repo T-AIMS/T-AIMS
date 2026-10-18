@@ -67,6 +67,37 @@
   --theme-glow-card: 0 4px 18px rgba(0, 0, 0, 0.5);
 }
 
+/* OPSI 3 - AMOLED PURE BLACK (DEEP PITCH BLACK & ULTRA CONTRAST) */
+[data-theme="amoled"] {
+  --bg-deep: #000000;
+  --bg-sidebar: #050505;
+  --bg-card: #0A0A0A;
+  --bg-card-sub: #121212;
+  --bg-surface-hover: rgba(255, 255, 255, 0.06);
+  --border-card: #1F1F1F;
+  --border-card-subtle: #161616;
+  --border-hover: rgba(255, 255, 255, 0.45);
+
+  --text-main: #FFFFFF;
+  --text-muted: #A3A3A3;
+  --text-dim: #737373;
+
+  --accent-red: #FF453A;
+  --accent-red-glow: rgba(255, 69, 58, 0.35);
+  --accent-green: #30D158;
+  --accent-green-glow: rgba(48, 209, 88, 0.35);
+  --accent-amber: #FF9F0A;
+  --accent-amber-glow: rgba(255, 159, 10, 0.35);
+  --accent-blue: #0A84FF;
+  --accent-blue-core: #0A84FF;
+  --accent-cyan: #64D2FF;
+  --accent-purple: #BF5AF2;
+
+  --brand-crimson: #FF375F;
+  --brand-crimson-dark: #9F1239;
+  --theme-glow-card: 0 0 0 1px #262626;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -511,19 +542,51 @@ body {
   gap: 10px;
 }
 
-.topbar-left-meta strong {
-  font-size: 16px;
+.topbar-left-meta {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  min-width: 0;
+}
+
+.topbar-corporate-tag {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: nowrap;
+}
+
+.corp-name {
+  font-size: clamp(11.5px, 1.2vw, 13.5px);
   font-weight: 900;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.8px;
+  color: #FFFFFF;
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
 }
 
-.topbar-left-meta span {
-  color: var(--border-card);
+.corp-divider {
+  color: var(--accent-blue);
+  opacity: 0.8;
+  font-weight: 700;
 }
 
-.topbar-left-meta p {
-  font-size: 12px;
-  color: var(--text-dim);
+.app-acronym {
+  font-size: clamp(12px, 1.3vw, 15px);
+  font-weight: 900;
+  letter-spacing: 0.8px;
+  color: var(--accent-blue);
+}
+
+.app-sub-desc {
+  font-size: clamp(10px, 1vw, 11px);
+  color: var(--text-muted);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .topbar-center-search {
@@ -889,9 +952,25 @@ body {
 }
 
 .donut-circle-wrap {
-  width: 135px;
-  height: 135px;
+  width: 140px;
+  height: 140px;
+  min-width: 120px;
+  min-height: 120px;
+  aspect-ratio: 1 / 1;
   position: relative;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.donut-circle-wrap canvas {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  aspect-ratio: 1 / 1 !important;
+  display: block;
 }
 
 .donut-inner-data {
@@ -1431,6 +1510,11 @@ body.sidebar-open .sidebar-backdrop {
     margin: 0 auto !important;
     width: 135px !important;
     height: 135px !important;
+    min-width: 120px !important;
+    min-height: 120px !important;
+    aspect-ratio: 1 / 1 !important;
+    position: relative !important;
+    flex-shrink: 0 !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -1572,8 +1656,107 @@ body.sidebar-open .sidebar-backdrop {
 
 .status-tag.active { color: var(--accent-green); font-weight: 800; font-size: 11px; }
 
-/* TOMBOL AKSI TERSTANDARISASI INDUSTRIAL (UNTUK TAMBAH ANGGOTA, EDIT TIM, TAMBAH USER, DLL) */
+/* TOMBOL AKSI TERSTANDARISASI INDUSTRIAL SESUAI SPESIFIKASI:
+   - MENGEDIT / EDIT = MERAH (#EF4444)
+   - SIMPAN / SIMPAN PERUBAHAN = HIJAU (#10B981)
+   - TAMBAH / ADD = BIRU / CYAN (#38BDF8)
+*/
 .btn-action-edit,
+.btn-edit,
+.btn-table-edit,
+.btn-action-row.edit,
+.btn-action-edit-user {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.18), rgba(220, 38, 38, 0.28)) !important;
+  border: 1px solid #EF4444 !important;
+  color: #FCA5A5 !important;
+  padding: 9px 18px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 12px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 10px rgba(239, 68, 68, 0.25);
+  text-decoration: none;
+}
+
+.btn-action-edit:hover,
+.btn-edit:hover,
+.btn-table-edit:hover,
+.btn-action-row.edit:hover,
+.btn-action-edit-user:hover {
+  background: linear-gradient(135deg, #EF4444, #DC2626) !important;
+  border-color: #F87171 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 0 18px rgba(239, 68, 68, 0.5) !important;
+  transform: translateY(-2px);
+}
+
+.btn-action-edit i,
+.btn-edit i,
+.btn-table-edit i,
+.btn-action-row.edit i,
+.btn-action-edit-user i {
+  color: #FCA5A5 !important;
+  font-size: 13px;
+  transition: transform 0.25s ease, color 0.25s ease;
+}
+
+.btn-action-edit:hover i,
+.btn-edit:hover i,
+.btn-table-edit:hover i,
+.btn-action-row.edit:hover i,
+.btn-action-edit-user:hover i {
+  color: #FFFFFF !important;
+  transform: scale(1.15);
+}
+
+/* TOMBOL SIMPAN / SIMPAN PERUBAHAN = HIJAU (#10B981) */
+.btn-action-edit.saving,
+.btn-save-action,
+.btn-save-green,
+.btn-save-red,
+.btn-save,
+.btn-submit-save {
+  background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important;
+  border: 1px solid #10B981 !important;
+  color: #FFFFFF !important;
+  padding: 9px 18px;
+  border-radius: 10px;
+  font-weight: 800;
+  font-size: 12px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35) !important;
+}
+
+.btn-action-edit.saving:hover,
+.btn-save-action:hover,
+.btn-save-green:hover,
+.btn-save-red:hover,
+.btn-save:hover,
+.btn-submit-save:hover {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+  border-color: #34D399 !important;
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.55) !important;
+  transform: translateY(-2px);
+}
+
+.btn-action-edit.saving i,
+.btn-save-action i,
+.btn-save-green i,
+.btn-save-red i,
+.btn-save i,
+.btn-submit-save i {
+  color: #FFFFFF !important;
+}
+
+/* TOMBOL TAMBAH (ADD) */
 .btn-action-add,
 .btn-add-member {
   background: linear-gradient(135deg, rgba(14, 165, 233, 0.12), rgba(59, 130, 246, 0.12));
@@ -1592,7 +1775,6 @@ body.sidebar-open .sidebar-backdrop {
   text-decoration: none;
 }
 
-.btn-action-edit:hover,
 .btn-action-add:hover,
 .btn-add-member:hover {
   background: linear-gradient(135deg, rgba(14, 165, 233, 0.25), rgba(59, 130, 246, 0.25));
@@ -1601,42 +1783,6 @@ body.sidebar-open .sidebar-backdrop {
   box-shadow: 0 0 16px rgba(56, 189, 248, 0.35);
   transform: translateY(-2px);
 }
-
-.btn-action-edit:active,
-.btn-action-add:active,
-.btn-add-member:active {
-  transform: scale(0.96);
-}
-
-.btn-action-edit i,
-.btn-action-add i,
-.btn-add-member i {
-  color: #38BDF8;
-  font-size: 13px;
-  transition: transform 0.25s ease, color 0.25s ease;
-}
-
-.btn-action-edit:hover i,
-.btn-action-add:hover i,
-.btn-add-member:hover i {
-  color: #FFFFFF;
-  transform: scale(1.15);
-}
-
-.btn-action-edit.saving {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.3));
-  border-color: #10B981;
-  color: #34D399;
-}
-.btn-action-edit.saving i {
-  color: #34D399;
-}
-
-/* TOMBOL DI DALAM TABEL */
-.btn-table-edit {
-  background: rgba(59, 130, 246, 0.1);
-  border: 1px solid rgba(59, 130, 246, 0.25);
-  color: #60A5FA;
   padding: 6px 14px;
   border-radius: 6px;
   font-size: 11px;
@@ -2599,4 +2745,582 @@ div[style*="overflow-x: auto"]::-webkit-scrollbar-thumb:hover {
   transform: translateX(4px) translateY(-1px) !important;
   border-color: rgba(56, 189, 248, 0.45) !important;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4), 0 0 12px rgba(56, 189, 248, 0.15) !important;
+}
+
+/* ========================================================
+   DASHBOARD NON-SCROLL FIXED SCADA (FIT DESKTOP SCREEN)
+   ======================================================== */
+@media (min-width: 1200px) {
+  body.dashboard-body.dashboard-fixed-scada {
+    height: 100vh;
+    overflow: hidden;
+  }
+  body.dashboard-body.dashboard-fixed-scada .app-shell-container {
+    height: 100vh;
+    overflow: hidden;
+  }
+  body.dashboard-body.dashboard-fixed-scada .main-viewport {
+    height: 100vh;
+    overflow-y: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding-bottom: 10px;
+  }
+  body.dashboard-body.dashboard-fixed-scada .banner-mountain-hard {
+    min-height: 75px;
+    padding: 10px 18px;
+    margin-bottom: 8px;
+  }
+  body.dashboard-body.dashboard-fixed-scada .banner-mountain-hard h1 {
+    font-size: 18px;
+    margin-bottom: 2px;
+  }
+  body.dashboard-body.dashboard-fixed-scada .banner-mountain-hard p {
+    font-size: 11px;
+    margin-bottom: 6px;
+  }
+  body.dashboard-body.dashboard-fixed-scada .kpi-cards-grid-hard {
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  body.dashboard-body.dashboard-fixed-scada .card-kpi-hard {
+    padding: 8px 12px;
+  }
+  body.dashboard-body.dashboard-fixed-scada .card-kpi-hard h2 {
+    font-size: 17px;
+    margin: 2px 0;
+  }
+  body.dashboard-body.dashboard-fixed-scada .charts-section-hard {
+    margin-bottom: 8px;
+    gap: 8px;
+  }
+  body.dashboard-body.dashboard-fixed-scada .chart-glass-panel {
+    padding: 10px 14px;
+  }
+  body.dashboard-body.dashboard-fixed-scada .canvas-height-holder {
+    height: 160px;
+  }
+  body.dashboard-body.dashboard-fixed-scada .donut-circle-wrap {
+    max-width: 125px;
+  }
+  body.dashboard-body.dashboard-fixed-scada .bottom-three-cols-grid {
+    gap: 8px;
+  }
+  body.dashboard-body.dashboard-fixed-scada .bottom-mini-panel {
+    padding: 8px 12px;
+  }
+}
+
+/* ========================================================
+   HARMONISASI IKON BIRU (SEPERTI TOMBOL TAMBAH PENGGUNA) & ADAPTIF AMOLED
+   ======================================================== */
+.btn-action-view, .btn-action-row.view {
+  background: rgba(37, 99, 235, 0.12);
+  border: 1px solid rgba(59, 130, 246, 0.35);
+  color: #60A5FA;
+}
+.btn-action-view:hover, .btn-action-row.view:hover {
+  background: rgba(37, 99, 235, 0.25);
+  border-color: #60A5FA;
+  color: #FFFFFF;
+}
+
+[data-theme="cyber"] .btn-action-view, 
+[data-theme="cyber"] .btn-action-row.view {
+  background: rgba(56, 189, 248, 0.12);
+  border-color: rgba(56, 189, 248, 0.4);
+  color: #38BDF8;
+}
+
+[data-theme="amoled"] .btn-action-view, 
+[data-theme="amoled"] .btn-action-row.view {
+  background: rgba(10, 132, 255, 0.15);
+  border-color: rgba(10, 132, 255, 0.5);
+  color: #64D2FF;
+  box-shadow: 0 0 10px rgba(10, 132, 255, 0.25);
+}
+
+/* SINKRONISASI IKON HIJAU NON-ONLINE MENJADI WARNA TEMA */
+.badge-sub-green {
+  background: rgba(56, 189, 248, 0.12);
+  color: var(--accent-blue);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+/* ========================================================
+   INTEGRASI AI SPESIFIKASI ARIK (DASHBOARD & LAPORAN)
+   ======================================================== */
+.ai-smart-insight-banner {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.85));
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  border-left: 4px solid #38BDF8;
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  transition: all 0.3s ease;
+}
+
+.ai-smart-insight-banner:hover {
+  border-color: rgba(56, 189, 248, 0.5);
+  box-shadow: 0 6px 24px rgba(56, 189, 248, 0.15);
+}
+
+.ai-insight-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.ai-insight-title-group {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  flex: 1;
+}
+
+.ai-robot-pulsing-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(99, 102, 241, 0.25));
+  border: 1px solid rgba(139, 92, 246, 0.4);
+  color: #A78BFA;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+  box-shadow: 0 0 12px rgba(139, 92, 246, 0.3);
+}
+
+.ai-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 5px;
+}
+
+.ai-title-row h3 {
+  font-size: 14px;
+  font-weight: 800;
+  color: #FFFFFF;
+  margin: 0;
+  letter-spacing: 0.3px;
+}
+
+.ai-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ai-status-badge .dot-live {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  animation: pulseAiDot 1.5s infinite;
+}
+
+@keyframes pulseAiDot {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 0.5; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.ai-status-badge.badge-normal {
+  background: rgba(16, 185, 129, 0.2);
+  border: 1px solid #10B981;
+  color: #34D399;
+}
+.ai-status-badge.badge-normal .dot-live { background: #10B981; box-shadow: 0 0 6px #10B981; }
+
+.ai-status-badge.badge-warning {
+  background: rgba(245, 158, 11, 0.2);
+  border: 1px solid #F59E0B;
+  color: #FBBF24;
+}
+.ai-status-badge.badge-warning .dot-live { background: #F59E0B; box-shadow: 0 0 6px #F59E0B; }
+
+.ai-status-badge.badge-critical {
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid #EF4444;
+  color: #FCA5A5;
+}
+.ai-status-badge.badge-critical .dot-live { background: #EF4444; box-shadow: 0 0 6px #EF4444; }
+
+.ai-issues-pill {
+  font-size: 11px;
+  font-weight: 700;
+  color: #FBBF24;
+  background: rgba(245, 158, 11, 0.12);
+  padding: 3px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.ai-insight-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.ai-meta-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ai-updated-label {
+  font-size: 10.5px;
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+
+.ai-refresh-mini-btn {
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  color: #38BDF8;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.ai-refresh-mini-btn:hover {
+  background: rgba(56, 189, 248, 0.25);
+  color: #FFFFFF;
+  border-color: #38BDF8;
+}
+
+/* KOTAK AI DI HALAMAN LAPORAN (REPORTS.HTML) */
+.ai-recommendation-engine-box {
+  background: linear-gradient(135deg, rgba(11, 18, 34, 0.95), rgba(15, 23, 42, 0.9));
+  border: 1px solid rgba(139, 92, 246, 0.35);
+  border-left: 4px solid #8B5CF6;
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
+}
+
+.ai-rec-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.ai-rec-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ai-rec-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.25), rgba(99, 102, 241, 0.3));
+  border: 1px solid rgba(139, 92, 246, 0.5);
+  color: #A78BFA;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.ai-rec-time-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ai-updated-badge {
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.ai-devices-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.ai-device-label {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.ai-device-chips-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.ai-chip-device {
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  color: #FBBF24;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ai-recommendation-content {
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+  background: rgba(6, 10, 20, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 12px 16px;
+}
+
+.ai-quote-bar {
+  width: 4px;
+  background: #8B5CF6;
+  border-radius: 4px;
+}
+
+.ai-recommendation-content p {
+  margin: 0;
+  font-size: 12px;
+  color: #E2E8F0;
+  line-height: 1.6;
+}
+
+/* ========================================================
+   REALISTIC 3D ARCHITECTURAL HOUSE FLOORPLAN (TOPOLOGY & DASHBOARD)
+   ======================================================== */
+.floorplan-realistic-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 480px;
+  background: radial-gradient(circle at 50% 50%, #0F172A 0%, #060913 100%);
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.real-floorplan-svg {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  display: block;
+}
+
+/* INTERAKTIF RUANGAN HOVER & KLIK */
+.real-room-zone {
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.real-room-zone:hover rect.room-floor-base {
+  filter: brightness(1.2) drop-shadow(0 0 10px rgba(56, 189, 248, 0.5));
+}
+
+.real-room-zone:hover text.room-title-text {
+  fill: #38BDF8 !important;
+  font-weight: 900 !important;
+}
+
+/* 3D BLINKING LEDS & STATUS */
+@keyframes blinkLedGreen {
+  0%, 100% { opacity: 1; filter: drop-shadow(0 0 4px #10B981); }
+  50% { opacity: 0.3; }
+}
+
+@keyframes blinkLedCyan {
+  0%, 100% { opacity: 1; filter: drop-shadow(0 0 4px #06B6D4); }
+  50% { opacity: 0.2; }
+}
+
+@keyframes blinkLedAmber {
+  0%, 100% { opacity: 1; filter: drop-shadow(0 0 4px #F59E0B); }
+  50% { opacity: 0.25; }
+}
+
+.led-rack-green { animation: blinkLedGreen 1.2s infinite; }
+.led-rack-cyan { animation: blinkLedCyan 1.8s infinite; }
+.led-rack-amber { animation: blinkLedAmber 0.9s infinite; }
+
+/* ========================================================
+   DENAH 3D REAL HOUSE & STREET VIEW TOGGLE TABS
+   ======================================================== */
+.view-mode-tabs {
+  display: flex;
+  gap: 6px;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid var(--border-card);
+  padding: 4px;
+  border-radius: 10px;
+  flex-wrap: wrap;
+}
+
+.btn-floor-tab {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-dim);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.btn-floor-tab:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.btn-floor-tab.active {
+  background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
+  color: #fff;
+  border-color: rgba(56, 189, 248, 0.4);
+  box-shadow: 0 2px 10px rgba(37, 99, 235, 0.35);
+}
+
+/* 3D WEBGL CANVAS & HUD CONTROLS TOOLBAR */
+#threeJsCanvasContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  cursor: grab;
+  outline: none;
+}
+#threeJsCanvasContainer:active {
+  cursor: grabbing;
+}
+
+.hud-3d-toolbar {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 25;
+  display: flex;
+  gap: 8px;
+  background: rgba(11, 18, 34, 0.85);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border-card);
+  padding: 6px 10px;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  flex-wrap: wrap;
+}
+
+.hud-btn {
+  background: rgba(30, 41, 59, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 6px 11px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+  user-select: none;
+}
+
+.hud-btn:hover {
+  background: rgba(56, 189, 248, 0.2);
+  border-color: var(--accent-blue);
+  color: #38BDF8;
+}
+
+.hud-btn.active {
+  background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+  border-color: #10B981;
+  color: #fff;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+}
+
+/* FLUID RESPONSIVE SCALING */
+@media (max-width: 900px) {
+  .subpage-header-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .subpage-header-row h2 {
+    font-size: clamp(16px, 4vw, 22px);
+  }
+  .search-filter-container-aziz {
+    flex-direction: column;
+  }
+  .search-bar-wide {
+    width: 100%;
+  }
+  .filter-dropdown-pair {
+    width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .desktop-top-navbar {
+    padding: 8px 12px;
+  }
+  .topbar-center-search {
+    display: none;
+  }
+  .topbar-clock-chip {
+    display: none;
+  }
+  .view-mode-tabs {
+    width: 100%;
+  }
+  .btn-floor-tab {
+    flex: 1;
+    justify-content: center;
+    font-size: 10px;
+    padding: 6px 8px;
+  }
+  .floorplan-3d-wrapper {
+    height: 360px !important;
+  }
 }

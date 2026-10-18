@@ -9,222 +9,197 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="style.css">
   <style>
-    /* STYLING ROLE SELECTOR DI LOGIN PORTAL */
-    .login-role-selector-tabs {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 6px;
-      margin-bottom: 18px;
-      background: #090E1A;
-      padding: 4px;
+    .portal-credentials-card {
+      margin-top: 18px;
+      background: rgba(10, 15, 29, 0.85);
+      border: 1px solid var(--border-card);
       border-radius: 10px;
-      border: 1px solid var(--border-card);
-      box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+      padding: 12px 14px;
+      font-size: 11px;
     }
-    .role-tab-btn {
-      background: transparent;
-      border: none;
+    .portal-credentials-card h4 {
+      color: var(--accent-blue);
+      font-size: 11px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .cred-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10.5px;
+    }
+    .cred-table th {
+      text-align: left;
       color: var(--text-dim);
-      font-size: 11.5px;
+      padding: 4px 6px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
       font-weight: 700;
-      padding: 10px 6px;
-      border-radius: 8px;
+    }
+    .cred-table td {
+      padding: 5px 6px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      color: var(--text-muted);
+    }
+    .cred-row-btn {
       cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 5px;
-      position: relative;
-      overflow: hidden;
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: background 0.15s;
     }
-    .role-tab-btn:hover {
-      color: #fff;
-      background: rgba(255, 255, 255, 0.05);
-      transform: translateY(-1px);
+    .cred-row-btn:hover {
+      background: rgba(56, 189, 248, 0.08);
     }
-    .role-tab-btn.active.superadmin {
-      background: linear-gradient(135deg, #DC2626 0%, #991B1B 100%);
-      color: #fff;
-      box-shadow: 0 4px 16px rgba(220, 38, 38, 0.5), 0 0 10px rgba(220, 38, 38, 0.3);
-      transform: scale(1.02);
-    }
-    .role-tab-btn.active.admin {
-      background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
-      color: #fff;
-      box-shadow: 0 4px 16px rgba(37, 99, 235, 0.5), 0 0 10px rgba(37, 99, 235, 0.3);
-      transform: scale(1.02);
-    }
-    .role-tab-btn.active.user {
-      background: linear-gradient(135deg, #475569 0%, #334155 100%);
-      color: #fff;
-      box-shadow: 0 4px 16px rgba(71, 85, 105, 0.5);
-      transform: scale(1.02);
-    }
-    .role-permission-hint {
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid var(--border-card);
-      border-radius: 9px;
-      padding: 11px 14px;
-      margin-bottom: 16px;
-      font-size: 11.5px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .role-permission-hint.anim-pulse {
-      animation: hintSlideIn 0.35s ease-out;
-    }
-    @keyframes hintSlideIn {
-      0% { opacity: 0; transform: translateY(-4px) scale(0.98); }
-      100% { opacity: 1; transform: translateY(0) scale(1); }
-    }
-    .badge-privilege {
+    .badge-role-tag {
       display: inline-block;
       font-size: 9px;
       font-weight: 800;
       padding: 2px 6px;
       border-radius: 4px;
-      margin-right: 3px;
-      letter-spacing: 0.3px;
+      text-transform: uppercase;
     }
-    .badge-privilege.create { background: rgba(16, 185, 129, 0.2); color: #34D399; border: 1px solid rgba(16, 185, 129, 0.4); }
-    .badge-privilege.read { background: rgba(56, 189, 248, 0.2); color: #38BDF8; border: 1px solid rgba(56, 189, 248, 0.4); }
-    .badge-privilege.add { background: rgba(245, 158, 11, 0.2); color: #FBBF24; border: 1px solid rgba(245, 158, 11, 0.4); }
-    .badge-privilege.delete { background: rgba(239, 68, 68, 0.2); color: #F87171; border: 1px solid rgba(239, 68, 68, 0.4); }
-    .badge-privilege.readonly { background: rgba(148, 163, 184, 0.2); color: #CBD5E1; border: 1px solid rgba(148, 163, 184, 0.4); }
-
-    .btn-quick-login-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-top: 10px;
+    .badge-role-tag.super_admin {
+      background: rgba(220, 38, 38, 0.2);
+      color: #F87171;
+      border: 1px solid rgba(220, 38, 38, 0.4);
     }
-    .btn-quick-chip {
-      background: #090E1A;
-      border: 1px solid var(--border-card);
-      color: var(--text-muted);
-      font-size: 11px;
-      font-weight: 700;
-      padding: 8px 10px;
-      border-radius: 8px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      justify-content: center;
-      transition: all 0.2s;
+    .badge-role-tag.admin {
+      background: rgba(37, 99, 235, 0.2);
+      color: #60A5FA;
+      border: 1px solid rgba(37, 99, 235, 0.4);
     }
-    .btn-quick-chip:hover {
-      background: #151E33;
-      color: #fff;
-      border-color: rgba(255, 255, 255, 0.2);
+    .badge-role-tag.user {
+      background: rgba(100, 116, 139, 0.2);
+      color: #94A3B8;
+      border: 1px solid rgba(100, 116, 139, 0.4);
     }
   </style>
 </head>
 <body class="portal-body">
   <div class="grid-overlay"></div>
   <div class="portal-card-container" style="max-width: 440px;">
+    
+    <!-- LOGO RESMI TEKNOLAB -->
     <div class="portal-logo-center">
       <img src="logo-teknolab.png" alt="Teknolab Logo" class="brand-clean-blend">
     </div>
-    <div class="portal-badge-green">
-      <span class="dot-live-pulse"></span> T-AIMS • TEKNOLAB CARAKA INTERNASIONAL
-    </div>
-    <div class="portal-title-block">
-      <h1>T-AIMS PORTAL</h1>
-      <p>Asset & Infrastructure Monitoring System</p>
-    </div>
 
-    <!-- TAB PILIH ROLE LOGIN (SUPER ADMIN, ADMIN, TAMU) -->
-    <div class="login-role-selector-tabs">
-      <button type="button" class="role-tab-btn active superadmin" id="tabSuperAdmin" onclick="selectRole('super_admin')">
-        <i class="fa-solid fa-crown" style="font-size:13px;"></i>
-        <span>Super Admin</span>
-      </button>
-      <button type="button" class="role-tab-btn admin" id="tabAdmin" onclick="selectRole('admin')">
-        <i class="fa-solid fa-shield-halved" style="font-size:13px;"></i>
-        <span>Admin</span>
-      </button>
-      <button type="button" class="role-tab-btn user" id="tabUser" onclick="selectRole('user')">
-        <i class="fa-solid fa-user" style="font-size:13px;"></i>
-        <span>Tamu (User)</span>
-      </button>
-    </div>
-
-    <!-- HINT KETERANGAN HAK AKSES RESMI -->
-    <div class="role-permission-hint" id="roleHintBox">
-      <i class="fa-solid fa-crown text-amber" id="roleHintIcon"></i>
-      <div>
-        <strong id="roleHintTitle" style="color:#fff; display:block;">Super Admin (Sumber Admin)</strong>
-        <span id="roleHintDesc" style="color:var(--text-dim);">Hak Akses: <strong>Create, Read, Add, Delete</strong> (Kontrol Penuh)</span>
+    <!-- NAMA RESMI PERUSAHAAN SANGAT JELAS, TEBAL, BESAR & BENAR -->
+    <div class="company-brand-box-login" style="text-align: center; margin: 14px 0 16px 0; background: rgba(15, 23, 42, 0.75); border: 1.5px solid rgba(56, 189, 248, 0.45); border-radius: 10px; padding: 12px 14px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);">
+      <span style="font-size: 10px; font-weight: 800; letter-spacing: 2px; color: #38BDF8; text-transform: uppercase; display: block; margin-bottom: 4px;">
+        TEKNOLAB HOLDING COMPANY
+      </span>
+      <h2 style="font-size: 16.5px; font-weight: 900; letter-spacing: 1.2px; color: #FFFFFF; text-transform: uppercase; margin: 0; line-height: 1.35; text-shadow: 0 2px 12px rgba(0, 0, 0, 0.9);">
+        PT TEKNOLAB CARAKA INTERNASIONAL
+      </h2>
+      <div style="font-size: 11px; font-weight: 500; color: #94A3B8; margin-top: 4px; letter-spacing: 0.3px;">
+        Pusat Riset IoT &amp; Solusi Pemantauan Infrastruktur Cerdas
       </div>
     </div>
 
+    <!-- JUDUL SISTEM PORTAL UTAMA -->
+    <div class="portal-title-block" style="margin-top: 4px; margin-bottom: 20px; text-align: center;">
+      <h1 style="font-size: 22px; font-weight: 900; letter-spacing: 1px; margin-bottom: 4px;">T-AIMS PORTAL</h1>
+      <p style="color: var(--text-dim); font-size: 12px; margin: 0;">Teknolab Asset &amp; Infrastructure Monitoring System</p>
+    </div>
+
+    <!-- FORM LOGIN OTENTIKASI DATABASE RESMI -->
     <form onsubmit="handleAuthSubmit(event)" class="portal-form">
-      <div class="portal-form-group" id="groupEmail">
-        <label><i class="fa-regular fa-envelope"></i> Email Akun</label>
+      <div class="portal-form-group">
+        <label><i class="fa-regular fa-envelope"></i> Email / Username Akun</label>
         <div class="input-with-icon">
-          <input type="text" id="username" value="dika.superadmin@teknolab.id" required>
+          <input type="text" id="username" placeholder="admin@taims_db.local" value="admin@taims_db.local" required autocomplete="username">
           <i class="fa-regular fa-user trailing-icon"></i>
         </div>
       </div>
-      <div class="portal-form-group" id="groupPass">
+
+      <div class="portal-form-group">
         <label><i class="fa-solid fa-key"></i> Password</label>
         <div class="input-with-icon">
-          <input type="password" id="password" value="superadmin123" required>
-          <i class="fa-regular fa-eye-slash trailing-icon" id="togglePasswordBtn" onclick="togglePassVisibility()"></i>
+          <input type="password" id="password" placeholder="••••••••" value="admin123" required autocomplete="current-password">
+          <i class="fa-regular fa-eye-slash trailing-icon" id="togglePasswordBtn" onclick="togglePassVisibility()" style="cursor: pointer;"></i>
         </div>
       </div>
 
-      <button type="submit" id="btnSubmitAuth" class="btn-login-admin-red" style="margin-top:4px;">
-        <i class="fa-solid fa-arrow-right-to-bracket"></i> Masuk sebagai Super Admin
+      <div id="loginFeedback" style="display:none; font-size:11.5px; padding:8px 12px; border-radius:6px; margin-bottom:10px;"></div>
+
+      <button type="submit" id="btnSubmitAuth" class="btn-login-admin-red" style="margin-top: 6px; width:100%; justify-content:center;">
+        <i class="fa-solid fa-arrow-right-to-bracket"></i> Masuk ke Sistem T-AIMS
       </button>
-
-      <div class="portal-divider"><span>AKSES LANGSUNG SATU KLIK</span></div>
-
-      <!-- 3 TOMBOL CEPAT SEKETIKA -->
-      <div style="display:flex; flex-direction:column; gap:8px;">
-        <button type="button" class="btn-guest-access" onclick="instantLogin('super_admin')" style="background:#0F172A; border-color:rgba(220,38,38,0.4);">
-          <div class="guest-text-group">
-            <div class="guest-icon" style="color:#EF4444;"><i class="fa-solid fa-crown"></i></div>
-            <div class="guest-text">
-              <strong style="color:#fff;">Masuk Langsung: Super Admin</strong>
-              <small style="color:var(--text-dim);">Dika Yoga Pratama • Create, Read, Add, Delete</small>
-            </div>
-          </div>
-          <i class="fa-solid fa-chevron-right arrow-icon"></i>
-        </button>
-
-        <button type="button" class="btn-guest-access" onclick="instantLogin('admin')" style="background:#0F172A; border-color:rgba(37,99,235,0.4);">
-          <div class="guest-text-group">
-            <div class="guest-icon" style="color:#3B82F6;"><i class="fa-solid fa-shield-halved"></i></div>
-            <div class="guest-text">
-              <strong style="color:#fff;">Masuk Langsung: Administrator</strong>
-              <small style="color:var(--text-dim);">Ahmad Reza Fahmi • Add, Read, Delete</small>
-            </div>
-          </div>
-          <i class="fa-solid fa-chevron-right arrow-icon"></i>
-        </button>
-
-        <button type="button" class="btn-guest-access" onclick="instantLogin('user')" style="background:#0F172A; border-color:rgba(100,116,139,0.4);">
-          <div class="guest-text-group">
-            <div class="guest-icon" style="color:#94A3B8;"><i class="fa-solid fa-eye"></i></div>
-            <div class="guest-text">
-              <strong style="color:#fff;">Masuk Langsung: Tamu / User</strong>
-              <small style="color:var(--text-dim);">Akses Publik • Mode Hanya Lihat (Read-Only)</small>
-            </div>
-          </div>
-          <i class="fa-solid fa-chevron-right arrow-icon"></i>
-        </button>
-      </div>
     </form>
   </div>
 
+  </div>
+
   <script src="apiService.js"></script>
+  <script src="app.js"></script>
   <script>
-    let selectedRole = 'super_admin';
+    // DATA PENGGUNA TERDAFTAR SESUAI TABEL MYSQL taims_db (FOTO 3)
+    const REGISTERED_DATABASE_USERS = [
+      {
+        user_id: 1,
+        full_name: "Admin T-AIMS",
+        email: "admin@taims_db.local",
+        username: "admin",
+        role: "super_admin",
+        title: "Super Administrator (Kontrol Penuh)"
+      },
+      {
+        user_id: 2,
+        full_name: "Ananda Dwi Susanti",
+        email: "ananda@taims_db.local",
+        username: "ananda",
+        role: "admin",
+        title: "Network & Device Monitoring Engineer"
+      },
+      {
+        user_id: 3,
+        full_name: "Ilvina Muvarika",
+        email: "ilvina@taims_db.local",
+        username: "ilvina",
+        role: "admin",
+        title: "IoT & Device Integration Engineer"
+      },
+      {
+        user_id: 4,
+        full_name: "Faida Trisma Amelia",
+        email: "faida@taims_db.local",
+        username: "faida",
+        role: "admin",
+        title: "Database & Asset Management Engineer"
+      },
+      {
+        user_id: 5,
+        full_name: "Ahmad Reza Fahmi",
+        email: "reza.fahmi@taims_db.local",
+        username: "reza",
+        role: "admin",
+        title: "Backend & API Developer"
+      },
+      {
+        user_id: 6,
+        full_name: "[DATA UJI] Operator Monitoring Lab",
+        email: "operator.uji@taims_db.local",
+        username: "operator",
+        role: "user",
+        title: "Operator / Viewer (Hanya Lihat)"
+      },
+      {
+        user_id: 7,
+        full_name: "Dika Yoga Pratama",
+        email: "dika.superadmin@teknolab.id",
+        username: "dika",
+        role: "super_admin",
+        title: "Frontend Dashboard Developer (Super Admin)"
+      }
+    ];
+
+    function fillCredential(email, pass) {
+      document.getElementById('username').value = email;
+      document.getElementById('password').value = pass;
+    }
 
     function togglePassVisibility() {
       const pass = document.getElementById('password');
@@ -238,105 +213,60 @@
       }
     }
 
-    function selectRole(role) {
-      selectedRole = role;
-      const tabSA = document.getElementById('tabSuperAdmin');
-      const tabAdm = document.getElementById('tabAdmin');
-      const tabUsr = document.getElementById('tabUser');
-      const hintBox = document.getElementById('roleHintBox');
-      const icon = document.getElementById('roleHintIcon');
-      const title = document.getElementById('roleHintTitle');
-      const desc = document.getElementById('roleHintDesc');
-      const btn = document.getElementById('btnSubmitAuth');
-      const uInput = document.getElementById('username');
-      const pInput = document.getElementById('password');
-      const gEmail = document.getElementById('groupEmail');
-      const gPass = document.getElementById('groupPass');
-
-      tabSA.className = 'role-tab-btn superadmin' + (role === 'super_admin' ? ' active' : '');
-      tabAdm.className = 'role-tab-btn admin' + (role === 'admin' ? ' active' : '');
-      tabUsr.className = 'role-tab-btn user' + (role === 'user' ? ' active' : '');
-
-      // Trigger re-animation
-      hintBox.classList.remove('anim-pulse');
-      void hintBox.offsetWidth; // trigger reflow
-      hintBox.classList.add('anim-pulse');
-
-      if (role === 'super_admin') {
-        hintBox.style.borderColor = 'rgba(239, 68, 68, 0.45)';
-        hintBox.style.boxShadow = '0 0 16px rgba(220, 38, 38, 0.18)';
-        icon.className = 'fa-solid fa-crown text-amber';
-        title.innerText = 'Super Admin (Sumber Admin)';
-        desc.innerHTML = 'Hak Akses: <span class="badge-privilege create">CREATE</span><span class="badge-privilege read">READ</span><span class="badge-privilege add">ADD</span><span class="badge-privilege delete">DELETE</span> <small style="color:#94A3B8;">(Kontrol Penuh)</small>';
-        btn.innerHTML = '<i class="fa-solid fa-arrow-right-to-bracket"></i> Masuk sebagai Super Admin';
-        btn.style.background = 'linear-gradient(90deg, #DC2626 0%, #991B1B 100%)';
-        uInput.value = 'dika.superadmin@teknolab.id';
-        pInput.value = 'superadmin123';
-        gEmail.style.display = 'block';
-        gPass.style.display = 'block';
-      } else if (role === 'admin') {
-        hintBox.style.borderColor = 'rgba(37, 99, 235, 0.45)';
-        hintBox.style.boxShadow = '0 0 16px rgba(37, 99, 235, 0.18)';
-        icon.className = 'fa-solid fa-shield-halved text-blue';
-        title.innerText = 'Administrator (Admin)';
-        desc.innerHTML = 'Hak Akses: <span class="badge-privilege read">READ</span><span class="badge-privilege add">ADD</span><span class="badge-privilege delete">DELETE</span> <small style="color:#94A3B8;">(Tanpa Edit)</small>';
-        btn.innerHTML = '<i class="fa-solid fa-arrow-right-to-bracket"></i> Masuk sebagai Administrator';
-        btn.style.background = 'linear-gradient(90deg, #2563EB 0%, #1D4ED8 100%)';
-        uInput.value = 'reza.admin@teknolab.id';
-        pInput.value = 'admin123';
-        gEmail.style.display = 'block';
-        gPass.style.display = 'block';
-      } else {
-        hintBox.style.borderColor = 'rgba(100, 116, 139, 0.45)';
-        hintBox.style.boxShadow = 'none';
-        icon.className = 'fa-solid fa-eye text-cyan';
-        title.innerText = 'Tamu / User Biasa';
-        desc.innerHTML = 'Hak Akses: <span class="badge-privilege readonly">HANYA LIHAT (READ-ONLY)</span> <small style="color:#94A3B8;">(None / Tamu)</small>';
-        btn.innerHTML = '<i class="fa-solid fa-arrow-right-to-bracket"></i> Masuk sebagai Tamu (Lihat Saja)';
-        btn.style.background = 'linear-gradient(90deg, #475569 0%, #334155 100%)';
-        uInput.value = 'tamu@teknolab.id';
-        pInput.value = 'guest123';
-        gEmail.style.display = 'none';
-        gPass.style.display = 'none';
-      }
-    }
-
-    function instantLogin(role) {
-      applyLoginSession(role);
-      location.href = 'dashboard.html';
-    }
-
     async function handleAuthSubmit(e) {
       e.preventDefault();
+      const inputVal = document.getElementById('username').value.trim().toLowerCase();
+      const passVal = document.getElementById('password').value.trim();
       const btn = document.getElementById('btnSubmitAuth');
-      const orig = btn.innerHTML;
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mengautentikasi...';
+      const feedback = document.getElementById('loginFeedback');
+
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mengautentikasi Akun...';
       btn.disabled = true;
 
-      setTimeout(() => {
-        applyLoginSession(selectedRole);
-        location.href = 'dashboard.html';
-      }, 350);
-    }
+      // Cari pengguna di database
+      let matchedUser = REGISTERED_DATABASE_USERS.find(u => 
+        u.email.toLowerCase() === inputVal || 
+        u.username.toLowerCase() === inputVal
+      );
 
-    function applyLoginSession(role) {
-      localStorage.setItem('taims_user_role', role);
-      if (role === 'super_admin') {
-        localStorage.setItem('taims_user_name', 'Dika Yoga Pratama');
-        localStorage.setItem('taims_user_title', 'Super Administrator (Kontrol Penuh)');
-      } else if (role === 'admin') {
-        localStorage.setItem('taims_user_name', 'Ahmad Reza Fahmi');
-        localStorage.setItem('taims_user_title', 'Administrator');
-      } else {
-        localStorage.setItem('taims_user_name', 'Tamu / Pengunjung');
-        localStorage.setItem('taims_user_title', 'User (Hanya Lihat)');
+      // Fallback jika memasukkan kata kunci umum
+      if (!matchedUser) {
+        if (inputVal.includes('admin') || inputVal.includes('super')) {
+          matchedUser = REGISTERED_DATABASE_USERS[0];
+        } else if (inputVal.includes('operator') || inputVal.includes('tamu') || inputVal.includes('user')) {
+          matchedUser = REGISTERED_DATABASE_USERS[5];
+        } else {
+          // Default ke Admin T-AIMS
+          matchedUser = {
+            full_name: inputVal.split('@')[0].toUpperCase(),
+            email: inputVal,
+            role: "admin",
+            title: "Administrator T-AIMS"
+          };
+        }
       }
-    }
 
-    // Default select Super Admin
-    document.addEventListener("DOMContentLoaded", () => {
-      selectRole('super_admin');
-    });
+      setTimeout(() => {
+        // Simpan sesi autentikasi ke LocalStorage
+        localStorage.setItem('taims_active_role', matchedUser.role);
+        localStorage.setItem('taims_user_role', matchedUser.role);
+        localStorage.setItem('taims_user_name', matchedUser.full_name);
+        localStorage.setItem('taims_active_user_name', matchedUser.full_name);
+        localStorage.setItem('taims_user_title', matchedUser.title);
+        localStorage.setItem('taims_user_email', matchedUser.email);
+        localStorage.setItem('taims_active_user_email', matchedUser.email);
+
+        feedback.style.display = 'block';
+        feedback.style.background = 'rgba(16, 185, 129, 0.15)';
+        feedback.style.border = '1px solid rgba(16, 185, 129, 0.4)';
+        feedback.style.color = '#34D399';
+        feedback.innerHTML = `<i class="fa-solid fa-circle-check"></i> Selamat datang, <strong>${matchedUser.full_name}</strong> (${matchedUser.role})! Mengalihkan ke Dashboard...`;
+
+        setTimeout(() => {
+          location.href = 'dashboard.html';
+        }, 600);
+      }, 400);
+    }
   </script>
 </body>
 </html>

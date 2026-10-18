@@ -18,6 +18,7 @@
       </div>
       <nav class="sidebar-nav-menu">
         <a href="dashboard.html" class="sidebar-link"><i class="fa-solid fa-house"></i> <span>Dashboard</span></a>
+        <a href="ai-assistant.html" class="sidebar-link"><i class="fa-solid fa-brain" style="color:#A78BFA;"></i> <span>Asisten AI</span> <span style="background:linear-gradient(135deg,#8B5CF6,#6366F1); color:#fff; font-size:9px; font-weight:800; padding:2px 6px; border-radius:10px; margin-left:auto;">AI</span></a>
         <a href="devices.html" class="sidebar-link"><i class="fa-solid fa-microchip"></i> <span>Perangkat</span></a>
         <a href="network.html" class="sidebar-link"><i class="fa-solid fa-network-wired"></i> <span>Jaringan</span></a>
         <a href="topology.html" class="sidebar-link"><i class="fa-solid fa-location-dot"></i> <span>Lokasi</span></a>
@@ -33,7 +34,14 @@
     <main class="main-viewport">
       <div class="desktop-top-navbar">
         <button class="mobile-menu-toggle" id="mobileMenuToggle" onclick="toggleMobileSidebar()" aria-label="Buka Menu Navigasi"><i class="fa-solid fa-bars"></i></button>
-        <div class="topbar-left-meta"><strong>T-AIMS</strong><span>|</span><p>Teknolab Asset & Infrastructure Monitoring System</p></div>
+        <div class="topbar-left-meta">
+          <div class="topbar-corporate-tag">
+            <span class="corp-name">PT TEKNOLAB CARAKA INTERNASIONAL</span>
+            <span class="corp-divider">|</span>
+            <strong class="app-acronym">T-AIMS</strong>
+          </div>
+          <p class="app-sub-desc">Teknolab Asset &amp; Infrastructure Monitoring System</p>
+        </div>
         <div class="topbar-center-search"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="Cari pengguna, email..."></div>
         <div class="topbar-right-meta">
           <div class="topbar-clock-chip"><i class="fa-regular fa-calendar"></i><div><span>Rabu, 14 Okt 2026</span><strong>23:30 WIB</strong></div></div>
@@ -93,6 +101,69 @@
             </thead>
             <tbody id="userTableBody">
               <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- KARTU DAFTAR AKUN DATABASE RESMI (PINDAHAN DARI LOGIN SESUAI REVISI) -->
+      <div class="card-table-panel" style="margin-top: 24px;">
+        <div style="padding:14px 18px; border-bottom:1px solid var(--border-card); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+          <div>
+            <h4 style="margin:0; font-size:13px; font-weight:800; color:#38BDF8; display:flex; align-items:center; gap:8px;">
+              <i class="fa-solid fa-database"></i> Referensi Akun Terdaftar di Database (taims_db)
+            </h4>
+            <small style="color:var(--text-dim); font-size:10.5px;">Data akun autentikasi sistem PKL Teknolab untuk pengujian otorisasi peran.</small>
+          </div>
+          <span style="font-size:10px; font-weight:800; background:rgba(56,189,248,0.15); color:#38BDF8; border:1px solid rgba(56,189,248,0.3); padding:3px 8px; border-radius:4px;">
+            <i class="fa-solid fa-server"></i> MySQL port 3306
+          </span>
+        </div>
+        <div style="overflow-x:auto; width:100%;">
+          <table class="data-table-full" style="min-width: 650px;">
+            <thead>
+              <tr>
+                <th style="width:40px;">NO</th>
+                <th>NAMA PENGGUNA</th>
+                <th>EMAIL AKUN</th>
+                <th>DEFAULT PASSWORD</th>
+                <th>ROLE / HAK AKSES</th>
+                <th>KETERANGAN</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td><strong>Admin T-AIMS</strong></td>
+                <td style="color:#60A5FA; font-weight:700;">admin@taims_db.local</td>
+                <td><code style="background:#090E1A; padding:2px 6px; border-radius:4px; color:#F87171;">admin123</code></td>
+                <td><span class="badge-role-tag super_admin" style="font-size:9.5px; padding:3px 8px; border-radius:4px; background:rgba(239,68,68,0.2); color:#FCA5A5; border:1px solid #EF4444; font-weight:800;">super_admin</span></td>
+                <td>Akses CRUD Penuh (Add/Edit/Delete/Settings)</td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td><strong>Ahmad Reza Fahmi</strong></td>
+                <td style="color:#60A5FA; font-weight:700;">reza.fahmi@taims_db.local</td>
+                <td><code style="background:#090E1A; padding:2px 6px; border-radius:4px; color:#60A5FA;">admin123</code></td>
+                <td><span class="badge-role-tag admin" style="font-size:9.5px; padding:3px 8px; border-radius:4px; background:rgba(37,99,235,0.2); color:#93C5FD; border:1px solid #2563EB; font-weight:800;">admin</span></td>
+                <td>Akses Manajemen Operasional (Add/Delete)</td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td><strong>Ananda Dwi Susanti</strong></td>
+                <td style="color:#60A5FA; font-weight:700;">ananda@taims_db.local</td>
+                <td><code style="background:#090E1A; padding:2px 6px; border-radius:4px; color:#60A5FA;">admin123</code></td>
+                <td><span class="badge-role-tag admin" style="font-size:9.5px; padding:3px 8px; border-radius:4px; background:rgba(37,99,235,0.2); color:#93C5FD; border:1px solid #2563EB; font-weight:800;">admin</span></td>
+                <td>Akses Manajemen Operasional (Add/Delete)</td>
+              </tr>
+              <tr>
+                <td>4</td>
+                <td><strong>Operator Monitoring</strong></td>
+                <td style="color:#94A3B8; font-weight:700;">operator.uji@taims_db.local</td>
+                <td><code style="background:#090E1A; padding:2px 6px; border-radius:4px; color:#94A3B8;">guest123</code></td>
+                <td><span class="badge-role-tag user" style="font-size:9.5px; padding:3px 8px; border-radius:4px; background:rgba(100,116,139,0.2); color:#CBD5E1; border:1px solid #64748B; font-weight:800;">user</span></td>
+                <td>Akses Read-Only (Hanya Lihat Telemetri)</td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -200,12 +271,13 @@
     function closeEditUserModal() { document.getElementById('editUserModal').style.display = 'none'; }
 
     const DEFAULT_USERS_MASTER = [
-      { user_id: 1, full_name: "Dika Yoga Pratama", email: "dika.superadmin@teknolab.id", role: "super_admin", status: "Aktif", joined: "14 Okt 2026", dept: "Teknolab Core Dev (Shift 2)" },
-      { user_id: 2, full_name: "Reza Tri Wardana", email: "reza.admin@teknolab.id", role: "admin", status: "Aktif", joined: "14 Okt 2026", dept: "Quality Assurance & Lead Tester" },
-      { user_id: 3, full_name: "Ahmad Aziz", email: "aziz.uiux@teknolab.id", role: "admin", status: "Aktif", joined: "14 Okt 2026", dept: "Arsitek UI-UX & CAD Coohom" },
-      { user_id: 4, full_name: "Ilvina Muvarika", email: "ilvina.iot@teknolab.id", role: "admin", status: "Aktif", joined: "14 Okt 2026", dept: "Hardware & Sensor ESP32" },
-      { user_id: 5, full_name: "Ananda Dwi Susanti", email: "ananda.network@teknolab.id", role: "admin", status: "Aktif", joined: "14 Okt 2026", dept: "Network Infrastructure Engineer" },
-      { user_id: 6, full_name: "Budi Santoso", email: "budi.santoso@teknolab.id", role: "user", status: "Aktif", joined: "15 Okt 2026", dept: "Viewer Tamu / Operator Magang" }
+      { user_id: 1, full_name: "Admin T-AIMS", email: "admin@taims_db.local", role: "super_admin", status: "Aktif", joined: "16 Okt 2026", dept: "Pusat Administrasi & Server T-AIMS" },
+      { user_id: 2, full_name: "Ananda Dwi Susanti", email: "ananda@taims_db.local", role: "admin", status: "Aktif", joined: "16 Okt 2026", dept: "Network & Device Monitoring" },
+      { user_id: 3, full_name: "Ilvina Muvarika", email: "ilvina@taims_db.local", role: "admin", status: "Aktif", joined: "16 Okt 2026", dept: "IoT & Device Integration" },
+      { user_id: 4, full_name: "Faida Trisma Amelia", email: "faida@taims_db.local", role: "admin", status: "Aktif", joined: "16 Okt 2026", dept: "Database & Asset Management" },
+      { user_id: 5, full_name: "Ahmad Reza Fahmi", email: "reza.fahmi@taims_db.local", role: "admin", status: "Aktif", joined: "16 Okt 2026", dept: "Backend & API Developer" },
+      { user_id: 6, full_name: "[DATA UJI] Operator Monitoring Lab", email: "operator.uji@taims_db.local", role: "user", status: "Aktif", joined: "16 Okt 2026", dept: "Viewer Tamu / Operator Monitoring" },
+      { user_id: 7, full_name: "Dika Yoga Pratama", email: "dika.superadmin@teknolab.id", role: "super_admin", status: "Aktif", joined: "16 Okt 2026", dept: "Frontend Dashboard Developer" }
     ];
 
     let allUsersList = [];

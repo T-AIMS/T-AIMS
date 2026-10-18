@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>T-AIMS · Asisten AI Infrastruktur (Modul Arik)</title>
+  <link rel="icon" type="image/png" href="logo-teknolab.png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .ai-workspace-grid {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 18px;
+      margin-top: 18px;
+    }
+    @media (max-width: 992px) {
+      .ai-workspace-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .ai-chat-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 14px;
+      display: flex;
+      flex-direction: column;
+      height: 640px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+    .ai-chat-header {
+      padding: 14px 18px;
+      background: var(--bg-card-sub);
+      border-bottom: 1px solid var(--border-card);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .ai-bot-badge {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .ai-bot-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 18px;
+      box-shadow: 0 0 16px rgba(139, 92, 246, 0.4);
+    }
+    .ai-chat-messages {
+      flex: 1;
+      padding: 18px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .chat-bubble-row {
+      display: flex;
+      gap: 12px;
+      max-width: 88%;
+    }
+    .chat-bubble-row.user-msg {
+      align-self: flex-end;
+      flex-direction: row-reverse;
+    }
+    .chat-bubble {
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-size: 12.5px;
+      line-height: 1.5;
+    }
+    .chat-bubble.bot {
+      background: #111827;
+      border: 1px solid var(--border-card);
+      color: var(--text-main);
+    }
+    .chat-bubble.user {
+      background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
+      color: #fff;
+      border-radius: 12px 12px 2px 12px;
+    }
+    .quick-prompt-chips {
+      padding: 10px 18px;
+      background: rgba(15, 23, 42, 0.6);
+      border-top: 1px solid var(--border-card-subtle);
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+    .prompt-chip {
+      background: rgba(30, 41, 59, 0.8);
+      border: 1px solid var(--border-card);
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .prompt-chip:hover {
+      background: rgba(56, 189, 248, 0.15);
+      border-color: var(--accent-blue);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+    .ai-input-bar {
+      padding: 14px 18px;
+      background: var(--bg-card-sub);
+      border-top: 1px solid var(--border-card);
+      display: flex;
+      gap: 10px;
+    }
+    .ai-input-field {
+      flex: 1;
+      background: var(--bg-deep);
+      border: 1px solid var(--border-card);
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: #fff;
+      font-size: 12.5px;
+      outline: none;
+    }
+    .ai-input-field:focus {
+      border-color: var(--accent-blue);
+    }
+    .btn-send-ai {
+      background: linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%);
+      border: none;
+      color: #fff;
+      padding: 0 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .n8n-config-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 14px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+  </style>
+</head>
+<body class="dashboard-body">
+  <div class="app-shell-container">
+    
+    <aside class="desktop-sidebar">
+      <div class="sidebar-logo-zone">
+        <a href="dashboard.html">
+          <img src="logo-teknolab.png" alt="Teknolab" class="brand-clean-blend">
+        </a>
+        <button class="sidebar-close-btn" onclick="toggleMobileSidebar()" aria-label="Tutup Menu"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <nav class="sidebar-nav-menu">
+        <a href="dashboard.html" class="sidebar-link"><i class="fa-solid fa-house"></i> <span>Dashboard</span></a>
+        <!-- MENU BARU DI BAWAH DASHBOARD: ASISTEN AI (MODUL ARIK) -->
+        <a href="ai-assistant.html" class="sidebar-link active" style="border-left: 3px solid #8B5CF6;">
+          <i class="fa-solid fa-brain" style="color:#A78BFA;"></i> 
+          <span>Asisten AI</span> 
+          <span style="background:linear-gradient(135deg,#8B5CF6,#6366F1); color:#fff; font-size:9px; font-weight:800; padding:2px 6px; border-radius:10px; margin-left:auto;">AI</span>
+        </a>
+        <a href="devices.html" class="sidebar-link"><i class="fa-solid fa-microchip"></i> <span>Perangkat</span></a>
+        <a href="network.html" class="sidebar-link"><i class="fa-solid fa-network-wired"></i> <span>Jaringan</span></a>
+        <a href="topology.html" class="sidebar-link"><i class="fa-solid fa-location-dot"></i> <span>Lokasi</span></a>
+        <a href="history.html" class="sidebar-link"><i class="fa-regular fa-bell"></i> <span>Peringatan</span> <span class="alert-pill-red">5</span></a>
+        <a href="reports.html" class="sidebar-link"><i class="fa-solid fa-chart-simple"></i> <span>Laporan</span></a>
+        <a href="project.html" class="sidebar-link"><i class="fa-solid fa-circle-info"></i> <span>Informasi Projek</span></a>
+        <a href="users.html" class="sidebar-link"><i class="fa-solid fa-users"></i> <span>Pengguna</span></a>
+        <a href="settings.html" class="sidebar-link" style="margin-top:14px;"><i class="fa-solid fa-gear"></i> <span>Pengaturan</span></a>
+      </nav>
+
+      <div class="sidebar-status-box">
+        <span class="status-pulse-dot"></span>
+        <div class="status-text">
+          <small>Sistem</small>
+          <strong>Berjalan Normal</strong>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main-viewport">
+      <div class="desktop-top-navbar">
+        <button class="mobile-menu-toggle" id="mobileMenuToggle" onclick="toggleMobileSidebar()" aria-label="Buka Menu Navigasi"><i class="fa-solid fa-bars"></i></button>
+        <div class="topbar-left-meta">
+          <div class="topbar-corporate-tag">
+            <span class="corp-name">PT TEKNOLAB CARAKA INTERNASIONAL</span>
+            <span class="corp-divider">|</span>
+            <strong class="app-acronym">T-AIMS</strong>
+          </div>
+          <p class="app-sub-desc">AI Infrastructure Assistant &amp; Automation</p>
+        </div>
+        <div class="topbar-right-meta">
+          <div class="topbar-profile-dropdown" onclick="location.href='users.html'">
+            <div class="profile-avatar-circle"><i class="fa-regular fa-user"></i></div>
+            <div class="profile-meta-text">
+              <strong id="topbarUserName">Ahmad Reza Fahmi</strong>
+              <small id="topbarUserRole">Administrator</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BANNER HERO ASISTEN AI -->
+      <section class="banner-mountain-hard" style="min-height: 110px;">
+        <div class="banner-left-content">
+          <h1><i class="fa-solid fa-brain text-purple"></i> Asisten AI Infrastruktur T-AIMS</h1>
+          <p>Analisis otomatis anomali telemetri, rekomendasi pemeliharaan prediktif, dan orkestrasi notifikasi n8n (Engineer: <strong>Arik</strong>).</p>
+        </div>
+        <div class="banner-right-watermark">
+          <div class="mountain-glow-box">
+            <span>AI ENGINE</span>
+            <strong>AUTOMATION &amp; PREDICTION</strong>
+            <em>n8n ORCHESTRATION</em>
+          </div>
+        </div>
+      </section>
+
+      <!-- WORKSPACE ASISTEN AI -->
+      <div class="ai-workspace-grid">
+        
+        <!-- KOLOM KIRI: INTERACTIVE CHAT PANEL -->
+        <div class="ai-chat-panel">
+          <div class="ai-chat-header">
+            <div class="ai-bot-badge">
+              <div class="ai-bot-avatar"><i class="fa-solid fa-robot"></i></div>
+              <div>
+                <strong style="color:#fff; font-size:13px; display:block;">T-AIMS AI Engine v2.4</strong>
+                <small style="color:var(--accent-cyan); font-weight:700;"><i class="fa-solid fa-circle text-green" style="font-size:8px;"></i> Terhubung ke Telemetri &amp; Webhook n8n Arik</small>
+              </div>
+            </div>
+            <button onclick="clearChat()" style="background:rgba(255,255,255,0.06); border:1px solid var(--border-card); color:var(--text-muted); font-size:11px; padding:6px 12px; border-radius:6px; cursor:pointer;">
+              <i class="fa-solid fa-trash"></i> Bersihkan Sesi
+            </button>
+          </div>
+
+          <!-- PESAN CHAT INTERAKTIF -->
+          <div class="ai-chat-messages" id="chatMessages">
+            <div class="chat-bubble-row">
+              <div class="ai-bot-avatar" style="width:32px; height:32px; font-size:14px;"><i class="fa-solid fa-brain"></i></div>
+              <div class="chat-bubble bot">
+                Halo! Saya <strong>Asisten AI Infrastruktur T-AIMS</strong> yang dikembangkan bersama tim <em>Automation &amp; Notification (Arik)</em>.
+                <br><br>
+                Saya dapat menganalisis data telemetri 40+ perangkat Teknolab secara real-time, mendeteksi anomali jaringan, memprediksi degradasi baterai solar array, serta memicu notifikasi pemulihan via bot Telegram.
+                <br><br>
+                Silakan pilih opsi prompt cepat di bawah atau ajukan pertanyaan spesifik terkait infrastruktur:
+              </div>
+            </div>
+          </div>
+
+          <!-- QUICK PROMPTS -->
+          <div class="quick-prompt-chips">
+            <div class="prompt-chip" onclick="sendQuickPrompt('Analisis status seluruh infrastruktur saat ini dan anomali yang terjadi.')">
+              <i class="fa-solid fa-chart-line text-blue"></i> Ringkasan Kesehatan Sistem
+            </div>
+            <div class="prompt-chip" onclick="sendQuickPrompt('Mengapa CCTV Gerbang Depan HO offline dan bagaimana solusinya?')">
+              <i class="fa-solid fa-video text-amber"></i> Investigasi CCTV Offline
+            </div>
+            <div class="prompt-chip" onclick="sendQuickPrompt('Bagaimana status daya baterai solar array dan suhu ESP32 di Lab IoT?')">
+              <i class="fa-solid fa-bolt text-cyan"></i> Audit Solar Array &amp; ESP32
+            </div>
+            <div class="prompt-chip" onclick="sendQuickPrompt('Kirim ringkasan laporan harian ini ke bot Telegram tim.')">
+              <i class="fa-brands fa-telegram text-purple"></i> Picu Alert n8n Telegram
+            </div>
+          </div>
+
+          <!-- INPUT FORM -->
+          <form onsubmit="handleSendChat(event)" class="ai-input-bar">
+            <input type="text" id="aiInputText" class="ai-input-field" placeholder="Tanyakan kondisi perangkat, anomali, rekomendasi maintenance..." required>
+            <button type="submit" class="btn-send-ai">
+              <span>Kirim</span> <i class="fa-solid fa-paper-plane"></i>
+            </button>
+          </form>
+        </div>
+
+        <!-- KOLOM KANAN: STATUS KONEKSI N8N & HANDOVER DATA UNTUK ARIK -->
+        <div style="display:flex; flex-direction:column; gap:16px;">
+          
+          <!-- KARTU KONFIGURASI WEBHOOK ARIK (AUTOMATION & NOTIFICATION) -->
+          <div class="n8n-config-box">
+            <h3 style="font-size:13px; font-weight:800; color:#fff; display:flex; align-items:center; gap:8px;">
+              <i class="fa-solid fa-plug text-purple"></i> Integrasi n8n &amp; Webhook Arik
+            </h3>
+            <p style="font-size:11px; color:var(--text-muted); line-height:1.4;">
+              Modul ini menghubungkan frontend Mas Dika dengan workflow n8n / bot Telegram yang dibangun oleh <strong>Arik (Automation Engineer)</strong>.
+            </p>
+            
+            <div>
+              <label style="font-size:10.5px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:4px;">Endpoint Webhook n8n Arik:</label>
+              <input type="text" id="n8nWebhookUrl" value="http://localhost:5678/webhook/taims-ai" style="width:100%; background:var(--bg-deep); border:1px solid var(--border-card); padding:8px 10px; border-radius:6px; color:#60A5FA; font-size:11px; font-family:monospace;">
+            </div>
+
+            <div style="display:flex; gap:8px;">
+              <button type="button" onclick="testArikWebhook()" style="flex:1; background:linear-gradient(135deg, #10B981, #059669); border:none; color:#fff; font-size:11px; font-weight:800; padding:8px; border-radius:6px; cursor:pointer;">
+                <i class="fa-solid fa-tower-broadcast"></i> Tes Ping Webhook
+              </button>
+              <button type="button" onclick="saveWebhookConfig()" style="background:#1E293B; border:1px solid var(--border-card); color:#fff; font-size:11px; font-weight:700; padding:8px 12px; border-radius:6px; cursor:pointer;">
+                Simpan
+              </button>
+            </div>
+
+            <div id="webhookTestStatus" style="display:none; font-size:10.5px; padding:6px 10px; border-radius:6px;"></div>
+          </div>
+
+          <!-- KARTU MATRIKS KOLABORASI: DIKA YOGA & ARIK -->
+          <div class="n8n-config-box" style="border-color:rgba(139, 92, 246, 0.3);">
+            <h4 style="font-size:12px; font-weight:800; color:var(--accent-purple); display:flex; align-items:center; gap:6px;">
+              <i class="fa-solid fa-handshake"></i> Kontrak Integrasi Dika &amp; Arik
+            </h4>
+            <div style="font-size:11px; color:var(--text-muted); line-height:1.5;">
+              <strong style="color:#fff; display:block; margin-bottom:2px;">1. Yang Dibutuhkan Arik dari Mas Dika:</strong>
+              • Payload JSON status perangkat (Total, Online, Offline, Warning, Ping).<br>
+              • Trigger POST HTTP saat terjadi anomali kritis pada dashboard.
+            </div>
+            <div style="font-size:11px; color:var(--text-muted); line-height:1.5; margin-top:6px;">
+              <strong style="color:#fff; display:block; margin-bottom:2px;">2. Yang Mas Dika Butuhkan dari Arik:</strong>
+              • Webhook URL n8n aktif (misal port 5678 atau URL ngrok).<br>
+              • Format JSON Response teks AI &amp; rekomendasi aksi perbaikan.
+            </div>
+          </div>
+
+          <!-- METRIK KESEHATAN SISTEM TERKINI -->
+          <div class="n8n-config-box">
+            <h4 style="font-size:11.5px; font-weight:800; color:#fff;"><i class="fa-solid fa-shield-virus text-green"></i> Kondisi Jaringan Realtime</h4>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+              <div style="background:var(--bg-deep); padding:8px; border-radius:6px; border:1px solid var(--border-card);">
+                <small style="color:var(--text-dim); font-size:10px;">Availability</small>
+                <strong style="color:#34D399; font-size:16px; display:block;">90.0%</strong>
+              </div>
+              <div style="background:var(--bg-deep); padding:8px; border-radius:6px; border:1px solid var(--border-card);">
+                <small style="color:var(--text-dim); font-size:10px;">Avg Ping HO</small>
+                <strong style="color:#60A5FA; font-size:16px; display:block;">2.4 ms</strong>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </main>
+  </div>
+
+  <script src="apiService.js"></script>
+  <script src="app.js"></script>
+  <script>
+    function clearChat() {
+      const container = document.getElementById('chatMessages');
+      container.innerHTML = `
+        <div class="chat-bubble-row">
+          <div class="ai-bot-avatar" style="width:32px; height:32px; font-size:14px;"><i class="fa-solid fa-brain"></i></div>
+          <div class="chat-bubble bot">Sesi obrolan telah dibersihkan. Silakan ajukan pertanyaan baru seputar infrastruktur Teknolab!</div>
+        </div>
+      `;
+    }
+
+    function sendQuickPrompt(text) {
+      document.getElementById('aiInputText').value = text;
+      handleSendChat(new Event('submit'));
+    }
+
+    function handleSendChat(e) {
+      if (e) e.preventDefault();
+      const input = document.getElementById('aiInputText');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const container = document.getElementById('chatMessages');
+
+      // Tampilkan chat user
+      const userRow = document.createElement('div');
+      userRow.className = 'chat-bubble-row user-msg';
+      userRow.innerHTML = `<div class="chat-bubble user">${escapeHtml(text)}</div>`;
+      container.appendChild(userRow);
+      input.value = '';
+      container.scrollTop = container.scrollHeight;
+
+      // Efek loading bot
+      const botLoadingRow = document.createElement('div');
+      botLoadingRow.className = 'chat-bubble-row';
+      botLoadingRow.id = 'botLoadingTemp';
+      botLoadingRow.innerHTML = `
+        <div class="ai-bot-avatar" style="width:32px; height:32px; font-size:14px;"><i class="fa-solid fa-brain fa-spin"></i></div>
+        <div class="chat-bubble bot" style="color:var(--text-dim);"><i class="fa-solid fa-circle-notch fa-spin"></i> AI sedang menganalisis data telemetri T-AIMS...</div>
+      `;
+      container.appendChild(botLoadingRow);
+      container.scrollTop = container.scrollHeight;
+
+      setTimeout(() => {
+        const loading = document.getElementById('botLoadingTemp');
+        if (loading) loading.remove();
+
+        const reply = generateAiInfrastructureResponse(text);
+        const botRow = document.createElement('div');
+        botRow.className = 'chat-bubble-row';
+        botRow.innerHTML = `
+          <div class="ai-bot-avatar" style="width:32px; height:32px; font-size:14px;"><i class="fa-solid fa-robot"></i></div>
+          <div class="chat-bubble bot">${reply}</div>
+        `;
+        container.appendChild(botRow);
+        container.scrollTop = container.scrollHeight;
+      }, 700);
+    }
+
+    function generateAiInfrastructureResponse(prompt) {
+      const q = prompt.toLowerCase();
+      if (q.includes('ringkasan') || q.includes('status') || q.includes('kesehatan') || q.includes('seluruh')) {
+        return `
+          <strong>📊 LAPORAN KESEHATAN INFRASTRUKTUR TEKNOLAB (T-AIMS)</strong><br>
+          • <strong>Total Perangkat:</strong> 16 Terdata (Tersinkron Database MySQL)<br>
+          • <strong>Online:</strong> 5 Perangkat (31.3%) | <strong>Warning:</strong> 5 Perangkat | <strong>Offline:</strong> 6 Perangkat<br>
+          • <strong>Availability SLA:</strong> 90.0% operasional stabil.<br><br>
+          <strong>⚠️ Temuan Anomali:</strong><br>
+          1. Router Marketing Office (<code>192.168.10.2</code>) mengalami latensi tinggi (210 ms).<br>
+          2. CCTV Gerbang Depan Head Office (<code>192.168.10.31</code>) mengalami timeout RTSP stream.<br>
+          <br>
+          <strong>💡 Rekomendasi Tindakan:</strong> Periksa konektor PoE switch port 4 di koridor HO dan lakukan restart modem fiber optik MO.
+        `;
+      } else if (q.includes('cctv') || q.includes('gerbang') || q.includes('kamera')) {
+        return `
+          <strong>🔍 HASIL INVESTIGASI ANOMALI CCTV GERBANG DEPAN:</strong><br>
+          • <strong>Kode Aset:</strong> SEC-CCTV-01<br>
+          • <strong>IP Address:</strong> 192.168.10.31 (Head Office - Jl. Cibodas)<br>
+          • <strong>Downtime:</strong> 42 Menit sejak pemadaman fasa 1.<br><br>
+          <strong>Penyebab:</strong> Port injektor PoE tidak menghantarkan daya 48V ke unit kamera setelah fluktuasi trafo PLN Ciliwung.<br>
+          <strong>Rekomendasi Teknisi:</strong> Ganti kabel patch RJ-45 dan verifikasi power budget switch distribution.
+        `;
+      } else if (q.includes('solar') || q.includes('baterai') || q.includes('esp32') || q.includes('suhu')) {
+        return `
+          <strong>⚡ ANALISIS DAYA SOLAR ARRAY & SENSOR IOT ESP32:</strong><br>
+          • <strong>Tegangan Baterai:</strong> 14.1 V (Kondisi Prima / Float Charge)<br>
+          • <strong>Suhu Ruang Server:</strong> 28.5 °C (Batas normal: &lt; 30 °C)<br>
+          • <strong>Kelembaban:</strong> 65.2% RH<br><br>
+          <strong>Prediksi AI:</strong> Catu daya mandiri solar array diperkirakan mampu menopang beban server hingga 18 jam saat pemadaman total tanpa bantuan genset.
+        `;
+      } else if (q.includes('telegram') || q.includes('n8n') || q.includes('kirim')) {
+        return `
+          <strong>🚀 WORKFLOW AUTOMATION n8n BERHASIL DIPOLES:</strong><br>
+          • <strong>Penerima:</strong> Grup Telegram <em>"Teknolab NOC Alert Bot"</em> (@teknolab_noc_bot)<br>
+          • <strong>Status Pengiriman:</strong> <code>200 OK (Simulated Payload Dispatched)</code><br>
+          • <strong>Ringkasan Pesan:</strong> Alert status offline CCTV Gerbang & rekomendasi teknis telah diteruskan ke tim shift operasional!
+        `;
+      } else {
+        return `
+          <strong>🤖 ANALISIS SISTEM T-AIMS:</strong><br>
+          Permintaan Anda terkait <em>"${escapeHtml(prompt)}"</em> telah diproses oleh modul AI Arik.<br>
+          Metrik sistem saat ini menunjukkan stabilitas jaringan Head Office (HO) berjalan dengan latensi 2.4 ms, sedangkan Marketing Office (MO) sedang dalam pemeliharaan bandwith sub-router.
+        `;
+      }
+    }
+
+    function testArikWebhook() {
+      const url = document.getElementById('n8nWebhookUrl').value.trim();
+      const statusDiv = document.getElementById('webhookTestStatus');
+      statusDiv.style.display = 'block';
+      statusDiv.style.background = 'rgba(56, 189, 248, 0.15)';
+      statusDiv.style.border = '1px solid rgba(56, 189, 248, 0.4)';
+      statusDiv.style.color = '#38BDF8';
+      statusDiv.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Mengirim payload uji ke ${url}...`;
+
+      setTimeout(() => {
+        statusDiv.style.background = 'rgba(16, 185, 129, 0.15)';
+        statusDiv.style.border = '1px solid rgba(16, 185, 129, 0.4)';
+        statusDiv.style.color = '#34D399';
+        statusDiv.innerHTML = `<i class="fa-solid fa-circle-check"></i> Berhasil! Mock Webhook Arik merespons (Status: 200 OK - Payload Siap Disinkronkan).`;
+      }, 700);
+    }
+
+    function saveWebhookConfig() {
+      const url = document.getElementById('n8nWebhookUrl').value.trim();
+      localStorage.setItem('taims_n8n_webhook_url', url);
+      alert('Konfigurasi Webhook n8n berhasil disimpan!');
+    }
+
+    function escapeHtml(text) {
+      const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+      return text.replace(/[&<>"']/g, m => map[m]);
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const savedUrl = localStorage.getItem('taims_n8n_webhook_url');
+      if (savedUrl) document.getElementById('n8nWebhookUrl').value = savedUrl;
+    });
+  </script>
+</body>
+</html>

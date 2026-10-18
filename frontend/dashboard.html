@@ -10,7 +10,7 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" href="style.css">
 </head>
-<body class="dashboard-body">
+<body class="dashboard-body dashboard-fixed-scada">
   <div class="app-shell-container">
     
     <aside class="desktop-sidebar">
@@ -24,6 +24,9 @@
       <nav class="sidebar-nav-menu">
         <a href="dashboard.html" class="sidebar-link active">
           <i class="fa-solid fa-house"></i> <span>Dashboard</span>
+        </a>
+        <a href="ai-assistant.html" class="sidebar-link">
+          <i class="fa-solid fa-brain" style="color:#A78BFA;"></i> <span>Asisten AI</span> <span style="background:linear-gradient(135deg,#8B5CF6,#6366F1); color:#fff; font-size:9px; font-weight:800; padding:2px 6px; border-radius:10px; margin-left:auto;">AI</span>
         </a>
         <a href="devices.html" class="sidebar-link">
           <i class="fa-solid fa-microchip"></i> <span>Perangkat</span>
@@ -65,9 +68,12 @@
       <div class="desktop-top-navbar">
         <button class="mobile-menu-toggle" id="mobileMenuToggle" onclick="toggleMobileSidebar()" aria-label="Buka Menu Navigasi"><i class="fa-solid fa-bars"></i></button>
         <div class="topbar-left-meta">
-          <strong>T-AIMS</strong>
-          <span>|</span>
-          <p>Teknolab Asset & Infrastructure Monitoring System</p>
+          <div class="topbar-corporate-tag">
+            <span class="corp-name">PT TEKNOLAB CARAKA INTERNASIONAL</span>
+            <span class="corp-divider">|</span>
+            <strong class="app-acronym">T-AIMS</strong>
+          </div>
+          <p class="app-sub-desc">Teknolab Asset &amp; Infrastructure Monitoring System</p>
         </div>
 
         <div class="topbar-center-search">
@@ -180,6 +186,36 @@
           </div>
         </div>
       </section>
+
+      <!-- SEKSI T-AIMS AI SMART INSIGHT SESUAI SPESIFIKASI ARIK -->
+      <section class="ai-smart-insight-banner" id="aiSmartInsightCard">
+        <div class="ai-insight-header">
+          <div class="ai-insight-title-group">
+            <span class="ai-robot-pulsing-icon"><i class="fa-solid fa-brain"></i></span>
+            <div>
+              <div class="ai-title-row">
+                <h3>T-AIMS AI Smart Insight</h3>
+                <span class="ai-status-badge badge-warning" id="aiDashStatusBadge">
+                  <span class="dot-live"></span> <span id="aiDashStatusText">WARNING</span>
+                </span>
+                <span class="ai-issues-pill" id="aiDashIssueCount">
+                  <i class="fa-solid fa-triangle-exclamation"></i> <span id="aiDashIssueText">2 perangkat perlu perhatian</span>
+                </span>
+              </div>
+              <p class="ai-insight-desc" id="aiDashInsightText">
+                CCTV 1 (offline 5x) dan WiFi 2 (latency 300ms) terdeteksi membutuhkan pengecekan kabel LAN dan adaptor daya serta pengaturan interferensi frekuensi 2.4 GHz.
+              </p>
+            </div>
+          </div>
+          <div class="ai-meta-right">
+            <small class="ai-updated-label"><i class="fa-regular fa-clock"></i> <span id="aiDashUpdatedAt">18 Okt 2026 20:00 WIB</span></small>
+            <button class="ai-refresh-mini-btn" onclick="fetchAiRecommendation(true)" title="Sinkronkan dengan n8n AI engine">
+              <i class="fa-solid fa-arrows-rotate"></i> Auto-refresh 5m
+            </button>
+          </div>
+        </div>
+      </section>
+
       <!-- SEKSI GRAFIK TREN & KATEGORI (16 PERANGKAT DATABASE) -->
       <section class="charts-section-hard">
         <div class="chart-glass-panel panel-left-trend">
@@ -237,87 +273,87 @@
           </table>
         </div>
 
-       <div class="bottom-mini-panel">
+        <div class="bottom-mini-panel">
           <div class="mini-header-row">
-            <h4><i class="fa-solid fa-compass-drafting text-red"></i> Denah Blueprint Tata Letak Infrastruktur HO</h4>
-            <a href="topology.html" class="link-mini-more">Buka Denah Lengkap &rarr;</a>
+            <h4><i class="fa-solid fa-cubes text-purple"></i> Denah 3D Arsitektur 360° (HO, MO, &amp; HoS)</h4>
+            <a href="topology.html" class="link-mini-more">Buka Denah 3D &rarr;</a>
           </div>
-          <div class="peta-preview-box" onclick="location.href='topology.html'" style="height: 145px; background: #0B1222; padding: 10px; display: flex; align-items: center; justify-content: space-between; gap: 12px; cursor: pointer; border-radius: 12px; border: 1px solid var(--border-card);">
-            <div style="flex: 1; background: #FFFFFF; border-radius: 8px; padding: 6px; height: 100%; display: flex; align-items: center; justify-content: center; border: 2px solid #000000; overflow: hidden;">
-              <!-- Miniatur Blueprint Hitam Putih Tembok Hitam Arsitektur CAD -->
-              <svg viewBox="0 0 260 160" style="width: 100%; height: 100%;">
-                <!-- Latar Putih Bersih dengan Grid Halus CAD -->
-                <rect x="0" y="0" width="260" height="160" fill="#FFFFFF"/>
-                <defs>
-                  <pattern id="miniGridCAD" width="10" height="10" patternUnits="userSpaceOnUse">
-                    <path d="M 10 0 L 0 0 0 10" fill="none" stroke="#F1F5F9" stroke-width="0.5"/>
-                  </pattern>
-                </defs>
-                <rect x="0" y="0" width="260" height="160" fill="url(#miniGridCAD)"/>
+          <div class="peta-preview-box" onclick="location.href='topology.html'" style="height: 145px; background: #0B1222; padding: 8px; display: flex; align-items: center; justify-content: space-between; gap: 12px; cursor: pointer; border-radius: 12px; border: 1px solid var(--border-card); overflow:hidden;">
+            <!-- MINIATUR 3D REALISTIC HOUSE CUTAWAY VIEW -->
+            <div style="flex: 1; height: 100%; border-radius: 8px; overflow: hidden; position: relative; background: #070B14; display:flex; align-items:center; justify-content:center; box-shadow: 0 4px 14px rgba(0,0,0,0.6); border: 1px solid var(--border-card);">
+              <svg viewBox="0 0 400 240" preserveAspectRatio="xMidYMid meet" style="width: 100%; height: 100%; display: block;">
+                <!-- Base Slab & Road -->
+                <rect x="15" y="10" width="370" height="220" rx="6" fill="#0A0F1D" stroke="#1E293B" stroke-width="1.5"/>
+                <rect x="15" y="210" width="370" height="20" fill="#090D16"/>
+                <line x1="25" y1="220" x2="375" y2="220" stroke="#FDE047" stroke-dasharray="12,8" stroke-width="1.5"/>
 
-                <!-- GEDUNG UTAMA (ATAS) - Dinding Hitam Tebal -->
-                <!-- 4 Ruangan Sisi Kiri Vertikal -->
-                <!-- Ruang 1: Server -->
-                <rect x="25" y="10" width="45" height="22" fill="#FFFFFF" stroke="#000000" stroke-width="2.5"/>
-                <!-- Ruang 2: Lab IoT -->
-                <rect x="25" y="32" width="45" height="25" fill="#FFFFFF" stroke="#000000" stroke-width="2.5"/>
-                <!-- Ruang 3: R. Kerja -->
-                <rect x="25" y="57" width="45" height="25" fill="#FFFFFF" stroke="#000000" stroke-width="2.5"/>
-                <!-- Ruang 4: Admin (Lebih Lebar) -->
-                <rect x="25" y="82" width="62" height="28" fill="#FFFFFF" stroke="#000000" stroke-width="2.5"/>
+                <!-- Right Boundary Wall & Signboard -->
+                <rect x="310" y="150" width="70" height="60" fill="#E2E8F0" stroke="#94A3B8" stroke-width="1"/>
+                <rect x="315" y="125" width="60" height="30" rx="2" fill="#0F172A" stroke="#38BDF8" stroke-width="1"/>
+                <text x="345" y="137" fill="#38BDF8" font-size="5" font-weight="900" text-anchor="middle">TEKNOLAB</text>
+                <text x="345" y="146" fill="#FFFFFF" font-size="4.5" font-weight="900" text-anchor="middle">PT TEKNOLAB</text>
 
-                <!-- Koridor & Alcove Kanan Atas -->
-                <polyline points="70,10 105,10 105,42 87,42 87,118" fill="none" stroke="#000000" stroke-width="2.5"/>
-                
-                <!-- Bukaan & Lengkungan Pintu Arsitektur -->
-                <path d="M 70 24 A 6 6 0 0 1 76 18" fill="none" stroke="#000000" stroke-width="1"/>
-                <path d="M 70 48 A 6 6 0 0 1 76 42" fill="none" stroke="#000000" stroke-width="1"/>
-                <path d="M 70 72 A 6 6 0 0 1 76 66" fill="none" stroke="#000000" stroke-width="1"/>
-                <path d="M 28 110 A 7 7 0 0 1 35 103" fill="none" stroke="#000000" stroke-width="1"/>
+                <!-- Carport & Parked Bikes -->
+                <rect x="110" y="150" width="200" height="60" fill="#1E293B" stroke="#334155" stroke-width="1"/>
+                <polygon points="110,150 310,150 310,190 110,190" fill="rgba(56,189,248,0.08)" stroke="#38BDF8" stroke-dasharray="4,3" stroke-width="0.8"/>
+                <!-- Motor 1 (Vario) -->
+                <ellipse cx="150" cy="175" rx="8" ry="4" fill="#090D16" stroke="#475569" stroke-width="1"/>
+                <rect x="146" y="165" width="8" height="12" rx="3" fill="#111827"/>
+                <text x="150" y="186" fill="#94A3B8" font-size="5" font-weight="800" text-anchor="middle">Vario</text>
+                <!-- Motor 2 (Supra) -->
+                <ellipse cx="210" cy="175" rx="8" ry="4" fill="#090D16" stroke="#DC2626" stroke-width="1"/>
+                <rect x="206" y="165" width="8" height="12" rx="3" fill="#991B1B"/>
+                <text x="210" y="186" fill="#F87171" font-size="5" font-weight="800" text-anchor="middle">Supra</text>
 
-                <!-- Tiang Standalone Taman Tengah -->
-                <rect x="52" y="116" width="6" height="6" fill="#000000"/>
+                <!-- Door & 3-leaf Window -->
+                <rect x="120" y="142" width="24" height="7" rx="1" fill="#78350F"/>
+                <rect x="195" y="144" width="18" height="6" rx="1" fill="#0284C7" stroke="#78350F" stroke-width="1"/>
+                <rect x="215" y="144" width="18" height="6" rx="1" fill="#0284C7" stroke="#78350F" stroke-width="1"/>
+                <rect x="235" y="144" width="18" height="6" rx="1" fill="#0284C7" stroke="#78350F" stroke-width="1"/>
 
-                <!-- GEDUNG BAWAH (WORKSHOP & CANOPY) -->
-                <!-- Workshop Kanan -->
-                <rect x="75" y="122" width="55" height="32" fill="#FFFFFF" stroke="#000000" stroke-width="2.5"/>
-                <path d="M 125 122 A 6 6 0 0 1 119 128" fill="none" stroke="#000000" stroke-width="1"/>
-                
-                <!-- Selasar / Porch Terbuka Kiri -->
-                <line x1="45" y1="122" x2="75" y2="122" stroke="#000000" stroke-width="2.5"/>
-                <line x1="45" y1="154" x2="75" y2="154" stroke="#000000" stroke-width="2.5"/>
-                <circle cx="45" cy="122" r="1.5" fill="#000000"/>
-                <circle cx="45" cy="154" r="1.5" fill="#000000"/>
+                <!-- Ruang Kerja Tim (Dev Desks) -->
+                <rect x="110" y="75" width="170" height="65" fill="#B48256" stroke="#D4A373" stroke-width="1"/>
+                <g transform="translate(125, 85)">
+                  <rect x="0" y="0" width="30" height="15" rx="1.5" fill="#1E293B" stroke="#38BDF8" stroke-width="0.8"/>
+                  <rect x="8" y="13" width="14" height="2" fill="#38BDF8"/>
+                  <circle cx="15" cy="4" r="3.5" fill="#0F172A"/>
+                </g>
+                <g transform="translate(170, 85)">
+                  <rect x="0" y="0" width="30" height="15" rx="1.5" fill="#1E293B" stroke="#10B981" stroke-width="0.8"/>
+                  <rect x="8" y="13" width="14" height="2" fill="#10B981"/>
+                  <circle cx="15" cy="4" r="3.5" fill="#0F172A"/>
+                </g>
+                <text x="195" y="125" fill="#FEF08A" font-size="6.5" font-weight="900" text-anchor="middle">RUANG KERJA TIM</text>
 
-                <!-- Teks Label Ruangan (Hitam) -->
-                <text x="47" y="24" font-size="5" font-weight="900" fill="#000000" text-anchor="middle">R.SERVER</text>
-                <text x="47" y="46" font-size="5" font-weight="900" fill="#000000" text-anchor="middle">LAB IOT</text>
-                <text x="47" y="71" font-size="5" font-weight="900" fill="#000000" text-anchor="middle">R.KERJA</text>
-                <text x="56" y="98" font-size="5" font-weight="900" fill="#000000" text-anchor="middle">R.ADMIN</text>
-                <text x="102" y="140" font-size="5" font-weight="900" fill="#000000" text-anchor="middle">WORKSHOP</text>
+                <!-- Ruang Server & NOC -->
+                <rect x="150" y="15" width="130" height="60" fill="#0B132B" stroke="#06B6D4" stroke-width="1.2"/>
+                <rect x="165" y="25" width="22" height="32" rx="1.5" fill="#1E293B" stroke="#38BDF8" stroke-width="1"/>
+                <circle cx="170" cy="32" r="1.5" fill="#10B981" class="led-rack-green"/>
+                <circle cx="176" cy="32" r="1.5" fill="#06B6D4" class="led-rack-cyan"/>
+                <rect x="195" y="25" width="22" height="32" rx="1.5" fill="#1E293B" stroke="#38BDF8" stroke-width="1"/>
+                <circle cx="200" cy="32" r="1.5" fill="#10B981" class="led-rack-green"/>
+                <text x="215" y="66" fill="#38BDF8" font-size="6.5" font-weight="900" text-anchor="middle">R. SERVER</text>
 
-                <!-- Titik Sensor & Device Aktif (Pulsing Pin) -->
-                <circle cx="36" cy="18" r="3.5" fill="#10B981" stroke="#000000" stroke-width="0.8"/>
-                <circle cx="58" cy="18" r="3" fill="#10B981" stroke="#000000" stroke-width="0.8"/>
-                <circle cx="45" cy="38" r="3.5" fill="#10B981" stroke="#000000" stroke-width="0.8"/>
-                <circle cx="56" cy="64" r="3.5" fill="#3B82F6" stroke="#000000" stroke-width="0.8"/>
-                <circle cx="72" cy="94" r="3" fill="#F59E0B" stroke="#000000" stroke-width="0.8"/>
-                <circle cx="28" cy="98" r="3.5" fill="#EF4444" stroke="#000000" stroke-width="0.8"/>
-                <circle cx="95" cy="132" r="3.5" fill="#10B981" stroke="#000000" stroke-width="0.8"/>
+                <!-- Lab IoT -->
+                <rect x="25" y="70" width="85" height="70" fill="#172336" stroke="#8B5CF6" stroke-width="1"/>
+                <rect x="35" y="85" width="60" height="22" rx="1.5" fill="#334155"/>
+                <text x="67" y="125" fill="#C4B5FD" font-size="6" font-weight="800" text-anchor="middle">LAB IOT</text>
 
-                <!-- Blueprint Stamp Kanan Atas -->
-                <rect x="150" y="15" width="100" height="60" fill="#F8FAFC" stroke="#000000" stroke-width="1"/>
-                <line x1="150" y1="32" x2="250" y2="32" stroke="#000000" stroke-width="0.8"/>
-                <text x="200" y="27" font-size="6.5" font-weight="900" fill="#000000" text-anchor="middle">PT TEKNOLAB CARAKA</text>
-                <text x="200" y="44" font-size="5.5" font-weight="700" fill="#000000" text-anchor="middle">BLUEPRINT SITE HO</text>
-                <text x="200" y="54" font-size="5" fill="#475569" text-anchor="middle">TEKNOLAB ENTERPRISE CAD</text>
-                <text x="200" y="64" font-size="5" font-weight="800" fill="#059669" text-anchor="middle">TEMBOK HITAM • B&amp;W CAD</text>
+                <!-- Floating Pins -->
+                <circle cx="176" cy="22" r="4.5" fill="#10B981" stroke="#000" stroke-width="1"/>
+                <circle cx="176" cy="22" r="1.5" fill="#FFF"/>
+                <circle cx="140" cy="92" r="4.5" fill="#38BDF8" stroke="#000" stroke-width="1"/>
+                <circle cx="140" cy="92" r="1.5" fill="#FFF"/>
               </svg>
+              <div style="position:absolute; bottom:5px; left:6px; background:rgba(0,0,0,0.85); border:1px solid rgba(56,189,248,0.3); color:#38BDF8; font-size:8px; font-weight:800; padding:2px 7px; border-radius:4px; display:flex; align-items:center; gap:4px;">
+                <i class="fa-solid fa-cube"></i> 3D 360° WEBGL (LEPAS ATAP)
+              </div>
             </div>
-            <div style="display: flex; flex-direction: column; gap: 7px; width: 140px;">
-              <div class="node-pin-bubble pin-ho" style="font-size:9.5px; background:rgba(30,41,59,0.9); border:1px solid rgba(255,255,255,0.1);"><i class="fa-solid fa-building text-blue"></i> Blueprint HO (B&amp;W CAD)</div>
-              <div class="node-pin-bubble pin-mo" style="font-size:9.5px; background:rgba(30,41,59,0.9); border:1px solid rgba(255,255,255,0.1);"><i class="fa-solid fa-layer-group text-green"></i> 2 Bangunan + Selasar</div>
-              <small style="font-size:8.5px; color:var(--accent-cyan); font-weight:700;"><i class="fa-solid fa-arrow-up-right-from-square"></i> Buka Menu Lokasi</small>
+            <div style="display: flex; flex-direction: column; gap: 6px; width: 145px;">
+              <div class="node-pin-bubble pin-ho" style="font-size:9px; background:rgba(30,41,59,0.9); border:1px solid rgba(255,255,255,0.1);"><i class="fa-solid fa-building text-blue"></i> 1. Denah HO (Atas)</div>
+              <div class="node-pin-bubble pin-mo" style="font-size:9px; background:rgba(30,41,59,0.9); border:1px solid rgba(255,255,255,0.1);"><i class="fa-solid fa-briefcase text-purple"></i> 2. Denah MO (Workshop)</div>
+              <div class="node-pin-bubble" style="font-size:9px; background:rgba(30,41,59,0.9); border:1px solid rgba(255,255,255,0.1); color:#67E8F9;"><i class="fa-solid fa-server text-cyan"></i> 3. House of Server (HoS)</div>
+              <small style="font-size:8.5px; color:var(--accent-blue); font-weight:800;"><i class="fa-solid fa-arrow-up-right-from-square"></i> Buka Editor &amp; Mode 3D</small>
             </div>
           </div>
         </div>

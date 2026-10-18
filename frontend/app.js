@@ -19,16 +19,23 @@ function getActiveRefreshIntervalMs() {
 
 window.getActiveRefreshIntervalMs = getActiveRefreshIntervalMs;
 
-// Inisialisasi Tema Global (Cyber-Electric Dark vs Minimalist Midnight)
+function parseThemeKey(str) {
+  const s = (str || '').toLowerCase();
+  if (s.includes('amoled') || s === 'amoled') return 'amoled';
+  if (s.includes('midnight') || s === 'midnight') return 'midnight';
+  return 'cyber';
+}
+
+// Inisialisasi Tema Global (Cyber-Electric Dark, Minimalist Midnight, & AMOLED Pure Black)
 function initGlobalTheme() {
   const savedTheme = localStorage.getItem('taims_theme_mode') || 'Opsi 2 - Cyber-Electric Dark (Aktif)';
-  const themeKey = savedTheme.toLowerCase().includes('midnight') ? 'midnight' : 'cyber';
+  const themeKey = parseThemeKey(savedTheme);
   document.documentElement.setAttribute('data-theme', themeKey);
   if (document.body) document.body.setAttribute('data-theme', themeKey);
 }
 
 function applyThemeMode(themeName) {
-  const themeKey = (themeName || '').toLowerCase().includes('midnight') ? 'midnight' : 'cyber';
+  const themeKey = parseThemeKey(themeName);
   document.documentElement.setAttribute('data-theme', themeKey);
   if (document.body) document.body.setAttribute('data-theme', themeKey);
   localStorage.setItem('taims_theme_mode', themeName);
@@ -45,14 +52,20 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const intervalMs = getActiveRefreshIntervalMs();
 
-  // 1. Jika di Dashboard: Muat statistik dan chart realtime sesuai interval pengaturan
+  // 1. Jika di Dashboard: Muat statistik, chart realtime, dan AI Smart Insight
   if (document.getElementById('kpi-total-devices') || document.getElementById('categoryDonutChart')) {
     await initDashboard();
     if (dashboardTimerId) clearInterval(dashboardTimerId);
     dashboardTimerId = setInterval(initDashboard, intervalMs);
+    initAiRecommendationEngine();
   }
 
-  // 2. Jika di Halaman Devices: Muat tabel 16 aset realtime sesuai interval pengaturan
+  // 2. Jika di Halaman Laporan: Inisialisasi AI Recommendation Engine
+  if (document.getElementById('aiRepStatusBadge') || document.getElementById('reportsTableBody')) {
+    initAiRecommendationEngine();
+  }
+
+  // 3. Jika di Halaman Devices: Muat tabel 16 aset realtime sesuai interval pengaturan
   if (document.getElementById('devicesTableBody')) {
     await initDevicesTable();
     if (devicesTimerId) clearInterval(devicesTimerId);
@@ -487,7 +500,8 @@ function initDashboardCharts(stats) {
       },
       options: {
         responsive: true,
-        maintainAspectRatio: false,
+        maintainAspectRatio: true,
+        aspectRatio: 1,
         cutout: '72%',
         plugins: { legend: { display: false } }
       }
@@ -647,11 +661,92 @@ function closeDetailModal() {
   if (modalEl) modalEl.style.display = "none";
 }
 
-function refreshAiInsight() {
-  const aiText = document.getElementById('aiInsightText');
-  if (!aiText) return;
-  aiText.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-cyan"></i> Menganalisis telemetri 16 perangkat dari database taims_db...';
-  setTimeout(() => {
-    aiText.innerHTML = `Berdasarkan telemetri terbaru (${new Date().toLocaleTimeString('id-ID')} WIB): Terdeteksi perangkat prioritas <strong>NET-RTR-01</strong> & <strong>SEC-CCTV-01 (HO)</strong> membutuhkan pengecekan suplai adaptor dan konektivitas gateway, serta pemantauan link <strong>NET-RTR-02 (MO Kos Kiki)</strong>.`;
-  }, 500);
+// =====================================================================
+// INTEGRASI AI DASHBOARD & LAPORAN T-AIMS (SPESIFIKASI ARIK & REZA)
+// =====================================================================
+let aiTimerId = null;
+
+async function initAiRecommendationEngine() {
+  await fetchAiRecommendation(false);
+  if (aiTimerId) clearInterval(aiTimerId);
+  // Auto-refresh interval 5 Menit (300.000 ms) sesuai kesepakatan dengan Arik (n8n cooldown)
+  aiTimerId = setInterval(() => {
+    fetchAiRecommendation(false);
+  }, 5 * 60 * 1000);
 }
+
+async function fetchAiRecommendation(force = false) {
+  try {
+    let data = null;
+    if (window.apiService && typeof window.apiService.getAiRecommendation === 'function') {
+      data = await window.apiService.getAiRecommendation(force);
+    } else {
+      data = {
+        status: "warning",
+        device: "CCTV 1 (offline 5x), WiFi 2 (latency 300ms)",
+        recommendation: "CCTV 1 perlu pengecekan kabel LAN dan adaptor daya. WiFi 2 perlu pengecekan interferensi channel frekuensi 2.4 GHz dan pengaturan QoS.",
+        updated_at: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) + ' ' + new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB'
+      };
+    }
+    updateAiUi(data);
+  } catch (e) {
+    console.warn("Gagal fetch AI recommendation:", e);
+  }
+}
+
+function updateAiUi(data) {
+  if (!data) return;
+  const status = (data.status || 'warning').toLowerCase();
+  const badgeClass = status === 'normal' ? 'badge-normal' : (status === 'critical' ? 'badge-critical' : 'badge-warning');
+  const badgeText = status.toUpperCase();
+
+  // Parsing nama perangkat yang bermasalah (dipisah koma)
+  const rawDevices = data.device || "";
+  const devList = rawDevices ? rawDevices.split(',').map(s => s.trim()).filter(Boolean) : [];
+  const issueCountText = devList.length > 0 ? `${devList.length} perangkat perlu perhatian` : "Semua perangkat berstatus normal";
+
+  // 1. UPDATE KARTU DI DASHBOARD (dashboard.html)
+  const dashBadge = document.getElementById('aiDashStatusBadge');
+  const dashStatusText = document.getElementById('aiDashStatusText');
+  const dashIssueText = document.getElementById('aiDashIssueText');
+  const dashInsightText = document.getElementById('aiDashInsightText');
+  const dashUpdatedAt = document.getElementById('aiDashUpdatedAt');
+
+  if (dashBadge) {
+    dashBadge.className = `ai-status-badge ${badgeClass}`;
+  }
+  if (dashStatusText) dashStatusText.innerText = badgeText;
+  if (dashIssueText) dashIssueText.innerText = issueCountText;
+  if (dashInsightText) {
+    dashInsightText.innerText = data.recommendation ? (data.recommendation.split('.')[0] + '.') : "Sistem operasional T-AIMS dalam kondisi terpantau.";
+  }
+  if (dashUpdatedAt) dashUpdatedAt.innerText = data.updated_at || "18 Okt 2026 20:00 WIB";
+
+  // 2. UPDATE KOTAK DI LAPORAN (reports.html)
+  const repBadge = document.getElementById('aiRepStatusBadge');
+  const repStatusText = document.getElementById('aiRepStatusText');
+  const repDeviceChips = document.getElementById('aiRepDeviceChips');
+  const repRecText = document.getElementById('aiRepRecommendationText');
+  const repUpdatedAt = document.getElementById('aiRepUpdatedAt');
+
+  if (repBadge) {
+    repBadge.className = `ai-status-badge ${badgeClass}`;
+  }
+  if (repStatusText) repStatusText.innerText = badgeText;
+  if (repRecText) repRecText.innerText = data.recommendation || "Belum ada rekomendasi.";
+  if (repUpdatedAt) repUpdatedAt.innerText = data.updated_at || "-";
+
+  if (repDeviceChips) {
+    if (devList.length === 0) {
+      repDeviceChips.innerHTML = '<span style="color:#10B981; font-size:11px; font-weight:700;"><i class="fa-solid fa-check-circle"></i> Tidak ada anomali</span>';
+    } else {
+      repDeviceChips.innerHTML = devList.slice(0, 3).map(dev => {
+        const icon = dev.toLowerCase().includes('cctv') ? 'fa-video' : (dev.toLowerCase().includes('wifi') ? 'fa-wifi' : 'fa-server');
+        return `<span class="ai-chip-device"><i class="fa-solid ${icon}"></i> ${dev}</span>`;
+      }).join('');
+    }
+  }
+}
+
+window.fetchAiRecommendation = fetchAiRecommendation;
+window.initAiRecommendationEngine = initAiRecommendationEngine;

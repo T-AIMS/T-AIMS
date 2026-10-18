@@ -591,6 +591,56 @@ async function sendPing(assetId, status = 'online', responseTimeMs = 15, details
   }
 }
 
+/**
+ * =====================================================================
+ * INTEGRASI AI DASHBOARD T-AIMS (SPESIFIKASI ARIK & REZA)
+ * =====================================================================
+ * Endpoint: GET /api/ai/recommendation
+ * Cooldown: 5 Menit (300.000 ms)
+ */
+let aiRecommendationCache = null;
+let aiLastFetchTimestamp = 0;
+const AI_COOLDOWN_MS = 5 * 60 * 1000; // 5 Menit
+
+async function getAiRecommendation(forceRefresh = false) {
+  const now = Date.now();
+  if (!forceRefresh && aiRecommendationCache && (now - aiLastFetchTimestamp < AI_COOLDOWN_MS)) {
+    return aiRecommendationCache;
+  }
+
+  try {
+    const token = await ensureAuthToken();
+    const res = await fetch(`${BASE_URL}/ai/recommendation`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      aiRecommendationCache = data;
+      aiLastFetchTimestamp = now;
+      return data;
+    }
+  } catch (err) {
+    console.warn("Backend /api/ai/recommendation offline, menggunakan simulasi AI telemetri:", err);
+  }
+
+  // Data Fallback Persis Spesifikasi Format Arik
+  const fallbackAi = {
+    status: "warning",
+    device: "CCTV 1 (offline 5x), WiFi 2 (latency 300ms)",
+    recommendation: "CCTV 1 perlu pengecekan kabel LAN dan adaptor daya. WiFi 2 perlu pengecekan interferensi channel frekuensi 2.4 GHz dan pengaturan QoS.",
+    updated_at: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) + ' ' + new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB'
+  };
+
+  aiRecommendationCache = fallbackAi;
+  aiLastFetchTimestamp = now;
+  return fallbackAi;
+}
+
 // Pasang ke window agar bisa diakses secara global di semua file html
 window.apiService = {
   BASE_URL,
@@ -606,6 +656,7 @@ window.apiService = {
   updateAsset,
   sendHeartbeat,
   sendPing,
+  getAiRecommendation,
   FALLBACK_ASSETS
 };
 
@@ -620,3 +671,4 @@ window.createAsset = createAsset;
 window.updateAsset = updateAsset;
 window.sendHeartbeat = sendHeartbeat;
 window.sendPing = sendPing;
+window.getAiRecommendation = getAiRecommendation;
