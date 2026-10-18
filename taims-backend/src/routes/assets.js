@@ -27,7 +27,7 @@ router.get('/', authenticate, async (req, res) => {
                 a.location_id, l.location_name,
                 a.pic_user_id, u.full_name AS pic_name,
                 a.monitoring_method, a.monitoring_config,
-                a.current_status, a.priority, a.last_seen,
+                a.current_status, a.priority, a.last_seen, a.offline_since,
                 a.installation_date, a.description,
                 a.check_interval_seconds, a.timeout_seconds, a.retry_count,
                 a.created_at, a.updated_at

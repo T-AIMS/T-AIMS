@@ -18,7 +18,7 @@ graph TD
     subgraph IoT_Edge ["Lapisan Hardware & Simulator IoT"]
         ESP["ESP32 Microcontroller<br/>(Hardware Field Device)"]
         RPI["Raspberry Pi Node<br/>(Edge Gateway)"]
-        SIM["Python IoT Simulator<br/>(16 Assets Heartbeat)"]
+        SIM["Python IoT Simulator<br/>(17 Assets Heartbeat)"]
     end
 
     subgraph Broker_Layer ["Message Broker & Bus"]
@@ -62,10 +62,10 @@ graph TD
 
 | Layanan | Protokol / Port | Status Dev | Deskripsi Peran |
 | :--- | :--- | :--- | :--- |
-| **MySQL Database** | TCP / `3306` | AKTIF | Penyimpanan relasional 7 tabel utama (`taims_db`) |
+| **MySQL Database** | TCP / `3306` | AKTIF | Penyimpanan relasional 8 tabel baku (`taims_db`) |
 | **Mosquitto MQTT** | TCP / `1883`, `9001` | AKTIF | Broker pesan real-time untuk heartbeat & incident alert |
 | **Backend API** | HTTP / `3000` | AKTIF | REST API Node.js Express, otentikasi JWT & MQTT listener |
-| **Frontend Web** | HTTP / `3001` | AKTIF | Antarmuka monitoring real-time, donut chart, 16 aset E2E |
+| **Frontend Web** | HTTP / `3001` | AKTIF | Antarmuka monitoring real-time, donut chart, 17 aset E2E |
 | **n8n Automation** | HTTP / `5678` | AKTIF | Engine workflow notifikasi Telegram & SMTP Email |
 | **Nginx Reverse Proxy** | HTTPS / `443` | Siap Deploy | Reverse proxy SSL termination & security hardening |
 

@@ -29,7 +29,7 @@ Folder ini berisi modul **Network & Device Monitoring Engine** untuk proyek T-AI
 5. **`test_monitoring_baru.py`**
    - Skrip pengujian otomatis 5 skenario (Device Online, Device Offline, Retry Logic, Timeout Handling, Public DNS).
 
-6. **`survey jaringan final .txt`** & **`survey jaringan.txt`**
+6. **`survey_jaringan_final.txt`** & **`survey jaringan.txt`**
    - Dokumen survei topologi perangkat dan gateway jaringan kantor PT Teknolab Caraka Internasional.
 
 7. **`survey monitoring_logs.csv`** & **`monitoring_logs.csv`**

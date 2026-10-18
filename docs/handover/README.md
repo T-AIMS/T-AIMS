@@ -31,3 +31,15 @@ Folder ini merupakan repositori terpadu seluruh berkas serah terima harian (*Dai
 | Hari | Tanggal | Berkas | Fokus Utama |
 | :---: | :---: | :--- | :--- |
 | **Hari 5** | 16 Okt 2026 | [`2026-10-16_Handover_Dzakwan.md`](2026-10-16_Handover_Dzakwan.md) | Finalisasi 20 Komponen, 17 Dependensi, 16/16 Zero Defect & Rilis v1.0.0-gold |
+
+---
+
+## 4. Berkas Handover Dika Yoga Pratama (Frontend Dashboard Developer - Shift 2)
+| Hari | Tanggal | Berkas | Fokus Utama |
+| :---: | :---: | :--- | :--- |
+| **Hari 2** | 13 Okt 2026 | [`2026-10-13_Handover_DikaYoga_1.docx`](2026-10-13_Handover_DikaYoga_1.docx) | Inisialisasi Kerangka Frontend, Mock Data SQL, Struktur Halaman |
+| **Hari 2** | 13 Okt 2026 | [`2026-10-13_Handover_DikaYoga_2.docx`](2026-10-13_Handover_DikaYoga_2.docx) | Integrasi apiService.js, Running Frontend Port 3001 |
+| **Hari 4** | 15 Okt 2026 | [`2026-10-15_Handover_DikaYoga.docx`](2026-10-15_Handover_DikaYoga.docx) | Implementasi Interaktivitas Device Detail (Modal MAC/IP/Config) |
+| **Hari 5** | 16 Okt 2026 | [`2026-10-16_Handover_DikaYoga_1.docx`](2026-10-16_Handover_DikaYoga_1.docx) | Finalisasi UI/UX Multi-Page Dashboard T-AIMS, Sinkronisasi API |
+| **Hari 5** | 16 Okt 2026 | [`2026-10-16_Handover_DikaYoga_2.docx`](2026-10-16_Handover_DikaYoga_2.docx) | Implementasi Folder Master Database Ahmad Reza, Fiksasi Port API 3000 |
+

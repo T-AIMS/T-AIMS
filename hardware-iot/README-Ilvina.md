@@ -22,8 +22,6 @@ Mekanisme heartbeat ESP32 dan Raspberry Pi untuk T-AIMS.
 
    ```bash
    python simulator/simulate_esp32.py
-   # atau
-   python simulator/simulator_esp32.py
    ```
 
 ## Cara Upload ESP32
