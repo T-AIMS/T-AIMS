@@ -16,7 +16,7 @@ bash devops/scripts/backup_db.sh
 ```
 * **Lokasi Arsip:** `database/backups/taims_db_backup_YYYYMMDD_HHMMSS.sql`
 * **Kebijakan Retensi:** Skrip secara otomatis mempertahankan cadangan 7 hari terakhir dan menghapus arsip usang untuk menghemat ruang penyimpanan.
-* **Integritas Data:** Memastikan struktur 7 tabel (`assets`, `incidents`, `locations`, `maintenance`, `monitoring_logs`, `notifications`, `users`) dan data 16 aset utama terlindungi.
+* **Integritas Data:** Memastikan struktur 8 tabel baku (`assets`, `incidents`, `locations`, `maintenance`, `monitoring_logs`, `notifications`, `token_blacklist`, `users`) dan data 17 aset utama terlindungi.
 
 ### B. Prosedur Pemulihan Basis Data (Restore)
 Jika terjadi anomali data, korupsi data, atau insiden pada database:

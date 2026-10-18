@@ -35,6 +35,16 @@ app.get('/', (req, res) => {
     });
 });
 
+// Healthcheck Endpoint for Container & Reverse Proxy
+app.get(['/health', '/api/monitoring/health'], (req, res) => {
+    res.json({
+        status: 'healthy',
+        service: 'taims-backend',
+        uptime: process.uptime(),
+        timestamp: new Date().toISOString()
+    });
+});
+
 app.use('/api/auth', authRoutes);
 app.use('/api/assets', assetsRoutes);
 app.use('/api/locations', locationsRoutes);

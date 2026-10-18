@@ -50,7 +50,8 @@ menu() {
 
 check_ports() {
     echo -e "\n${BLUE}--- [1] AUDIT KONEKTIVITAS PORT & CONTAINER ---${NC}"
-    GATEWAY="172.19.112.1"
+    GATEWAY=$(ip route 2>/dev/null | grep default | awk '{print $3}' || echo "127.0.0.1")
+    GATEWAY="${GATEWAY:-127.0.0.1}"
     
     echo -n "• MySQL Database (3306)       : "
     nc -z -w 2 $GATEWAY 3306 2>/dev/null && echo -e "${GREEN}[OPEN]${NC}" || echo -e "${YELLOW}[TUTUP/PERLU XAMPP]${NC}"

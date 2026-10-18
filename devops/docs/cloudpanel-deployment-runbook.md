@@ -200,12 +200,12 @@ MQTT_USER=taims-broker
 MQTT_PASS=taims-mqtt-2026
 
 # Notifikasi Darurat Telegram & Email
-TELEGRAM_BOT_TOKEN=8165039239:AAGt7T5v8gL9_example
+TELEGRAM_BOT_TOKEN=your_telegram_bot_token_here
 TELEGRAM_CHAT_ID=-4780517830
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
 SMTP_USER=education8420@gmail.com
-SMTP_PASS=sydnaxxyqkdzypge
+SMTP_PASS=your_gmail_app_password_here
 EOF
 
 # Batasi hak akses file hanya untuk user taims

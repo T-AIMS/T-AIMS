@@ -89,14 +89,25 @@ fi
 # ---------------------------------------------------------------------
 log "\n[SKENARIO 5/6] Uji Integritas Database Relasional taims_db..."
 ASSET_COUNT=$(python3 -c "
-import urllib.request, json
+import urllib.request, json, subprocess
+
+gateway = '127.0.0.1'
 try:
-    req = urllib.request.Request('http://172.19.112.1:3000/api/assets')
-    res = urllib.request.urlopen(req, timeout=3)
-    data = json.loads(res.read().decode())
-    print(len(data.get('data', [])))
-except:
-    print('0')
+    gw = subprocess.check_output(\"ip route | grep default | awk '{print \$3}'\", shell=True).decode().strip()
+    if gw: gateway = gw
+except: pass
+
+urls = ['http://127.0.0.1:3000/api/assets', f'http://{gateway}:3000/api/assets']
+count = 0
+for u in urls:
+    try:
+        req = urllib.request.Request(u)
+        res = urllib.request.urlopen(req, timeout=2)
+        data = json.loads(res.read().decode())
+        count = len(data.get('data', []))
+        if count > 0: break
+    except: pass
+print(count)
 " 2>/dev/null)
 
 if [ "$ASSET_COUNT" -ge 14 ]; then

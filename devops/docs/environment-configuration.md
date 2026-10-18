@@ -54,12 +54,12 @@ Sesuai Aturan Teknis Halaman 20 Dokumen PKL Teknolab:
 | Nama Variabel | Default / Contoh | Deskripsi |
 |:---|:---|:---|
 | `N8N_PORT` | `5678` | Port engine otomasi n8n |
-| `TELEGRAM_BOT_TOKEN`| `8165039239:...` | Token bot Telegram resmi T-AIMS |
+| `TELEGRAM_BOT_TOKEN`| `your_telegram_bot_token` | Token bot Telegram resmi T-AIMS (dikelola via .env) |
 | `TELEGRAM_CHAT_ID` | `-4780517830` | ID grup alert insiden infrastruktur |
 | `SMTP_HOST` | `smtp.gmail.com` | Host server SMTP Gmail |
 | `SMTP_PORT` | `587` | Port TLS SMTP Gmail |
 | `SMTP_USER` | `education8420@gmail.com` | Akun resmi pengirim email darurat |
-| `SMTP_PASS` | `sydnaxxyqkdzypge` | Google App Password tervalidasi |
+| `SMTP_PASS` | `(Google App Password 16 Karakter via .env)` | Google App Password tervalidasi via .env |
 
 ---
 

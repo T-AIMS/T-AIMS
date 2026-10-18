@@ -42,6 +42,7 @@ services:
       - "9001:9001"
     volumes:
       - ./devops/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - ./devops/mosquitto/passwd:/mosquitto/config/passwd:ro
       - taims_mosquitto_data:/mosquitto/data
       - taims_mosquitto_log:/mosquitto/log
     networks:
