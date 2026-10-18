@@ -1,4 +1,4 @@
-sudah trlanjur sampai labg-- T-AIMS: Pembaruan IP perangkat
+-- T-AIMS: Pembaruan IP perangkat
 -- Status: Menunggu verifikasi IP asli dari Ananda.
 -- Jangan jalankan UPDATE sebelum IP dikonfirmasi.
 -- Catatan tambahan oleh Database & Asset Management:
