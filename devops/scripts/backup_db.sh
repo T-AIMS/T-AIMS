@@ -27,11 +27,24 @@ log() {
 log "=== T-AIMS Database Backup Started ==="
 log "Target: $TARGET_PATH"
 
-DB_HOST="${DB_HOST:-127.0.0.1}"
 DB_PORT="${DB_PORT:-3306}"
 DB_USER="${DB_USER:-root}"
 DB_PASS="${DB_PASS:-root_taims_2026}"
 DB_NAME="${DB_NAME:-taims_db}"
+
+# Deteksi host database otomatis (Localhost Linux vs Gateway WSL Windows XAMPP)
+if [ -z "$DB_HOST" ] || [ "$DB_HOST" = "127.0.0.1" ]; then
+    if ! nc -z -w 1 127.0.0.1 "$DB_PORT" 2>/dev/null; then
+        WSL_GATEWAY=$(ip route show default 2>/dev/null | awk '{print $3}')
+        if [ -n "$WSL_GATEWAY" ] && nc -z -w 1 "$WSL_GATEWAY" "$DB_PORT" 2>/dev/null; then
+            DB_HOST="$WSL_GATEWAY"
+        else
+            DB_HOST="127.0.0.1"
+        fi
+    else
+        DB_HOST="127.0.0.1"
+    fi
+fi
 
 BACKUP_SUCCESS=false
 
