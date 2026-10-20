@@ -66,3 +66,11 @@ hardware-iot/esp32/include/config.h
 !hardware-iot/esp32/include/config.h.example
 
 
+
+# DeepSeek AI Context (contains API keys)
+scripts/deepseek/
+*.md.bak
+
+# DeepSeek AI Context (contains API keys)
+scripts/deepseek/
+*.md.bak
