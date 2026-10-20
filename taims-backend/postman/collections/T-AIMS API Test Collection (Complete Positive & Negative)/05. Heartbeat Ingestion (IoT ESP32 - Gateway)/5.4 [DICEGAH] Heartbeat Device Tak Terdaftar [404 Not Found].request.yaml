@@ -1,0 +1,19 @@
+$kind: http-request
+url: "{{base_url}}/heartbeat"
+method: POST
+headers:
+  X-API-Key: "{{device_api_key}}"
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "device_id": "DEVICE-HANTU-999"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status code is 404 Not Found', function () { pm.response.to.have.status(404); });
+      pm.test('Ditolak karena device_id tidak ada di DB', function () { pm.expect(pm.response.json().error).to.include('tidak terdaftar'); });
+    language: text/javascript
+order: 4000
