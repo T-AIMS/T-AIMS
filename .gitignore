@@ -39,8 +39,6 @@ network-monitoring/*.csv
 !network-monitoring/survey monitoring_logs.csv
 
 database/backups/
-*.sql
-.env
 
 # Backend
 backend/node_modules/
@@ -48,7 +46,6 @@ backend/.env
 backend/*.log
 
 # Backup SQL (lokal)
-*.sql
 backup_taims_*.sql
 taims_db_export_*.sql
 !database/*.sql
@@ -71,6 +68,3 @@ hardware-iot/esp32/include/config.h
 scripts/deepseek/
 *.md.bak
 
-# DeepSeek AI Context (contains API keys)
-scripts/deepseek/
-*.md.bak
