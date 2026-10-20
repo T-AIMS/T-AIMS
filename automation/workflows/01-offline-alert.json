@@ -1,0 +1,198 @@
+{
+  "name": "MQTT T-AIMS OFFLINE",
+  "nodes": [
+    {
+      "parameters": {
+        "chatId": "-5383419523",
+        "text": "={{ $json.text }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        800,
+        96
+      ],
+      "id": "232400a7-53a1-4e9f-b576-249e2e7f6e70",
+      "name": "Send a text message",
+      "webhookId": "73c9d919-9c76-493f-8520-30d5b03f994b",
+      "credentials": {
+        "telegramApi": {
+          "id": "tI7uRQG2569tSNWn",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "topics": "taims/alert/offline/#",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mqttTrigger",
+      "typeVersion": 1,
+      "position": [
+        -64,
+        0
+      ],
+      "id": "d3471f54-e3af-4ac2-8082-ab0000ad5a2c",
+      "name": "MQTT T-AIMS OFFLINE",
+      "credentials": {
+        "mqtt": {
+          "id": "2FJCO6Zj8x3fBLNi",
+          "name": "MQTT account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Ambil payload dari MQTT\nconst raw = $input.first().json;\nconst payload = typeof raw.message === 'string' \n  ? JSON.parse(raw.message) \n  : raw.message;\n\n// Ambil static data (cooldown state)\nconst staticData = $getWorkflowStaticData('global');\n\n// Cooldown 10 menit\nconst COOLDOWN_MS = 10 * 60 * 1000;\nconst now = Date.now();\n\n// Cek kapan terakhir kirim notif untuk asset ini\nconst assetCode = payload.asset_code || '-';\nconst lastSent = staticData[`last_sent_${assetCode}`] || 0;\nconst timeSinceLastSent = now - lastSent;\n\n// Kalau belum lewat cooldown → skip\nif (timeSinceLastSent < COOLDOWN_MS) {\n  return [];\n}\n\n// Update timestamp\nstaticData[`last_sent_${assetCode}`] = now;\n\n// Kirim data mentah ke AI (tanpa membuat pesan teks)\nreturn [{\n  json: {\n    asset_code: assetCode,\n    asset_name: payload.asset_name || '-',\n    category: payload.category || '-',\n    last_seen: payload.last_seen || '-',\n    severity: payload.severity || 'unknown',\n    priority: payload.priority || 2,\n    timestamp: payload.timestamp || new Date().toISOString()\n  }\n}]; "
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        208,
+        80
+      ],
+      "id": "b1044d59-d6bb-404b-9227-44576e96c7e6",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "fromEmail": "education8420@gmail.com",
+        "toEmail": "education8420@gmail.com",
+        "subject": "=[T-AIMS] {{ $('Code in JavaScript').item.json.asset_name || 'Perangkat' }}",
+        "emailFormat": "text",
+        "text": "={{ $('Basic LLM Chain').item.json.text }}",
+        "options": {
+          "bccEmail": "damarmunajad7@gmail.com,rzafahmi351@gmail.com,faidatrismaamelia@gmail.com,ilfinamufarika4@gmail.com,c11anandadwisusanti@gmail.com,awangtgprofesional@gmail.com,dikayogapratama18@gmail.com,ahzizsaputra@gmail.com,arickferdiansyah@gmail.com,wafianzaidan@gmail.com,rezatriwardana7@gmail.com"
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1072,
+        -16
+      ],
+      "id": "caa3db59-56ad-4d1e-b7e0-5fe3c2a6e0fc",
+      "name": "Send an Email",
+      "webhookId": "0a095b43-e337-46f8-bb61-1d4ee4f77744",
+      "credentials": {
+        "smtp": {
+          "id": "mAhG8aKnfX4tsLda",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Kamu adalah AI Network Analyst untuk T-AIMS.\n\nPerangkat berikut baru saja OFFLINE:\n- Nama: {{ $('Code in JavaScript').item.json.asset_name }}\n- Kode: {{ $('Code in JavaScript').item.json.asset_code }}\n- Kategori: {{ $('Code in JavaScript').item.json.category }}\n- Severity: {{ $('Code in JavaScript').item.json.severity }}\n- Terakhir terlihat: {{ $('Code in JavaScript').item.json.last_seen }}\n\nTugasmu:\n1. Berikan analisis singkat (1 kalimat) kenapa perangkat ini bisa offline berdasarkan datanya.\n2. Berikan 1 rekomendasi tindakan cepat untuk teknisi.\n\nFormat output (WAJIB teks biasa, jangan JSON):\n🔴 OFFLINE ALERT — {{ $('Code in JavaScript').item.json.asset_name }}\n\n📊 Status: OFFLINE\n⚠️ Severity: {{ $('Code in JavaScript').item.json.severity }}\n\n🤖 Analisis AI:\n[Analisis kamu di sini]\n\n🎯 Tindakan:\n[Rekomendasi kamu di sini]",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        464,
+        0
+      ],
+      "id": "2db5d93a-1cdd-478b-85fa-452a3e438e80",
+      "name": "Basic LLM Chain",
+      "retryOnFail": false,
+      "waitBetweenTries": 5000,
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.8-flash",
+        "options": {
+          "temperature": 0.2
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        560,
+        224
+      ],
+      "id": "ae2aad3d-4eea-40d1-90cb-5936741fe499",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "iOCK0rZt60l7cIL7",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "MQTT T-AIMS OFFLINE": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message": {
+      "main": [
+        [
+          {
+            "node": "Send an Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "969bf29a-4372-4d14-b631-933c884dd139",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "60113387f61802f17dc2fd3f15b35737541fe36f121c623ede03d8255443795e"
+  },
+  "nodeGroups": [],
+  "id": "am8SlJl3ukufuIhy",
+  "tags": []
+}
