@@ -1,6 +1,6 @@
 # DAILY HANDOVER — REZA TRI
 Nama    : Reza Tri Wardana
-Tanggal : 20 Oktober 2026
+Tanggal : 19 Oktober 2026
 Shift   : 2 (16.00 - 01.00 WIB)
 Hari ke : 8
 
