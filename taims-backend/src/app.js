@@ -48,6 +48,36 @@ app.use('/api/heartbeat', heartbeatRoutes);
 app.use('/api/search', searchRoutes);
 app.use('/api/ai', aiRoutes);
 
+// ============================================
+// HEALTHCHECK ENDPOINTS (Ditambahkan oleh Wafian)
+// ============================================
+app.get('/health', (req, res) => {
+  res.json({
+    status: 'healthy',
+    service: 'taims-backend',
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString()
+  });
+});
+
+app.get('/api/monitoring/health', async (req, res) => {
+  try {
+    const db = require('./config/db');
+    await db.query('SELECT 1');
+    res.json({
+      status: 'healthy',
+      database: 'connected',
+      timestamp: new Date().toISOString()
+    });
+  } catch (err) {
+    res.status(503).json({
+      status: 'unhealthy',
+      database: 'disconnected',
+      error: err.message
+    });
+  }
+});
+
 app.use((req, res) => {
     res.status(404).json({ success: false, error: 'Endpoint tidak ditemukan' });
 });
