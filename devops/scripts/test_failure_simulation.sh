@@ -41,7 +41,7 @@ fi
 echo "[TEST 3/6] Stop MQTT Broker — Simulasi Service Down..." | tee -a "$LOG_FILE"
 docker stop taims-mosquitto > /dev/null 2>&1
 sleep 2
-NC_CHECK=$(nc -z localhost 1883 2>&1; echo $?)
+nc -z localhost 1883 >/dev/null 2>&1; NC_CHECK=$?
 if [ "$NC_CHECK" -ne 0 ]; then
     echo "  [PASS] Skenario 3: Port 1883 tertutup saat broker dimatikan." | tee -a "$LOG_FILE"
     PASS=$((PASS+1))
@@ -71,7 +71,7 @@ fi
 echo "[TEST 6/6] Recovery — Nyalakan Kembali Semua Service..." | tee -a "$LOG_FILE"
 docker start taims-mosquitto > /dev/null 2>&1
 sleep 3
-NC_RECOVER=$(nc -z localhost 1883 2>&1; echo $?)
+nc -z localhost 1883 >/dev/null 2>&1; NC_RECOVER=$?
 if [ "$NC_RECOVER" -eq 0 ]; then
     echo "  [PASS] Skenario 6: Broker MQTT pulih dan Port 1883 kembali terbuka." | tee -a "$LOG_FILE"
     PASS=$((PASS+1))
