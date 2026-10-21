@@ -9,34 +9,30 @@ Verifikasi Notification System (n8n + Gemini AI + Telegram + Email)
 
 ## Hasil Audit
 
-### 1. Workflow n8n Aktif
-| Workflow | ID | Status |
-|:---|:---|:---:|
-| MQTT T-AIMS OFFLINE (AI) | am8SlJl3ukufuIhy | ✅ Active |
-| MQTT T-AIMS RECOVERY (AI) | Rmum2R2J1fw3K4Rn | ✅ Active |
-| [ARCHIVED] OFFLINE (non-AI) | XVdLhibXW3Q1lSsE | ✅ Diarsipkan |
-| [ARCHIVED] RECOVERY (non-AI) | Oupb5r8KvAAQprOs | ✅ Diarsipkan |
+### 1. Integrasi Berhasil (PASS)
+| Komponen | Status |
+|:---|:---:|
+| MQTT Broker → Backend | Connected (`taims-broker:taims-mqtt-2026`) |
+| Backend → MySQL | Connected (`taims_db`) |
+| n8n Workflow OFFLINE | Active |
+| n8n Workflow RECOVERY | Active |
+| Telegram Alert | Terkirim (3 pesan) |
+| Email SMTP | Terkirim (`250 2.0.0 OK`) |
 
-### 2. Notifikasi OFFLINE — PASS
-- **Telegram:** 3 pesan diterima untuk device `COOLDOWN-TEST-01` (cooldown belum persisten).
-- **Isi:** `🔴 OFFLINE ALERT: Cooldown Test Device`
-- **Status:** Pesan berhasil terkirim ke grup `-5383419523` via bot `@taims_alert_arik_bot`.
+### 2. Cooldown Tidak Bekerja (TEMUAN)
+- **Uji:** 3 trigger MQTT beruntun untuk device `COOLDOWN-PERSIST-TEST`.
+- **Hasil:** 3 pesan Telegram masuk (seharusnya 1 karena cooldown 10 menit).
+- **Analisis:** Kode cooldown menggunakan `$getWorkflowStaticData('global')`, tetapi state ini tidak persisten di environment n8n Docker lokal meskipun `N8N_ENCRYPTION_KEY` sudah aktif.
+- **Rekomendasi Production:**
+  1. Konfigurasi n8n dengan database persisten (MySQL/PostgreSQL).
+  2. Alternatif: Pindahkan logic cooldown ke tabel MySQL `alert_cooldown`.
 
-### 3. Notifikasi RECOVERY — PASS
-- **Telegram:** Pesan diterima (`message_id: 62`).
-- **Email:** Diterima oleh Gmail (`250 2.0.0 OK`).
-- **Isi:** `🟢 RECOVERY Asset: Test Device Code: TEST-01`
-- **BCC:** 11 email anggota tim terdistribusi.
-- **Message ID:** `<f2cdb336-25ef-efff-238c-b83cb4be99b4@gmail.com>`
+### 3. Bukti
+- Log n8n: `01-n8n-recovery-proof.txt`
+- Telegram OFFLINE: `02-telegram-offline.png`
+- Telegram RECOVERY: `03-telegram-recovery.png`
 
-### 4. Analisis Cooldown
-- **Kode cooldown SUDAH BENAR** (menggunakan `$getWorkflowStaticData('global')` dengan timestamp per device).
-- **Temuan:** State cooldown di-reset setiap kali eksekusi karena n8n tidak dikonfigurasi dengan `N8N_ENCRYPTION_KEY` dan database persisten.
-- **Rekomendasi Production:** Konfigurasi n8n dengan environment variable `N8N_ENCRYPTION_KEY` dan database MySQL/PostgreSQL agar cooldown berfungsi penuh.
-
----
-
-## Kepatuhan PDF Teknolab
-- ✅ PDF Hal. 12 — Notification System (Output Wajib DevOps)
-- ✅ PDF Hal. 17 — AI Automation Flow (n8n + LLM + Telegram/Email)
-- ✅ PDF Hal. 19 — Bukti Individu (dokumen ini + screenshot)
+## Catatan Kepatuhan PDF Teknolab
+- PDF Hal. 12 — Notification System (Output Wajib DevOps) ✅
+- PDF Hal. 17 — AI Automation Flow (n8n + LLM + Telegram/Email) ✅
+- PDF Hal. 19 — Bukti Individu (dokumen ini + screenshot) ✅
