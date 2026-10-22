@@ -4,16 +4,16 @@
 
 - Nama proyek: T-AIMS (*Teknolab Asset & Infrastructure Monitoring System*)
 - Sumber data: tabel `assets` pada database `taims_db`
-- Jumlah aset berdasarkan database final: **17 aset** (Pembaruan resmi per 18 Oktober 2026 berdasarkan `ASSETS.docx`)
+- Jumlah aset berdasarkan database final: **15 aset** (Pembaruan resmi per 18 Oktober 2026 berdasarkan `ASSETS.docx`)
 - Penanggung Jawab: Database & Asset Management Engineer (Faida) & DevOps (Wafian)
 
 ## 2. Tujuan
 
 Asset Registry digunakan untuk mendokumentasikan daftar perangkat yang dikelola oleh sistem T-AIMS, termasuk identitas kode aset, alamat IP, MAC Address, lokasi, metode monitoring, dan informasi penanggung jawab operasional.
 
-## 3. Sumber Data & Spesifikasi 17 Aset
+## 3. Sumber Data & Spesifikasi 15 Aset
 
-Tabel berikut memuat 17 aset resmi T-AIMS lengkap dengan parameter jaringan, lokasi, dan metode pengawasan real-time:
+Tabel berikut memuat 15 aset resmi T-AIMS lengkap dengan parameter jaringan, lokasi, dan metode pengawasan real-time:
 
 | ID | Kode Aset | Nama Perangkat | Kategori | Alamat IP | MAC Address | Lokasi | Metode Monitoring |
 |:---:|:---|:---|:---|:---|:---|:---|:---|
@@ -44,6 +44,6 @@ Tabel berikut memuat 17 aset resmi T-AIMS lengkap dengan parameter jaringan, lok
 
 ## 5. Catatan
 
-- 17 aset di atas telah disinkronkan dengan skema database v1.1 dan file `database/seed.sql`.
+- 15 aset di atas telah disinkronkan dengan skema database v1.1 dan file `database/seed.sql`.
 - Kolom relasional `location_id` merujuk ke tabel `locations` (1 = Marketing Office, 2 = Head Office, 3 = House of Server).
 - Kolom `offline_since` terintegrasi penuh untuk mendukung otomasi deteksi gangguan n8n dan notifikasi bot Telegram.

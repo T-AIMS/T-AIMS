@@ -68,3 +68,11 @@ hardware-iot/esp32/include/config.h
 scripts/deepseek/
 *.md.bak
 
+
+# Backup files
+*.bak
+*.bak2
+*.bak3
+*.bak4
+*.bak5
+*.bak_final

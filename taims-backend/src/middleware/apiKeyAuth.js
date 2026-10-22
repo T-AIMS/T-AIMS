@@ -1,23 +1,21 @@
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 require('dotenv').config();
 
-function apiKeyAuth(req, res, next) {
-    const apiKey = req.headers['x-api-key'];
-    const validKey = process.env.DEVICE_API_KEY;
+const DEFAULT_DEVICE_API_KEY = 'taims_dev_5bee447416b0fac135fcb60e4a6b84621ec75fdb132549f1';
 
-    // Cek header ada
+function apiKeyAuth(req, res, next) {
+    const rawApiKey = req.headers['x-api-key'] || req.headers['x-device-api-key'] || (req.query && req.query.api_key) || (req.body && req.body.api_key);
+    const apiKey = rawApiKey ? String(rawApiKey).trim() : '';
+    const validKey = String(process.env.DEVICE_API_KEY || DEFAULT_DEVICE_API_KEY).trim();
+
     if (!apiKey) {
-        return res.status(401).json({
-            success: false,
-            error: 'API Key tidak ditemukan. Kirim header X-API-Key.'
-        });
+        return res.status(401).json({ success: false, error: 'API Key tidak ditemukan. Kirim header X-API-Key.' });
     }
 
-    // Cek API Key valid
-    if (!validKey || apiKey !== validKey) {
-        return res.status(403).json({
-            success: false,
-            error: 'API Key tidak valid'
-        });
+    if (apiKey !== validKey) {
+        return res.status(403).json({ success: false, error: 'API Key tidak valid' });
     }
 
     next();
