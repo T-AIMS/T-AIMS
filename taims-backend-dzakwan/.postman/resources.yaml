@@ -1,0 +1,11 @@
+# Use this workspace to collaborate
+workspace:
+  id: ffce7b5a-40da-4e9c-9ec3-7f88a09a14c2
+
+localResources:
+  collections:
+    - ../taims_postman_collection.json
+
+cloudResources:
+  collections:
+    ../postman/collections/T-AIMS API Test Collection (Complete Positive & Negative): 87ae18c9-4413-49db-bb61-647c5ab0fbfd

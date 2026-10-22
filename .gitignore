@@ -76,3 +76,8 @@ scripts/deepseek/
 *.bak4
 *.bak5
 *.bak_final
+
+# Backend Dzakwan
+taims-backend-dzakwan/node_modules/
+taims-backend-dzakwan/.env
+
