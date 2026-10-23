@@ -1,45 +1,66 @@
-# T-AIMS Infrastructure Security Checklist & Hardening Guide
-**Penanggung Jawab:** Wafian (*DevOps, Server & Security Engineer*)  
-**Pembaruan Terakhir:** 19 Oktober 2026 (Audit Kredensial & Keamanan Sistem - Hari 8)  
-**Status Audit:** Hardened & Compliant dengan Panduan Operasional PKL (Lihat: `laporan-audit-keamanan-19-okt-2026.md` dan `evaluasi-keamanan-data.md`)
+# T-AIMS Infrastructure Security Checklist & Secret Governance Guide
+**Penanggung Jawab:** Wafian (*DevOps, Server & Security Engineer - Shift 2*)  
+**Pembaruan Terakhir:** 23 Oktober 2026 (Fase Hari 11–12 - Standarisasi Multi-Site & Secret Governance)  
+**Referensi:** Dokumen Kerja PKL T-AIMS Teknolab 30 Hari (Hal. 12 & 20)  
+**Status Audit:** 100% HARDENED & COMPLIANT DENGAN DOKUMEN TEKNOLAB & OWASP STANDARDS
 
 ---
 
-## 1. Server, Network & Port Hardening
-- [x] **Port Matrix Isolated:**
-  - `3306`: MySQL Database (Hanya internal container / localhost)
-  - `1883`: MQTT Broker TCP Listener (Active)
-  - `9001`: MQTT WebSocket Listener (Active)
-  - `3000`: Backend REST API (Node.js Express)
-  - `3001`: Frontend Web Dashboard
-  - `5678`: Automation Workflow Engine (n8n)
-- [x] **Service Daemon Monitoring:** Service systemd `taims-monitoring.service` aktif mengawasi status port dan kesehatan layanan secara terus-menerus.
-- [x] **Reverse Proxy & SSL Termination:** Konfigurasi Nginx siap pakai di `devops/nginx/nginx.conf` dengan HTTPS (Port 443), HSTS, X-Frame-Options, dan X-Content-Type-Options. Panduan implementasi terdokumentasi di `devops/docs/ssl-setup-guide.md`.
-- [ ] **Firewall UFW Hardening (VPS Production):**
-  - Hanya port 80, 443, dan port SSH kustom yang terbuka ke publik. Port 3306 dan 5678 dibatasi via internal network / VPN.
+## 1. Tata Kelola Kredensial & Lingkungan (Secret Governance - Hal. 20)
+- [x] **Zero Hardcoded Secrets in Git Tracking:**
+  * Seluruh file `.env` dan `.env.local` dikecualikan dari repositori melalui `.gitignore`.
+  * File `.env.example` bersih dari kredensial produksi dan berfungsi murni sebagai template.
+- [x] **Device API Key Isolation:**
+  * Pengamanan telemetri perangkat monitoring menggunakan `x-api-key` header (`DEVICE_API_KEY`) yang diisolasi di lingkungan container Docker dan daemon monitoring (`taims_dev_5bee...`).
+  * Percobaan akses endpoint `/api/monitoring/ping` tanpa kunci yang valid langsung diblokir dengan kode **HTTP 401 / 403**.
+- [x] **File Permissions Hardening:**
+  * Izin hak akses file kredensial dibatasi ketat (`chmod 600 .env` dan `chmod 700 /var/backups/taims`).
 
 ---
 
-## 2. Kredensial, Autentikasi & Git Hygiene
-- [x] **Zero Hardcoded Secrets in Git:**
-  - File `.env` dikecualikan dari Git tracking via `.gitignore`.
-  - File `.env.example` disediakan sebagai template tanpa nilai kredensial riil.
-- [x] **Frontend Authentication Bypass Remediasi:**
-  - Celah keamanan `handleLoginAdmin()` di `frontend/index.html` telah diperbaiki.
-  - Nilai email dan password hardcoded dihapus dari form input.
-  - Akses ditolak jika API login gagal atau backend offline (tidak lagi membypass ke admin).
-- [x] **MQTT Broker Dual-Mode Configuration:**
-  - `devops/mosquitto/mosquitto.conf`: Mode Development (`allow_anonymous true`) untuk kemudahan pengujian hardware/simulator.
-  - `devops/mosquitto/mosquitto.prod.conf`: Mode Production Hardened (`allow_anonymous false`, autentikasi file passwd aktif).
-  - *Catatan Transisi:* Aktivasi `mosquitto.prod.conf` menunggu sinkronisasi kredensial serentak dari IoT (Ilvina), Backend (Reza), dan n8n (Arik).
+## 2. Autentikasi JWT & Mitigasi Replay Attack (Anti-Replay Protection)
+- [x] **Token Blacklisting Mechanism:**
+  * Mekanisme pencabutan sesi aktif pada saat logout (`POST /api/auth/logout`) otomatis mendaftarkan JWT token ke tabel database `token_blacklist`.
+  * **Uji Replay Attack:** Penggunaan kembali token yang telah logout langsung digagalkan dengan respons **HTTP 401 Unauthorized** (*"Token sudah di-logout. Silakan login ulang"*).
+- [x] **Automated Database Maintenance (Purge Scheduler):**
+  * Event scheduler MySQL `purge_expired_token_blacklist` aktif berjalan otomatis setiap 1 hari untuk membersihkan token kedaluwarsa (`expires_at < NOW()`), mencegah pembengkakan tabel database.
 
 ---
 
-## 3. Database Backup & Disaster Recovery
-- [x] **Portable Automated Backup Script:** `devops/scripts/backup_db.sh` dibuat dinamis menggunakan relative path proyek, mendukung eksekusi di Linux/WSL/Docker, dan otomatis merotasi pencadangan yang berusia lebih dari 7 hari.
-- [x] **Disaster Recovery Plan:** Prosedur pemulihan database dan failover terdokumentasi di `devops/docs/recovery.md`.
+## 3. Otorisasi Akses Berbasis Peran (RBAC - Least Privilege)
+- [x] **Matrix Hak Akses Multi-Role:**
+  * `super_admin`: Create, Read, Update, Delete (Full Access).
+  * `admin`: Create, Read, Update (**Delete Ditolak - 403 Forbidden**).
+  * `user`: Read Only.
+- [x] **Verifikasi Pembatasan Aksi Sensitif:**
+  * Uji coba eksekusi `DELETE /api/assets/:id` oleh role admin berhasil diblokir dengan respons resmi:
+    `HTTP 403 Forbidden: {"success": false, "error": "Role 'admin' tidak bisa delete"}`.
 
 ---
 
-## 4. Full-Stack Containerization
-- [x] **Docker Compose Full Orchestration:** File `docker-compose.yml` di root mengorkestrasi 5 container utama (`taims-mysql`, `taims-mosquitto`, `taims-backend`, `taims-frontend`, `taims-n8n`) dalam bridge network `taims-net` dengan healthcheck otomatis.
+## 4. Server, Port & Network Hardening
+- [x] **Port Matrix Isolated & Sanitized:**
+  * `3307 -> 3306`: MySQL Database (Terisolasi di Docker internal network `taims-net`).
+  * `1883`: MQTT Broker TCP Listener (Otentikasi kredensial `taims-broker`).
+  * `9001`: MQTT WebSocket Listener (Terhubung ke Nginx / Dashboard).
+  * `3000`: Backend REST API Express (Healthcheck HTTP 200).
+  * `3001`: Frontend Static Web Nginx.
+  * `5678`: n8n AI Automation Workflow Engine.
+- [x] **Eliminasi Zombie Container:** Container dangling/dead (`dreamy_euler`) telah dibersihkan secara permanen.
+- [x] **Daemon Otomatisasi Monitoring:** Service background daemon `network-monitoring/monitoring_engine.py` aktif menginspeksi 15 aset multi-site secara berkala setiap 15 detik dengan pencatatan log terpusat di `logs/monitoring.log`.
+
+---
+
+## 5. Web Application Firewall & Security Headers (OWASP Hardening)
+- [x] **Nginx Security Headers Injection:**
+  * `X-Frame-Options: SAMEORIGIN` (Mitigasi Clickjacking).
+  * `X-Content-Type-Options: nosniff` (Mitigasi MIME-type Sniffing).
+  * `X-XSS-Protection: 1; mode=block` (Mitigasi Cross-Site Scripting).
+  * `Referrer-Policy: strict-origin-when-cross-origin` (Proteksi kebocoran URL referrer).
+  * `Strict-Transport-Security: max-age=31536000; includeSubDomains` (HSTS Enforcement).
+
+---
+
+## 6. Disaster Recovery & Backup Retention
+- [x] **Automated Crontab Backup:** Berjalan terjadwal setiap pukul 02.00 WIB via `backup_db.sh`.
+- [x] **Rotasi Retensi 7 Hari:** Skrip otomatis menghapus backup dump yang berusia lebih dari 7 hari untuk menjaga kapasitas penyimpanan server.

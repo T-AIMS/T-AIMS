@@ -10,7 +10,7 @@
 
 ## 1. Ringkasan Eksekutif (*Executive Summary*)
 Pada tanggal 19 Oktober 2026, telah dilaksanakan audit keamanan mendalam (*Comprehensive System Security & Credential Audit*) terhadap seluruh lapisan infrastruktur perangkat lunak T-AIMS, mencakup:
-1. Repositori Utama Full-Stack: `/mnt/d/xampp/htdocs/T-AIMS`
+1. Repositori Utama Full-Stack: `/mnt/d/T-AIMS`
 2. Modul Antarmuka Produksi: `/mnt/d/Website  T-AIMS`
 3. Konfigurasi Container Docker, Nginx Reverse Proxy, dan Broker Mosquitto MQTT.
 

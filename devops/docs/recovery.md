@@ -22,7 +22,7 @@ bash devops/scripts/backup_db.sh
 Jika terjadi anomali data, korupsi data, atau insiden pada database:
 ```bash
 # 1. Masuk ke direktori proyek
-cd /mnt/d/xampp/htdocs/T-AIMS
+cd /mnt/d/T-AIMS
 
 # 2. Impor berkas cadangan terbaru ke database MySQL
 mysql -u root taims_db < database/backups/taims_db_backup_[TIMESTAMP].sql

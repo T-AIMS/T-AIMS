@@ -10,7 +10,7 @@
 Untuk memudahkan pemantauan, analisis insiden (*root cause analysis*), dan audit, seluruh log sistem dikumpulkan secara terpusat pada struktur direktori berikut:
 
 ```text
-/mnt/d/xampp/htdocs/T-AIMS/
+/mnt/d/T-AIMS/
 ├── logs/
 │   ├── backup.log                     # Log riwayat eksekusi cron pencadangan database
 │   ├── database/
@@ -22,22 +22,22 @@ Untuk memudahkan pemantauan, analisis insiden (*root cause analysis*), dan audit
 │   └── systemd/
 │       └── monitoring_YYYY-MM-DD.log  # Log daemon latar belakang taims-monitoring.service
 └── devops/
-    └── logs/
-        ├── collect-log.sh             # Skrip otomatisasi pengumpulan & rotasi log
+    └── scripts/
+        ├── collect_log.sh             # Skrip otomatisasi pengumpulan & rotasi log
         └── failure_simulation_*.log   # Bukti hasil uji ketahanan 6 skenario kegagalan
 ```
 
 ---
 
 ## 2. Mekanisme Pengumpulan Log Otomatis (*Log Collection & Pruning*)
-Skrip otomatisasi pengumpulan log disediakan di [`devops/logs/collect-log.sh`](file:///mnt/d/xampp/htdocs/T-AIMS/devops/logs/collect-log.sh):
+Skrip otomatisasi pengumpulan log disediakan di [`devops/scripts/collect_log.sh`](file:///mnt/d/T-AIMS/devops/scripts/collect_log.sh):
 1. **Dukungan Ganda (Docker & Host):** Mengambil log langsung dari kontainer Docker aktif (`docker logs --tail 200`) atau berkas log host.
 2. **Systemd Journal Logging:** Mengarsipkan riwayat service pengawas latar belakang melalui `journalctl`.
 3. **Kebijakan Retensi 7 Hari:** Secara otomatis membersihkan berkas log yang berusia lebih dari 7 hari guna menjaga efisiensi ruang penyimpanan server.
 
 ### Cara Menjalankan Koleksi Log Manual:
 ```bash
-bash devops/logs/collect-log.sh
+bash devops/scripts/collect_log.sh
 ```
 
 ---
