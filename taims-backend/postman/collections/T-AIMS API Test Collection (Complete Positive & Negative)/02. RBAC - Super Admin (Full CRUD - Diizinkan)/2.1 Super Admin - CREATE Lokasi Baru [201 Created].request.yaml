@@ -1,0 +1,21 @@
+$kind: http-request
+url: "{{base_url}}/locations"
+method: POST
+headers:
+  Authorization: Bearer {{token_super_admin}}
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "location_name": "Lab QA & Testing Baru",
+      "description": "Ruang uji coba sistem T-AIMS Shift 2"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status code is 201 Created', function () { pm.response.to.have.status(201); });
+      var res = pm.response.json();
+      if (res.data && res.data.location_id) { pm.collectionVariables.set('test_location_id', res.data.location_id.toString()); }
+    language: text/javascript
+order: 1000

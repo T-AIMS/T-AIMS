@@ -1,0 +1,19 @@
+$kind: http-request
+url: "{{base_url}}/heartbeat"
+method: POST
+headers:
+  X-API-Key: api_key_palsu_random_999
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "device_id": "NET-SWD-01"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status code is 403 Forbidden', function () { pm.response.to.have.status(403); });
+      pm.test('Ditolak karena API Key tidak valid', function () { pm.expect(pm.response.json().error).to.include('tidak valid'); });
+    language: text/javascript
+order: 3000

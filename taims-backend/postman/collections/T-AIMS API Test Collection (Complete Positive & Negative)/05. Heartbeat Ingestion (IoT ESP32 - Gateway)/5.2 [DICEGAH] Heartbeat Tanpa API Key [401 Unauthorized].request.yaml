@@ -1,0 +1,18 @@
+$kind: http-request
+url: "{{base_url}}/heartbeat"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "device_id": "NET-SWD-01"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status code is 401', function () { pm.response.to.have.status(401); });
+      pm.test('Ditolak karena tidak kirim API Key', function () { pm.expect(pm.response.json().error).to.include('X-API-Key'); });
+    language: text/javascript
+order: 2000
