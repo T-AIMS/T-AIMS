@@ -1,0 +1,345 @@
+/**
+ * =============================================================================
+ * T-AIMS 3D DIGITAL TWIN & X-RAY STYLES
+ * =============================================================================
+ */
+
+/* Container Utama 3D */
+#floorplan-3d-view {
+    position: relative;
+    width: 100%;
+    margin-top: 15px;
+    animation: fp3dFadeIn 0.35s ease;
+}
+
+@keyframes fp3dFadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Toolbar Kontrol 3D */
+.fp3d-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(0, 240, 255, 0.25);
+    border-radius: 12px;
+    padding: 10px 16px;
+    margin-bottom: 12px;
+}
+
+.fp3d-toolbar-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Tombol Aksi 3D */
+.btn-fp3d, .btn-fp3d-view {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: rgba(30, 41, 59, 0.85);
+    color: #CBD5E1;
+    border: 1px solid rgba(148, 163, 184, 0.25);
+    border-radius: 8px;
+    padding: 7px 14px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-fp3d:hover, .btn-fp3d-view:hover {
+    background: rgba(0, 240, 255, 0.15);
+    color: #00F0FF;
+    border-color: rgba(0, 240, 255, 0.5);
+    transform: translateY(-1px);
+}
+
+.btn-fp3d-view.active {
+    background: linear-gradient(135deg, rgba(0, 240, 255, 0.25), rgba(56, 189, 248, 0.2));
+    color: #00F0FF;
+    border-color: #00F0FF;
+    box-shadow: 0 0 12px rgba(0, 240, 255, 0.35);
+}
+
+/* Status Khusus Tombol */
+.btn-fp3d.active-xray {
+    background: linear-gradient(135deg, rgba(234, 88, 12, 0.25), rgba(245, 158, 11, 0.2));
+    color: #FB923C;
+    border-color: #EA580C;
+    box-shadow: 0 0 12px rgba(234, 88, 12, 0.35);
+}
+
+.btn-fp3d.night-on {
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.25), rgba(99, 102, 241, 0.2));
+    color: #C084FC;
+    border-color: #A855F7;
+    box-shadow: 0 0 12px rgba(168, 85, 247, 0.35);
+}
+
+.btn-fp3d.rotate-on {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(5, 150, 105, 0.2));
+    color: #34D399;
+    border-color: #10B981;
+    box-shadow: 0 0 12px rgba(16, 185, 129, 0.35);
+}
+
+.btn-fp3d.active {
+    background: rgba(0, 240, 255, 0.2);
+    color: #00F0FF;
+    border-color: #00F0FF;
+}
+
+/* Panggung Kanvas 3D */
+#fp3d-canvas-stage {
+    position: relative;
+    width: 100%;
+    height: 580px;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #070B14;
+    border: 1px solid rgba(0, 240, 255, 0.25);
+    box-shadow: inset 0 0 35px rgba(0, 0, 0, 0.8), 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+#fp3d-canvas-stage canvas {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+    outline: none;
+}
+
+/* CCTV HUD Live Overlay */
+.fp3d-cctv-hud {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    display: none;
+    z-index: 10;
+    background: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.15) 1px, transparent 1px, transparent 2px);
+}
+
+.fp3d-cctv-hud.active {
+    display: block;
+}
+
+.cctv-hud-header {
+    position: absolute;
+    top: 18px;
+    left: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: #22C55E;
+    text-shadow: 0 0 8px #22C55E;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.cctv-hud-dot {
+    color: #EF4444;
+    animation: cctvBlink 1s infinite;
+}
+
+@keyframes cctvBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.1; }
+}
+
+.cctv-hud-reticle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px;
+    height: 60px;
+    border: 1px solid rgba(34, 197, 94, 0.35);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(34, 197, 94, 0.6);
+    font-family: monospace;
+    font-size: 1.2rem;
+}
+
+/* Tooltip Mengambang Pin Raycaster */
+.fp3d-tooltip {
+    background: rgba(10, 15, 29, 0.92);
+    backdrop-filter: blur(10px);
+    border: 1px solid #38BDF8;
+    border-radius: 10px;
+    padding: 10px 14px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), 0 0 16px rgba(56, 189, 248, 0.25);
+    transform: translate(14px, -50%);
+    min-width: 190px;
+    pointer-events: none;
+    z-index: 100;
+}
+
+.fp3d-tooltip-title {
+    font-weight: 700;
+    font-size: 0.88rem;
+    color: #F8FAFC;
+    margin-bottom: 3px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.fp3d-tooltip-sub {
+    font-size: 0.72rem;
+    color: #94A3B8;
+}
+
+.fp3d-tooltip-badge {
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.fp3d-tooltip-badge.online {
+    background: rgba(16, 185, 129, 0.2);
+    color: #34D399;
+    border: 1px solid #10B981;
+}
+
+.fp3d-tooltip-badge.offline {
+    background: rgba(239, 68, 68, 0.2);
+    color: #F87171;
+    border: 1px solid #EF4444;
+}
+
+/* Accordion Daftar Perangkat di Bawah Kanvas */
+.fp3d-accordion-wrap {
+    margin-top: 14px;
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(148, 163, 184, 0.15);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.fp3d-accordion-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 18px;
+    background: rgba(30, 41, 59, 0.6);
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.fp3d-accordion-header:hover {
+    background: rgba(30, 41, 59, 0.9);
+}
+
+.fp3d-accordion-header h5 {
+    margin: 0;
+    font-size: 0.86rem;
+    font-weight: 700;
+    color: #F1F5F9;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    letter-spacing: 0.4px;
+}
+
+.fp3d-device-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px;
+    padding: 16px;
+}
+
+.fp3d-device-card {
+    background: rgba(15, 23, 42, 0.85);
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    border-radius: 10px;
+    padding: 12px 14px;
+    transition: all 0.2s ease;
+}
+
+.fp3d-device-card:hover {
+    border-color: rgba(0, 240, 255, 0.45);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    transform: translateY(-2px);
+}
+
+.fp3d-dev-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.fp3d-dev-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.fp3d-dev-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: rgba(0, 240, 255, 0.12);
+    color: #00F0FF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+}
+
+.fp3d-dev-name {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #F8FAFC;
+    line-height: 1.2;
+}
+
+.fp3d-dev-loc {
+    font-size: 0.7rem;
+    color: #94A3B8;
+    margin-top: 2px;
+}
+
+.fp3d-dev-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 8px;
+    border-top: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.fp3d-dev-ip {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: #38BDF8;
+}
+
+.btn-fp3d-focus {
+    background: rgba(0, 240, 255, 0.1);
+    color: #00F0FF;
+    border: 1px solid rgba(0, 240, 255, 0.3);
+    border-radius: 6px;
+    padding: 3px 8px;
+    font-size: 0.68rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.btn-fp3d-focus:hover {
+    background: #00F0FF;
+    color: #000;
+}
