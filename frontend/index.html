@@ -60,21 +60,11 @@
 
     </script>
 
-        <!-- Three.js 3D Digital Twin Engine (Offline & CDN Fallback) -->
-    <script src="assets/js/three.min.js"></script>
-    <script src="assets/js/OrbitControls.js"></script>
-    <script>
-        if (typeof THREE === 'undefined') {
-            document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>');
-            document.write('<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"><\/script>');
-        }
-    </script>
-    <link rel="stylesheet" href="assets/css/floorplan3d.css">
-    <link rel="stylesheet" href="assets/css/style.css?v=6.0.3">
+    <link rel="stylesheet" href="assets/css/style.css">
 
 </head>
 
-<body class="cyber-dark-theme">
+<body class="cyber-dark-theme page-dashboard-active">
 
 
 
@@ -264,7 +254,6 @@
 
                 <img src="assets/img/teknolab_logo_dark.png" alt="Teknolab Caraka Internasional Logo" class="brand-logo-img">
 
-
             </div>
 
 
@@ -431,7 +420,7 @@
 
                 <div class="topbar-left">
 
-                    <button class="mobile-toggle-btn" id="sidebar-toggle-btn" onclick="toggleAppSidebar()" title="Buka / Tutup Sidebar">
+                    <button class="mobile-toggle-btn" onclick="toggleMobileSidebar()" title="Toggle Menu">
 
                         <i class="fa-solid fa-bars"></i>
 
@@ -548,9 +537,9 @@
 
                         <div class="user-profile-pill" onclick="toggleUserMenu()">
 
-                            <div class="profile-avatar" style="border: 1.5px solid #64748B !important; background: #1E293B !important;">
+                            <div class="profile-avatar">
 
-                                <i class="fa-solid fa-user" id="topbar-profile-icon" style="color: #94A3B8 !important; font-size: 1.05rem;"></i>
+                                <i class="fa-solid fa-user" id="topbar-profile-icon"></i>
 
                             </div>
 
@@ -573,28 +562,12 @@
                         <div class="user-menu-dropdown hidden" id="user-menu-dropdown">
 
                             <div class="dropdown-header">
-                                <div id="dropdown-user-avatar-wrap" class="dropdown-avatar-wrap" style="width: 38px; height: 38px; border-radius: 50%; border: 1.5px solid #64748B; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #1E293B; flex-shrink: 0; margin-right: 10px; cursor: pointer;" onclick="document.getElementById('direct-topbar-avatar-file').click()" title="Klik untuk ganti foto">
-                                    <i class="fa-solid fa-user" id="dropdown-user-avatar-icon" style="font-size: 1.1rem; color: #94A3B8;"></i>
-                                    <img id="dropdown-user-avatar-img" src="" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover; display: none;">
-                                </div>
-                                <div class="dropdown-user-meta" style="display: flex; flex-direction: column;">
 
                                 <strong id="dropdown-user-name">Dzakwan Miftahussobirin</strong>
 
                                 <span id="dropdown-user-role" class="badge-role-superadmin">Superadmin</span>
 
                             </div>
-                            </div>
-
-                            <div class="dropdown-divider"></div>
-
-                            <input type="file" id="direct-topbar-avatar-file" accept="image/*" style="display: none;" onchange="handleDirectAvatarUpload(event)">
-
-                            <a href="javascript:void(0)" onclick="document.getElementById('direct-topbar-avatar-file').click()" class="dropdown-item" style="color: #00F0FF; font-weight: 600;">
-
-                                <i class="fa-solid fa-camera" style="color: #00F0FF;"></i> Ganti Foto Profil Cepat
-
-                            </a>
 
                             <div class="dropdown-divider"></div>
 
@@ -732,7 +705,7 @@
 
                                 <span class="kpi-subtext"><span class="text-green font-bold" id="kpi-online-pct">0.0%</span> of 0 active devices</span>
 
-                                <div class="mini-sparkline"><span class="bar-fill" id="kpi-spark-online" style="width: 0%; background: #10B981;"></span></div>
+                                <div class="mini-sparkline"><span class="bar-fill" style="width: 71.5%; background: #10B981;"></span></div>
 
                             </div>
 
@@ -766,7 +739,7 @@
 
                                 <span class="kpi-subtext"><span class="text-red font-bold" id="kpi-offline-pct">0.0%</span> of 0 active devices</span>
 
-                                <div class="mini-sparkline"><span class="bar-fill" id="kpi-spark-offline" style="width: 100%; background: #EF4444;"></span></div>
+                                <div class="mini-sparkline"><span class="bar-fill" style="width: 10.6%; background: #EF4444;"></span></div>
 
                             </div>
 
@@ -800,7 +773,7 @@
 
                                 <span class="kpi-subtext"><span class="text-yellow font-bold" id="kpi-warning-pct">0.0%</span> terancam &bull; <strong id="kpi-unknown-count" style="color:#CBD5E1;">0</strong> unknown</span>
 
-                                <div class="mini-sparkline"><span class="bar-fill" id="kpi-spark-warning" style="width: 0%; background: #F59E0B;"></span></div>
+                                <div class="mini-sparkline"><span class="bar-fill" style="width: 0%; background: #F59E0B;"></span></div>
 
                             </div>
 
@@ -868,7 +841,7 @@
 
                                 <span class="kpi-subtext"><span class="text-green"><i class="fa-solid fa-arrow-trend-up"></i> +0.2%</span> last 30 days</span>
 
-                                <div class="mini-sparkline"><span class="bar-fill" id="kpi-spark-uptime" style="width: 0%; background: #FFC107;"></span></div>
+                                <div class="mini-sparkline"><span class="bar-fill" style="width: 99.6%; background: #FFC107;"></span></div>
 
                             </div>
 
@@ -970,39 +943,56 @@
 
                                 </div>
 
-                                <div class="donut-legend-col" id="donut-legend-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px 10px; font-size: 0.72rem; width: 100%;">
+                                <div class="donut-legend-col" id="donut-legend-container" style="gap: 3px; font-size: 0.72rem;">
+
                                     <div class="d-leg-row">
-                                        <span class="d-leg-name"><span class="cat-bullet" style="background:#F97316;"></span> Router</span>
-                                        <span class="d-leg-val"><strong>5</strong> <small>33.3%</small></span>
-                                    </div>
-                                    <div class="d-leg-row">
+
                                         <span class="d-leg-name"><span class="cat-bullet" style="background:#EF4444;"></span> Server</span>
-                                        <span class="d-leg-val"><strong>1</strong> <small>6.7%</small></span>
+
+                                        <span class="d-leg-val"><strong id="cat-count-server">4</strong> <small id="cat-pct-server">25.0%</small></span>
+
                                     </div>
+
                                     <div class="d-leg-row">
-                                        <span class="d-leg-name"><span class="cat-bullet" style="background:#3B82F6;"></span> CCTV</span>
-                                        <span class="d-leg-val"><strong>2</strong> <small>13.3%</small></span>
+
+                                        <span class="d-leg-name"><span class="cat-bullet" style="background:#F59E0B;"></span> Network Device</span>
+
+                                        <span class="d-leg-val"><strong id="cat-count-network">4</strong> <small id="cat-pct-network">25.0%</small></span>
+
                                     </div>
+
                                     <div class="d-leg-row">
-                                        <span class="d-leg-name"><span class="cat-bullet" style="background:#00E5FF;"></span> Switch</span>
-                                        <span class="d-leg-val"><strong>1</strong> <small>6.7%</small></span>
+
+                                        <span class="d-leg-name"><span class="cat-bullet" style="background:#0284C7;"></span> CCTV & Security</span>
+
+                                        <span class="d-leg-val"><strong id="cat-count-cctv">2</strong> <small id="cat-pct-cctv">12.5%</small></span>
+
                                     </div>
+
                                     <div class="d-leg-row">
-                                        <span class="d-leg-name"><span class="cat-bullet" style="background:#8B5CF6;"></span> PC Workst.</span>
-                                        <span class="d-leg-val"><strong>2</strong> <small>13.3%</small></span>
+
+                                        <span class="d-leg-name"><span class="cat-bullet" style="background:#10B981;"></span> IoT Sensor</span>
+
+                                        <span class="d-leg-val"><strong id="cat-count-iot">2</strong> <small id="cat-pct-iot">12.5%</small></span>
+
                                     </div>
+
                                     <div class="d-leg-row">
-                                        <span class="d-leg-name"><span class="cat-bullet" style="background:#EC4899;"></span> Smart TV</span>
-                                        <span class="d-leg-val"><strong>1</strong> <small>6.7%</small></span>
+
+                                        <span class="d-leg-name"><span class="cat-bullet" style="background:#8B5CF6;"></span> Workstation</span>
+
+                                        <span class="d-leg-val"><strong id="cat-count-workstation">3</strong> <small id="cat-pct-workstation">18.8%</small></span>
+
                                     </div>
+
                                     <div class="d-leg-row">
-                                        <span class="d-leg-name"><span class="cat-bullet" style="background:#FACC15;"></span> Raspberry Pi</span>
-                                        <span class="d-leg-val"><strong>2</strong> <small>13.3%</small></span>
+
+                                        <span class="d-leg-name"><span class="cat-bullet" style="background:#06B6D4;"></span> Other</span>
+
+                                        <span class="d-leg-val"><strong id="cat-count-other">1</strong> <small id="cat-pct-other">6.2%</small></span>
+
                                     </div>
-                                    <div class="d-leg-row">
-                                        <span class="d-leg-name"><span class="cat-bullet" style="background:#10B981;"></span> IoT Node</span>
-                                        <span class="d-leg-val"><strong>1</strong> <small>6.7%</small></span>
-                                    </div>
+
                                 </div>
 
                             </div>
@@ -1043,11 +1033,11 @@
 
                             <div class="card-body p-0">
 
-                            <div class="table-responsive">
+                                <div class="table-responsive">
 
-                                <table class="mockup-table">
+                                    <table class="mockup-table">
 
-                                    <thead>
+                                        <thead>
 
                                             <tr>
 
@@ -1059,7 +1049,7 @@
 
                                                 <th>Status</th>
 
-                                                <th style="min-width: 155px; white-space: nowrap;">Last Seen</th>
+                                                <th>Last Seen</th>
 
                                                 <th></th>
 
@@ -1601,7 +1591,6 @@
 
                                     <span id="auto-refresh-pill" class="auto-refresh-pill hidden">Pembaruan otomatis tiap 10 detik</span>
 
-                                    <button type="button" class="btn btn-outline-cyber btn-sm" onclick="resetAllDevicesToOffline()" title="Reset Status Seluruh Perangkat ke Offline (Standby)" style="font-size: 0.72rem; padding: 4px 10px; border-color: rgba(255,255,255,0.2); color: #94A3B8;"><i class="fa-solid fa-power-off"></i> Standby (Offline Semua)</button>
                                     <button type="button" class="btn-icon-refresh" id="btn-refresh-devices" onclick="triggerManualDevicesRefresh()" title="Pembaruan otomatis tiap 10 detik (Klik untuk segarkan)">
 
                                         <i class="fa-solid fa-arrows-rotate text-cyan" id="icon-refresh-dev"></i>
@@ -2026,7 +2015,7 @@
 
                                 <h4>Live Telemetri IoT</h4>
 
-                                <span class="badge-pill-cyan" id="noc-stream-status-badge"><span class="dot yellow pulse"></span> Standby</span>
+                                <span class="badge-pill-cyan"><span class="dot green pulse"></span> Streaming</span>
 
                             </div>
 
@@ -2162,7 +2151,7 @@
 
                             <button type="button" class="btn-site-quick btn-quick-mo" id="btn-zoom-mo" onclick="zoomToSite('mo')">
 
-                                <i class="fa-solid fa-store"></i> Marketing Office (MO)
+                                <i class="fa-solid fa-store"></i> Kantor Pemasaran (Kost Kiki)
 
                             </button>
 
@@ -2382,13 +2371,13 @@
 
                                         <span class="sdc-badge badge-purple">MARKETING OFFICE (MO)</span>
 
-                                        <span class="sdc-addr-tag"><i class="fa-solid fa-location-dot"></i> Jl. Ciliwung (Marketing Office)</span>
+                                        <span class="sdc-addr-tag"><i class="fa-solid fa-location-dot"></i> Jl. Ciliwung (Kost Kiki)</span>
 
                                     </div>
 
-                                    <h3 class="sdc-title">Marketing Office (Kantor Pemasaran)</h3>
+                                    <h3 class="sdc-title">Rumah Kost Kiki (Kantor Pemasaran)</h3>
 
-                                    <p class="sdc-full-addr">Marketing Office, Jl. Ciliwung, Kec. Sukorejo / Sananwetan, Kota Blitar</p>
+                                    <p class="sdc-full-addr">Rumah Kost Kiki, Jl. Ciliwung, Kec. Sukorejo / Sananwetan, Kota Blitar</p>
 
                                     
 
@@ -2412,7 +2401,7 @@
 
                                         <div class="sdc-dev-row" id="sdc-row-RTR-03">
 
-                                            <span class="sdc-dev-name">3. RTR-03 (Router Marketing 03 - 192.168.2.3)</span>
+                                            <span class="sdc-dev-name">3. RTR-03 (Router Marketing 03 - 192.168.1.1)</span>
 
                                             <span class="status-pill online" id="sdc-pill-RTR-03"><span class="dot green"></span> Online</span>
 
@@ -2420,7 +2409,7 @@
 
                                         <div class="sdc-dev-row" id="sdc-row-MKRT-01">
 
-                                            <span class="sdc-dev-name">4. MKRT-01 (Mikrotik Marketing - 192.168.2.13)</span>
+                                            <span class="sdc-dev-name">4. MKRT-01 (Mikrotik Marketing - 192.168.1.2)</span>
 
                                             <span class="status-pill online" id="sdc-pill-MKRT-01"><span class="dot green"></span> Online</span>
 
@@ -2525,15 +2514,6 @@
                                     <button type="button" class="btn-bp-choice" id="btn-bp-mo" onclick="showBlueprintSite('mo')">Denah MO (Lab Kiki)</button>
 
                                     <button type="button" class="btn-bp-choice" id="btn-bp-mentor" onclick="showBlueprintSite('mentor')">Denah House Of Server</button>
-                                    <!-- 2D / 3D Switcher Pill -->
-                                    <div class="dimension-switcher" style="display: inline-flex; background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(0, 240, 255, 0.4); border-radius: 20px; padding: 2px 4px; gap: 4px; margin-left: 8px; align-items: center; vertical-align: middle;">
-                                        <button type="button" class="btn-dim active" id="btn-dim-2d" onclick="switchFloorplanDimension('2d')" style="border-radius: 16px; padding: 5px 12px; font-size: 0.74rem; border: none; background: #00F0FF; color: #000; font-weight: 700; cursor: pointer; transition: all 0.2s ease;">
-                                            <i class="fa-solid fa-map"></i> 2D CAD
-                                        </button>
-                                        <button type="button" class="btn-dim" id="btn-dim-3d" onclick="switchFloorplanDimension('3d')" style="border-radius: 16px; padding: 5px 12px; font-size: 0.74rem; border: none; background: transparent; color: #94A3B8; font-weight: 600; cursor: pointer; transition: all 0.2s ease;">
-                                            <i class="fa-solid fa-cube text-cyan"></i> 3D Digital Twin
-                                        </button>
-                                    </div>
                                     <button type="button" class="btn-bp-choice btn-bp-pin-manager" id="btn-bp-edit-pins" onclick="toggleFloorplanEditMode()" style="background: rgba(245, 158, 11, 0.15); border: 1px solid #F59E0B; color: #F59E0B; font-weight: 600; margin-left: 6px;">
                                         <i class="fa-solid fa-location-crosshairs"></i> Mode Kelola Titik
                                     </button>
@@ -2572,8 +2552,6 @@
 
                             <!-- ============================================================= -->
 
-                            <div id="floorplan-2d-view">
-
                             <div class="blueprint-canvas-box" id="bp-box-ho">
 
                                 <div class="bp-site-meta">
@@ -2598,7 +2576,7 @@
 
                                             <!-- Titik 3.1: PC-01 Workstation Staf -->
 
-                                            <div class="floorplan-pin" id="bp-pin-PC-01" style="left: 71.0%; top: 54.0%;" onclick="openDeviceDetailModal('PC-01')" title="PC-01 (192.168.1.2) Workstation 3.1">
+                                            <div class="floorplan-pin" id="bp-pin-PC-01" style="left: 68.5%; top: 23.5%;" onclick="openDeviceDetailModal('PC-01')" title="PC-01 (192.168.1.2) Workstation 3.1">
 
                                                 <div class="pin-beacon">
 
@@ -2614,7 +2592,7 @@
 
                                             <!-- Titik 3.4: PC-02 Workstation Staf -->
 
-                                            <div class="floorplan-pin" id="bp-pin-PC-02" style="left: 54.0%; top: 50.0%;" onclick="openDeviceDetailModal('PC-02')" title="PC-02 (192.168.1.7) Workstation 3.4">
+                                            <div class="floorplan-pin" id="bp-pin-PC-02" style="left: 40.5%; top: 49.0%;" onclick="openDeviceDetailModal('PC-02')" title="PC-02 (192.168.1.7) Workstation 3.4">
 
                                                 <div class="pin-beacon">
 
@@ -2630,7 +2608,7 @@
 
                                             <!-- Titik 4: ESP-01 Sensor IoT Dinding Kiri -->
 
-                                            <div class="floorplan-pin" id="bp-pin-ESP-01" style="left: 42.0%; top: 38.7%;" onclick="openDeviceDetailModal('ESP-01')" title="ESP-01 Monitoring Panel Surya (Titik 4)">
+                                            <div class="floorplan-pin" id="bp-pin-ESP-01" style="left: 40.0%; top: 37.0%;" onclick="openDeviceDetailModal('ESP-01')" title="ESP-01 Monitoring Panel Surya (Titik 4)">
 
                                                 <div class="pin-beacon">
 
@@ -2646,7 +2624,7 @@
 
                                             <!-- Titik 5: RPI-01 Resepsionis Bawah -->
 
-                                            <div class="floorplan-pin" id="bp-pin-RPI-01" style="left: 63.0%; top: 65.0%;" onclick="openDeviceDetailModal('RPI-01')" title="RPI-01 Resepsionis 5">
+                                            <div class="floorplan-pin" id="bp-pin-RPI-01" style="left: 54.0%; top: 62.0%;" onclick="openDeviceDetailModal('RPI-01')" title="RPI-01 Resepsionis 5">
 
                                                 <div class="pin-beacon">
 
@@ -2662,7 +2640,7 @@
 
                                             <!-- Titik 6: RTR-01 Router Koridor Tengah -->
 
-                                            <div class="floorplan-pin" id="bp-pin-RTR-01" style="left: 66.0%; top: 40.7%;" onclick="openDeviceDetailModal('RTR-01')" title="RTR-01 (192.168.1.1) Gateway Lorong 6">
+                                            <div class="floorplan-pin" id="bp-pin-RTR-01" style="left: 55.5%; top: 40.7%;" onclick="openDeviceDetailModal('RTR-01')" title="RTR-01 (192.168.1.1) Gateway Lorong 6">
 
                                                 <div class="pin-beacon">
 
@@ -2678,7 +2656,7 @@
 
                                             <!-- Titik 2: SMTV-01 Smart TV Display Sayap Kanan -->
 
-                                            <div class="floorplan-pin" id="bp-pin-SMTV-01" style="left: 55.5%; top: 56.0%;" onclick="openDeviceDetailModal('SMTV-01')" title="SMTV-01 (192.168.1.10) Display TV 2">
+                                            <div class="floorplan-pin" id="bp-pin-SMTV-01" style="left: 57.0%; top: 54.0%;" onclick="openDeviceDetailModal('SMTV-01')" title="SMTV-01 (192.168.1.10) Display TV 2">
 
                                                 <div class="pin-beacon">
 
@@ -2694,7 +2672,7 @@
 
                                             <!-- Titik 1: CCTV-01 Kamera Pintu Masuk Luar -->
 
-                                            <div class="floorplan-pin" id="bp-pin-CCTV-01" style="left: 49.5%; top: 69.5%;" onclick="openDeviceDetailModal('CCTV-01')" title="CCTV-01 (192.168.1.39) Pengawas Gerbang 1">
+                                            <div class="floorplan-pin" id="bp-pin-CCTV-01" style="left: 33.0%; top: 72.0%;" onclick="openDeviceDetailModal('CCTV-01')" title="CCTV-01 (192.168.1.39) Pengawas Gerbang 1">
 
                                                 <div class="pin-beacon">
 
@@ -2816,7 +2794,7 @@
 
                                             <!-- CCTV-02: Pintu Masuk Depan -->
 
-                                            <div class="floorplan-pin" id="bp-pin-CCTV-02" style="left: 41.0%; top: 60.5%;" onclick="openDeviceDetailModal('CCTV-02')" title="CCTV-02 (192.168.1.3) Gate Marketing">
+                                            <div class="floorplan-pin" id="bp-pin-CCTV-02" style="left: 45.0%; top: 70.0%;" onclick="openDeviceDetailModal('CCTV-02')" title="CCTV-02 (192.168.1.3) Gate Marketing">
 
                                                 <div class="pin-beacon">
 
@@ -2832,7 +2810,7 @@
 
                                             <!-- RTR-02: Router Gateway Utama Lab -->
 
-                                            <div class="floorplan-pin" id="bp-pin-RTR-02" style="left: 78.5%; top: 42.0%;" onclick="openDeviceDetailModal('RTR-02')" title="RTR-02 Gateway 192.168.0.1">
+                                            <div class="floorplan-pin" id="bp-pin-RTR-02" style="left: 67.0%; top: 44.0%;" onclick="openDeviceDetailModal('RTR-02')" title="RTR-02 Gateway 192.168.0.1">
 
                                                 <div class="pin-beacon">
 
@@ -2848,7 +2826,7 @@
 
                                             <!-- RTR-03: Secondary Router -->
 
-                                            <div class="floorplan-pin" id="bp-pin-RTR-03" style="left: 78.5%; top: 33.0%;" onclick="openDeviceDetailModal('RTR-03')" title="RTR-03 Subnet 192.168.2.3">
+                                            <div class="floorplan-pin" id="bp-pin-RTR-03" style="left: 67.0%; top: 35.0%;" onclick="openDeviceDetailModal('RTR-03')" title="RTR-03 Subnet 192.168.1.1">
 
                                                 <div class="pin-beacon">
 
@@ -2864,7 +2842,7 @@
 
                                             <!-- MKRT-01: MikroTik RB750 / Gateway -->
 
-                                            <div class="floorplan-pin" id="bp-pin-MKRT-01" style="left: 78.5%; top: 24.0%;" onclick="openDeviceDetailModal('MKRT-01')" title="MKRT-01 192.168.2.13">
+                                            <div class="floorplan-pin" id="bp-pin-MKRT-01" style="left: 67.0%; top: 26.0%;" onclick="openDeviceDetailModal('MKRT-01')" title="MKRT-01 192.168.1.2">
 
                                                 <div class="pin-beacon">
 
@@ -2902,9 +2880,9 @@
 
                                                 <span class="bp-chip online" id="bp-chip-RTR-02" onclick="event.stopPropagation(); openDeviceDetailModal('RTR-02')"><i class="fa-solid fa-network-wired"></i> RTR-02 (192.168.0.1)</span>
 
-                                                <span class="bp-chip online" id="bp-chip-RTR-03" onclick="event.stopPropagation(); openDeviceDetailModal('RTR-03')"><i class="fa-solid fa-network-wired"></i> RTR-03 (192.168.2.3)</span>
+                                                <span class="bp-chip online" id="bp-chip-RTR-03" onclick="event.stopPropagation(); openDeviceDetailModal('RTR-03')"><i class="fa-solid fa-network-wired"></i> RTR-03 (192.168.1.1)</span>
 
-                                                <span class="bp-chip online" id="bp-chip-MKRT-01" onclick="event.stopPropagation(); openDeviceDetailModal('MKRT-01')"><i class="fa-solid fa-server"></i> MKRT-01 (192.168.2.13)</span>
+                                                <span class="bp-chip online" id="bp-chip-MKRT-01" onclick="event.stopPropagation(); openDeviceDetailModal('MKRT-01')"><i class="fa-solid fa-server"></i> MKRT-01 (192.168.1.2)</span>
 
                                             </div>
 
@@ -2962,7 +2940,7 @@
 
                                             <!-- SRV-01: Server Utama (Slot Rak A) -->
 
-                                            <div class="floorplan-pin" id="bp-pin-SRV-01" style="left: 78.5%; top: 65.0%;" onclick="openDeviceDetailModal('SRV-01')" title="SRV-01 Server Monitoring">
+                                            <div class="floorplan-pin" id="bp-pin-SRV-01" style="left: 64.0%; top: 64.0%;" onclick="openDeviceDetailModal('SRV-01')" title="SRV-01 Server Monitoring">
 
                                                 <div class="pin-beacon">
 
@@ -2978,7 +2956,7 @@
 
                                             <!-- SWM-01: Switch Manageable (Slot Rak B) -->
 
-                                            <div class="floorplan-pin" id="bp-pin-SWM-01" style="left: 78.5%; top: 44.0%;" onclick="openDeviceDetailModal('SWM-01')" title="SWM-01 Switch Backbone">
+                                            <div class="floorplan-pin" id="bp-pin-SWM-01" style="left: 64.0%; top: 43.0%;" onclick="openDeviceDetailModal('SWM-01')" title="SWM-01 Switch Backbone">
 
                                                 <div class="pin-beacon">
 
@@ -2994,7 +2972,7 @@
 
                                             <!-- MKRT-02: MikroTik Core (Slot Rak C) -->
 
-                                            <div class="floorplan-pin" id="bp-pin-MKRT-02" style="left: 78.5%; top: 58.0%;" onclick="openDeviceDetailModal('MKRT-02')" title="MKRT-02 Mikrotik Server">
+                                            <div class="floorplan-pin" id="bp-pin-MKRT-02" style="left: 64.0%; top: 57.0%;" onclick="openDeviceDetailModal('MKRT-02')" title="MKRT-02 Mikrotik Server">
 
                                                 <div class="pin-beacon">
 
@@ -3010,7 +2988,7 @@
 
                                             <!-- RPI-02: Raspberry Pi Auxiliary (Slot Rak D) -->
 
-                                            <div class="floorplan-pin" id="bp-pin-RPI-02" style="left: 78.5%; top: 51.0%;" onclick="openDeviceDetailModal('RPI-02')" title="RPI-02 Server Auxiliary">
+                                            <div class="floorplan-pin" id="bp-pin-RPI-02" style="left: 64.0%; top: 50.0%;" onclick="openDeviceDetailModal('RPI-02')" title="RPI-02 Server Auxiliary">
 
                                                 <div class="pin-beacon">
 
@@ -3063,71 +3041,6 @@
                                 </div>
 
                             </div>
-
-                            </div><!-- /#floorplan-2d-view -->
-
-                            <!-- ============================================================= -->
-                            <!-- MODEL 3D DIGITAL TWIN & X-RAY ARCHITECTURAL ENGINE -->
-                            <!-- ============================================================= -->
-                            <div id="floorplan-3d-view" style="display: none;">
-                                <!-- Toolbar Kontrol 3D Interaktif -->
-                                <div class="fp3d-toolbar">
-                                    <div class="fp3d-toolbar-group">
-                                        <button type="button" class="btn-fp3d" id="btn-fp3d-xray" onclick="toggleRoofXRay()" title="Bongkar atap gedung untuk melihat bagian dalam ruangan">
-                                            <i class="fa-solid fa-house-laptop"></i> Lepas Atap (X-Ray)
-                                        </button>
-                                        <div style="width: 1px; height: 22px; background: rgba(148, 163, 184, 0.2); margin: 0 4px;"></div>
-                                        <button type="button" class="btn-fp3d-view active" id="btn-view-front" onclick="setCameraView3D('front')" title="Sudut Pandang Depan Isometrik">
-                                            <i class="fa-solid fa-eye"></i> Depan
-                                        </button>
-                                        <button type="button" class="btn-fp3d-view" id="btn-view-street" onclick="setCameraView3D('street')" title="Sudut Pandang Jalan Raya (Eye-level)">
-                                            <i class="fa-solid fa-road"></i> Jalan
-                                        </button>
-                                        <button type="button" class="btn-fp3d-view" id="btn-view-top" onclick="setCameraView3D('top')" title="Sudut Pandang Tegak Lurus Atas (Denah)">
-                                            <i class="fa-solid fa-arrows-to-dot"></i> Atas (Denah)
-                                        </button>
-                                        <button type="button" class="btn-fp3d-view" id="btn-view-cctv" onclick="setCameraView3D('cctv')" title="Sudut Pandang Kamera CCTV Fisik Live">
-                                            <i class="fa-solid fa-video text-yellow"></i> CCTV Live
-                                        </button>
-                                    </div>
-                                    <div class="fp3d-toolbar-group">
-                                        <button type="button" class="btn-fp3d active" id="btn-fp3d-pins" onclick="toggleIoTPins()" title="Tampilkan/Sembunyikan Pin Radar Sensor">
-                                            <i class="fa-solid fa-location-dot text-cyan"></i> Pin Sensor
-                                        </button>
-                                        <button type="button" class="btn-fp3d" id="btn-fp3d-rotate" onclick="toggleAutoRotate()" title="Putar Otomatis Gedung 360 Derajat">
-                                            <i class="fa-solid fa-rotate"></i> Putar Otomatis
-                                        </button>
-                                        <button type="button" class="btn-fp3d" id="btn-fp3d-night" onclick="toggleNightMode()" title="Ganti Pencahayaan Mode Siang / Malam">
-                                            <i class="fa-solid fa-moon"></i> Mode Malam
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <!-- Panggung Visual T-AIMS Three.js Canvas -->
-                                <div id="fp3d-canvas-stage">
-                                    <!-- CCTV Live Stream HUD Overlay -->
-                                    <div id="fp3d-cctv-hud" class="fp3d-cctv-hud">
-                                        <div class="cctv-hud-header">
-                                            <span class="cctv-hud-dot">● REC</span>
-                                            <span id="cctv-hud-timestamp"></span> &bull; CCTV SECURITY LIVE FEED
-                                        </div>
-                                        <div class="cctv-hud-reticle">+</div>
-                                    </div>
-
-                                    <!-- Tooltip Raycaster Mengambang -->
-                                    <div id="fp3d-tooltip" class="fp3d-tooltip" style="display: none;"></div>
-                                </div>
-
-                                <!-- Accordion Daftar Perangkat 3D di Bawah Kanvas -->
-                                <div class="fp3d-accordion-wrap">
-                                    <div class="fp3d-accordion-header" onclick="toggleDeviceAccordion3D()">
-                                        <h5><i class="fa-solid fa-network-wired text-cyan"></i> DAFTAR PERANGKAT & SENSOR IOT PADA DENAH 3D</h5>
-                                        <i class="fa-solid fa-chevron-up" id="fp3d-acc-chevron"></i>
-                                    </div>
-                                    <div id="fp3d-device-grid" class="fp3d-device-grid"></div>
-                                </div>
-                            </div><!-- /#floorplan-3d-view -->
-
 
 
 
@@ -3455,9 +3368,6 @@
                                 <h4>Riwayat Notifikasi Terputus & Pemulihan Terkirim (Catatan Pemantauan)</h4>
 
                             </div>
-                            <span class="badge-pill-cyan d-flex align-center gap-1" style="font-size: 0.72rem; padding: 3px 8px; flex-shrink: 0;" title="Geser ke kanan untuk melihat rincian status">
-                                <i class="fa-solid fa-arrows-left-right"></i> Geser ke Kanan
-                            </span>
 
                         </div>
 
@@ -3547,20 +3457,11 @@
 
                             </div>
 
-                            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-                                <button class="btn btn-secondary-cyber btn-sm" onclick="openTelegramModal()" title="Kirim Laporan & Alert ke Bot Telegram @taims_alert_arik_bot (PDF Hal. 11 & 17)">
-                                    <i class="fa-brands fa-telegram text-cyan"></i> Telegram Alert
-                                </button>
-                                <button class="btn btn-secondary-cyber btn-sm" onclick="openAiHistoryModal()" title="Lihat riwayat analisis AI yang tersimpan di MySQL (Dokumen PKL Hal. 17)">
-                                    <i class="fa-solid fa-clock-rotate-left"></i> Riwayat AI
-                                </button>
-                                <button class="btn btn-secondary-cyber btn-sm" onclick="copyAiReportToClipboard()" title="Salin laporan format resmi Teknolab (PDF Hal. 17)">
-                                    <i class="fa-solid fa-copy"></i> Salin Laporan
-                                </button>
-                                <button class="btn btn-primary-cyber btn-sm" onclick="runAiAnalysis()">
-                                    <i class="fa-solid fa-bolt"></i> Jalankan Analisis AI Baru
-                                </button>
-                            </div>
+                            <button class="btn btn-primary-cyber btn-sm" onclick="runAiAnalysis()">
+
+                                <i class="fa-solid fa-bolt"></i> Jalankan Analisis AI Baru
+
+                            </button>
 
                         </div>
 
@@ -3580,7 +3481,7 @@
 
                                 <div class="aim-item"><span>Warning</span><strong class="text-yellow" id="ai-rep-warning">0</strong></div>
 
-                                <div class="aim-item"><span>Real-time Health</span><strong class="text-cyan" id="ai-rep-sla">0.0%</strong></div>
+                                <div class="aim-item"><span>Availability (SLA)</span><strong class="text-cyan" id="ai-rep-sla">0.0%</strong></div>
 
                             </div>
 
@@ -3594,97 +3495,14 @@
 
                                     <strong class="text-cyan"><i class="fa-solid fa-shield-check"></i> Status Pemantauan Perangkat Fisik:</strong>
 
-                                    <div class="top-problem-list mt-2" id="ai-top-problem-list">
-                                        <div style="margin-bottom: 6px; font-size: 0.75rem; color: #94A3B8;">
-                                            Terdeteksi <strong>3</strong> perangkat offline / kritis:
-                                        </div>
-                                        <div style="display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 10px;">
-                                            <span class="ai-troubled-pill" onclick="if(typeof openDeviceModal==='function')openDeviceModal('RPI-01')" title="Klik untuk investigasi perangkat RPI-01">
-                                                <i class="fa-solid fa-triangle-exclamation"></i> RPI-01
-                                            </span>
-                                            <span class="ai-troubled-pill" onclick="if(typeof openDeviceModal==='function')openDeviceModal('MKRT-02')" title="Klik untuk investigasi perangkat MKRT-02">
-                                                <i class="fa-solid fa-triangle-exclamation"></i> MKRT-02
-                                            </span>
-                                            <span class="ai-troubled-pill" onclick="if(typeof openDeviceModal==='function')openDeviceModal('SRV-01')" title="Klik untuk investigasi perangkat SRV-01">
-                                                <i class="fa-solid fa-triangle-exclamation"></i> SRV-01
-                                            </span>
+                                    <div class="top-problem-list mt-2">
+
+                                        <div class="empty-incident-notice py-3 text-muted text-xs">
+
+                                            <i class="fa-solid fa-circle-check text-green"></i> Belum ada riwayat gangguan perangkat fisik yang tercatat. Seluruh perangkat dalam kondisi siaga (standby).
+
                                         </div>
 
-                                        <div class="ai-section-subtitle">
-                                            <span><i class="fa-solid fa-triangle-exclamation text-red"></i> Aset Prioritas Penanganan</span>
-                                            <span class="text-xs text-muted">Klik untuk inspeksi</span>
-                                        </div>
-                                        <div class="ai-troubled-cards-wrap">
-                                            <div class="ai-troubled-card" onclick="if(typeof openDeviceModal==='function')openDeviceModal('RPI-01')" title="Klik untuk investigasi RPI-01">
-                                                <div class="ai-tc-left">
-                                                    <div class="ai-tc-icon"><i class="fa-solid fa-microchip"></i></div>
-                                                    <div>
-                                                        <div class="ai-tc-name">RPI-01 • Raspberry Pi Head Office</div>
-                                                        <div class="ai-tc-sub">Head Office • 192.168.1.45</div>
-                                                    </div>
-                                                </div>
-                                                <span class="ai-tc-badge"><i class="fa-solid fa-circle-exclamation"></i> Offline</span>
-                                            </div>
-                                            <div class="ai-troubled-card" onclick="if(typeof openDeviceModal==='function')openDeviceModal('MKRT-02')" title="Klik untuk investigasi MKRT-02">
-                                                <div class="ai-tc-left">
-                                                    <div class="ai-tc-icon"><i class="fa-solid fa-wifi"></i></div>
-                                                    <div>
-                                                        <div class="ai-tc-name">MKRT-02 • Mikrotik Server</div>
-                                                        <div class="ai-tc-sub">House of Server • 192.168.0.1</div>
-                                                    </div>
-                                                </div>
-                                                <span class="ai-tc-badge"><i class="fa-solid fa-circle-exclamation"></i> Offline</span>
-                                            </div>
-                                            <div class="ai-troubled-card" onclick="if(typeof openDeviceModal==='function')openDeviceModal('SRV-01')" title="Klik untuk investigasi SRV-01">
-                                                <div class="ai-tc-left">
-                                                    <div class="ai-tc-icon"><i class="fa-solid fa-server"></i></div>
-                                                    <div>
-                                                        <div class="ai-tc-name">SRV-01 • Server Utama</div>
-                                                        <div class="ai-tc-sub">House of Server • 192.168.0.10</div>
-                                                    </div>
-                                                </div>
-                                                <span class="ai-tc-badge"><i class="fa-solid fa-circle-exclamation"></i> Offline</span>
-                                            </div>
-                                        </div>
-
-                                        <div class="ai-section-subtitle">
-                                            <span><i class="fa-solid fa-building-shield text-cyan"></i> Kesehatan 3 Lokasi Fisik</span>
-                                            <span class="text-cyan">0/15 Online</span>
-                                        </div>
-                                        <div class="ai-site-health-box">
-                                            <div class="ai-site-row">
-                                                <div class="ai-site-row-header">
-                                                    <span>🏢 Head Office (HO)</span>
-                                                    <span class="text-red">0/7 (0%)</span>
-                                                </div>
-                                                <div class="ai-site-progress-track">
-                                                    <div class="ai-site-progress-fill" style="width: 4%; background: #EF4444;"></div>
-                                                </div>
-                                            </div>
-                                            <div class="ai-site-row">
-                                                <div class="ai-site-row-header">
-                                                    <span>🏬 Marketing Office (MO)</span>
-                                                    <span class="text-red">0/4 (0%)</span>
-                                                </div>
-                                                <div class="ai-site-progress-track">
-                                                    <div class="ai-site-progress-fill" style="width: 4%; background: #EF4444;"></div>
-                                                </div>
-                                            </div>
-                                            <div class="ai-site-row">
-                                                <div class="ai-site-row-header">
-                                                    <span>🖥️ House of Server</span>
-                                                    <span class="text-red">0/4 (0%)</span>
-                                                </div>
-                                                <div class="ai-site-progress-track">
-                                                    <div class="ai-site-progress-fill" style="width: 4%; background: #EF4444;"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="ai-urgency-banner">
-                                            <span><i class="fa-solid fa-triangle-exclamation text-red"></i> Status Anomali: <strong class="text-red">Perhatian Kritis</strong></span>
-                                            <span class="text-muted text-xs">Packet Loss: <strong class="text-red">100%</strong></span>
-                                        </div>
                                     </div>
 
                                 </div>
@@ -3692,14 +3510,23 @@
 
 
                                 <div class="ai-recommendation-box">
+
                                     <strong class="text-cyan"><i class="fa-solid fa-lightbulb"></i> Rekomendasi Diagnostik AI:</strong>
-                                    <div class="ai-rec-text mt-2" id="ai-rec-text">
+
+                                    <p class="ai-rec-text mt-2" id="ai-rec-text">
+
                                         "Sistem dalam status Siaga. Seluruh metrik pemantauan menunggu telemetri dari perangkat fisik langsung sebelum analisis dan rekomendasi dapat dikalkulasi."
+
+                                    </p>
+
+                                    <div class="ai-rec-meta">
+
+                                        <span>Tingkat Keyakinan: <strong>94.8%</strong></span>
+
+                                        <span>Sumber Analisis: <strong>Riwayat Pemantauan & Catatan Insiden</strong></span>
+
                                     </div>
-                                    <div class="ai-rec-meta" style="margin-top: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-                                        <span id="ai-source-badge" class="ai-source-pill"><i class="fa-solid fa-robot"></i> Engine: n8n AI Workflow (Arik)</span>
-                                        <span class="text-muted text-xs" id="ai-last-updated"><i class="fa-regular fa-clock"></i> Update: Terkini</span>
-                                    </div>
+
                                 </div>
 
                             </div>
@@ -3732,7 +3559,7 @@
 
                             <div class="report-summary-grid">
 
-                                <div class="rep-box"><span>Availability (SLA 30 Hari)</span><strong class="text-green" id="sla-box-avail">--%</strong><small id="sla-box-target-label">Agregasi Log Riil</small></div>
+                                <div class="rep-box"><span>Availability (SLA)</span><strong class="text-green" id="sla-box-avail">99.3%</strong><small>Target Achieved</small></div>
 
                                 <div class="rep-box"><span>Total Incidents</span><strong class="text-red">0 Incidents</strong><small>30 operational days</small></div>
 
@@ -3748,25 +3575,25 @@
 
                                 <div class="sla-bar-item">
 
-                                    <div class="sbi-label"><span>Kantor Pusat (PT Teknolab)</span><strong class="text-green" id="sla-site-ho-val">--% Uptime</strong></div>
+                                    <div class="sbi-label"><span>Kantor Pusat (PT Teknolab)</span><strong class="text-green">99.8% Uptime</strong></div>
 
-                                    <div class="sbi-track"><div class="sbi-prog green" id="sla-site-ho-bar" style="width: 100%;"></div></div>
-
-                                </div>
-
-                                <div class="sla-bar-item">
-
-                                    <div class="sbi-label"><span>Marketing Office (MO)</span><strong class="text-yellow" id="sla-site-mo-val">--% Uptime</strong></div>
-
-                                    <div class="sbi-track"><div class="sbi-prog yellow" id="sla-site-mo-bar" style="width: 100%;"></div></div>
+                                    <div class="sbi-track"><div class="sbi-prog green" style="width: 99.8%;"></div></div>
 
                                 </div>
 
                                 <div class="sla-bar-item">
 
-                                    <div class="sbi-label"><span>House Of Server</span><strong class="text-green" id="sla-site-hos-val">--% Uptime</strong></div>
+                                    <div class="sbi-label"><span>Kantor Pemasaran (Kost Kiki)</span><strong class="text-yellow">98.7% Uptime</strong></div>
 
-                                    <div class="sbi-track"><div class="sbi-prog green" id="sla-site-hos-bar" style="width: 100%;"></div></div>
+                                    <div class="sbi-track"><div class="sbi-prog yellow" style="width: 98.7%;"></div></div>
+
+                                </div>
+
+                                <div class="sla-bar-item">
+
+                                    <div class="sbi-label"><span>House Of Server</span><strong class="text-green">99.5% Uptime</strong></div>
+
+                                    <div class="sbi-track"><div class="sbi-prog green" style="width: 99.5%;"></div></div>
 
                                 </div>
 
@@ -3802,15 +3629,15 @@
 
                         <div class="card-body p-0">
 
-                            <div class="table-responsive maintenance-table-wrap">
+                            <div class="table-responsive">
 
                                 <table class="mockup-table">
 
-                                    <thead class="sticky-thead">
+                                    <thead>
 
                                         <tr>
 
-                                            <th style="min-width: 100px;">ID Servis</th>
+                                            <th>ID Servis</th>
 
                                             <th>Tanggal</th>
 
@@ -3988,7 +3815,7 @@
 
                                 <span><i class="fa-solid fa-users-gear text-purple"></i> Kekuatan Tim: <strong>11 Peserta</strong></span>
 
-                                <span><i class="fa-solid fa-handshake text-yellow"></i> Handover: <strong>00.30 - 01.00 WIB</strong></span>
+                                <span><i class="fa-solid fa-handshake text-yellow"></i> Handover: <strong>15.30 - 16.00 WIB</strong></span>
 
                             </div>
 
@@ -4902,10 +4729,12 @@
 
             </button>
 
-            <button class="mb-nav-item" data-page="page-alerts" onclick="switchPage('page-alerts')">
-                <i class="fa-solid fa-bell"></i>
-                <span>Peringatan</span>
-                <span class="bell-badge" id="bottom-alerts-badge" style="display: none; position: absolute; top: 4px; right: 20%; font-size: 9px; padding: 1px 5px; min-width: 16px; border-radius: 10px;">0</span>
+            <button class="mb-nav-item" id="btn-mobile-more-menu" onclick="toggleMobileSidebar()">
+
+                <i class="fa-solid fa-bars"></i>
+
+                <span>Menu</span>
+
             </button>
 
         </nav>
@@ -5139,33 +4968,17 @@
 
                         <div class="form-group">
 
-                            <label>Kode Aset (Kode Unik) *</label>
-
-                            <input type="text" id="dev-code" placeholder="Misal: AST-ROU-016" required style="font-family: monospace; font-weight: 700; text-transform: uppercase;">
-
-                            <small class="text-muted" style="font-size: 0.72rem;">Kode register unik perangkat (Dapat diedit oleh Admin & Superadmin)</small>
-
-                        </div>
-
-                        <div class="form-group">
-
                             <label>Nama Perangkat / Hostname *</label>
 
-                            <input type="text" id="dev-name" placeholder="Misal: Router Core Mikrotik" required>
+                            <input type="text" id="dev-name" placeholder="Misal: SRV-01" required>
 
                         </div>
-
-                    </div>
-
-
-
-                    <div class="form-row-2">
 
                         <div class="form-group">
 
                             <label>Kategori Perangkat *</label>
 
-                            <select id="dev-category" required onchange="handleDeviceCategoryChange()">
+                            <select id="dev-category" required>
 
                                 <option value="Router">Router</option>
 
@@ -5191,6 +5004,12 @@
 
                         </div>
 
+                    </div>
+
+
+
+                    <div class="form-row-2">
+
                         <div class="form-group">
 
                             <label>IP Address *</label>
@@ -5198,12 +5017,6 @@
                             <input type="text" id="dev-ip" placeholder="192.168.1.50" pattern="^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$" title="Format IPv4 valid, contoh: 192.168.1.50" required>
 
                         </div>
-
-                    </div>
-
-
-
-                    <div class="form-row-2">
 
                         <div class="form-group">
 
@@ -5221,6 +5034,12 @@
 
                         </div>
 
+                    </div>
+
+
+
+                    <div class="form-row-2">
+
                         <div class="form-group">
 
                             <label>Lantai Penempatan (Floor) *</label>
@@ -5234,6 +5053,20 @@
                                 <option value="Lantai 3">Lantai 3</option>
 
                                 <option value="Outdoor">Outdoor / Luar Ruangan</option>
+
+                            </select>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label>Status Keaktifan Aset</label>
+
+                            <select id="dev-is-active">
+
+                                <option value="1" selected>Aktif (is_active = 1)</option>
+
+                                <option value="0">Nonaktif / Diarsipkan (Soft Delete)</option>
 
                             </select>
 
@@ -5305,29 +5138,11 @@
 
 
 
-                    <div class="form-row-2">
+                    <div class="form-group">
 
-                        <div class="form-group">
+                        <label>Tanggal Instalasi</label>
 
-                            <label>Status Keaktifan Aset</label>
-
-                            <select id="dev-is-active">
-
-                                <option value="1" selected>Aktif (is_active = 1)</option>
-
-                                <option value="0">Nonaktif / Diarsipkan (Soft Delete)</option>
-
-                            </select>
-
-                        </div>
-
-                        <div class="form-group">
-
-                            <label>Tanggal Instalasi</label>
-
-                            <input type="date" id="dev-install-date">
-
-                        </div>
+                        <input type="date" id="dev-install-date">
 
                     </div>
 
@@ -5467,9 +5282,6 @@
                                 <input type="file" id="user-avatar-file-input" accept="image/*" style="display: none;" onchange="handleUserAvatarFileSelect(event)">
                                 <button type="button" class="btn btn-outline-cyber btn-sm" onclick="document.getElementById('user-avatar-file-input').click()" style="padding: 5px 12px; font-size: 0.8rem; cursor: pointer;">
                                     <i class="fa-solid fa-cloud-arrow-up text-cyan"></i> Pilih Foto dari Komputer
-                                </button>
-                                <button type="button" class="btn btn-outline-cyber btn-sm" id="btn-remove-avatar" onclick="handleRemoveAvatar()" style="display: none; margin-left: 6px; border-color: rgba(239,68,68,0.5); color: #EF4444;" title="Hapus Foto Profil">
-                                    <i class="fa-solid fa-trash"></i> Hapus Foto
                                 </button>
                                 <input type="hidden" id="user-form-avatar" value="">
                                 <span class="text-xs text-muted d-block mt-1" style="display: block; margin-top: 4px; font-size: 0.72rem; color: #94A3B8;">
@@ -6075,16 +5887,10 @@
 
             </div>
 
-            <div class="modal-footer" style="padding: 12px 20px; border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center;">
-                <div style="display: flex; gap: 8px;">
-                    <button type="button" class="btn btn-secondary-cyber btn-sm" onclick="openAiHistoryModal()">
-                        <i class="fa-solid fa-clock-rotate-left"></i> Riwayat Analisis
-                    </button>
-                    <button type="button" class="btn btn-secondary-cyber btn-sm" onclick="copyAiReportToClipboard()">
-                    <i class="fa-solid fa-copy"></i> Salin Laporan AI (Format Hal. 17)
-                </button>
-                </div>
+            <div class="modal-footer" style="padding: 12px 20px; border-top: 1px solid rgba(255,255,255,0.08); text-align: right;">
+
                 <button type="button" class="btn btn-secondary-cyber" onclick="closeAiModal()">Tutup</button>
+
             </div>
 
         </div>
@@ -6093,115 +5899,9 @@
 
 
 
-    
+    <script src="assets/js/apiService.js"></script>
 
-    <!-- ========================================================================= -->
-    <!-- MODAL RIWAYAT ANALISIS AI (DOKUMEN PKL HAL. 17 & HAL. 18)                 -->
-    <!-- ========================================================================= -->
-    <div id="ai-history-modal" class="modal-backdrop hidden" onclick="if(event.target===this)closeAiHistoryModal()">
-        <div class="modal-card modal-lg" style="border-color: rgba(0, 229, 255, 0.4); max-width: 900px; width: 95%;">
-            <div class="modal-header">
-                <div class="modal-title-wrap">
-                    <i class="fa-solid fa-clock-rotate-left text-cyan" style="font-size: 18px;"></i>
-                    <div>
-                        <h5 style="color: #fff; font-size: 16px; margin: 0;">Riwayat Analisis Asisten AI Teknolab</h5>
-                        <span style="font-size: 11px; color: #94A3B8;">Catatan historis telemetri & rekomendasi preskriptif di MySQL (Dokumen PKL Hal. 17)</span>
-                    </div>
-                </div>
-                <button class="modal-close-btn" onclick="closeAiHistoryModal()">&times;</button>
-            </div>
-            <div class="modal-body p-4" style="max-height: 65vh; overflow-y: auto;">
-                <div id="ai-history-container">
-                    <div class="p-4 text-center text-muted">
-                        <i class="fa-solid fa-spinner fa-spin text-cyan"></i> Memuat riwayat analisis AI dari database...
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer" style="padding: 12px 20px; border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center;">
-                <span class="text-muted text-xs" id="ai-history-count">Menampilkan riwayat tersimpan</span>
-                <button type="button" class="btn btn-secondary-cyber" onclick="closeAiHistoryModal()">Tutup</button>
-            </div>
-        </div>
-    </div>
-
-    
-
-    <!-- ========================================================================= -->
-    <!-- MODAL INTEGRASI NOTIFIKASI TELEGRAM & N8N (DOKUMEN PKL HAL. 11)           -->
-    <!-- ========================================================================= -->
-    <div id="telegram-modal" class="modal-backdrop hidden" onclick="if(event.target===this)closeTelegramModal()">
-        <div class="modal-card modal-lg" style="border-color: rgba(0, 136, 204, 0.5); max-width: 820px; width: 95%;">
-            <div class="modal-header">
-                <div class="modal-title-wrap">
-                    <i class="fa-brands fa-telegram" style="color: #0088CC; font-size: 22px;"></i>
-                    <div>
-                        <h5 style="color: #fff; font-size: 16px; margin: 0;">Modul Otomasi Notifikasi Telegram (Arik)</h5>
-                        <span style="font-size: 11px; color: #94A3B8;">Workflow n8n Alert Engine & Bot @taims_alert_arik_bot (Dokumen PKL Hal. 11)</span>
-                    </div>
-                </div>
-                <button class="modal-close-btn" onclick="closeTelegramModal()">&times;</button>
-            </div>
-            <div class="modal-body p-4" style="max-height: 70vh; overflow-y: auto;">
-                <!-- Pipeline Status Cards -->
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin-bottom: 16px;">
-                    <div style="background: rgba(0, 136, 204, 0.08); border: 1px solid rgba(0, 136, 204, 0.25); border-radius: 8px; padding: 10px 12px;">
-                        <div style="font-size: 0.72rem; color: #94A3B8; margin-bottom: 4px;">Bot Resmi Teknolab</div>
-                        <div style="font-size: 0.9rem; font-weight: 700; color: #38BDF8;"><i class="fa-brands fa-telegram"></i> @taims_alert_arik_bot</div>
-                        <span style="font-size: 0.68rem; color: #10B981;">● Online via n8n Engine</span>
-                    </div>
-                    <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px; padding: 10px 12px;">
-                        <div style="font-size: 0.72rem; color: #94A3B8; margin-bottom: 4px;">Platform Otomasi</div>
-                        <div style="font-size: 0.82rem; font-weight: 700; color: #F1F5F9;"><i class="fa-solid fa-network-wired text-cyan"></i> n8n Automation (Port 5678)</div>
-                        <span style="font-size: 0.68rem; color: #94A3B8;">Webhook: /webhook/alert</span>
-                    </div>
-                    <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px; padding: 10px 12px;">
-                        <div style="font-size: 0.72rem; color: #94A3B8; margin-bottom: 4px;">Fitur Anti-Spam (Hal. 11)</div>
-                        <div style="font-size: 0.82rem; font-weight: 700; color: #FBBF24;"><i class="fa-solid fa-shield-halved text-yellow"></i> Cooldown Buffer 10 Menit</div>
-                        <span style="font-size: 0.68rem; color: #10B981;">● Mencegah banjir notifikasi</span>
-                    </div>
-                </div>
-
-                <!-- Action Triggers -->
-                <div style="margin-bottom: 16px;">
-                    <strong class="text-cyan" style="font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.04em;">
-                        <i class="fa-solid fa-paper-plane"></i> Pemicu Pengiriman Notifikasi Real-Time:
-                    </strong>
-                    <div style="display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap;">
-                        <button type="button" class="btn btn-primary-cyber btn-sm" onclick="sendAiReportToTelegram()" id="btn-tg-report">
-                            <i class="fa-solid fa-robot"></i> Kirim Laporan AI Terkini
-                        </button>
-                        <button type="button" class="btn btn-secondary-cyber btn-sm" onclick="triggerTelegramTest('offline')" id="btn-tg-offline">
-                            <i class="fa-solid fa-triangle-exclamation text-red"></i> Uji Alert Offline (MKRT-02)
-                        </button>
-                        <button type="button" class="btn btn-secondary-cyber btn-sm" onclick="triggerTelegramTest('recovery')" id="btn-tg-recovery">
-                            <i class="fa-solid fa-circle-check text-green"></i> Uji Alert Recovery (MKRT-02)
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Live Message Preview Box -->
-                <div>
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                        <strong style="font-size: 0.78rem; color: #CBD5E1;">
-                            <i class="fa-solid fa-terminal text-cyan"></i> Live Log Pengiriman Notifikasi Telegram:
-                        </strong>
-                        <span class="text-xs text-muted" id="tg-log-status">Menunggu pemicu...</span>
-                    </div>
-                    <div id="telegram-live-preview" style="background: rgba(10, 14, 20, 0.95); border: 1px solid rgba(0, 136, 204, 0.3); border-radius: 8px; padding: 12px 14px; font-family: 'JetBrains Mono', monospace; font-size: 0.74rem; color: #E2E8F0; line-height: 1.6; white-space: pre-wrap; min-height: 160px; max-height: 250px; overflow-y: auto;">Pilih salah satu tombol di atas untuk menguji pengiriman notifikasi ke bot Telegram @taims_alert_arik_bot...</div>
-                </div>
-            </div>
-            <div class="modal-footer" style="padding: 12px 20px; border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center;">
-                <span class="text-muted text-xs"><i class="fa-solid fa-circle-info"></i> Format pesan disesuaikan dengan Dokumen Kerja PKL Teknolab Halaman 11 & 17</span>
-                <button type="button" class="btn btn-secondary-cyber" onclick="closeTelegramModal()">Tutup</button>
-            </div>
-        </div>
-    </div>
-
-    <script src="assets/js/apiService.js?v=2.6.0"></script>
-
-    <script src="assets/js/app.js?v=6.0.0"></script>
-
-    <script src="assets/js/floorplan3d.js"></script>
+    <script src="assets/js/app.js"></script>
 
 
     <!-- Modal Pemulihan Kata Sandi (Cyberpunk Theme - Mas Dzakwan UX Fix) -->
