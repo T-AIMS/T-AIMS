@@ -9,7 +9,7 @@ Hari,Tanggal,Total TC,PASS,FAIL,BLOCKED,SKIP,Bug Baru,Bug Verified,Handover,Kend
 8,20/10/2026,7,7,0,0,0,0,5,Sudah,"Nihil (Zero Blocker)","Pengujian sensor telemetri & n8n alarm","docs/qa-testing/evidence/screenshots/Hari-8","docs(qa): complete day 8 ui wireframe and test reports"
 9,20/10/2026,15,15,0,0,0,0,5,Sudah,"Nihil (Semua temuan UI verified & audit selesai)","Finalisasi Bug List MVP Awal & Rekonsiliasi Dzakwan","docs/qa-testing/evidence/screenshots/Hari-9","docs(qa): complete day 9 retest bug and dashboard audit"
 10,21/10/2026,9,9,0,0,0,8,18,Sudah,"Nihil (Semua endpoint konsisten & seluruh 18 bug diverifikasi tuntas)","Rekonsiliasi peran tim & persiapan pengujian sensor IoT Hari-11","docs/qa-testing/evidence/screenshots/Hari-10","docs(qa): finalize mvp bug list and day 10 api consistency test"
-11,,6,0,0,0,0,0,0,Belum,"","Dokumentasi online/offline","",
+11,22/10/2026,6,6,0,0,0,0,2,Sudah,"Nihil (Perbaikan schema DB MySQL tuntas, toleransi timeout 45s & auto-recovery tervalidasi 100%)","Uji ketahanan offline engine & timeout threshold multi-perangkat Hari-12","docs/qa-testing/evidence/screenshots/Hari-11","feat(qa): live telemetry monitoring test 17 devices and state transitions day-11"
 12,,4,0,0,0,0,0,0,Belum,"","Regression test timeout","",
 13,,5,0,0,0,0,0,0,Belum,"","Uji heartbeat normal + putus","",
 14,,5,0,0,0,0,0,0,Belum,"","Verifikasi reconnect","",
@@ -29,3 +29,4 @@ Hari,Tanggal,Total TC,PASS,FAIL,BLOCKED,SKIP,Bug Baru,Bug Verified,Handover,Kend
 28,,4,0,0,0,0,0,0,Belum,"","Regression test lengkap","",
 29,,5,0,0,0,0,0,0,Belum,"","Finalisasi dokumentasi","",
 30,,6,0,0,0,0,0,0,Belum,"","Presentasi & handover final","",
+

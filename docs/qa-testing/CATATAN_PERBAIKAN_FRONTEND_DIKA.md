@@ -202,3 +202,6 @@ Silakan jadikan dokumen ini sebagai checklist perbaikan di repositori utama agar
 6. [x] Perbarui variabel `--text-dim` ke `#94A3B8` dan hapus semua inline font berukuran $< 10\text{px}$.
 
 *Catatan: Seluruh perbaikan di atas sudah diverifikasi dan diuji coba oleh QA Reza Tri pada berkas revisi lokal dan berjalan 100% PASS.*
+
+<!-- QA Standardization: 2026-10-22 | Lead QA: Reza Tri Wardana -->
+

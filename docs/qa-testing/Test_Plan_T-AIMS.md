@@ -202,3 +202,5 @@ Fitur dinyatakan DONE jika:
 ---
 
 **Akhir Dokumen — Test Plan T-AIMS v1.0**
+<!-- QA Standardization: 2026-10-22 | Lead QA: Reza Tri Wardana -->
+
