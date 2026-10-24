@@ -1,4 +1,4 @@
-﻿Hari,Tanggal,Total TC,PASS,FAIL,BLOCKED,SKIP,Bug Baru,Bug Verified,Handover,Kendala,Next Action,Link Bukti,Commit
+Hari,Tanggal,Total TC,PASS,FAIL,BLOCKED,SKIP,Bug Baru,Bug Verified,Handover,Kendala,Next Action,Link Bukti,Commit
 1,,3,0,0,0,0,0,0,Belum,"Setup QA & Docs","Finalisasi TC ID setelah AC Damar","", 
 2,,3,0,0,0,0,0,0,Belum,"Data aset belum lengkap","Rangkum gap data ke PIC","",
 3,,3,0,0,0,0,0,0,Belum,"","Rencana uji data baru","",
@@ -11,7 +11,7 @@
 10,21/10/2026,9,9,0,0,0,8,18,Sudah,"Nihil (Semua endpoint konsisten & seluruh 18 bug diverifikasi tuntas)","Rekonsiliasi peran tim & persiapan pengujian sensor IoT Hari-11","docs/qa-testing/evidence/screenshots/Hari-10","docs(qa): finalize mvp bug list and day 10 api consistency test"
 11,22/10/2026,6,6,0,0,0,0,2,Sudah,"Nihil (Perbaikan schema DB MySQL tuntas, toleransi timeout 45s & auto-recovery tervalidasi 100%)","Uji ketahanan offline engine & timeout threshold multi-perangkat Hari-12","docs/qa-testing/evidence/screenshots/Hari-11","feat(qa): live telemetry monitoring test 17 devices and state transitions day-11"
 12,23/10/2026,6,6,0,0,0,0,2,Sudah,"Nihil (Simulasi timeout 45s, auto-incident generation, dan auto-recovery tuntas 100%)","Uji beban heartbeat multi-sensor & fallback MQTT Hari-13","docs/qa-testing/evidence/screenshots/Hari-12","feat(qa): monitoring engine resilience, timeout threshold and auto-recovery day-12"
-13,,5,0,0,0,0,0,0,Belum,"","Uji heartbeat normal + putus","",
+13,24/10/2026,18,18,0,0,0,0,4,Sudah,"Nihil (Semua aset, filter, heartbeat, & audit dashboard pre-deploy tuntas 100%)","Verifikasi deployment live di server CloudPanel & presentasi Hari-14","docs/qa/evidence/screenshots/Hari-13","feat(qa): asset inventory verification, iot heartbeat fallback and pre-deploy dashboard audit day-13"
 14,,5,0,0,0,0,0,0,Belum,"","Verifikasi reconnect","",
 15,,5,0,0,0,0,0,0,Belum,"","Uji loading/error state","",
 16,,5,0,0,0,0,0,0,Belum,"","Regression test desktop/mobile","",
