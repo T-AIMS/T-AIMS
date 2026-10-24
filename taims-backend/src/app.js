@@ -20,8 +20,19 @@ const { startLogCleaner } = require('./services/log-cleaner');
 
 const app = express();
 
+// 1. Trust Proxy (Biar IP asli device kelihatan di Nginx/CloudPanel)
+app.set('trust proxy', 1);
+
 app.use(cors());
 app.use(express.json());
+
+// 2. Security Headers (Standar OWASP Top 10)
+app.use((req, res, next) => {
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-Frame-Options', 'DENY');
+    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+    next();
+});
 
 app.use((req, res, next) => {
     console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
@@ -32,6 +43,16 @@ app.get('/', (req, res) => {
     res.json({
         message: '🚀 T-AIMS Backend is running!',
         version: '0.5.0',
+        timestamp: new Date().toISOString()
+    });
+});
+
+// 3. Endpoint Healthcheck (Bebas API Key / JWT, buat Docker & Nginx)
+app.get('/api/monitoring/health', (req, res) => {
+    res.status(200).json({
+        status: 'ok',
+        service: 'T-AIMS Backend',
+        uptime: process.uptime(),
         timestamp: new Date().toISOString()
     });
 });
@@ -59,7 +80,7 @@ app.use((err, req, res, next) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, '0.0.0.0', () => {
+const server = app.listen(PORT, '0.0.0.0', () => {
     console.log(`🚀 Server running at http://0.0.0.0:${PORT}`);
     console.log(`🌐 Bisa diakses dari jaringan lokal via IP laptop ini`);
     
@@ -70,4 +91,21 @@ app.listen(PORT, '0.0.0.0', () => {
     
     // Start offline checker
     startOfflineChecker();
+});
+
+// 4. Graceful Shutdown (Biar nggak error 502 saat container/PM2 restart)
+process.on('SIGTERM', () => {
+    console.log('🛑 SIGTERM received. Shutting down gracefully...');
+    server.close(() => {
+        console.log('✅ HTTP server closed.');
+        process.exit(0);
+    });
+});
+
+process.on('SIGINT', () => {
+    console.log('🛑 SIGINT received. Shutting down gracefully...');
+    server.close(() => {
+        console.log('✅ HTTP server closed.');
+        process.exit(0);
+    });
 });
