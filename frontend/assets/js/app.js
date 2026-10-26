@@ -3501,20 +3501,31 @@ function renderAlerts() {
     const dropList = document.getElementById('notif-items-list');
     if (dropList) {
         dropList.innerHTML = '';
-        APP_STATE.alerts.slice(0, 4).forEach(alt => {
-            const div = document.createElement('div');
-            div.className = 'notif-item';
-            const titleTrans = translateTextString(alt.title, lang);
-            const locTrans = translateTextString(alt.location, lang);
-            div.innerHTML = `
-                <span class="dot ${alt.level === 'kritis' ? 'red' : 'yellow'}"></span>
-                <div class="notif-text">
-                    <strong>${titleTrans}</strong>
-                    <span>${locTrans} &bull; ${alt.time} WIB</span>
+        const listToRender = (APP_STATE.alerts || []).slice(0, 5);
+        if (listToRender.length === 0) {
+            dropList.innerHTML = `
+                <div style="padding: 22px 16px; text-align: center; color: #94a3b8; width: 100%; box-sizing: border-box;">
+                    <i class="fa-solid fa-circle-check text-green" style="font-size: 1.6rem; display: block; margin-bottom: 8px;"></i>
+                    <strong style="display: block; color: #f1f5f9; font-size: 0.82rem; margin-bottom: 2px;">Seluruh Sistem Normal</strong>
+                    <span style="font-size: 0.74rem;">Tidak ada gangguan baru yang belum tertangani.</span>
                 </div>
             `;
-            dropList.appendChild(div);
-        });
+        } else {
+            listToRender.forEach(alt => {
+                const div = document.createElement('div');
+                div.className = 'notif-item';
+                const titleTrans = translateTextString(alt.title, lang);
+                const locTrans = translateTextString(alt.location, lang);
+                div.innerHTML = `
+                    <span class="dot ${alt.level === 'kritis' ? 'red' : 'yellow'}"></span>
+                    <div class="notif-text">
+                        <strong>${titleTrans}</strong>
+                        <span>${locTrans} &bull; ${alt.time} WIB</span>
+                    </div>
+                `;
+                dropList.appendChild(div);
+            });
+        }
     }
 
     const count = (APP_STATE.alerts || []).filter(a => !a.read).length;
