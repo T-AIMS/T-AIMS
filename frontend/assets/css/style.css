@@ -59119,3 +59119,192 @@ body:has(#auth-screen:not(.hidden)) #main-dashboard {
 #kpi-spark-uptime {
     background: #A855F7 !important;
 }
+
+/* ========================================================================== */
+/* v6.0.45 - QA REVISION BUNDLE (7 ITEMS RESOLUTION)                          */
+/* 1. Centered Site Buttons                                                   */
+/* 2, 3, 4. Non-Breaking Denah Blueprint Headings & Count Badges              */
+/* 5. Incidents Table Compact Layout (No Empty Space)                         */
+/* 6. Card Title & Icon Perfect Inline-Flex Centering                         */
+/* 7. Mobile Toast Popup Auto-Height & Constraints                            */
+/* 8. Solid Modal Card Background with 10px Backdrop Blur                     */
+/* 9. Leaflet Dashboard Mini-Map Container Reliability                        */
+/* ========================================================================== */
+
+/* 1. Centered Site Buttons */
+.bp-sites-bar .btn-bp-choice,
+.btn-bp-choice {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+}
+
+/* 2, 3, 4. Denah Blueprint Headings & Count Badges */
+.bp-site-meta h3 {
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
+    display: flex !important;
+    align-items: center !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+}
+.bp-count-badge {
+    display: inline-block !important;
+    white-space: nowrap !important;
+    font-size: 0.85em !important;
+    color: #94a3b8 !important;
+    font-weight: 500 !important;
+}
+@media (max-width: 768px) {
+    .bp-site-meta h3 {
+        font-size: 0.95rem !important;
+        line-height: 1.35 !important;
+        margin-top: 4px !important;
+    }
+    .bp-count-badge {
+        font-size: 0.82em !important;
+    }
+    .bp-sites-bar .btn-bp-choice {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
+    }
+}
+
+/* 5. Incidents Table Compact Spacing (No Dead Whitespace) */
+#page-alerts .table-responsive .mockup-table,
+#page-alerts .mockup-table {
+    min-width: 880px !important;
+    width: 100% !important;
+    table-layout: auto !important;
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+}
+#page-alerts .mockup-table th,
+#page-alerts .mockup-table td {
+    padding: 8px 10px !important;
+    white-space: nowrap !important;
+    font-size: 0.78rem !important;
+}
+#page-alerts .mockup-table th:nth-child(1), #page-alerts .mockup-table td:nth-child(1) { width: 90px !important; min-width: 80px !important; }
+#page-alerts .mockup-table th:nth-child(2), #page-alerts .mockup-table td:nth-child(2) { width: 140px !important; min-width: 130px !important; }
+#page-alerts .mockup-table th:nth-child(3), #page-alerts .mockup-table td:nth-child(3) { width: 120px !important; min-width: 110px !important; }
+#page-alerts .mockup-table th:nth-child(4), #page-alerts .mockup-table td:nth-child(4) { width: 120px !important; min-width: 110px !important; }
+#page-alerts .mockup-table th:nth-child(5), #page-alerts .mockup-table td:nth-child(5) { width: 75px !important; min-width: 70px !important; }
+#page-alerts .mockup-table th:nth-child(6), #page-alerts .mockup-table td:nth-child(6) { width: 85px !important; min-width: 80px !important; }
+#page-alerts .mockup-table th:nth-child(7), #page-alerts .mockup-table td:nth-child(7) { width: 120px !important; min-width: 110px !important; }
+#page-alerts .mockup-table th:nth-child(8), #page-alerts .mockup-table td:nth-child(8) { width: 95px !important; min-width: 90px !important; }
+#page-alerts .mockup-table th:nth-child(9), #page-alerts .mockup-table td:nth-child(9) { width: 95px !important; min-width: 90px !important; }
+#page-alerts .mockup-table th:nth-child(10), #page-alerts .mockup-table td:nth-child(10) { width: 80px !important; min-width: 75px !important; }
+
+/* 6. Card Title & Icon Perfect Alignment */
+.card-title-group {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+}
+.card-title-group > i {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    line-height: 1 !important;
+    flex-shrink: 0 !important;
+    vertical-align: middle !important;
+}
+.card-title-group > h4 {
+    display: inline-flex !important;
+    align-items: center !important;
+    margin: 0 !important;
+    line-height: 1.3 !important;
+    gap: 8px !important;
+}
+
+/* 7. Mobile Toast Popup Auto-Height & Constraints */
+@media (max-width: 768px) {
+    #toast-notification.toast-popup,
+    #toast-notification.toast-notification {
+        left: 16px !important;
+        right: 16px !important;
+        bottom: 16px !important;
+        top: auto !important;
+        width: calc(100% - 32px) !important;
+        max-width: 420px !important;
+        height: auto !important;
+        min-height: unset !important;
+        max-height: 120px !important;
+        margin: 0 auto !important;
+        padding: 10px 14px !important;
+        box-sizing: border-box !important;
+        border-radius: 10px !important;
+        display: flex !important;
+        align-items: center !important;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.85), 0 0 15px rgba(0, 240, 255, 0.25) !important;
+    }
+    #toast-notification.toast-popup.hidden {
+        display: none !important;
+    }
+    #toast-notification .toast-content {
+        flex: 1 1 auto !important;
+        overflow: hidden !important;
+    }
+    #toast-notification .toast-content h6 {
+        font-size: 0.82rem !important;
+        margin: 0 0 2px 0 !important;
+        white-space: nowrap !important;
+        text-overflow: ellipsis !important;
+        overflow: hidden !important;
+    }
+    #toast-notification .toast-content p {
+        font-size: 0.72rem !important;
+        margin: 0 !important;
+        line-height: 1.25 !important;
+        display: -webkit-box !important;
+        -webkit-line-clamp: 2 !important;
+        -webkit-box-orient: vertical !important;
+        overflow: hidden !important;
+    }
+}
+
+/* 8. Solid Modal Card Background with 10px Backdrop Blur */
+.modal-overlay,
+#incident-modal-overlay {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 99999 !important;
+    background: rgba(5, 8, 15, 0.88) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 16px !important;
+    box-sizing: border-box !important;
+}
+.modal-box {
+    background: #0f172a !important;
+    border: 1px solid rgba(0, 240, 255, 0.35) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.90), 0 0 24px rgba(0, 240, 255, 0.15) !important;
+    width: 100% !important;
+    max-width: 520px !important;
+    max-height: 90vh !important;
+    overflow-y: auto !important;
+    padding: 20px 24px !important;
+    color: #f1f5f9 !important;
+    position: relative !important;
+    z-index: 100000 !important;
+}
+
+/* 9. Leaflet Dashboard Mini-Map Container Reliability */
+#home-blitar-map,
+.home-map-leaflet {
+    background: radial-gradient(circle at center, #111d35 0%, #060a14 100%) !important;
+    position: relative !important;
+    min-height: 220px !important;
+}

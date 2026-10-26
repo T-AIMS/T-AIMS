@@ -1042,7 +1042,7 @@ function renderBlueprintLegendPanels() {
         const panel = hoBox.querySelector('.floorplan-legend-panel');
         const hoDevs = APP_STATE.devices.filter(d => getDeviceSiteKey(d) === 'ho');
         const metaH3 = hoBox.querySelector('.bp-site-meta h3');
-        if (metaH3) metaH3.textContent = `Denah Kantor & Data Center Utama (${hoDevs.length} Aset)`;
+        if (metaH3) metaH3.innerHTML = `Denah Kantor & Data Center Utama <span class="bp-count-badge">(${hoDevs.length} Aset)</span>`;
 
         if (panel) {
             const wsDevs = hoDevs.filter(d => isWs(d) && !isSec(d));
@@ -1090,7 +1090,7 @@ function renderBlueprintLegendPanels() {
         const panel = moBox.querySelector('.floorplan-legend-panel');
         const moDevs = APP_STATE.devices.filter(d => getDeviceSiteKey(d) === 'mo');
         const metaH3 = moBox.querySelector('.bp-site-meta h3');
-        if (metaH3) metaH3.textContent = `Denah Kantor Cabang & Lab Kos Kiki (${moDevs.length} Aset)`;
+        if (metaH3) metaH3.innerHTML = `Denah Kantor Cabang & Lab Kos Kiki <span class="bp-count-badge">(${moDevs.length} Aset)</span>`;
 
         if (panel) {
             const secDevs = moDevs.filter(d => isSec(d));
@@ -1127,7 +1127,7 @@ function renderBlueprintLegendPanels() {
         const panel = hosBox.querySelector('.floorplan-legend-panel');
         const hosDevs = APP_STATE.devices.filter(d => getDeviceSiteKey(d) === 'mentor');
         const metaH3 = hosBox.querySelector('.bp-site-meta h3');
-        if (metaH3) metaH3.textContent = `Denah Ruang Peladen & Server Inti T-AIMS (${hosDevs.length} Aset)`;
+        if (metaH3) metaH3.innerHTML = `Denah Ruang Peladen & Server Inti <span style="white-space:nowrap;">T-AIMS</span> <span class="bp-count-badge">(${hosDevs.length} Aset)</span>`;
 
         if (panel) {
             panel.innerHTML = `
@@ -2039,8 +2039,15 @@ function switchPage(pageId) {
         }
         setTimeout(() => {
             initCharts();
-            if (APP_STATE.homeMap) APP_STATE.homeMap.invalidateSize();
+            if (typeof initBlitarMaps === 'function') initBlitarMaps();
+            if (APP_STATE.homeMap) {
+                APP_STATE.homeMap.invalidateSize();
+                APP_STATE.homeMap.setView([-8.0703, 112.1735], 14);
+            }
         }, 80);
+        setTimeout(() => {
+            if (APP_STATE.homeMap) APP_STATE.homeMap.invalidateSize();
+        }, 350);
     } else {
         if (mainEl) mainEl.style.overflow = 'auto';
         if (contentEl) contentEl.style.overflow = 'auto';
@@ -2537,8 +2544,14 @@ function loginSuccess(user, isAutoRestore = false) {
     initCharts();
     if (typeof initBlitarMaps === 'function') initBlitarMaps();
     setTimeout(() => {
+        if (APP_STATE.homeMap) {
+            APP_STATE.homeMap.invalidateSize();
+            APP_STATE.homeMap.setView([-8.0703, 112.1735], 14);
+        }
+    }, 200);
+    setTimeout(() => {
         if (APP_STATE.homeMap) APP_STATE.homeMap.invalidateSize();
-    }, 250);
+    }, 600);
     if (typeof renderFullDevicesTable === 'function') renderFullDevicesTable();
     if (typeof renderHomeDevicesTable === 'function') renderHomeDevicesTable();
     if (typeof renderIncidentsTable === 'function') renderIncidentsTable();
@@ -3669,52 +3682,80 @@ function initBlitarMaps() {
 
     // 1. Inisialisasi Peta Mini di Dashboard (#home-blitar-map) Menggunakan Google Maps Asli
     const homeEl = document.getElementById('home-blitar-map');
-    if (homeEl && !APP_STATE.homeMap) {
-        try {
-            APP_STATE.homeMap = L.map('home-blitar-map', {
-                preferCanvas: true,
-                center: blitarCenter,
-                zoom: 14,
-                zoomControl: false,
-                attributionControl: false
-            });
+    if (homeEl) {
+        if (!APP_STATE.homeMap) {
+            try {
+                APP_STATE.homeMap = L.map('home-blitar-map', {
+                    preferCanvas: true,
+                    center: blitarCenter,
+                    zoom: 14,
+                    zoomControl: false,
+                    attributionControl: false
+                });
 
-            const savedProviderKey = (function() {
-                try { return localStorage.getItem('taims_map_provider') || 'google-sat'; } catch(e) { return 'google-sat'; }
-            })();
-            const initProv = MAP_PROVIDERS[savedProviderKey] || MAP_PROVIDERS['google-sat'];
-            APP_STATE.currentMapProvider = initProv.id;
+                const savedProviderKey = (function() {
+                    try { return localStorage.getItem('taims_map_provider') || 'google-roads'; } catch(e) { return 'google-roads'; }
+                })();
+                const initProv = MAP_PROVIDERS[savedProviderKey] || MAP_PROVIDERS['google-roads'] || MAP_PROVIDERS['google-sat'];
+                APP_STATE.currentMapProvider = initProv.id;
 
-            APP_STATE.homeTileLayer = L.tileLayer(initProv.url, {
-                subdomains: initProv.subdomains,
-                maxZoom: initProv.maxZoom,
-                attribution: initProv.attribution
-            }).addTo(APP_STATE.homeMap);
+                APP_STATE.homeTileLayer = L.tileLayer(initProv.url, {
+                    subdomains: initProv.subdomains,
+                    maxZoom: initProv.maxZoom,
+                    attribution: initProv.attribution
+                }).addTo(APP_STATE.homeMap);
 
-            L.control.zoom({ position: 'bottomright' }).addTo(APP_STATE.homeMap);
+                L.control.zoom({ position: 'bottomright' }).addTo(APP_STATE.homeMap);
 
-            // Garis penghubung telemetri antar-site di dashboard
-            const homeSitePoints = [
-                [LOC_SITES.ho.lat, LOC_SITES.ho.lng],
-                [LOC_SITES.mo.lat, LOC_SITES.mo.lng],
-                [LOC_SITES.server.lat, LOC_SITES.server.lng],
-                [LOC_SITES.ho.lat, LOC_SITES.ho.lng]
-            ];
-            APP_STATE.homeSiteLine = L.polyline(homeSitePoints, {
-                color: '#FF1744',
-                weight: 2,
-                opacity: 0.85,
-                dashArray: '6, 6'
-            }).addTo(APP_STATE.homeMap);
+                // Garis penghubung telemetri antar-site di dashboard
+                const homeSitePoints = [
+                    [LOC_SITES.ho.lat, LOC_SITES.ho.lng],
+                    [LOC_SITES.mo.lat, LOC_SITES.mo.lng],
+                    [LOC_SITES.server.lat, LOC_SITES.server.lng],
+                    [LOC_SITES.ho.lat, LOC_SITES.ho.lng]
+                ];
+                APP_STATE.homeSiteLine = L.polyline(homeSitePoints, {
+                    color: '#FF1744',
+                    weight: 2,
+                    opacity: 0.85,
+                    dashArray: '6, 6'
+                }).addTo(APP_STATE.homeMap);
 
-            APP_STATE.homeMarkersMap = {};
-            refreshHomeMapMarkers();
+                APP_STATE.homeMarkersMap = {};
+                refreshHomeMapMarkers();
+            } catch (e) {
+                console.error('Gagal inisialisasi home map:', e);
+            }
+        }
 
-            setTimeout(() => { if (APP_STATE.homeMap) APP_STATE.homeMap.invalidateSize(); }, 200);
-            setTimeout(() => { if (APP_STATE.homeMap) APP_STATE.homeMap.invalidateSize(); }, 600);
+        // Selalu pastikan ukuran map sinkron dan render tile aktif
+        if (APP_STATE.homeMap) {
+            setTimeout(() => {
+                try {
+                    APP_STATE.homeMap.invalidateSize();
+                    APP_STATE.homeMap.setView(blitarCenter, 14);
+                } catch(err) {}
+            }, 100);
+            setTimeout(() => {
+                try {
+                    APP_STATE.homeMap.invalidateSize();
+                } catch(err) {}
+            }, 400);
+        }
 
-        } catch (e) {
-            console.error('Gagal inisialisasi home map:', e);
+        // Observer otomatis saat elemen mendapatkan dimensi / tampil di layar
+        if (!homeEl._taimsObserverAttached && typeof ResizeObserver !== 'undefined') {
+            homeEl._taimsObserverAttached = true;
+            try {
+                const ro = new ResizeObserver((entries) => {
+                    for (const entry of entries) {
+                        if (entry.contentRect.width > 20 && entry.contentRect.height > 20 && APP_STATE.homeMap) {
+                            try { APP_STATE.homeMap.invalidateSize(); } catch(e) {}
+                        }
+                    }
+                });
+                ro.observe(homeEl);
+            } catch(e) {}
         }
     }
 
@@ -6372,10 +6413,10 @@ async function openAddIncidentModal() {
 
     const modal = document.createElement('div');
     modal.className = 'modal-overlay active';
-    modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:99999;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;overflow-y:auto;';
+    modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:99999;background:rgba(8,12,20,0.88);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;overflow-y:auto;padding:16px;box-sizing:border-box;';
     modal.id = 'incident-modal-overlay';
     modal.innerHTML = `
-    <div class="modal-box" style="max-width:540px;max-height:90vh;overflow-y:auto;">
+    <div class="modal-box" style="background:#0f172a !important;border:1px solid rgba(0,240,255,0.4);border-radius:12px;box-shadow:0 16px 48px rgba(0,0,0,0.9), 0 0 20px rgba(0,240,255,0.15);max-width:520px;width:100%;max-height:90vh;overflow-y:auto;padding:22px;color:#f1f5f9;box-sizing:border-box;position:relative;">
         <div class="modal-header">
             <h3><i class="fa-solid fa-triangle-exclamation text-red"></i> Tambah Insiden Baru</h3>
             <button class="modal-close-btn" onclick="document.getElementById('incident-modal-overlay').remove()"><i class="fa-solid fa-xmark"></i></button>
@@ -6462,10 +6503,10 @@ async function openEditIncidentModal(incId) {
 
     const modal = document.createElement('div');
     modal.className = 'modal-overlay active';
-    modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:99999;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;overflow-y:auto;';
+    modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:99999;background:rgba(8,12,20,0.88);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;overflow-y:auto;padding:16px;box-sizing:border-box;';
     modal.id = 'incident-modal-overlay';
     modal.innerHTML = `
-    <div class="modal-box" style="max-width:540px;max-height:90vh;overflow-y:auto;">
+    <div class="modal-box" style="background:#0f172a !important;border:1px solid rgba(0,240,255,0.4);border-radius:12px;box-shadow:0 16px 48px rgba(0,0,0,0.9), 0 0 20px rgba(0,240,255,0.15);max-width:520px;width:100%;max-height:90vh;overflow-y:auto;padding:22px;color:#f1f5f9;box-sizing:border-box;position:relative;">
         <div class="modal-header">
             <h3><i class="fa-solid fa-pen-to-square text-cyan"></i> Edit Insiden ${inc.id}</h3>
             <button class="modal-close-btn" onclick="document.getElementById('incident-modal-overlay').remove()"><i class="fa-solid fa-xmark"></i></button>
