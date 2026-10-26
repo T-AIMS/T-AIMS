@@ -2264,7 +2264,7 @@ function startLoginLockoutCountdown(lockUntilTs, penaltyMinutes = 1) {
             submitBtn.innerHTML = `<i class="fa-solid fa-lock text-red"></i> <span>Terkunci Sementara (${timeFormatted})</span>`;
         }
         if (alertText) {
-            alertText.innerHTML = `Terlalu banyak percobaan gagal (3x)! Login dikunci selama ${penaltyMinutes} menit. Tunggu ${timeFormatted} detik... <br><a href="javascript:void(0)" onclick="clearFrontendLoginLockout(); fetch('/api/auth/reset-lockout', {method:'POST'}).catch(()=>{});" style="color: #38bdf8; text-decoration: underline; font-weight: bold; margin-top: 4px; display: inline-block;">[Buka Kunci Sekarang]</a>`;
+            alertText.textContent = `Terlalu banyak percobaan gagal (3x)! Login dikunci selama ${penaltyMinutes} menit. Tunggu ${timeFormatted} detik...`;
         }
     };
 
@@ -2274,8 +2274,10 @@ function startLoginLockoutCountdown(lockUntilTs, penaltyMinutes = 1) {
 
 // Pulihkan countdown lockout saat halaman di-refresh (Anti-Refresh F5 Bypass)
 document.addEventListener('DOMContentLoaded', () => {
-    if (typeof clearFrontendLoginLockout === 'function') {
-        clearFrontendLoginLockout();
+    const lockState = getFrontendLoginLockState();
+    if (lockState && lockState.lockUntil && lockState.lockUntil > Date.now()) {
+        const penaltyMinutes = Math.pow(2, Math.max(0, (lockState.penaltyStage || 1) - 1));
+        startLoginLockoutCountdown(lockState.lockUntil, penaltyMinutes);
     }
 });
 
@@ -2287,7 +2289,7 @@ async function handleLogin() {
 
     // 0. Cek apakah sedang dalam masa tunggu (Lockout) di Browser / Perangkat ini
     const localLock = getFrontendLoginLockState();
-    if (false && localLock.lockUntil && localLock.lockUntil > Date.now()) {
+    if (localLock.lockUntil && localLock.lockUntil > Date.now()) {
         const penaltyMinutes = Math.pow(2, Math.max(0, (localLock.penaltyStage || 1) - 1));
         startLoginLockoutCountdown(localLock.lockUntil, penaltyMinutes);
         return;
@@ -2423,12 +2425,40 @@ async function handleLogin() {
     triggerFailedLoginAttempt();
 }
 
-function enterAsGuest() {
+async function enterAsGuest() {
+    // 1. Pastikan data perangkat terisi seketika (fallback lokal 15 perangkat jika belum ada di browser)
+    if (!APP_STATE.devices || !Array.isArray(APP_STATE.devices) || APP_STATE.devices.length === 0) {
+        const localSaved = typeof loadDevicesFromStorage === 'function' ? loadDevicesFromStorage() : null;
+        if (localSaved && localSaved.length >= 15) {
+            APP_STATE.devices = localSaved;
+        } else if (typeof FALLBACK_ASSETS !== 'undefined' && Array.isArray(FALLBACK_ASSETS)) {
+            APP_STATE.devices = FALLBACK_ASSETS.map(mapBackendAssetToUI);
+            if (typeof saveDevicesToStorage === 'function') saveDevicesToStorage(APP_STATE.devices);
+        }
+    }
+
+    // 2. Minta tiket JWT Guest dari backend jika backend aktif
+    try {
+        const base = (window.apiService && window.apiService.BASE_URL) || 'http://localhost:3000/api';
+        const res = await fetch(`${base}/auth/guest`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        });
+        const data = await res.json();
+        if (data.success && data.data && data.data.token) {
+            localStorage.setItem('taims_jwt_token', data.data.token);
+            localStorage.setItem('taims_user_role', 'guest');
+        }
+    } catch (e) {
+        console.warn('Guest mode offline fallback:', e);
+    }
+
+    // 3. Masuk ke dashboard mode User (Read-Only)
     loginSuccess({
         username: 'guest',
-        name: 'User',
+        name: 'User (Tamu)',
         role: 'guest',
-        title: 'User'
+        title: 'User (Read-Only)'
     });
 }
 
@@ -2492,6 +2522,17 @@ function loginSuccess(user, isAutoRestore = false) {
 
     document.getElementById('auth-screen').classList.add('hidden');
     document.getElementById('main-dashboard').classList.remove('hidden');
+
+    // Jaminan data selalu terisi seketika saat pertama kali masuk
+    if (!APP_STATE.devices || !Array.isArray(APP_STATE.devices) || APP_STATE.devices.length === 0) {
+        const localSaved = typeof loadDevicesFromStorage === 'function' ? loadDevicesFromStorage() : null;
+        if (localSaved && localSaved.length >= 15) {
+            APP_STATE.devices = localSaved;
+        } else if (typeof FALLBACK_ASSETS !== 'undefined' && Array.isArray(FALLBACK_ASSETS)) {
+            APP_STATE.devices = FALLBACK_ASSETS.map(mapBackendAssetToUI);
+            if (typeof saveDevicesToStorage === 'function') saveDevicesToStorage(APP_STATE.devices);
+        }
+    }
 
     initCharts();
     if (typeof initBlitarMaps === 'function') initBlitarMaps();
@@ -9099,8 +9140,6 @@ window.handleRemoveAvatar = handleRemoveAvatar;
 // FITUR BARU: MODAL LUPA PASSWORD CYBERPUNK (PENGGANTI WINDOW.PROMPT JADUL)
 // -----------------------------------------------------------------------------
 function handleForgotPassword() {
-    if (typeof clearFrontendLoginLockout === "function") clearFrontendLoginLockout();
-    fetch("/api/auth/reset-lockout", {method: "POST"}).catch(()=>{});
     const modal = document.getElementById('forgot-password-modal');
     if (modal) {
         modal.classList.remove('hidden');

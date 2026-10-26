@@ -6,7 +6,8 @@ require('dotenv').config();
 const PERMISSIONS = {
     super_admin: { create: true, read: true, update: true, delete: true },
     admin:       { create: true, read: true, update: true, delete: false },
-    user:        { create: false, read: true, update: false, delete: false }
+    user:        { create: false, read: true, update: false, delete: false },
+    guest:       { create: false, read: true, update: false, delete: false }
 };
 
 // ============================================================
