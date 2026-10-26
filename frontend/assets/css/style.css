@@ -59296,37 +59296,47 @@ body:has(#auth-screen:not(.hidden)) #main-dashboard {
     }
 }
 
-/* 8. Solid Modal Card Background with 10px Backdrop Blur */
-.modal-overlay,
-#incident-modal-overlay {
+/* 8. Penyelarasan Backdrop Modal Edit Insiden dengan Kelola Lokasi (Sinkron 100%) */
+#incident-modal-overlay,
+#loc-manager-modal,
+.modal-backdrop,
+.modal-overlay {
     position: fixed !important;
+    inset: 0 !important;
     top: 0 !important;
     left: 0 !important;
     width: 100vw !important;
     height: 100vh !important;
-    z-index: 99999 !important;
-    background: rgba(5, 8, 15, 0.88) !important;
-    backdrop-filter: blur(10px) !important;
-    -webkit-backdrop-filter: blur(10px) !important;
+    background: rgba(0, 0, 0, 0.75) !important;
+    backdrop-filter: blur(6px) !important;
+    -webkit-backdrop-filter: blur(6px) !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
+    z-index: 99999 !important;
     padding: 16px !important;
     box-sizing: border-box !important;
+    overflow-y: auto !important;
 }
+
+#incident-modal-overlay .modal-card,
+#loc-manager-modal .modal-card,
+.modal-backdrop .modal-card,
 .modal-box {
-    background: #0f172a !important;
-    border: 1px solid rgba(0, 240, 255, 0.35) !important;
-    border-radius: 12px !important;
-    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.90), 0 0 24px rgba(0, 240, 255, 0.15) !important;
+    background: var(--bg-card, #0B111E) !important;
+    border: 1px solid var(--border-cyan, rgba(0, 240, 255, 0.45)) !important;
+    border-radius: var(--radius-lg, 12px) !important;
+    box-shadow: var(--shadow-card, 0 16px 45px rgba(0, 0, 0, 0.92), 0 0 20px rgba(0, 240, 255, 0.2)) !important;
     width: 100% !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+}
+
+#incident-modal-overlay .modal-card {
     max-width: 520px !important;
     max-height: 90vh !important;
-    overflow-y: auto !important;
-    padding: 20px 24px !important;
-    color: #f1f5f9 !important;
-    position: relative !important;
-    z-index: 100000 !important;
 }
 
 /* 9. Leaflet Dashboard Mini-Map Container Reliability */

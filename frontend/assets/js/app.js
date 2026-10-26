@@ -6526,16 +6526,18 @@ async function openAddIncidentModal() {
     if (!assetOpts) assetOpts = '<option value="">Tidak ada aset tersedia</option>';
 
     const modal = document.createElement('div');
-    modal.className = 'modal-overlay active';
-    modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:99999;background:rgba(8,12,20,0.88);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;overflow-y:auto;padding:16px;box-sizing:border-box;';
+    modal.className = 'modal-backdrop';
     modal.id = 'incident-modal-overlay';
     modal.innerHTML = `
-    <div class="modal-box" style="background:#0f172a !important;border:1px solid rgba(0,240,255,0.4);border-radius:12px;box-shadow:0 16px 48px rgba(0,0,0,0.9), 0 0 20px rgba(0,240,255,0.15);max-width:520px;width:100%;max-height:90vh;overflow-y:auto;padding:22px;color:#f1f5f9;box-sizing:border-box;position:relative;">
+    <div class="modal-card" style="max-width:520px !important;">
         <div class="modal-header">
-            <h3><i class="fa-solid fa-triangle-exclamation text-red"></i> Tambah Insiden Baru</h3>
-            <button class="modal-close-btn" onclick="document.getElementById('incident-modal-overlay').remove()"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-title-wrap">
+                <i class="fa-solid fa-triangle-exclamation text-red"></i>
+                <h5>Tambah Insiden Baru</h5>
+            </div>
+            <button type="button" class="modal-close-btn" onclick="document.getElementById('incident-modal-overlay').remove()"><i class="fa-solid fa-xmark"></i></button>
         </div>
-        <div class="modal-body" style="display:flex;flex-direction:column;gap:12px;">
+        <div class="modal-body" style="padding:18px 22px !important;display:flex;flex-direction:column;gap:12px;">
             <div class="form-group">
                 <label class="form-label">Aset / Perangkat <span class="text-red">*</span></label>
                 <select id="inc-asset-id" class="form-control">${assetOpts}</select>
@@ -6581,9 +6583,9 @@ async function openAddIncidentModal() {
                 <textarea id="inc-description" class="form-control" rows="3" placeholder="Jelaskan detail insiden, penyebab, dan langkah penanganan..."></textarea>
             </div>
         </div>
-        <div class="modal-footer" style="display:flex;gap:8px;justify-content:flex-end;">
-            <button class="btn btn-outline-cyber btn-sm" onclick="document.getElementById('incident-modal-overlay').remove()">Batal</button>
-            <button class="btn btn-telegram btn-sm" onclick="handleSaveIncident(null)"><i class="fa-solid fa-floppy-disk"></i> Simpan Insiden</button>
+        <div class="modal-footer" style="padding:14px 22px !important;border-top:1px solid var(--border-dark);display:flex;gap:10px;justify-content:flex-end;align-items:center;background:rgba(0,0,0,0.2);">
+            <button type="button" class="btn btn-outline-cyber btn-sm" onclick="document.getElementById('incident-modal-overlay').remove()">Batal</button>
+            <button type="button" class="btn btn-primary-cyber btn-sm" onclick="handleSaveIncident(null)"><i class="fa-solid fa-floppy-disk"></i> Simpan Insiden</button>
         </div>
     </div>`;
     document.body.appendChild(modal);
@@ -6616,16 +6618,18 @@ async function openEditIncidentModal(incId) {
     ).join('');
 
     const modal = document.createElement('div');
-    modal.className = 'modal-overlay active';
-    modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:99999;background:rgba(8,12,20,0.88);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;overflow-y:auto;padding:16px;box-sizing:border-box;';
+    modal.className = 'modal-backdrop';
     modal.id = 'incident-modal-overlay';
     modal.innerHTML = `
-    <div class="modal-box" style="background:#0f172a !important;border:1px solid rgba(0,240,255,0.4);border-radius:12px;box-shadow:0 16px 48px rgba(0,0,0,0.9), 0 0 20px rgba(0,240,255,0.15);max-width:520px;width:100%;max-height:90vh;overflow-y:auto;padding:22px;color:#f1f5f9;box-sizing:border-box;position:relative;">
+    <div class="modal-card" style="max-width:520px !important;">
         <div class="modal-header">
-            <h3><i class="fa-solid fa-pen-to-square text-cyan"></i> Edit Insiden ${inc.id}</h3>
-            <button class="modal-close-btn" onclick="document.getElementById('incident-modal-overlay').remove()"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-title-wrap">
+                <i class="fa-solid fa-pen-to-square text-cyan"></i>
+                <h5>Edit Insiden ${inc.id}</h5>
+            </div>
+            <button type="button" class="modal-close-btn" onclick="document.getElementById('incident-modal-overlay').remove()"><i class="fa-solid fa-xmark"></i></button>
         </div>
-        <div class="modal-body" style="display:flex;flex-direction:column;gap:12px;">
+        <div class="modal-body" style="padding:18px 22px !important;display:flex;flex-direction:column;gap:12px;">
             <div class="form-group">
                 <label class="form-label">Aset / Perangkat</label>
                 <select id="inc-asset-id" class="form-control">${assetOpts}</select>
@@ -6647,9 +6651,9 @@ async function openEditIncidentModal(incId) {
                 <textarea id="inc-description" class="form-control" rows="3">${inc.description || inc.rootCause || ''}</textarea>
             </div>
         </div>
-        <div class="modal-footer" style="display:flex;gap:8px;justify-content:flex-end;">
-            <button class="btn btn-outline-cyber btn-sm" onclick="document.getElementById('incident-modal-overlay').remove()">Batal</button>
-            <button class="btn btn-telegram btn-sm" onclick="handleSaveIncident('${inc.rawId}')"><i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan</button>
+        <div class="modal-footer" style="padding:14px 22px !important;border-top:1px solid var(--border-dark);display:flex;gap:10px;justify-content:flex-end;align-items:center;background:rgba(0,0,0,0.2);">
+            <button type="button" class="btn btn-outline-cyber btn-sm" onclick="document.getElementById('incident-modal-overlay').remove()">Batal</button>
+            <button type="button" class="btn btn-primary-cyber btn-sm" onclick="handleSaveIncident('${inc.rawId}')"><i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan</button>
         </div>
     </div>`;
     document.body.appendChild(modal);
