@@ -40,7 +40,7 @@ const FALLBACK_ASSETS = [
     asset_code: "CCTV-02",
     asset_name: "CCTV Marketing",
     category: "CCTV",
-    ip_address: "192.168.1.3",
+    ip_address: "192.168.1.10",
     mac_address: "98:A8:29:01:FA:D2",
     location_id: 1,
     location_name: "Marketing Office",

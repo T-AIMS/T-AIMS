@@ -140,6 +140,27 @@ router.post('/real-ping', authenticate, async (req, res) => {
 });
 
 // ============================================================
+// GET /api/monitoring/targets
+// Auth: API Key (Digunakan oleh daemon monitoring untuk sync dinamis)
+// ============================================================
+router.get('/targets', apiKeyAuth, async (req, res) => {
+    try {
+        const [rows] = await db.query(
+            `SELECT asset_id, asset_code, asset_name, ip_address, monitoring_method 
+             FROM assets 
+             WHERE ip_address IS NOT NULL AND ip_address != '' AND TRIM(ip_address) != '-'`
+        );
+        res.status(200).json({
+            success: true,
+            data: rows
+        });
+    } catch (err) {
+        console.error('GET /api/monitoring/targets error:', err);
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
+// ============================================================
 // POST /api/monitoring/ping
 // Auth: API Key
 // ============================================================
