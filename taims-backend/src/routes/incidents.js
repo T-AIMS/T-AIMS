@@ -226,6 +226,26 @@ router.put('/:id', authenticate, can('update'), async (req, res) => {
 });
 
 // ============================================================
+// DELETE /api/incidents/clear/resolved
+// Bersihkan seluruh riwayat insiden pemulihan / terselesaikan
+// ============================================================
+router.delete('/clear/resolved', authenticate, can('delete'), async (req, res) => {
+    try {
+        const [result] = await db.query(
+            "DELETE FROM incidents WHERE incident_status IN ('resolved', 'closed') OR description LIKE '%pulih%' OR incident_type LIKE '%recovery%'"
+        );
+        res.status(200).json({
+            success: true,
+            message: `${result.affectedRows} riwayat insiden pemulihan berhasil dibersihkan`,
+            affected_rows: result.affectedRows
+        });
+    } catch (err) {
+        console.error('DELETE /api/incidents/clear/resolved error:', err);
+        res.status(500).json({ success: false, error: 'Internal server error' });
+    }
+});
+
+// ============================================================
 // DELETE /api/incidents/:id
 // Hapus insiden (super_admin only)
 // ============================================================

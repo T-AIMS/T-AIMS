@@ -1,345 +1,487 @@
-/**
- * =============================================================================
- * T-AIMS 3D DIGITAL TWIN & X-RAY STYLES
- * =============================================================================
- */
+/* =============================================================================
+ * T-AIMS DIGITAL TWIN 3D ARCHITECTURAL STYLES
+ * ============================================================================= */
 
-/* Container Utama 3D */
-#floorplan-3d-view {
-    position: relative;
-    width: 100%;
-    margin-top: 15px;
-    animation: fp3dFadeIn 0.35s ease;
-}
-
-@keyframes fp3dFadeIn {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* Toolbar Kontrol 3D */
-.fp3d-toolbar {
-    display: flex;
-    flex-wrap: wrap;
+/* 2D CAD vs 3D Digital Twin Dimension Switcher Pill */
+.dimension-switcher {
+    display: inline-flex;
+    background: rgba(15, 23, 42, 0.95);
+    border: 1px solid rgba(0, 240, 255, 0.4);
+    border-radius: 20px;
+    padding: 3px 5px;
+    gap: 4px;
+    margin-left: 0;
     align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    background: rgba(15, 23, 42, 0.75);
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(0, 240, 255, 0.25);
-    border-radius: 12px;
-    padding: 10px 16px;
-    margin-bottom: 12px;
+    vertical-align: middle;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+    width: fit-content;
+    flex-shrink: 0;
 }
-
-.fp3d-toolbar-group {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 8px;
-}
-
-/* Tombol Aksi 3D */
-.btn-fp3d, .btn-fp3d-view {
+.btn-dim {
+    border-radius: 16px;
+    padding: 5px 14px;
+    font-size: 0.74rem;
+    border: none;
+    background: transparent;
+    color: #94A3B8;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
     display: inline-flex;
     align-items: center;
-    gap: 7px;
-    background: rgba(30, 41, 59, 0.85);
-    color: #CBD5E1;
-    border: 1px solid rgba(148, 163, 184, 0.25);
-    border-radius: 8px;
-    padding: 7px 14px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    cursor: pointer;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    gap: 6px;
+}
+.btn-dim:hover {
+    color: #FFF;
+    background: rgba(255, 23, 68, 0.15);
+}
+.btn-dim.active {
+    background: rgba(255, 23, 68, 0.22) !important;
+    border: 1.5px solid #FF1744 !important;
+    color: #FFFFFF !important;
+    font-weight: 700 !important;
+    box-shadow: 0 0 14px rgba(255, 23, 68, 0.45) !important;
+}
+.btn-dim.active i {
+    color: #FFFFFF !important;
 }
 
-.btn-fp3d:hover, .btn-fp3d-view:hover {
-    background: rgba(0, 240, 255, 0.15);
-    color: #00F0FF;
-    border-color: rgba(0, 240, 255, 0.5);
-    transform: translateY(-1px);
-}
-
-.btn-fp3d-view.active {
-    background: linear-gradient(135deg, rgba(0, 240, 255, 0.25), rgba(56, 189, 248, 0.2));
-    color: #00F0FF;
-    border-color: #00F0FF;
-    box-shadow: 0 0 12px rgba(0, 240, 255, 0.35);
-}
-
-/* Status Khusus Tombol */
-.btn-fp3d.active-xray {
-    background: linear-gradient(135deg, rgba(234, 88, 12, 0.25), rgba(245, 158, 11, 0.2));
-    color: #FB923C;
-    border-color: #EA580C;
-    box-shadow: 0 0 12px rgba(234, 88, 12, 0.35);
-}
-
-.btn-fp3d.night-on {
-    background: linear-gradient(135deg, rgba(168, 85, 247, 0.25), rgba(99, 102, 241, 0.2));
-    color: #C084FC;
-    border-color: #A855F7;
-    box-shadow: 0 0 12px rgba(168, 85, 247, 0.35);
-}
-
-.btn-fp3d.rotate-on {
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(5, 150, 105, 0.2));
-    color: #34D399;
-    border-color: #10B981;
-    box-shadow: 0 0 12px rgba(16, 185, 129, 0.35);
-}
-
-.btn-fp3d.active {
-    background: rgba(0, 240, 255, 0.2);
-    color: #00F0FF;
-    border-color: #00F0FF;
-}
-
-/* Panggung Kanvas 3D */
-#fp3d-canvas-stage {
+/* Container Stage 3D */
+.fp3d-master-stage {
     position: relative;
     width: 100%;
-    height: 580px;
-    border-radius: 14px;
-    overflow: hidden;
     background: #070B14;
-    border: 1px solid rgba(0, 240, 255, 0.25);
-    box-shadow: inset 0 0 35px rgba(0, 0, 0, 0.8), 0 8px 32px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(56, 189, 248, 0.25);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+    margin-bottom: 20px;
+}
+.fp3d-floating-toolbar {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    left: auto;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    z-index: 10;
+    pointer-events: none;
+}
+.fp3d-toolbar-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(10, 15, 29, 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(56, 189, 248, 0.35);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6), 0 0 12px rgba(6, 182, 212, 0.15);
+    border-radius: 8px;
+    padding: 5px 8px;
+    pointer-events: auto;
+}
+.btn-fp3d-view,
+.btn-fp3d-site,
+.btn-fp3d-action {
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text-muted);
+    font-size: 0.74rem;
+    font-weight: 600;
+    padding: 5px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+.btn-fp3d-view:hover,
+.btn-fp3d-site:hover,
+.btn-fp3d-action:hover {
+    color: #FFF;
+    background: rgba(56, 189, 248, 0.15);
+}
+.btn-fp3d-view.active,
+.btn-fp3d-site.active {
+    background: rgba(6, 182, 212, 0.25);
+    color: var(--cyan-neon);
+    border-color: rgba(6, 182, 212, 0.5);
+    box-shadow: 0 0 10px rgba(6, 182, 212, 0.25);
+}
+.btn-fp3d-action.active-xray {
+    background: rgba(239, 68, 68, 0.2);
+    color: #EF4444;
+    border-color: rgba(239, 68, 68, 0.5);
+}
+.btn-fp3d-action.night-on {
+    background: rgba(139, 92, 246, 0.2);
+    color: #A78BFA;
+    border-color: rgba(139, 92, 246, 0.5);
+}
+.btn-fp3d-action.rotate-on {
+    background: rgba(16, 185, 129, 0.2);
+    color: #10B981;
+    border-color: rgba(16, 185, 129, 0.5);
 }
 
-#fp3d-canvas-stage canvas {
+/* Canvas Area */
+#fp3d-canvas-stage {
+    width: 100%;
+    height: 560px;
     display: block;
-    width: 100% !important;
-    height: 100% !important;
-    outline: none;
+    cursor: grab;
+}
+#fp3d-canvas-stage:active {
+    cursor: grabbing;
 }
 
-/* CCTV HUD Live Overlay */
+/* CCTV HUD */
 .fp3d-cctv-hud {
     position: absolute;
     inset: 0;
     pointer-events: none;
     display: none;
-    z-index: 10;
-    background: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.15) 1px, transparent 1px, transparent 2px);
+    z-index: 5;
+    border: 2px solid rgba(245, 158, 11, 0.3);
+    background: radial-gradient(circle, transparent 65%, rgba(0, 0, 0, 0.6) 100%);
 }
-
 .fp3d-cctv-hud.active {
     display: block;
 }
-
-.cctv-hud-header {
+.cctv-rec-badge {
     position: absolute;
-    top: 18px;
+    top: 60px;
     left: 20px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.85rem;
-    color: #22C55E;
-    text-shadow: 0 0 8px #22C55E;
     display: flex;
     align-items: center;
-    gap: 12px;
-}
-
-.cctv-hud-dot {
+    gap: 8px;
+    background: rgba(0, 0, 0, 0.75);
+    border: 1px solid rgba(239, 68, 68, 0.6);
     color: #EF4444;
-    animation: cctvBlink 1s infinite;
+    font-weight: 800;
+    font-size: 0.78rem;
+    padding: 4px 10px;
+    border-radius: 4px;
+    letter-spacing: 1px;
 }
-
-@keyframes cctvBlink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.1; }
+.cctv-rec-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #EF4444;
+    animation: pulseRed 1s infinite;
 }
-
-.cctv-hud-reticle {
+.cctv-cam-title {
+    position: absolute;
+    top: 60px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.75);
+    border: 1px solid rgba(245, 158, 11, 0.4);
+    color: #F59E0B;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    padding: 4px 10px;
+    border-radius: 4px;
+}
+.cctv-timestamp {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.75);
+    color: #F8FAFC;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    padding: 4px 10px;
+    border-radius: 4px;
+}
+.cctv-crosshair {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 60px;
-    height: 60px;
-    border: 1px solid rgba(34, 197, 94, 0.35);
+    width: 40px;
+    height: 40px;
+    border: 1px solid rgba(245, 158, 11, 0.4);
     border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: rgba(34, 197, 94, 0.6);
-    font-family: monospace;
-    font-size: 1.2rem;
 }
+.cctv-crosshair::before,
+.cctv-crosshair::after {
+    content: '';
+    position: absolute;
+    background: rgba(245, 158, 11, 0.4);
+}
+.cctv-crosshair::before { top: 50%; left: -8px; right: -8px; height: 1px; }
+.cctv-crosshair::after { left: 50%; top: -8px; bottom: -8px; width: 1px; }
 
-/* Tooltip Mengambang Pin Raycaster */
+/* Tooltip Hover Pin */
 .fp3d-tooltip {
-    background: rgba(10, 15, 29, 0.92);
-    backdrop-filter: blur(10px);
-    border: 1px solid #38BDF8;
-    border-radius: 10px;
-    padding: 10px 14px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), 0 0 16px rgba(56, 189, 248, 0.25);
-    transform: translate(14px, -50%);
-    min-width: 190px;
+    position: absolute;
+    display: none;
+    z-index: 20;
     pointer-events: none;
-    z-index: 100;
+    background: rgba(10, 15, 29, 0.95);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(56, 189, 248, 0.5);
+    border-radius: 8px;
+    padding: 10px 14px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+    min-width: 200px;
 }
-
 .fp3d-tooltip-title {
     font-weight: 700;
-    font-size: 0.88rem;
-    color: #F8FAFC;
-    margin-bottom: 3px;
+    color: #FFF;
+    font-size: 0.84rem;
     display: flex;
     align-items: center;
     gap: 6px;
 }
-
 .fp3d-tooltip-sub {
     font-size: 0.72rem;
-    color: #94A3B8;
+    color: var(--text-muted);
+    margin-top: 2px;
 }
-
 .fp3d-tooltip-badge {
     font-size: 0.65rem;
     font-weight: 700;
-    padding: 2px 7px;
+    padding: 2px 6px;
     border-radius: 4px;
-    font-family: 'JetBrains Mono', monospace;
 }
+.fp3d-tooltip-badge.online { background: rgba(16, 185, 129, 0.2); color: #10B981; }
+.fp3d-tooltip-badge.offline { background: rgba(239, 68, 68, 0.2); color: #EF4444; }
 
-.fp3d-tooltip-badge.online {
-    background: rgba(16, 185, 129, 0.2);
-    color: #34D399;
-    border: 1px solid #10B981;
+/* Accordion Perangkat */
+.fp3d-device-accordion {
+    background: #0A0F1D;
+    border-top: 1px solid rgba(56, 189, 248, 0.15);
 }
-
-.fp3d-tooltip-badge.offline {
-    background: rgba(239, 68, 68, 0.2);
-    color: #F87171;
-    border: 1px solid #EF4444;
+.fp3d-acc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.2s;
+    gap: 8px;
 }
-
-/* Accordion Daftar Perangkat di Bawah Kanvas */
-.fp3d-accordion-wrap {
-    margin-top: 14px;
-    background: rgba(15, 23, 42, 0.6);
-    border: 1px solid rgba(148, 163, 184, 0.15);
-    border-radius: 12px;
-    overflow: hidden;
+.fp3d-acc-header:hover {
+    background: rgba(56, 189, 248, 0.05);
 }
-
-.fp3d-accordion-header {
+.fp3d-acc-header-left {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 12px 18px;
-    background: rgba(30, 41, 59, 0.6);
-    cursor: pointer;
-    transition: background 0.2s ease;
+    gap: 7px;
+    flex: 1 1 auto;
+    min-width: 0;
 }
-
-.fp3d-accordion-header:hover {
-    background: rgba(30, 41, 59, 0.9);
-}
-
-.fp3d-accordion-header h5 {
-    margin: 0;
-    font-size: 0.86rem;
+.fp3d-acc-title {
+    color: #FFF;
+    font-size: 0.84rem;
     font-weight: 700;
-    color: #F1F5F9;
+    white-space: nowrap;
+    letter-spacing: 0.2px;
+}
+#fp3d-site-badge {
+    white-space: nowrap;
+    font-size: 0.68rem;
+    padding: 2px 7px;
+    border-radius: 9999px;
+    background: rgba(56, 189, 248, 0.12);
+    color: #38BDF8;
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    flex-shrink: 0;
+}
+.fp3d-acc-header-right {
     display: flex;
     align-items: center;
     gap: 8px;
-    letter-spacing: 0.4px;
+    flex-shrink: 0;
 }
-
+.btn-fp3d-add-pin {
+    background: rgba(16, 185, 129, 0.22) !important;
+    border: 1.2px solid #10B981 !important;
+    color: #6EE7B7 !important;
+    font-size: 0.74rem !important;
+    font-weight: 700 !important;
+    border-radius: 6px !important;
+    padding: 4px 10px !important;
+    cursor: pointer !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+    line-height: 1.2 !important;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.22) !important;
+    transition: all 0.2s ease !important;
+}
+.btn-fp3d-add-pin:hover {
+    background: rgba(16, 185, 129, 0.35) !important;
+    color: #FFFFFF !important;
+    border-color: #34D399 !important;
+    box-shadow: 0 4px 14px rgba(16, 185, 129, 0.45) !important;
+    transform: translateY(-1px) !important;
+}
+@media (max-width: 580px) {
+    .fp3d-acc-header {
+        padding: 9px 12px;
+        gap: 8px;
+    }
+    .fp3d-acc-title {
+        font-size: 0.82rem;
+    }
+    #fp3d-site-badge {
+        display: none !important; /* Diringkas di layar HP agar tombol Titik Baru leluasa dan rapi */
+    }
+    .btn-fp3d-add-pin {
+        font-size: 0.74rem !important;
+        padding: 5px 10px !important;
+    }
+}
 .fp3d-device-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 12px;
-    padding: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 10px;
+    padding: 14px 18px 18px 18px;
+    background: #070B14;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
-
 .fp3d-device-card {
-    background: rgba(15, 23, 42, 0.85);
-    border: 1px solid rgba(148, 163, 184, 0.18);
-    border-radius: 10px;
-    padding: 12px 14px;
+    background: #0D1527;
+    border: 1px solid rgba(56, 189, 248, 0.12);
+    border-radius: 8px;
+    padding: 10px 12px;
     transition: all 0.2s ease;
 }
-
 .fp3d-device-card:hover {
-    border-color: rgba(0, 240, 255, 0.45);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    border-color: rgba(56, 189, 248, 0.4);
     transform: translateY(-2px);
 }
-
 .fp3d-dev-header {
     display: flex;
-    align-items: flex-start;
     justify-content: space-between;
-    margin-bottom: 8px;
+    align-items: flex-start;
+    gap: 8px;
 }
-
 .fp3d-dev-info {
     display: flex;
     align-items: center;
     gap: 10px;
 }
-
 .fp3d-dev-icon {
     width: 32px;
     height: 32px;
-    border-radius: 8px;
-    background: rgba(0, 240, 255, 0.12);
-    color: #00F0FF;
+    border-radius: 6px;
+    background: rgba(56, 189, 248, 0.12);
+    color: var(--cyan-neon);
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 0.9rem;
+    flex-shrink: 0;
 }
-
 .fp3d-dev-name {
-    font-size: 0.82rem;
+    font-size: 0.78rem;
     font-weight: 700;
     color: #F8FAFC;
-    line-height: 1.2;
 }
-
 .fp3d-dev-loc {
     font-size: 0.7rem;
-    color: #94A3B8;
-    margin-top: 2px;
+    color: var(--text-muted);
 }
-
 .fp3d-dev-meta {
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    padding-top: 8px;
-    border-top: 1px solid rgba(148, 163, 184, 0.1);
+    align-items: center;
+    margin-top: 8px;
+    padding-top: 6px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
-
 .fp3d-dev-ip {
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.72rem;
     color: #38BDF8;
 }
-
 .btn-fp3d-focus {
-    background: rgba(0, 240, 255, 0.1);
-    color: #00F0FF;
-    border: 1px solid rgba(0, 240, 255, 0.3);
-    border-radius: 6px;
-    padding: 3px 8px;
+    background: rgba(56, 189, 248, 0.12);
+    border: 1px solid rgba(56, 189, 248, 0.25);
+    color: #38BDF8;
     font-size: 0.68rem;
     font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 4px;
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: all 0.2s;
+}
+.btn-fp3d-focus:hover {
+    background: var(--cyan-neon);
+    color: #070B14;
 }
 
-.btn-fp3d-focus:hover {
-    background: #00F0FF;
-    color: #000;
+/* Compare Modal */
+.compare-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+.compare-col {
+    background: #0A0F1D;
+    border: 1px solid rgba(56, 189, 248, 0.15);
+    border-radius: 8px;
+    padding: 12px;
+}
+.compare-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--cyan-neon);
+    margin-bottom: 8px;
+}
+.compare-img {
+    width: 100%;
+    height: 240px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+@media (max-width: 768px) {
+    .compare-grid { grid-template-columns: 1fr; }
+    #fp3d-canvas-stage { height: 420px; }
+    .fp3d-floating-toolbar {
+        top: 8px;
+        right: 6px;
+        left: 6px;
+        justify-content: center;
+        overflow-x: hidden;
+        flex-wrap: nowrap;
+        padding-bottom: 0;
+        pointer-events: auto;
+    }
+    .fp3d-toolbar-group {
+        display: flex;
+        align-items: center;
+        gap: 3px;
+        padding: 4px 6px;
+        width: 100%;
+        max-width: 400px;
+        justify-content: space-between;
+    }
+    .btn-fp3d-view,
+    .btn-fp3d-site,
+    .btn-fp3d-action {
+        padding: 4px 5px;
+        font-size: 0.68rem;
+        gap: 3px;
+        white-space: nowrap;
+        flex: 1 1 auto;
+        justify-content: center;
+    }
+}
+@media (hover: none) {
+    .fp3d-tooltip {
+        display: none !important;
+    }
 }

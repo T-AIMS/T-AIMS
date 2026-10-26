@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const db = require('../config/db');
-const { authenticate, can } = require('../middleware/auth');
+const { authenticate, authorize, can } = require('../middleware/auth');
 
 // ============================================================
 // GET /api/users
@@ -13,7 +13,7 @@ router.get('/', authenticate, can('read'), async (req, res) => {
         const { role, search } = req.query;
 
         let sql = `
-            SELECT user_id, full_name, email, role, created_at
+            SELECT user_id, full_name, username, email, role, status, pic_task, avatar, created_at
             FROM users
             WHERE 1=1
         `;
@@ -52,7 +52,7 @@ router.get('/:id', authenticate, can('read'), async (req, res) => {
         const { id } = req.params;
 
         const [rows] = await db.query(
-            'SELECT user_id, full_name, email, role, created_at FROM users WHERE user_id = ?',
+            'SELECT user_id, full_name, username, email, role, status, pic_task, avatar, created_at FROM users WHERE user_id = ?',
             [id]
         );
 
@@ -73,7 +73,7 @@ router.get('/:id', authenticate, can('read'), async (req, res) => {
 // ============================================================
 router.post('/', authenticate, can('create'), async (req, res) => {
     try {
-        const { full_name, email, password, role = 'user' } = req.body;
+        const { full_name, username, email, password, role = 'user', status, pic_task, avatar } = req.body;
 
         // Validasi
         if (!full_name || !email || !password) {
@@ -90,7 +90,10 @@ router.post('/', authenticate, can('create'), async (req, res) => {
             });
         }
 
-        if (!['super_admin', 'admin', 'user'].includes(role)) {
+        if (role === 'super_admin') {
+            return res.status(403).json({ success: false, error: 'Peran Superadmin berstatus paten khusus untuk Dzakwan Miftahussobirin' });
+        }
+        if (!['admin', 'user'].includes(role)) {
             return res.status(400).json({
                 success: false,
                 error: 'Role harus salah satu dari: super_admin, admin, user'
@@ -111,8 +114,8 @@ router.post('/', authenticate, can('create'), async (req, res) => {
 
         // Insert
         const [result] = await db.query(
-            'INSERT INTO users (full_name, email, password_hash, role) VALUES (?, ?, ?, ?)',
-            [full_name, email, password_hash, role]
+            'INSERT INTO users (full_name, username, email, password_hash, role, status, pic_task, avatar) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+            [full_name, (username && String(username).trim()) ? String(username).trim().toLowerCase() : null, email, password_hash, role, status || 'Aktif', pic_task || null, avatar || null]
         );
 
         res.status(201).json({
@@ -121,12 +124,18 @@ router.post('/', authenticate, can('create'), async (req, res) => {
             data: {
                 user_id: result.insertId,
                 full_name,
+                username: username ? String(username).trim().toLowerCase() : null,
                 email,
-                role
+                role,
+                status: status || 'Aktif',
+                pic_task: pic_task || null
             }
         });
     } catch (err) {
         console.error('POST /api/users error:', err);
+        if (err.code === 'ER_DUP_ENTRY') {
+            return res.status(409).json({ success: false, error: 'Email atau username sudah terdaftar' });
+        }
         res.status(500).json({ success: false, error: 'Internal server error' });
     }
 });
@@ -138,15 +147,29 @@ router.post('/', authenticate, can('create'), async (req, res) => {
 router.put('/:id', authenticate, can('update'), async (req, res) => {
     try {
         const { id } = req.params;
-        const { full_name, email } = req.body;
+        const { full_name, username, email, password, role, status, pic_task, avatar } = req.body;
 
         // Cek user ada
         const [existing] = await db.query(
-            'SELECT user_id FROM users WHERE user_id = ?',
+            'SELECT user_id, username, email, role FROM users WHERE user_id = ?',
             [id]
         );
         if (existing.length === 0) {
             return res.status(404).json({ success: false, error: 'User tidak ditemukan' });
+        }
+
+        const isTargetDzakwan = (existing[0].user_id === 1 || existing[0].username === 'dzakwan' || existing[0].email === 'dzakwan@taims.id');
+        if (isTargetDzakwan && role !== undefined && role !== 'super_admin') {
+            return res.status(403).json({
+                success: false,
+                error: 'Peran akun Superadmin Dzakwan Miftahussobirin berstatus paten dan tidak dapat diubah atau diturunkan.'
+            });
+        }
+        if (!isTargetDzakwan && role === 'super_admin') {
+            return res.status(403).json({
+                success: false,
+                error: 'Peran Superadmin berstatus paten khusus untuk Dzakwan Miftahussobirin'
+            });
         }
 
         // Build update
@@ -157,9 +180,34 @@ router.put('/:id', authenticate, can('update'), async (req, res) => {
             updates.push('full_name = ?');
             params.push(full_name);
         }
+        if (username !== undefined && String(username).trim().length > 0) {
+            updates.push('username = ?');
+            params.push(String(username).trim().toLowerCase());
+        }
         if (email !== undefined) {
             updates.push('email = ?');
             params.push(email);
+        }
+        if (role !== undefined && ['super_admin', 'admin', 'user'].includes(role) && (String(req.headers['x-taims-actor-role'] || req.user?.role || '').toLowerCase().replace(/[_\s-]/g, '') === 'superadmin' || !req.headers['x-taims-actor-role'])) {
+            updates.push('role = ?');
+            params.push(role);
+        }
+        if (status !== undefined && ['Aktif', 'Non-Aktif'].includes(status)) {
+            updates.push('status = ?');
+            params.push(status);
+        }
+        if (pic_task !== undefined) {
+            updates.push('pic_task = ?');
+            params.push(String(pic_task).slice(0, 150));
+        }
+        if (avatar !== undefined) {
+            updates.push('avatar = ?');
+            params.push(avatar || null);
+        }
+        if (password && typeof password === 'string' && password.trim().length >= 1) {
+            const password_hash = await bcrypt.hash(password.trim(), 10);
+            updates.push('password_hash = ?');
+            params.push(password_hash);
         }
 
         if (updates.length === 0) {
@@ -176,6 +224,14 @@ router.put('/:id', authenticate, can('update'), async (req, res) => {
             params
         );
 
+        // Reset lockout bila akun di-edit/di-reset oleh Admin/Superadmin
+        try {
+            const authRoutes = require('./auth');
+            if (authRoutes && typeof authRoutes.clearLoginLockout === 'function') {
+                authRoutes.clearLoginLockout(id);
+            }
+        } catch (e) {}
+
         res.status(200).json({
             success: true,
             message: 'User berhasil diupdate'
@@ -183,7 +239,7 @@ router.put('/:id', authenticate, can('update'), async (req, res) => {
     } catch (err) {
         console.error('PUT /api/users/:id error:', err);
         if (err.code === 'ER_DUP_ENTRY') {
-            return res.status(409).json({ success: false, error: 'Email sudah terdaftar' });
+            return res.status(409).json({ success: false, error: 'Email atau username sudah terdaftar' });
         }
         res.status(500).json({ success: false, error: 'Internal server error' });
     }
@@ -199,11 +255,18 @@ router.delete('/:id', authenticate, can('delete'), async (req, res) => {
 
         // Cek user ada
         const [existing] = await db.query(
-            'SELECT user_id, role FROM users WHERE user_id = ?',
+            'SELECT user_id, username, email, role FROM users WHERE user_id = ?',
             [id]
         );
         if (existing.length === 0) {
             return res.status(404).json({ success: false, error: 'User tidak ditemukan' });
+        }
+
+        if (existing[0].user_id === 1 || existing[0].username === 'dzakwan' || existing[0].email === 'dzakwan@taims.id') {
+            return res.status(403).json({
+                success: false,
+                error: 'Akun Superadmin Utama Dzakwan Miftahussobirin berstatus paten dan tidak dapat dihapus.'
+            });
         }
 
         // Tidak bisa hapus diri sendiri
@@ -256,7 +319,7 @@ router.delete('/:id', authenticate, can('delete'), async (req, res) => {
 // PUT /api/users/:id/role
 // Ubah role user (super_admin only)
 // ============================================================
-router.put('/:id/role', authenticate, can('update'), async (req, res) => {
+router.put('/:id/role', authenticate, authorize('super_admin'), async (req, res) => {
     try {
         const { id } = req.params;
         const { role } = req.body;
@@ -271,11 +334,24 @@ router.put('/:id/role', authenticate, can('update'), async (req, res) => {
 
         // Cek user ada
         const [existing] = await db.query(
-            'SELECT user_id, role FROM users WHERE user_id = ?',
+            'SELECT user_id, username, email, role FROM users WHERE user_id = ?',
             [id]
         );
         if (existing.length === 0) {
             return res.status(404).json({ success: false, error: 'User tidak ditemukan' });
+        }
+
+        if (role === 'super_admin') {
+            return res.status(403).json({
+                success: false,
+                error: 'Peran Superadmin berstatus paten khusus untuk Dzakwan Miftahussobirin'
+            });
+        }
+        if (existing[0].user_id === 1 || existing[0].username === 'dzakwan' || existing[0].email === 'dzakwan@taims.id') {
+            return res.status(403).json({
+                success: false,
+                error: 'Peran Superadmin Dzakwan Miftahussobirin berstatus paten dan tidak dapat diubah.'
+            });
         }
 
         // Nggak bisa ubah role diri sendiri

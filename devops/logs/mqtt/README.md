@@ -9,4 +9,4 @@ Penanggung jawab: Wafian
 sudo tail -f /var/log/mosquitto/mosquitto.log
 
 ## Cara Backup
-sudo cp /var/log/mosquitto/mosquitto.log /mnt/d/xampp/htdocs/T-AIMS/logs/mqtt/
+sudo cp /var/log/mosquitto/mosquitto.log /mnt/d/T-AIMS/logs/mqtt/

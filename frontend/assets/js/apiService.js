@@ -13,11 +13,6 @@ const BASE_URL = (function() {
   }
   return 'http://localhost:3000/api';
 })();
-const DEFAULT_AUTH = {
-  email: 'dzakwan@taims.local',
-  password: 'password123'
-};
-
 // 17 DATA ASET RESMI DATABASE MYSQL TEKNOLAB (Single Source of Truth)
 const FALLBACK_ASSETS = [
   {
@@ -30,7 +25,7 @@ const FALLBACK_ASSETS = [
     location_id: 2,
     location_name: "Head Office",
     pic_user_id: 2,
-    pic_name: "Ananda Dwi Susanti",
+    pic_name: "Tim Teknolab",
     monitoring_method: "Ping",
     monitoring_config: { http_path: "/", timeout_seconds: 5, retry_count: 3, check_interval_seconds: 60 },
     current_status: "offline",
@@ -50,7 +45,7 @@ const FALLBACK_ASSETS = [
     location_id: 1,
     location_name: "Marketing Office",
     pic_user_id: 2,
-    pic_name: "Ananda Dwi Susanti",
+    pic_name: "Tim Teknolab",
     monitoring_method: "Ping",
     monitoring_config: { http_path: "/", timeout_seconds: 5, retry_count: 3, check_interval_seconds: 60 },
     current_status: "offline",
@@ -70,7 +65,7 @@ const FALLBACK_ASSETS = [
     location_id: 2,
     location_name: "Head Office",
     pic_user_id: 2,
-    pic_name: "Ananda Dwi Susanti",
+    pic_name: "Tim Teknolab",
     monitoring_method: "Ping",
     monitoring_config: { timeout_seconds: 5, retry_count: 3, check_interval_seconds: 60 },
     current_status: "offline",
@@ -90,7 +85,7 @@ const FALLBACK_ASSETS = [
     location_id: 1,
     location_name: "Marketing Office",
     pic_user_id: 2,
-    pic_name: "Ananda Dwi Susanti",
+    pic_name: "Tim Teknolab",
     monitoring_method: "Ping",
     monitoring_config: { timeout_seconds: 5, retry_count: 3, check_interval_seconds: 60 },
     current_status: "offline",
@@ -110,7 +105,7 @@ const FALLBACK_ASSETS = [
     location_id: 1,
     location_name: "Marketing Office",
     pic_user_id: 2,
-    pic_name: "Ananda Dwi Susanti",
+    pic_name: "Tim Teknolab",
     monitoring_method: "Ping",
     monitoring_config: { timeout_seconds: 5, retry_count: 3, check_interval_seconds: 60 },
     current_status: "offline",
@@ -130,7 +125,7 @@ const FALLBACK_ASSETS = [
     location_id: 2,
     location_name: "Head Office",
     pic_user_id: 2,
-    pic_name: "Ananda Dwi Susanti",
+    pic_name: "Tim Teknolab",
     monitoring_method: "Ping",
     monitoring_config: { timeout_seconds: 5, retry_count: 3, check_interval_seconds: 60 },
     current_status: "offline",
@@ -150,7 +145,7 @@ const FALLBACK_ASSETS = [
     location_id: 2,
     location_name: "Head Office",
     pic_user_id: 7,
-    pic_name: "Damar Munajad",
+    pic_name: "Tim Teknolab",
     monitoring_method: "Ping",
     monitoring_config: { timeout_seconds: 5, retry_count: 3, check_interval_seconds: 60 },
     current_status: "offline",
@@ -170,7 +165,7 @@ const FALLBACK_ASSETS = [
     location_id: 2,
     location_name: "Head Office",
     pic_user_id: 7,
-    pic_name: "Damar Munajad",
+    pic_name: "Tim Teknolab",
     monitoring_method: "Ping",
     monitoring_config: { timeout_seconds: 5, retry_count: 3, check_interval_seconds: 60 },
     current_status: "offline",
@@ -190,9 +185,9 @@ const FALLBACK_ASSETS = [
     location_id: 2,
     location_name: "Head Office",
     pic_user_id: 3,
-    pic_name: "Ilvina Muvarika",
+    pic_name: "Tim Teknolab",
     monitoring_method: "Heartbeat",
-    monitoring_config: { mqtt_topic: "taims/heartbeat/ESP-01", interval_seconds: 30, qos: 1 },
+    monitoring_config: { mqtt_topic: "Tim Teknolab", interval_seconds: 30, qos: 1 },
     current_status: "offline",
     priority: 2,
     last_seen: "Menunggu Koneksi Fisik",
@@ -210,9 +205,9 @@ const FALLBACK_ASSETS = [
     location_id: 2,
     location_name: "Head Office",
     pic_user_id: 3,
-    pic_name: "Ilvina Muvarika",
+    pic_name: "Tim Teknolab",
     monitoring_method: "Heartbeat",
-    monitoring_config: { mqtt_topic: "taims/heartbeat/RPI-01", interval_seconds: 60, qos: 1 },
+    monitoring_config: { mqtt_topic: "Tim Teknolab", interval_seconds: 60, qos: 1 },
     current_status: "offline",
     priority: 2,
     last_seen: "Menunggu Koneksi Fisik",
@@ -230,7 +225,7 @@ const FALLBACK_ASSETS = [
     location_id: 1,
     location_name: "Marketing Office",
     pic_user_id: 2,
-    pic_name: "Ananda Dwi Susanti",
+    pic_name: "Tim Teknolab",
     monitoring_method: "Ping",
     monitoring_config: { timeout_seconds: 5, retry_count: 3, check_interval_seconds: 60 },
     current_status: "offline",
@@ -250,7 +245,7 @@ const FALLBACK_ASSETS = [
     location_id: 3,
     location_name: "House of Server",
     pic_user_id: 2,
-    pic_name: "Ananda Dwi Susanti",
+    pic_name: "Tim Teknolab",
     monitoring_method: "Ping",
     monitoring_config: { timeout_seconds: 5, retry_count: 3, check_interval_seconds: 60 },
     current_status: "offline",
@@ -270,7 +265,7 @@ const FALLBACK_ASSETS = [
     location_id: 3,
     location_name: "House of Server",
     pic_user_id: 5,
-    pic_name: "Ahmad Reza Fahmi",
+    pic_name: "Tim Teknolab",
     monitoring_method: "HTTP",
     monitoring_config: { http_path: "/api/health", expected_status: 200, timeout_seconds: 5 },
     current_status: "offline",
@@ -290,9 +285,9 @@ const FALLBACK_ASSETS = [
     location_id: 3,
     location_name: "House of Server",
     pic_user_id: 3,
-    pic_name: "Ilvina Muvarika",
+    pic_name: "Tim Teknolab",
     monitoring_method: "Heartbeat",
-    monitoring_config: { mqtt_topic: "taims/heartbeat/RPI-02", interval_seconds: 60, qos: 1 },
+    monitoring_config: { mqtt_topic: "Tim Teknolab", interval_seconds: 60, qos: 1 },
     current_status: "offline",
     priority: 2,
     last_seen: "Menunggu Koneksi Fisik",
@@ -310,7 +305,7 @@ const FALLBACK_ASSETS = [
     location_id: 3,
     location_name: "House of Server",
     pic_user_id: 2,
-    pic_name: "Ananda Dwi Susanti",
+    pic_name: "Tim Teknolab",
     monitoring_method: "Ping",
     monitoring_config: { timeout_seconds: 5, retry_count: 3, check_interval_seconds: 60 },
     current_status: "offline",
@@ -366,43 +361,19 @@ async function apiLogin(email, password) {
 }
 
 /**
- * 2. Memastikan Token JWT Tersedia (Auto-login bila belum ada)
+ * 2. Memastikan Token JWT Tersedia dari localStorage (No Auto-Login / No Rate Limit)
  */
-let _authPromise = null;
-
 async function ensureAuthToken() {
-  let token = localStorage.getItem('taims_jwt_token');
+  const token = localStorage.getItem('taims_jwt_token');
   if (token && typeof token === 'string' && token.trim() !== '') {
     return token;
   }
-
-  // Jika token belum ada di localStorage, auto-login langsung ke backend
-  if (!_authPromise) {
-    _authPromise = (async () => {
-      try {
-        console.log("🔐 [T-AIMS Auth] Token belum ada, melakukan auto-login ke backend...");
-        const loginRes = await apiLogin(DEFAULT_AUTH.email, DEFAULT_AUTH.password);
-        if (loginRes && loginRes.success && loginRes.data && loginRes.data.token) {
-          console.log("✅ [T-AIMS Auth] Auto-login berhasil! Token diperoleh:", loginRes.data.token.slice(0, 15) + "...");
-          return loginRes.data.token;
-        } else {
-          console.warn("⚠️ [T-AIMS Auth] Auto-login gagal:", loginRes ? loginRes.error : "Unknown error");
-        }
-      } catch (err) {
-        console.warn("⚠️ [T-AIMS Auth] Gagal auto-login:", err.message);
-      } finally {
-        _authPromise = null;
-      }
-      return '';
-    })();
-  }
-
-  const fresh = await _authPromise;
-  return fresh || localStorage.getItem('taims_jwt_token') || '';
+  throw new Error('Sesi belum terotentikasi. Silakan login terlebih dahulu.');
 }
 
 /**
- * 3. Generic Authenticated Fetch Wrapper dengan Auto-Retry saat 401
+ * 3. Generic Authenticated Fetch Wrapper
+ * Jika response 401: Bersihkan token dan kembalikan ke layar login (jangan retry/spam login).
  */
 async function apiFetch(endpoint, options = {}) {
   const token = await ensureAuthToken();
@@ -420,20 +391,37 @@ async function apiFetch(endpoint, options = {}) {
   });
 
   if (response.status === 401) {
-    console.warn(`⚠️ [T-AIMS Auth] HTTP 401 saat akses ${endpoint}. Mengambil token baru dan mencoba ulang...`);
+    console.warn(`⚠️ [T-AIMS Auth] HTTP 401 saat akses ${endpoint}. Token tidak valid/kedaluwarsa.`);
     localStorage.removeItem('taims_jwt_token');
-    const freshToken = await ensureAuthToken();
-    if (freshToken) {
-      headers['Authorization'] = `Bearer ${freshToken}`;
-      const retryRes = await fetch(`${BASE_URL}${endpoint}`, { ...options, headers });
-      if (retryRes.ok) {
-        return await retryRes.json();
+    localStorage.removeItem('taims_user');
+    localStorage.removeItem('taims_user_role');
+    localStorage.removeItem('taims_active_session');
+    sessionStorage.removeItem('taims_session');
+
+    if (typeof window !== 'undefined') {
+      if (typeof logoutToAuth === 'function') {
+        logoutToAuth();
+      } else {
+        const authScreen = document.getElementById('auth-screen');
+        const mainDash = document.getElementById('main-dashboard');
+        if (authScreen && mainDash) {
+          mainDash.classList.add('hidden');
+          authScreen.classList.remove('hidden');
+        }
       }
     }
+
+    const err = new Error('Sesi telah berakhir (401). Silakan login kembali.');
+    err.status = 401;
+    throw err;
   }
 
   if (!response.ok) {
-    throw new Error(`HTTP error ${response.status}`);
+    let msg = `HTTP error ${response.status}`;
+    try { const j = await response.clone().json(); if (j && j.error) msg = j.error; } catch (e) {}
+    const err = new Error(msg);
+    err.status = response.status;
+    throw err;
   }
 
   return await response.json();
@@ -573,14 +561,26 @@ async function getLocations() {
 async function getUsers() {
   try {
     const res = await apiFetch('/users');
-    if (res && res.success && Array.isArray(res.data)) {
+    if (res && res.success && Array.isArray(res.data) && res.data.length > 0) {
       return res.data;
     }
-    return [];
   } catch (error) {
     console.warn("Gagal memuat pengguna dari database:", error);
-    return [];
   }
+  if (typeof DEFAULT_USERS_LIST !== 'undefined' && Array.isArray(DEFAULT_USERS_LIST) && DEFAULT_USERS_LIST.length > 0) {
+    return DEFAULT_USERS_LIST.map(u => ({
+      user_id: u.rawId,
+      full_name: u.name,
+      username: u.username,
+      email: u.email,
+      role: u.role === 'Superadmin' ? 'super_admin' : (u.role === 'Admin' ? 'admin' : 'user'),
+      status: u.status,
+      pic_task: u.picTask,
+      avatar: u.avatar || null,
+      last_login_at: null
+    }));
+  }
+  return [];
 }
 
 /**
@@ -595,9 +595,13 @@ async function createUser(userData) {
 
   const payload = {
     full_name: userData.full_name || userData.name || 'Pengguna Baru',
+    username: userData.username,
     email: userData.email,
     password: userData.password || 'password123',
-    role: normalizedRole
+    role: normalizedRole,
+    status: userData.status,
+    pic_task: userData.pic_task,
+    avatar: userData.avatar
   };
 
   try {
@@ -625,27 +629,40 @@ async function createAsset(assetData) {
     else locId = 2;
   }
   let picId = assetData.pic_user_id;
-  if (!picId && assetData.pic_name) {
-    const pname = String(assetData.pic_name).toLowerCase();
-    if (pname.includes('ananda')) picId = 2;
-    else if (pname.includes('ilvina')) picId = 3;
-    else if (pname.includes('faida')) picId = 4;
-    else if (pname.includes('reza')) picId = 5;
-    else picId = 1;
+  if (picId === undefined && assetData.pic_name !== undefined) {
+    const pname = String(assetData.pic_name).toLowerCase().trim();
+    if (!pname || pname.includes('tim') || pname.includes('teknolab')) {
+      picId = null;
+    } else {
+      const found = (typeof APP_STATE !== 'undefined' && APP_STATE.usersList)
+        ? APP_STATE.usersList.find(u => 
+            (u.name && u.name.toLowerCase().includes(pname)) ||
+            (u.username && u.username.toLowerCase().includes(pname)) ||
+            (u.full_name && u.full_name.toLowerCase().includes(pname))
+          )
+        : null;
+      picId = found ? (found.rawId || found.user_id || found.id) : null;
+    }
+  }
+
+  // Sanitasi installation_date agar sesuai format YYYY-MM-DD untuk MySQL
+  let instDate = assetData.installation_date || assetData.installDate || null;
+  if (instDate && !/^\d{4}-\d{2}-\d{2}$/.test(instDate)) {
+    instDate = new Date().toISOString().slice(0, 10);
   }
 
   const payload = {
     asset_code: assetData.asset_code || assetData.code,
     asset_name: assetData.asset_name || assetData.name,
-    category: assetData.category || 'Lainnya',
+    category: assetData.category || 'Router',
     ip_address: assetData.ip_address || assetData.ip || null,
     mac_address: assetData.mac_address || assetData.mac || null,
-    location_id: locId || null,
-    pic_user_id: picId || null,
+    location_id: locId || 2,
+    pic_user_id: picId || 1,
     monitoring_method: assetData.monitoring_method || assetData.method || 'Ping',
     monitoring_config: assetData.monitoring_config || { timeout_seconds: 5, retry_count: 3, check_interval_seconds: 60 },
     priority: assetData.priority || 2,
-    installation_date: assetData.installation_date || assetData.installDate || null,
+    installation_date: instDate,
     description: assetData.description || null,
     check_interval_seconds: assetData.check_interval_seconds || 60,
     timeout_seconds: assetData.timeout_seconds || 5,
@@ -659,35 +676,11 @@ async function createAsset(assetData) {
     });
     return res;
   } catch (error) {
-    console.warn("Gagal menambah aset via API (server offline), menyimpan ke local fallback:", error);
-    const current = getLocalFallbackAssets();
-    
-    // Cegah duplikasi jika sudah di-unshift oleh antarmuka app.js
-    const incomingCode = assetData.asset_code || assetData.code;
-    const incomingIp = assetData.ip_address || assetData.ip;
-    const alreadyExists = current.some(a => 
-      (incomingCode && (a.asset_code === incomingCode || a.code === incomingCode)) ||
-      (incomingIp && incomingIp !== '-' && (a.ip_address === incomingIp || a.ip === incomingIp))
-    );
-
-    if (alreadyExists) {
-      return { success: true, is_fallback: true };
-    }
-
-    const newId = Date.now();
-    const st = assetData.current_status || assetData.status || 'offline';
-    const newAsset = {
-      asset_id: newId,
-      id: newId,
-      status: st,
-      current_status: st,
-      ...assetData
+    console.warn("Gagal menambah aset via API:", error.message);
+    return {
+      success: false,
+      error: error.message || 'Gagal menyimpan aset ke database backend.'
     };
-    current.unshift(newAsset);
-    try {
-      localStorage.setItem('taims_devices_v4', JSON.stringify(current));
-    } catch (e) {}
-    return { success: true, data: newAsset, is_fallback: true };
   }
 }
 
@@ -695,6 +688,28 @@ async function createAsset(assetData) {
  * 11. Update Aset (PUT /api/assets/:id)
  */
 async function updateAsset(assetId, assetData) {
+  // Sanitasi installation_date agar sesuai format YYYY-MM-DD untuk MySQL
+  if (assetData && assetData.installation_date && !/^\d{4}-\d{2}-\d{2}$/.test(assetData.installation_date)) {
+    assetData.installation_date = new Date().toISOString().slice(0, 10);
+  }
+
+  // Resolusi otomatis pic_user_id jika pic_name dikirimkan
+  if (assetData && assetData.pic_user_id === undefined && assetData.pic_name !== undefined) {
+    const pname = String(assetData.pic_name).toLowerCase().trim();
+    if (!pname || pname.includes('tim') || pname.includes('teknolab')) {
+      assetData.pic_user_id = null;
+    } else {
+      const found = (typeof APP_STATE !== 'undefined' && APP_STATE.usersList)
+        ? APP_STATE.usersList.find(u => 
+            (u.name && u.name.toLowerCase().includes(pname)) ||
+            (u.username && u.username.toLowerCase().includes(pname)) ||
+            (u.full_name && u.full_name.toLowerCase().includes(pname))
+          )
+        : null;
+      assetData.pic_user_id = found ? (found.rawId || found.user_id || found.id) : null;
+    }
+  }
+
   try {
     const res = await apiFetch(`/assets/${assetId}`, {
       method: 'PUT',
@@ -702,17 +717,11 @@ async function updateAsset(assetId, assetData) {
     });
     return res;
   } catch (error) {
-    console.warn("Gagal update aset via API (server offline), update ke local fallback:", error);
-    const current = getLocalFallbackAssets();
-    const idx = current.findIndex(a => String(a.asset_id || a.id) === String(assetId) || String(a.asset_code || a.code) === String(assetId));
-    if (idx !== -1) {
-      current[idx] = { ...current[idx], ...assetData };
-      if (assetData.asset_code) { current[idx].asset_code = assetData.asset_code; current[idx].code = assetData.asset_code; }
-      try {
-        localStorage.setItem('taims_devices_v4', JSON.stringify(current));
-      } catch (e) {}
-    }
-    return { success: true, is_fallback: true };
+    console.warn("Gagal update aset via API:", error.message);
+    return {
+      success: false,
+      error: error.message || 'Gagal memperbarui aset di database backend.'
+    };
   }
 }
 
@@ -726,13 +735,11 @@ async function deleteAsset(assetId) {
     });
     return res;
   } catch (error) {
-    console.warn("Gagal delete aset via API (server offline), update ke local fallback:", error);
-    let current = getLocalFallbackAssets();
-    current = current.filter(a => String(a.asset_id || a.id) !== String(assetId));
-    try {
-      localStorage.setItem('taims_devices_v4', JSON.stringify(current));
-    } catch (e) {}
-    return { success: true, is_fallback: true };
+    console.warn("Gagal delete aset via API:", error.message);
+    return {
+      success: false,
+      error: error.message || 'Gagal menghapus aset dari database backend.'
+    };
   }
 }
 
@@ -837,8 +844,8 @@ async function updateUser(userId, userData) {
     });
     return res;
   } catch (error) {
-    console.warn("Gagal update user via API (offline fallback):", error);
-    return { success: true, is_fallback: true };
+    console.warn("Gagal update user via API:", error);
+    return { success: false, is_fallback: true, error: error.message || String(error), status: error.status };
   }
 }
 
@@ -853,8 +860,8 @@ async function deleteUser(userId) {
     });
     return res;
   } catch (error) {
-    console.warn("Gagal delete user via API (offline fallback):", error);
-    return { success: true, is_fallback: true };
+    console.warn("Gagal delete user via API:", error);
+    return { success: false, is_fallback: true, error: error.message || String(error), status: error.status };
   }
 }
 
@@ -910,6 +917,21 @@ async function updateIncident(incidentId, incidentData) {
 /**
  * 18b. Bersihkan Seluruh Insiden Pemulihan/Selesai (DELETE /api/incidents/clear/resolved)
  */
+/**
+ * 19. Hapus Insiden (DELETE /api/incidents/:id)
+ */
+async function deleteIncident(incidentId) {
+  try {
+    const rawId = String(incidentId).replace(/\D/g, '') || incidentId;
+    const res = await apiFetch(`/incidents/${rawId}`, { method: 'DELETE' });
+    if (res && res.success) return res;
+    throw new Error(res?.error || 'Delete incident failed');
+  } catch (error) {
+    console.warn('Gagal hapus incident via API:', error);
+    throw error;
+  }
+}
+
 async function clearResolvedIncidents() {
   try {
     const res = await apiFetch('/incidents/clear/resolved', {
@@ -946,7 +968,7 @@ async function getUnreadNotificationCount() {
   try {
     const res = await apiFetch('/notifications/unread-count');
     if (res && res.success && res.data) {
-      return Number(res.data.unread_count) || 0;
+      return Number(res.data.unread !== undefined ? res.data.unread : res.data.unread_count) || 0;
     }
     return 0;
   } catch (error) {
@@ -991,6 +1013,30 @@ async function clearAllNotifications() {
   } catch (error) {
     console.warn("Gagal bersihkan notifikasi:", error);
     return { success: true, is_fallback: true };
+  }
+}
+
+/**
+ * 22c. Pemeliharaan Basis Data: Bersihkan Log Lama > 30 Hari (POST /api/monitoring/clean-logs)
+ */
+async function triggerLogCleanup() {
+  try {
+    const res = await apiFetch('/monitoring/clean-logs', { method: 'POST' });
+    return res;
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+}
+
+/**
+ * 22d. Monitoring Resource Server (CPU, RAM, Disks, Uptime) (GET /api/monitoring/server-metrics)
+ */
+async function getServerMetrics() {
+  try {
+    const res = await apiFetch('/monitoring/server-metrics');
+    return res;
+  } catch (error) {
+    return { success: false, error: error.message };
   }
 }
 
@@ -1414,6 +1460,7 @@ window.testTelegramAlert = testTelegramAlert;
 
 // Pasang ke window agar bisa diakses secara global di semua file html
 window.apiService = {
+    _baseUrl: BASE_URL,
   BASE_URL,
   apiLogin,
   ensureAuthToken,
@@ -1456,8 +1503,11 @@ window.apiService = {
   getUnreadNotificationCount,
   markNotificationRead,
   markAllNotificationsRead,
+  deleteIncident,
   clearResolvedIncidents,
   clearAllNotifications,
+  triggerLogCleanup,
+  getServerMetrics,
   getMaintenanceList,
   getMaintenanceById,
   createMaintenance,
@@ -1513,6 +1563,7 @@ window.getIncidentLogs = getIncidentLogs;
 window.getIncidentById = getIncidentById;
 window.createIncident = createIncident;
 window.updateIncident = updateIncident;
+window.deleteIncident = deleteIncident;
 window.clearResolvedIncidents = clearResolvedIncidents;
 window.getLocations = getLocations;
 window.getLocationById = getLocationById;
@@ -1529,6 +1580,8 @@ window.getUnreadNotificationCount = getUnreadNotificationCount;
 window.markNotificationRead = markNotificationRead;
 window.markAllNotificationsRead = markAllNotificationsRead;
 window.clearAllNotifications = clearAllNotifications;
+window.triggerLogCleanup = triggerLogCleanup;
+window.getServerMetrics = getServerMetrics;
 window.getMaintenanceList = getMaintenanceList;
 window.getMaintenanceById = getMaintenanceById;
 window.createMaintenance = createMaintenance;

@@ -24,8 +24,8 @@ mqttClient.on('message', async (topic, message) => {
         console.log(`💓 Heartbeat from ${assetCode}:`, payload);
 
         const [assets] = await db.query(
-            'SELECT asset_id FROM assets WHERE asset_code = ?',
-            [assetCode]
+            'SELECT asset_id FROM assets WHERE asset_code = ? OR asset_code = ? LIMIT 1',
+            [assetCode, assetCode.replace(/^IOT-/, '')]
         );
 
         if (assets.length === 0) {
@@ -68,7 +68,7 @@ mqttClient.on('message', async (topic, message) => {
         } else if (deviceStatus === 'offline') {
             await db.query(
                 `UPDATE assets 
-                 SET current_status = 'offline', last_seen = NOW(), offline_since = COALESCE(offline_since, NOW()), updated_at = NOW()
+                 SET current_status = 'offline', offline_since = COALESCE(offline_since, NOW()), updated_at = NOW()
                  WHERE asset_id = ?`,
                 [assetId]
             );

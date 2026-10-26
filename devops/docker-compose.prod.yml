@@ -65,6 +65,7 @@ services:
       MQTT_PORT: 1883
       MQTT_USER: ${MQTT_USER:-taims-broker}
       MQTT_PASS: ${MQTT_PASS:-taims-mqtt-2026}
+      DEVICE_API_KEY: ${DEVICE_API_KEY:-taims_dev_5bee447416b0fac135fcb60e4a6b84621ec75fdb132549f1}
       JWT_SECRET: ${JWT_SECRET:-taims_jwt_production_secure_token_2026}
     depends_on:
       mysql:
@@ -72,7 +73,7 @@ services:
       mosquitto:
         condition: service_started
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/api/monitoring/health"]
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://127.0.0.1:3000/api/monitoring/health"]
       interval: 15s
       timeout: 5s
       retries: 3

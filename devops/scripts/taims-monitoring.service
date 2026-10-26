@@ -1,0 +1,21 @@
+[Unit]
+Description=T-AIMS Multi-Site Network Monitoring Engine Daemon
+After=network.target docker.service
+Wants=docker.service
+
+[Service]
+Type=simple
+User=dragon-wafian
+WorkingDirectory=/mnt/d/T-AIMS/network-monitoring
+Environment="BACKEND_URL=http://127.0.0.1:3000/api"
+Environment="DEVICE_API_KEY=taims_dev_5bee447416b0fac135fcb60e4a6b84621ec75fdb132549f1"
+Environment="MONITORING_INTERVAL=15"
+Environment="RETRY_COUNT=3"
+ExecStart=/usr/bin/python3 -u /mnt/d/T-AIMS/network-monitoring/monitoring_engine.py
+Restart=always
+RestartSec=5
+StandardOutput=append:/mnt/d/T-AIMS/logs/monitoring.log
+StandardError=append:/mnt/d/T-AIMS/logs/monitoring_error.log
+
+[Install]
+WantedBy=multi-user.target

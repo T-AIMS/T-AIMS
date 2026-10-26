@@ -1,17 +1,15 @@
 # =====================================================================
-# T-AIMS FULL-STACK DOCKER COMPOSE ORCHESTRATION
-# Penanggung Jawab : Wafian (DevOps, Server & Security Engineer)
-# Deskripsi        : Manajemen 5 Core Services T-AIMS dalam 1 Network
+# T-AIMS PRODUCTION DOCKER COMPOSE STACK
+# Penanggung Jawab : Wafian Zaidan (DevOps & Server Network Security Engineer)
+# PT Teknolab Caraka Internasional
 # =====================================================================
 
 services:
-  # -------------------------------------------------------------------
-  # 1. DATABASE SERVICE (MySQL 8.0)
-  # -------------------------------------------------------------------
+  # 1. DATABASE MYSQL SERVICE
   mysql:
     image: mysql:8.0
     container_name: taims-mysql
-    restart: unless-stopped
+    restart: always
     command: --default-authentication-plugin=mysql_native_password
     ports:
       - "3307:3306"
@@ -20,7 +18,7 @@ services:
       MYSQL_DATABASE: ${DB_NAME:-taims_db}
     volumes:
       - taims_mysql_data:/var/lib/mysql
-      - ./database/taims_db.sql:/docker-entrypoint-initdb.d/01_init.sql:ro
+      - ./Database Final/taims_db_final.sql:/docker-entrypoint-initdb.d/01_init.sql:ro
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_PASS:-root_taims_2026}"]
       interval: 10s
@@ -30,40 +28,34 @@ services:
     networks:
       - taims-net
 
-  # -------------------------------------------------------------------
-  # 2. MQTT BROKER (Eclipse Mosquitto 2.0)
-  # -------------------------------------------------------------------
+  # 2. MQTT BROKER (Hardened & Password-Protected)
   mosquitto:
     image: eclipse-mosquitto:2
     container_name: taims-mosquitto
-    restart: unless-stopped
+    restart: always
     ports:
-      - "${MQTT_PORT:-1883}:1883"
+      - "1883:1883"
       - "9001:9001"
     volumes:
       - ./devops/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
       - ./devops/mosquitto/passwd:/mosquitto/config/passwd:ro
-      - ./devops/mosquitto/data:/mosquitto/data
-      - ./devops/mosquitto/log:/mosquitto/log
+      - taims_mosquitto_data:/mosquitto/data
+      - taims_mosquitto_log:/mosquitto/log
     networks:
       - taims-net
 
-  # -------------------------------------------------------------------
-  # 3. BACKEND API SERVICE (Node.js Express)
-  # -------------------------------------------------------------------
+  # 3. BACKEND API SERVICE (Express.js)
   backend:
     build:
-      context: ./taims-backend
+      context: ./Backend Final
       dockerfile: Dockerfile
     container_name: taims-backend
-    restart: unless-stopped
+    restart: always
     ports:
-      - "${BACKEND_PORT:-3000}:3000"
+      - "3000:3000"
     environment:
       PORT: 3000
       NODE_ENV: production
-      MQTT_USER: taims-broker
-      MQTT_PASS: taims-mqtt-2026
       DB_HOST: mysql
       DB_PORT: 3306
       DB_USER: root
@@ -71,6 +63,9 @@ services:
       DB_NAME: ${DB_NAME:-taims_db}
       MQTT_HOST: mosquitto
       MQTT_PORT: 1883
+      MQTT_USER: ${MQTT_USER:-taims-broker}
+      MQTT_PASS: ${MQTT_PASS:-taims-mqtt-2026}
+      DEVICE_API_KEY: ${DEVICE_API_KEY:-taims_dev_5bee447416b0fac135fcb60e4a6b84621ec75fdb132549f1}
       JWT_SECRET: ${JWT_SECRET:-taims_jwt_production_secure_token_2026}
     depends_on:
       mysql:
@@ -78,7 +73,7 @@ services:
       mosquitto:
         condition: service_started
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/api/monitoring/health"]
+      test: ["CMD", "node", "-e", "require('http').get('http://127.0.0.1:3000/api/health', (r) => {if (r.statusCode !== 200) process.exit(1);})"]
       interval: 15s
       timeout: 5s
       retries: 3
@@ -86,39 +81,34 @@ services:
     networks:
       - taims-net
 
-  # -------------------------------------------------------------------
-  # 4. FRONTEND DASHBOARD (Nginx Static Server)
-  # -------------------------------------------------------------------
+  # 4. FRONTEND DASHBOARD (Nginx Alpine)
   frontend:
     build:
-      context: ./frontend
+      context: .
       dockerfile: Dockerfile
     container_name: taims-frontend
-    restart: unless-stopped
+    restart: always
     ports:
-      - "${FRONTEND_PORT:-3001}:3001"
+      - "3001:3001"
     depends_on:
       backend:
         condition: service_healthy
     networks:
       - taims-net
 
-  # -------------------------------------------------------------------
-  # 5. AUTOMATION WORKFLOW ENGINE (n8n)
-  # -------------------------------------------------------------------
+  # 5. AUTOMATION WORKFLOW (n8n)
   n8n:
     image: n8nio/n8n
     container_name: taims-n8n
-    restart: unless-stopped
+    restart: always
     ports:
-      - "${N8N_PORT:-5678}:5678"
+      - "5678:5678"
     environment:
       GENERIC_TIMEZONE: Asia/Jakarta
       N8N_HOST: localhost
       N8N_PORT: 5678
       N8N_PROTOCOL: http
       N8N_DIAGNOSTICS_ENABLED: "false"
-      N8N_ENCRYPTION_KEY: "taims-n8n-secret-key-2026-ganti-di-production"
     volumes:
       - taims_n8n_data:/home/node/.n8n
     depends_on:
@@ -126,9 +116,21 @@ services:
     networks:
       - taims-net
 
-# ---------------------------------------------------------------------
-# VOLUMES & NETWORKS DEFINITIONS
-# ---------------------------------------------------------------------
+  # 6. REAL-TIME MONITORING DAEMON (Docker Multi-threaded ICMP Ping)
+  monitoring:
+    build:
+      context: ./Simulators Final
+      dockerfile: Dockerfile
+    container_name: taims-monitoring
+    restart: always
+    environment:
+      BACKEND_HOST: backend
+      BACKEND_PORT: 3000
+      DEVICE_API_KEY: ${DEVICE_API_KEY:-taims_dev_5bee447416b0fac135fcb60e4a6b84621ec75fdb132549f1}
+      MONITORING_INTERVAL: 10
+    networks:
+      - taims-net
+
 volumes:
   taims_mysql_data:
     name: taims_mysql_data

@@ -88,7 +88,7 @@ router.post('/', apiKeyAuth, async (req, res) => {
         } else if (deviceStatus === 'offline') {
             await db.query(
                 `UPDATE assets 
-                 SET current_status = 'offline', last_seen = NOW(), offline_since = COALESCE(offline_since, NOW()), updated_at = NOW()
+                 SET current_status = 'offline', offline_since = COALESCE(offline_since, NOW()), updated_at = NOW()
                  WHERE asset_id = ?`,
                 [asset.asset_id]
             );

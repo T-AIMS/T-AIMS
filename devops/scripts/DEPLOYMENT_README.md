@@ -1,8 +1,8 @@
 # Panduan Otomasi Deployment T-AIMS ke CloudPanel
 
 **Penanggung Jawab:** Wafian (DevOps, Server & Security Engineer - Shift 2)  
-**Referensi:** [`devops/docs/cloudpanel-deployment-runbook.md`](file:///mnt/d/xampp/htdocs/T-AIMS/devops/docs/cloudpanel-deployment-runbook.md)  
-**Skrip Eksekusi:** [`devops/scripts/deploy-to-cloudpanel.sh`](file:///mnt/d/xampp/htdocs/T-AIMS/devops/scripts/deploy-to-cloudpanel.sh)
+**Referensi:** [`devops/docs/cloudpanel-deployment-runbook.md`](file:///mnt/d/T-AIMS/devops/docs/cloudpanel-deployment-runbook.md)  
+**Skrip Eksekusi:** [`devops/scripts/deploy-to-cloudpanel.sh`](file:///mnt/d/T-AIMS/devops/scripts/deploy-to-cloudpanel.sh)
 
 ---
 

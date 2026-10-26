@@ -80,23 +80,34 @@ run_mysql_root "ALTER USER '$DB_USER'@'localhost' IDENTIFIED BY '$DB_PASS';"
 run_mysql_root "GRANT ALL PRIVILEGES ON \`$DB_NAME\`.* TO '$DB_USER'@'localhost';"
 run_mysql_root "FLUSH PRIVILEGES;"
 
-if [ -f "$APP_DIR/database/schema.sql" ]; then
+if [ -f "$APP_DIR/Database Final/taims_db_final.sql" ]; then
+    echo "  → Mengimpor Database Final/taims_db_final.sql (Master Hybrid 10 Tabel)..."
+    import_mysql_file "$APP_DIR/Database Final/taims_db_final.sql"
+elif [ -f "$APP_DIR/database/taims_db.sql" ]; then
+    echo "  → Mengimpor database/taims_db.sql (Master Hybrid 10 Tabel)..."
+    import_mysql_file "$APP_DIR/database/taims_db.sql"
+elif [ -f "$APP_DIR/database/schema.sql" ]; then
     echo "  → Mengimpor database/schema.sql..."
     import_mysql_file "$APP_DIR/database/schema.sql"
-fi
-
-if [ -f "$APP_DIR/database/seed.sql" ]; then
-    echo "  → Mengimpor database/seed.sql..."
-    import_mysql_file "$APP_DIR/database/seed.sql"
-elif [ -f "$APP_DIR/database/taims_db.sql" ]; then
-    echo "  → Mengimpor database/taims_db.sql..."
-    import_mysql_file "$APP_DIR/database/taims_db.sql"
+    if [ -f "$APP_DIR/database/seed.sql" ]; then
+        echo "  → Mengimpor database/seed.sql..."
+        import_mysql_file "$APP_DIR/database/seed.sql"
+    fi
 fi
 echo "  ✓ Basis data MySQL siap digunakan."
 
 # --- 4. SETUP BACKEND REST API (NODE.JS + PM2) ---
 echo "[4/8] Setup backend Node.js dan manajemen proses PM2..."
-cd "$APP_DIR/taims-backend"
+if [ -d "$APP_DIR/Backend Final" ]; then
+    BACKEND_DIR="$APP_DIR/Backend Final"
+elif [ -d "$APP_DIR/backend" ]; then
+    BACKEND_DIR="$APP_DIR/backend"
+elif [ -d "$APP_DIR/taims-backend" ]; then
+    BACKEND_DIR="$APP_DIR/taims-backend"
+else
+    BACKEND_DIR="$APP_DIR"
+fi
+cd "$BACKEND_DIR"
 
 # Install dependensi produksi
 npm install --production
@@ -132,6 +143,9 @@ SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
 SMTP_USER=education8420@gmail.com
 SMTP_PASS=sydnaxxyqkdzypge
+
+# Kunci API Ingesti Telemetri & Ping Perangkat
+DEVICE_API_KEY=taims_dev_5bee447416b0fac135fcb60e4a6b84621ec75fdb132549f1
 EOF
     chmod 600 .env
 fi
@@ -157,11 +171,19 @@ echo "  ✓ Backend Node.js aktif di port 3000 via PM2."
 
 # --- 5. SETUP FRONTEND STATIC WEB ---
 echo "[5/8] Memverifikasi aset frontend web statis..."
-if [ -f "$APP_DIR/frontend/index.html" ]; then
-    echo "  ✓ File $APP_DIR/frontend/index.html terverifikasi."
-    sudo chmod -R 755 "$APP_DIR/frontend"
+if [ -d "$APP_DIR/frontend" ]; then
+    FRONTEND_DIR="$APP_DIR/frontend"
+elif [ -f "$APP_DIR/index.html" ]; then
+    FRONTEND_DIR="$APP_DIR"
 else
-    echo "  ⚠️ Peringatan: File $APP_DIR/frontend/index.html tidak ditemukan!"
+    FRONTEND_DIR="$APP_DIR/frontend"
+fi
+
+if [ -f "$FRONTEND_DIR/index.html" ]; then
+    echo "  ✓ File $FRONTEND_DIR/index.html terverifikasi."
+    sudo chmod -R 755 "$FRONTEND_DIR"
+else
+    echo "  ⚠️ Peringatan: File $FRONTEND_DIR/index.html tidak ditemukan!"
 fi
 
 # --- 6. SETUP MOSQUITTO MQTT BROKER ---
@@ -210,7 +232,7 @@ server {
     listen [::]:80;
     server_name $DOMAIN;
 
-    root $APP_DIR/frontend;
+    root $FRONTEND_DIR;
     index index.html dashboard.html;
 
     # OWASP Security Headers Hardening
@@ -258,7 +280,7 @@ sudo systemctl reload nginx
 echo "  ✓ Konfigurasi Nginx berhasil diterapkan."
 
 # --- 8. SETUP SSL LET'S ENCRYPT ---
-echo "[8/8] Menerbitkan SSL/TLS Let's Encrypt Certbot..."
+echo "[8/9] Menerbitkan SSL/TLS Let's Encrypt Certbot..."
 if command -v certbot &> /dev/null; then
     echo "  → Certbot terdeteksi, memproses sertifikat SSL untuk $DOMAIN..."
     sudo certbot --nginx -d "$DOMAIN" --non-interactive --agree-tos --email admin@teknolab.id --redirect 2>/dev/null || echo "  ℹ️ Lewati penerbitan SSL otomatis (DNS A-record belum mengarah ke IP publik server ini)."
@@ -268,10 +290,41 @@ else
     sudo certbot --nginx -d "$DOMAIN" --non-interactive --agree-tos --email admin@teknolab.id --redirect 2>/dev/null || echo "  ℹ️ Lewati penerbitan SSL otomatis (pastikan DNS di-pointing terlebih dahulu)."
 fi
 
+# --- 9. SERVICE AUTOMATION UNTUK MONITORING ENGINE (ROADMAP HARI 11-12) ---
+echo "[9/9] Mengonfigurasi Service Automation untuk Monitoring Engine..."
+sudo apt-get install -y python3-requests python3-pip 2>/dev/null || true
+
+# Deploy systemd unit file
+SERVICE_SRC="$APP_DIR/devops/scripts/taims-monitoring.service"
+SERVICE_DEST="/etc/systemd/system/taims-monitoring.service"
+
+if [ -f "$SERVICE_SRC" ]; then
+    sudo cp "$SERVICE_SRC" "$SERVICE_DEST"
+    # Sesuaikan path direktori & user sesuai server CloudPanel
+    sudo sed -i "s|/mnt/d/T-AIMS|$APP_DIR|g" "$SERVICE_DEST"
+    sudo sed -i "s|dragon-wafian|$TARGET_USER|g" "$SERVICE_DEST"
+    sudo systemctl daemon-reload
+    sudo systemctl enable taims-monitoring.service
+    sudo systemctl restart taims-monitoring.service
+    echo "  ✓ Systemd Service 'taims-monitoring.service' aktif dan auto-start saat boot."
+else
+    # Fallback ke controller CLI jika file unit belum disalin
+    if [ -f "$APP_DIR/devops/scripts/manage_monitoring_service.sh" ]; then
+        bash "$APP_DIR/devops/scripts/manage_monitoring_service.sh" start
+    fi
+fi
+
+# Daftarkan auto-healing watchdog & backup berkala ke crontab
+if [ -f "$APP_DIR/devops/scripts/manage_monitoring_service.sh" ]; then
+    bash "$APP_DIR/devops/scripts/manage_monitoring_service.sh" install-cron
+    echo "  ✓ Watchdog Auto-Healing cron aktif (inspeksi tiap 2 menit)."
+fi
+
 echo "========================================================"
 echo " ✅ DEPLOYMENT T-AIMS SELESAI!"
 echo " Akses Dashboard : http://$DOMAIN (atau https://$DOMAIN)"
 echo " Backend REST API: http://127.0.0.1:3000/api/monitoring/health"
 echo " Status PM2      : pm2 status"
 echo " Status Mosquitto: systemctl status mosquitto"
+echo " Monitoring Svc  : systemctl status taims-monitoring.service"
 echo "========================================================"

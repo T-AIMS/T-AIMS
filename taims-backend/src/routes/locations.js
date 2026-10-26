@@ -14,6 +14,9 @@ router.get('/', authenticate, async (req, res) => {
                 l.location_id,
                 l.location_name,
                 l.description,
+                l.latitude,
+                l.longitude,
+                l.address,
                 COUNT(a.asset_id) AS total_assets
             FROM locations l
             LEFT JOIN assets a ON a.location_id = l.location_id
@@ -45,6 +48,9 @@ router.get('/:id', authenticate, async (req, res) => {
                 l.location_id,
                 l.location_name,
                 l.description,
+                l.latitude,
+                l.longitude,
+                l.address,
                 COUNT(a.asset_id) AS total_assets
             FROM locations l
             LEFT JOIN assets a ON a.location_id = l.location_id
@@ -72,7 +78,7 @@ router.get('/:id', authenticate, async (req, res) => {
 // ============================================================
 router.post('/', authenticate, can('create'), async (req, res) => {
     try {
-        const { location_name, description } = req.body;
+        const { location_name, description, latitude, longitude, address } = req.body;
 
         // Validasi
         if (!location_name) {
@@ -96,8 +102,8 @@ router.post('/', authenticate, can('create'), async (req, res) => {
 
         // Insert
         const [result] = await db.query(
-            'INSERT INTO locations (location_name, description) VALUES (?, ?)',
-            [location_name, description || null]
+            'INSERT INTO locations (location_name, description, latitude, longitude, address) VALUES (?, ?, ?, ?, ?)',
+            [location_name, description || null, (latitude === '' || latitude === undefined) ? null : latitude, (longitude === '' || longitude === undefined) ? null : longitude, address || null]
         );
 
         res.status(201).json({
@@ -121,7 +127,7 @@ router.post('/', authenticate, can('create'), async (req, res) => {
 router.put('/:id', authenticate, can('update'), async (req, res) => {
     try {
         const { id } = req.params;
-        const { location_name, description } = req.body;
+        const { location_name, description, latitude, longitude, address } = req.body;
 
         // Cek lokasi ada
         const [existing] = await db.query(
@@ -147,6 +153,10 @@ router.put('/:id', authenticate, can('update'), async (req, res) => {
             updates.push('description = ?');
             params.push(description);
         }
+
+        if (latitude !== undefined)  { updates.push('latitude = ?');  params.push(latitude === '' ? null : latitude); }
+        if (longitude !== undefined) { updates.push('longitude = ?'); params.push(longitude === '' ? null : longitude); }
+        if (address !== undefined)   { updates.push('address = ?');   params.push(address || null); }
 
         if (updates.length === 0) {
             return res.status(400).json({

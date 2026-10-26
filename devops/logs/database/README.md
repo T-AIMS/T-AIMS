@@ -1,9 +1,13 @@
 # Log Database T-AIMS
-Dibuat: 14 Oktober 2026
-Penanggung jawab: Wafian
+Penanggung jawab: Wafian (DevOps, Server & Security Engineer)
 
-## Lokasi Log MySQL
-D:\xampp\mysql\data\mysql_error.log
+## Lokasi & Cara Cek Log MySQL
+### 1. Docker Container (Layanan Utama):
+```bash
+docker logs --tail 100 taims-mysql
+```
 
-## Cara Cek
-type D:\xampp\mysql\data\mysql_error.log
+### 2. File Log Tersimpan:
+```text
+logs/database/mysql_YYYY-MM-DD.log
+```

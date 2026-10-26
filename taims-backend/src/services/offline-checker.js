@@ -5,6 +5,21 @@ const mqttClient = require('../config/mqtt');
 const OFFLINE_THRESHOLD_SECONDS = process.env.OFFLINE_THRESHOLD_SECONDS ? parseInt(process.env.OFFLINE_THRESHOLD_SECONDS, 10) : 45;
 const CHECK_INTERVAL_MS = 30000; // 30 detik
 
+// Cooldown in-memory 10 menit agar tidak membanjiri MQTT broker & subscriber
+const alertCooldowns = new Map();
+const COOLDOWN_ALERT_MS = 10 * 60 * 1000;
+
+function shouldPublishAlert(type, assetCode) {
+    const key = `${type}_${assetCode}`;
+    const now = Date.now();
+    const last = alertCooldowns.get(key) || 0;
+    if (now - last < COOLDOWN_ALERT_MS) {
+        return false;
+    }
+    alertCooldowns.set(key, now);
+    return true;
+}
+
 // ============================================================
 // Cek device yang offline
 // ============================================================
@@ -84,6 +99,7 @@ async function checkOfflineDevices() {
             );
 
             console.log(`📤 Alert published: taims/alert/offline/${device.asset_code}`);
+            triggerTelegramAlert('offline', device);
         }
     } catch (err) {
         console.error('❌ Offline checker error:', err.message);
@@ -104,6 +120,7 @@ async function checkRecoveredDevices() {
             WHERE current_status = 'offline'
               AND offline_since IS NOT NULL
               AND last_seen > offline_since
+              AND last_seen >= NOW() - INTERVAL 90 SECOND
         `);
 
         if (recovered.length === 0) return;
@@ -164,6 +181,7 @@ async function checkRecoveredDevices() {
             );
 
             console.log(`📤 Recovery published: taims/alert/recovery/${device.asset_code}`);
+            triggerTelegramAlert('recovery', device);
         }
     } catch (err) {
         console.error('❌ Recovery checker error:', err.message);

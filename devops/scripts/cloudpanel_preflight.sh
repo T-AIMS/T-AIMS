@@ -219,15 +219,17 @@ check_directory_structure() {
     done
 
     # Check local repository environment template
-    REPO_ENV="/mnt/d/xampp/htdocs/T-AIMS/.env.example"
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+    REPO_ENV="$PROJECT_ROOT/.env.example"
     if [ -f "$REPO_ENV" ]; then
         log_pass "Template environment (.env.example) tersedia di repositori inti"
     else
-        log_warn "File .env.example tidak ditemukan di path default"
+        log_warn "File .env.example tidak ditemukan di path default ($REPO_ENV)"
     fi
 
     # Check runbook documentation file
-    RUNBOOK_DOC="/mnt/d/xampp/htdocs/T-AIMS/devops/docs/cloudpanel-deployment-runbook.md"
+    RUNBOOK_DOC="$PROJECT_ROOT/devops/docs/cloudpanel-deployment-runbook.md"
     if [ -f "$RUNBOOK_DOC" ]; then
         log_pass "Dokumen panduan resmi CloudPanel Runbook tersedia ($RUNBOOK_DOC)"
     else

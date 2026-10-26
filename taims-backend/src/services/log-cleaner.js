@@ -85,4 +85,4 @@ function startLogCleaner() {
     });
 }
 
-module.exports = { startLogCleaner };
+module.exports = { startLogCleaner, archiveOldLogs, deleteOldLogs };

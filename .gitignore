@@ -8,9 +8,8 @@ vendor/
 
 # Logs
 *.log
-logs/*.log
-!logs/**/README.md
-!logs/collect-log.sh
+logs/
+*.pid
 
 # Backup
 backup/

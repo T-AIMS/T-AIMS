@@ -8,7 +8,7 @@
 REAL_SCRIPT="$(readlink -f "${BASH_SOURCE[0]}")"
 SCRIPT_DIR="$(cd "$(dirname "$REAL_SCRIPT")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-BACKUP_DIR="${BACKUP_DIR:-$PROJECT_ROOT/database/backups}"
+BACKUP_DIR="${BACKUP_DIR:-$PROJECT_ROOT/Database Final/backups}"
 LOG_FILE="$PROJECT_ROOT/logs/backup.log"
 
 DATE=$(date +%Y%m%d_%H%M%S)

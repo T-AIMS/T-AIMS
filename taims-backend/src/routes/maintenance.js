@@ -1,4 +1,4 @@
-const express = require('express');
+﻿const express = require('express');
 const router = express.Router();
 const db = require('../config/db');
 const { authenticate, can } = require('../middleware/auth');
@@ -23,6 +23,7 @@ router.get('/', authenticate, async (req, res) => {
                 m.performed_at,
                 m.description,
                 m.maintenance_status,
+                m.pic_name,
                 m.created_at
             FROM maintenance m
             LEFT JOIN assets a ON m.asset_id = a.asset_id
@@ -107,6 +108,7 @@ router.post('/', authenticate, can('create'), async (req, res) => {
             scheduled_date,
             performed_at,
             description,
+            pic_name,
             maintenance_status = 'scheduled'
         } = req.body;
 

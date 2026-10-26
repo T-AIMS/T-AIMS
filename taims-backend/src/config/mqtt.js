@@ -1,4 +1,7 @@
 const mqtt = require('mqtt');
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 require('dotenv').config();
 
 const MQTT_HOST = process.env.MQTT_HOST || 'localhost';
@@ -11,8 +14,8 @@ const brokerUrl = `mqtt://${MQTT_HOST}:${MQTT_PORT}`;
 const options = {
     clientId: 'taims-backend-' + Math.random().toString(16).slice(2, 8),
     clean: true,
-    reconnectPeriod: 5000,
-    connectTimeout: 30000,
+    reconnectPeriod: 10000,
+    connectTimeout: 5000,
 };
 
 if (MQTT_USER) {
@@ -22,20 +25,25 @@ if (MQTT_USER) {
 
 const client = mqtt.connect(brokerUrl, options);
 
+let mqttWarningShown = false;
+
 client.on('connect', () => {
     console.log('✅ MQTT connected to', brokerUrl);
+    mqttWarningShown = false;
 });
 
 client.on('error', (err) => {
-    console.error('❌ MQTT error:', err.message);
-});
-
-client.on('reconnect', () => {
-    console.log('🔄 MQTT reconnecting...');
+    if (!mqttWarningShown) {
+        console.warn('⚠️  MQTT broker port 1883 belum aktif di laptop ini. (Aman: HTTP REST API & Ping tetap jalan 100%).');
+        mqttWarningShown = true;
+    }
 });
 
 client.on('offline', () => {
-    console.warn('⚠️  MQTT offline');
+    if (!mqttWarningShown) {
+        console.warn('⚠️  MQTT offline');
+        mqttWarningShown = true;
+    }
 });
 
 module.exports = client;

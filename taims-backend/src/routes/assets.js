@@ -25,7 +25,7 @@ router.get('/', authenticate, async (req, res) => {
                 a.asset_id, a.asset_code, a.asset_name, a.category,
                 a.ip_address, a.mac_address,
                 a.location_id, l.location_name,
-                a.pic_user_id, u.full_name AS pic_name,
+                a.pic_user_id, COALESCE(u.full_name, 'Tim Teknolab') AS pic_name,
                 a.monitoring_method, a.monitoring_config,
                 a.current_status, a.priority, a.last_seen,
                 a.installation_date, a.description,
@@ -116,7 +116,7 @@ router.get('/:id', authenticate, async (req, res) => {
             SELECT 
                 a.*,
                 l.location_name,
-                u.full_name AS pic_name
+                COALESCE(u.full_name, 'Tim Teknolab') AS pic_name
             FROM assets a
             LEFT JOIN locations l ON a.location_id = l.location_id
             LEFT JOIN users u ON a.pic_user_id = u.user_id
@@ -188,6 +188,7 @@ router.get('/:id/history', authenticate, async (req, res) => {
 // ============================================================
 router.post('/', authenticate, can('create'), async (req, res) => {
     try {
+        console.log('[POST /api/assets] Incoming body:', req.body);
         const {
             asset_code, asset_name, category,
             ip_address, mac_address, location_id, pic_user_id,
@@ -200,18 +201,40 @@ router.post('/', authenticate, can('create'), async (req, res) => {
 
         // Validasi field wajib
         if (!asset_code || !asset_name || !category || !monitoring_method) {
+            console.warn('[POST /api/assets] Missing required fields:', { asset_code, asset_name, category, monitoring_method });
             return res.status(400).json({
                 success: false,
                 error: 'asset_code, asset_name, category, monitoring_method wajib diisi'
             });
         }
 
-        // Cek duplikat
+        // Cek duplikat asset_code
         const [existing] = await db.query(
             'SELECT asset_id FROM assets WHERE asset_code = ?', [asset_code]
         );
         if (existing.length > 0) {
-            return res.status(409).json({ success: false, error: 'Asset code sudah ada' });
+            console.warn('[POST /api/assets] Duplicate asset_code:', asset_code);
+            return res.status(409).json({
+                success: false,
+                error: `Kode unik aset '${asset_code}' sudah terdaftar di sistem. Harap gunakan kode unik lain.`
+            });
+        }
+
+        // Alamat IP sama diperbolehkan (arsitektur multi-site MO, HO, dan House of Server)
+
+        // Resolusi otomatis pic_name jika pic_user_id belum diset
+        let effectivePicUserId = pic_user_id;
+        if (effectivePicUserId === undefined && req.body.pic_name !== undefined) {
+            const pName = String(req.body.pic_name).trim().toLowerCase();
+            if (!pName || pName.includes('tim') || pName.includes('teknolab')) {
+                effectivePicUserId = null;
+            } else {
+                const [matchedUsers] = await db.query(
+                    'SELECT user_id FROM users WHERE LOWER(full_name) LIKE ? OR LOWER(username) LIKE ? LIMIT 1',
+                    [`%${pName}%`, `%${pName}%`]
+                );
+                effectivePicUserId = matchedUsers.length > 0 ? matchedUsers[0].user_id : null;
+            }
         }
 
         // Insert
@@ -225,7 +248,7 @@ router.post('/', authenticate, can('create'), async (req, res) => {
             [
                 asset_code, asset_name, category,
                 ip_address || null, mac_address || null,
-                location_id || null, pic_user_id || null,
+                location_id || null, effectivePicUserId || null,
                 monitoring_method,
                 monitoring_config ? JSON.stringify(monitoring_config) : null,
                 priority, installation_date || null, description || null,
@@ -241,6 +264,18 @@ router.post('/', authenticate, can('create'), async (req, res) => {
 
     } catch (err) {
         console.error('POST /api/assets error:', err);
+        if (err.code === 'ER_DUP_ENTRY') {
+            if (err.sqlMessage && err.sqlMessage.includes('uq_ip_location')) {
+                return res.status(409).json({
+                    success: false,
+                    error: `Alamat IP '${req.body.ip_address}' sudah digunakan oleh perangkat lain di lokasi ini (IP Duplikat).`
+                });
+            }
+            return res.status(409).json({
+                success: false,
+                error: `Kode aset atau Alamat IP sudah terdaftar di sistem: ${err.sqlMessage || err.message}`
+            });
+        }
         res.status(500).json({ success: false, error: 'Internal server error' });
     }
 });
@@ -253,12 +288,42 @@ router.put('/:id', authenticate, can('update'), async (req, res) => {
     try {
         const { id } = req.params;
 
-        // Cek asset ada
+        // Cek asset ada (toleran pencarian berdasarkan asset_id numerik maupun asset_code unik)
         const [existing] = await db.query(
-            'SELECT asset_id FROM assets WHERE asset_id = ?', [id]
+            'SELECT asset_id, asset_code FROM assets WHERE asset_id = ? OR asset_code = ? LIMIT 1', [id, id]
         );
         if (existing.length === 0) {
             return res.status(404).json({ success: false, error: 'Asset tidak ditemukan' });
+        }
+        const targetAssetId = existing[0].asset_id;
+
+        // Alamat IP sama diperbolehkan (arsitektur multi-site MO, HO, dan House of Server)
+
+        // Validasi duplikat asset_code (kode unik) pada update
+        if (req.body.asset_code) {
+            const [existingCode] = await db.query(
+                'SELECT asset_id, asset_code FROM assets WHERE asset_code = ? AND asset_id != ?', [req.body.asset_code, targetAssetId]
+            );
+            if (existingCode.length > 0) {
+                return res.status(409).json({
+                    success: false,
+                    error: `Kode unik aset '${req.body.asset_code}' sudah terdaftar pada aset lain (${existingCode[0].asset_code}). Kode aset harus unik.`
+                });
+            }
+        }
+
+        // Resolusi otomatis pic_name jika pic_user_id belum diset pada update
+        if (req.body.pic_name !== undefined && req.body.pic_user_id === undefined) {
+            const pName = String(req.body.pic_name).trim().toLowerCase();
+            if (!pName || pName.includes('tim') || pName.includes('teknolab')) {
+                req.body.pic_user_id = null;
+            } else {
+                const [matchedUsers] = await db.query(
+                    'SELECT user_id FROM users WHERE LOWER(full_name) LIKE ? OR LOWER(username) LIKE ? LIMIT 1',
+                    [`%${pName}%`, `%${pName}%`]
+                );
+                req.body.pic_user_id = matchedUsers.length > 0 ? matchedUsers[0].user_id : null;
+            }
         }
 
         // Field yang boleh diupdate
@@ -269,25 +334,32 @@ router.put('/:id', authenticate, can('update'), async (req, res) => {
             'check_interval_seconds', 'timeout_seconds', 'retry_count'
         ];
 
-        // Ini variabel yang tadi error (wajib ada)
+        let statusChangedTo = null;
         const updates = [];
         const params = [];
-
         for (const field of allowedFields) {
             if (req.body[field] !== undefined) {
                 let value = req.body[field];
-                
-                // Kalau field monitoring_config dan bentuknya object, ubah ke string JSON
                 if (field === 'monitoring_config' && typeof value === 'object') {
                     value = JSON.stringify(value);
                 }
-                
+                if (field === 'current_status' && typeof value === 'string') {
+                    value = value.toLowerCase().trim();
+                    statusChangedTo = value;
+                }
                 updates.push(`${field} = ?`);
                 params.push(value);
             }
         }
 
-        // Kalau user nggak ngirim field apapun
+        if (statusChangedTo === 'online') {
+            updates.push('last_seen = NOW()', 'offline_since = NULL');
+        } else if (statusChangedTo === 'offline') {
+            updates.push('offline_since = COALESCE(offline_since, NOW())');
+        } else if (statusChangedTo === 'unknown') {
+            updates.push('offline_since = NULL');
+        }
+
         if (updates.length === 0) {
             return res.status(400).json({
                 success: false,
@@ -295,76 +367,81 @@ router.put('/:id', authenticate, can('update'), async (req, res) => {
             });
         }
 
-        // Tambahkan ID di akhir params buat WHERE
-        params.push(id);
+        params.push(targetAssetId);
 
-        // Eksekusi query
         await db.query(
             `UPDATE assets SET ${updates.join(', ')}, updated_at = NOW() WHERE asset_id = ?`,
             params
         );
 
+        if (statusChangedTo === 'online') {
+            await db.query(
+                `UPDATE incidents 
+                 SET incident_status = 'resolved'
+                 WHERE asset_id = ? 
+                   AND incident_type = 'Device Offline' 
+                   AND incident_status IN ('open', 'investigating')`,
+                [targetAssetId]
+            );
+        }
+
         res.status(200).json({
             success: true,
-            message: 'Asset berhasil diupdate'
+            message: 'Asset berhasil diupdate',
+            data: {
+                asset_id: targetAssetId,
+                asset_code: req.body.asset_code || existing[0].asset_code
+            }
         });
 
     } catch (err) {
         console.error('PUT /api/assets/:id error:', err);
-        
-        // Handle error kalau asset_code duplikat
         if (err.code === 'ER_DUP_ENTRY') {
-            return res.status(409).json({ success: false, error: 'Asset code sudah ada' });
+            return res.status(409).json({ success: false, error: 'Asset code atau IP sudah ada di database' });
         }
-        
         res.status(500).json({ success: false, error: 'Internal server error' });
     }
 });
 
 // ============================================================
 // DELETE /api/assets/:id
-// Hapus aset + semua riwayat terkait (Cascade Delete)
-// [super_admin only]
+// Hapus aset (super_admin only)
 // ============================================================
 router.delete('/:id', authenticate, can('delete'), async (req, res) => {
-    const connection = await db.getConnection();
     try {
-        await connection.beginTransaction();
-
         const { id } = req.params;
 
-        // Cek asset ada
-        const [existing] = await connection.query(
-            'SELECT asset_id, asset_code FROM assets WHERE asset_id = ?', 
-            [id]
+        const [existing] = await db.query(
+            'SELECT asset_id, asset_code FROM assets WHERE asset_id = ? OR asset_code = ? LIMIT 1', [id, id]
         );
         if (existing.length === 0) {
-            await connection.rollback();
             return res.status(404).json({ success: false, error: 'Asset tidak ditemukan' });
         }
+        const targetAssetId = existing[0].asset_id;
 
-        // 1. Hapus data anak (child tables) dulu biar nggak kena FK constraint
-        await connection.query('DELETE FROM monitoring_logs WHERE asset_id = ?', [id]);
-        await connection.query('DELETE FROM incidents WHERE asset_id = ?', [id]);
-        await connection.query('DELETE FROM maintenance WHERE asset_id = ?', [id]);
-        await connection.query('DELETE FROM notifications WHERE asset_id = ?', [id]);
+        // Bersihkan data terkait sebelum menghapus aset (cascade cleanup)
+        await db.query('DELETE FROM monitoring_logs WHERE asset_id = ?', [targetAssetId]);
+        await db.query('DELETE FROM incidents WHERE asset_id = ?', [targetAssetId]);
+        await db.query('DELETE FROM notifications WHERE asset_id = ?', [targetAssetId]);
+        await db.query('DELETE FROM maintenance WHERE asset_id = ?', [targetAssetId]);
 
-        // 2. Hapus asset utamanya
-        await connection.query('DELETE FROM assets WHERE asset_id = ?', [id]);
-
-        await connection.commit();
+        // Hapus aset utama
+        await db.query('DELETE FROM assets WHERE asset_id = ?', [targetAssetId]);
 
         res.status(200).json({
             success: true,
-            message: `Asset ${existing[0].asset_code} beserta riwayatnya berhasil dihapus`
+            message: 'Asset berhasil dihapus'
         });
 
     } catch (err) {
-        await connection.rollback();
         console.error('DELETE /api/assets/:id error:', err);
+        if (err.code === 'ER_ROW_IS_REFERENCED_2') {
+            return res.status(400).json({
+                success: false,
+                error: 'Asset tidak bisa dihapus karena masih dipakai di tabel lain'
+            });
+        }
         res.status(500).json({ success: false, error: 'Internal server error' });
-    } finally {
-        connection.release();
     }
 });
 

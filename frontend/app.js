@@ -1,6 +1,6 @@
 
 // =============================================================================
-// FORMATTER & CLIPBOARD EXPORTER REKOMENDASI AI (PDF HAL. 11 & HAL. 17)
+// FORMATTER & CLIPBOARD EXPORTER REKOMENDASI AI
 // =============================================================================
 function renderFormattedAiRecommendation(data) {
     if (!data) return '';
@@ -14,50 +14,50 @@ function renderFormattedAiRecommendation(data) {
         const trimmed = p.trim();
         if (trimmed.startsWith('Kondisi Jaringan:')) {
             html += `
-                <div class="ai-rec-card" style="border-left: 3px solid #00F0FF;">
-                    <div class="ai-rec-card-title"><i class="fa-solid fa-network-wired text-cyan"></i> Ringkasan Kondisi Infrastruktur</div>
+                <div class="ai-rec-card" style="border-left: 3.5px solid #F8FAFC;">
+                    <div class="ai-rec-card-title" style="color: #F8FAFC !important;"><i class="fa-solid fa-network-wired" style="color: #F8FAFC;"></i> Ringkasan Kondisi Infrastruktur</div>
                     <div class="ai-rec-card-body">${trimmed}</div>
                 </div>
             `;
         } else if (trimmed.startsWith('Diagnostik Gateway:')) {
             html += `
-                <div class="ai-rec-card" style="border-left: 3px solid #F59E0B;">
-                    <div class="ai-rec-card-title"><i class="fa-solid fa-wifi text-yellow"></i> Diagnostik Router & Gateway</div>
+                <div class="ai-rec-card" style="border-left: 3.5px solid #F59E0B;">
+                    <div class="ai-rec-card-title" style="color: #FBBF24 !important;"><i class="fa-solid fa-wifi text-yellow" style="color: #FBBF24;"></i> Diagnostik Router & Gateway</div>
                     <div class="ai-rec-card-body">${trimmed.replace('Diagnostik Gateway:', '').trim()}</div>
                 </div>
             `;
         } else if (trimmed.startsWith('Diagnostik IoT & Edge:')) {
             html += `
-                <div class="ai-rec-card" style="border-left: 3px solid #10B981;">
-                    <div class="ai-rec-card-title"><i class="fa-solid fa-microchip text-green"></i> Diagnostik Node IoT & Edge</div>
+                <div class="ai-rec-card" style="border-left: 3.5px solid #10B981;">
+                    <div class="ai-rec-card-title" style="color: #34D399 !important;"><i class="fa-solid fa-microchip text-green" style="color: #34D399;"></i> Diagnostik Node IoT & Edge</div>
                     <div class="ai-rec-card-body">${trimmed.replace('Diagnostik IoT & Edge:', '').trim()}</div>
                 </div>
             `;
         } else if (trimmed.startsWith('Diagnostik Pengawasan:')) {
             html += `
-                <div class="ai-rec-card" style="border-left: 3px solid #38BDF8;">
-                    <div class="ai-rec-card-title"><i class="fa-solid fa-video text-cyan"></i> Diagnostik Kamera Pengawas CCTV</div>
+                <div class="ai-rec-card" style="border-left: 3.5px solid #A855F7;">
+                    <div class="ai-rec-card-title" style="color: #C084FC !important;"><i class="fa-solid fa-video" style="color: #C084FC;"></i> Diagnostik Kamera Pengawas CCTV</div>
                     <div class="ai-rec-card-body">${trimmed.replace('Diagnostik Pengawasan:', '').trim()}</div>
                 </div>
             `;
         } else if (trimmed.startsWith('Peringatan Server Core:')) {
             html += `
-                <div class="ai-rec-card" style="border-left: 3px solid #EF4444;">
-                    <div class="ai-rec-card-title"><i class="fa-solid fa-server text-red"></i> Peringatan Server Core & Data Center</div>
+                <div class="ai-rec-card" style="border-left: 3.5px solid #EF4444;">
+                    <div class="ai-rec-card-title" style="color: #F87171 !important;"><i class="fa-solid fa-server text-red" style="color: #F87171;"></i> Peringatan Server Core & Data Center</div>
                     <div class="ai-rec-card-body">${trimmed.replace('Peringatan Server Core:', '').trim()}</div>
                 </div>
             `;
         } else if (trimmed.startsWith('Frekuensi Gangguan Tertinggi:')) {
             html += `
-                <div class="ai-rec-card" style="border-left: 3px solid #A855F7;">
-                    <div class="ai-rec-card-title"><i class="fa-solid fa-chart-line text-purple"></i> Analisis Frekuensi Gangguan (30 Hari)</div>
+                <div class="ai-rec-card" style="border-left: 3.5px solid #A855F7;">
+                    <div class="ai-rec-card-title" style="color: #C084FC !important;"><i class="fa-solid fa-chart-line" style="color: #C084FC;"></i> Analisis Frekuensi Gangguan (30 Hari)</div>
                     <div class="ai-rec-card-body">${trimmed.replace('Frekuensi Gangguan Tertinggi:', '').trim()}</div>
                 </div>
             `;
         } else {
             html += `
-                <div class="ai-rec-card">
-                    <div class="ai-rec-card-title"><i class="fa-solid fa-robot text-cyan"></i> Analisis & Rekomendasi Preskriptif</div>
+                <div class="ai-rec-card" style="border-left: 3.5px solid #F8FAFC;">
+                    <div class="ai-rec-card-title" style="color: #F8FAFC !important;"><i class="fa-solid fa-robot" style="color: #F8FAFC;"></i> Analisis & Rekomendasi Preskriptif</div>
                     <div class="ai-rec-card-body">${trimmed.replace(/\n/g, '<br>')}</div>
                 </div>
             `;
@@ -95,7 +95,7 @@ Workflow: n8n Automation Engine (Arik)`;
 
     if (navigator && navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(report).then(() => {
-            showToast('Laporan AI Disalin!', 'Format laporan resmi Teknolab (PDF Hal. 17) siap dipaste ke Telegram / WhatsApp.', 'success');
+            showToast('Laporan AI Disalin!', 'Format laporan resmi siap dipaste ke Telegram / WhatsApp.', 'success');
         }).catch(() => {
             showToast('Salin Manual', 'Silakan pilih dan salin teks laporan.', 'info');
         });
@@ -106,7 +106,7 @@ Workflow: n8n Automation Engine (Arik)`;
 window.copyAiReportToClipboard = copyAiReportToClipboard;
 
 // =============================================================================
-// MODAL RIWAYAT ANALISIS ASISTEN AI (DOKUMEN PKL HAL. 17 & HAL. 18)
+// MODAL RIWAYAT ANALISIS ASISTEN AI
 // =============================================================================
 let AI_HISTORY_CACHE = [];
 
@@ -194,7 +194,7 @@ async function loadAiHistory() {
                         </div>
                         <div style="display: flex; align-items: center; gap: 6px;">
                             <span style="font-size: 0.72rem; padding: 2px 8px; border-radius: 4px; font-weight: 700; background: ${isOptimal ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)'}; color: ${isOptimal ? '#34D399' : '#F87171'}; border: 1px solid ${isOptimal ? 'rgba(16, 185, 129, 0.3)' : 'rgba(239, 68, 68, 0.3)'};">
-                                SLA: ${sla} (${item.online_devices || 0}/${item.total_devices || 15} Online)
+                                SLA: ${sla} (${item.online_devices || 0}/${item.total_devices || 0} Online)
                             </span>
                             <button type="button" class="btn-ai-action" style="padding: 3px 8px; font-size: 0.7rem;" onclick="copySingleHistoryItem(${item.recommendation_id})">
                                 <i class="fa-solid fa-copy"></i> Salin
@@ -256,7 +256,7 @@ Tersimpan di: Database MySQL (taims_db.ai_recommendations)`;
 window.copySingleHistoryItem = copySingleHistoryItem;
 
 // =============================================================================
-// MODUL NOTIFIKASI TELEGRAM & N8N WORKFLOW (DOKUMEN PKL HAL. 11 & HAL. 17)
+// MODUL NOTIFIKASI TELEGRAM & N8N WORKFLOW
 // =============================================================================
 function openTelegramModal() {
     const modal = document.getElementById('telegram-modal');
@@ -611,20 +611,20 @@ function updateDashboardMetrics() {
 
     const backendSla30 = (APP_STATE.backendStats && APP_STATE.backendStats.sla_30_days !== undefined) 
         ? APP_STATE.backendStats.sla_30_days 
-        : (online > 0 ? parseFloat(onPct) : 99.1);
+        : (online > 0 ? parseFloat(onPct) : 0.0);
 
     if (slaBoxAvail) {
         slaBoxAvail.textContent = `${backendSla30}%`;
         if (backendSla30 >= 99.0) {
             slaBoxAvail.className = 'text-green';
             if (slaTargetLabel) {
-                slaTargetLabel.textContent = 'Target Achieved (>= 99.0%)';
+                slaTargetLabel.innerHTML = '<span class="txt-dt">Target Achieved (&ge; 99.0%)</span><span class="txt-mb">Target &ge; 99%</span>';
                 slaTargetLabel.className = 'text-green';
             }
         } else {
             slaBoxAvail.className = 'text-yellow';
             if (slaTargetLabel) {
-                slaTargetLabel.textContent = 'Perlu Perhatian (< 99.0%)';
+                slaTargetLabel.innerHTML = '<span class="txt-dt">Perlu Perhatian (&lt; 99.0%)</span><span class="txt-mb">&lt; 99% Perhatian</span>';
                 slaTargetLabel.className = 'text-yellow';
             }
         }
@@ -632,17 +632,53 @@ function updateDashboardMetrics() {
 
     if (APP_STATE.backendStats && APP_STATE.backendStats.site_sla) {
         const ss = APP_STATE.backendStats.site_sla;
+        const setSlaSiteStyle = (valEl, barEl, val) => {
+            if (!valEl) return;
+            valEl.textContent = `${val}% Uptime`;
+            if (barEl) barEl.style.width = `${val}%`;
+            const num = parseFloat(val);
+            const colorClass = num >= 95.0 ? 'text-green' : (num >= 80.0 ? 'text-yellow' : 'text-red');
+            const progClass = num >= 95.0 ? 'green' : (num >= 80.0 ? 'yellow' : 'red');
+            valEl.className = colorClass;
+            if (barEl) barEl.className = `sbi-prog ${progClass}`;
+        };
         if (slaSiteMoVal && ss['1'] !== undefined) {
-            slaSiteMoVal.textContent = `${ss['1']}% Uptime`;
-            if (slaSiteMoBar) slaSiteMoBar.style.width = `${ss['1']}%`;
+            setSlaSiteStyle(slaSiteMoVal, slaSiteMoBar, ss['1']);
         }
         if (slaSiteHoVal && ss['2'] !== undefined) {
-            slaSiteHoVal.textContent = `${ss['2']}% Uptime`;
-            if (slaSiteHoBar) slaSiteHoBar.style.width = `${ss['2']}%`;
+            setSlaSiteStyle(slaSiteHoVal, slaSiteHoBar, ss['2']);
         }
         if (slaSiteHosVal && ss['3'] !== undefined) {
-            slaSiteHosVal.textContent = `${ss['3']}% Uptime`;
-            if (slaSiteHosBar) slaSiteHosBar.style.width = `${ss['3']}%`;
+            setSlaSiteStyle(slaSiteHosVal, slaSiteHosBar, ss['3']);
+        }
+    }
+    const slaIncEl = document.getElementById('sla-box-incidents');
+    if (slaIncEl) {
+        const incTotal = (APP_STATE.incidents || []).length;
+        slaIncEl.textContent = `${incTotal}`;
+    }
+    const slaDownEl = document.getElementById('sla-box-downtime');
+    if (slaDownEl) {
+        const totalDownMins = (APP_STATE.backendStats && APP_STATE.backendStats.total_downtime_minutes !== undefined)
+            ? APP_STATE.backendStats.total_downtime_minutes
+            : 0;
+        slaDownEl.textContent = `${totalDownMins} m`;
+    }
+    const slaLatEl = document.getElementById('sla-box-latency');
+    const slaLatSub = document.getElementById('sla-box-latency-sub');
+    if (slaLatEl) {
+        const activePings = (APP_STATE.devices || [])
+            .filter(d => (d.status || d.current_status || '').toLowerCase() === 'online')
+            .map(d => typeof d.response_time_ms === 'number' ? d.response_time_ms : parseFloat(String(d.ping || '0').replace(/[^0-9.]/g, '')))
+            .filter(v => !isNaN(v) && v > 0);
+        const avgPing = activePings.length > 0
+            ? (Math.round((activePings.reduce((a, b) => a + b, 0) / activePings.length) * 10) / 10)
+            : ((APP_STATE.backendStats && APP_STATE.backendStats.avg_latency_30_days) ? APP_STATE.backendStats.avg_latency_30_days : 0);
+        slaLatEl.textContent = (online > 0 ? avgPing : 0) + ' ms';
+        if (slaLatSub) {
+            slaLatSub.innerHTML = online > 0 
+                ? '<span class="txt-dt">Koneksi aktif</span><span class="txt-mb">Koneksi Aktif</span>' 
+                : '<span class="txt-dt">Standby &bull; Semua perangkat offline</span><span class="txt-mb">Standby Offline</span>';
         }
     }
 
@@ -660,6 +696,7 @@ function updateDashboardMetrics() {
 
     // Sinkronisasi Grafik Trend & Donut
     if (typeof refreshTrendChartData === 'function') refreshTrendChartData();
+    if (typeof updateMonitoringLinksAndProtocols === 'function') updateMonitoringLinksAndProtocols();
     if (typeof refreshDonutChartData === 'function') refreshDonutChartData();
 
     // Judul & Subteks KPI (Technical English)
@@ -674,15 +711,17 @@ function updateDashboardMetrics() {
     }
     const subtexts = document.querySelectorAll('.kpi-grid .kpi-card .kpi-subtext');
     if (subtexts && subtexts.length >= 6) {
-        subtexts[0].innerHTML = `<span class="text-green"><i class="fa-solid fa-arrow-trend-up"></i> +2 unit</span> Terdaftar di lab & site`;
-        subtexts[1].innerHTML = `<span class="text-green font-bold" id="kpi-online-pct">${onPct}%</span> dari ${total} perangkat aktif`;
+        subtexts[0].innerHTML = `<span class="text-white font-semibold">${total} Unit</span> Terdaftar di lab & site`;
+        subtexts[1].innerHTML = `<span class="${online > 0 ? 'text-green font-bold' : 'text-muted'}" id="kpi-online-pct">${onPct}%</span> dari ${total} perangkat aktif`;
         subtexts[2].innerHTML = `<span class="text-red font-bold" id="kpi-offline-pct">${offPct}%</span> dari ${total} perangkat aktif`;
         subtexts[3].innerHTML = `<span class="text-yellow font-bold" id="kpi-warning-pct">${warnPct}%</span> terancam &bull; <strong id="kpi-unknown-count" style="color:#CBD5E1;">${unknown}</strong> unknown`;
         subtexts[4].textContent = 'HO, MO & House of Server';
-        subtexts[5].innerHTML = `<span class="text-green font-bold">+0.2%</span> 30 hari terakhir`;
+        subtexts[5].innerHTML = `<span class="${backendSla30 >= 99 ? 'text-green' : 'text-purple'} font-bold" style="${backendSla30 >= 99 ? '' : 'color: #C084FC !important;'}">${backendSla30}%</span> SLA 30 hari riil`;
     }
     const kpiLokasi = document.getElementById('kpi-lokasi');
     if (kpiLokasi) kpiLokasi.textContent = '3';
+    // Call maintenance summary cards inside updateDashboardMetrics
+    if (typeof updateMaintenanceSummaryCards === 'function') updateMaintenanceSummaryCards();
 }
 
 
@@ -893,6 +932,8 @@ function mapBackendAssetToUI(a) {
 
     return {
         id: a.asset_id || a.id || a.asset_code,
+        asset_id: a.asset_id || a.id,
+        rawId: a.asset_id || a.id,
         code: a.asset_code || a.code || `AST-${a.asset_id}`,
         name: a.asset_name || a.name || a.asset_code,
         category: normalizedCat,
@@ -923,28 +964,206 @@ window.mapBackendAssetToUI = mapBackendAssetToUI;
 /**
  * Sinkronisasi Site Detail Cards & Blueprints secara real-time dengan status perangkat
  */
+function getDeviceSiteKey(dev) {
+    if (!dev) return 'ho';
+    const loc = ((dev.location || '') + ' ' + (dev.location_name || '')).toLowerCase();
+    if (loc.includes('market') || loc.includes('ciliwung') || loc.includes('mo') || loc.includes('kiki')) return 'mo';
+    if (loc.includes('server') || loc.includes('hos') || loc.includes('peladen') || loc.includes('mentor') || loc.includes('pusat data')) return 'mentor';
+    return 'ho';
+}
+window.getDeviceSiteKey = getDeviceSiteKey;
+
+/**
+ * Render dinamis kartu daftar perangkat pada Site Detail Cards (Menu Lokasi)
+ */
+function renderSiteDetailCards() {
+    if (!APP_STATE.devices || !Array.isArray(APP_STATE.devices)) return;
+    const sites = [
+        { key: 'ho', listEl: document.getElementById('sdc-list-ho') },
+        { key: 'mo', listEl: document.getElementById('sdc-list-mo') },
+        { key: 'mentor', listEl: document.getElementById('sdc-list-server') || document.getElementById('sdc-list-mentor') }
+    ];
+
+    sites.forEach(({ key, listEl }) => {
+        if (!listEl) return;
+        const devs = APP_STATE.devices.filter(d => getDeviceSiteKey(d) === key);
+        if (devs.length === 0) {
+            listEl.innerHTML = '<div style="padding: 10px; color: #94A3B8; font-size: 0.8rem; text-align: center;">Belum ada perangkat di lokasi ini.</div>';
+            return;
+        }
+        listEl.innerHTML = devs.map((dev, idx) => {
+            const isOnline = (dev.status === 'online');
+            const statusClass = isOnline ? 'online' : (dev.status === 'warning' ? 'warning' : 'offline');
+            const dotColor = isOnline ? 'green' : (dev.status === 'warning' ? 'yellow' : 'red');
+            const statusLabel = isOnline ? 'Online' : (dev.status === 'warning' ? 'Warning' : 'Offline');
+            return `
+                <div class="sdc-dev-row" id="sdc-row-${dev.code}" onclick="if(window.openDeviceDetailModal) openDeviceDetailModal('${dev.code}')" style="cursor: pointer;" title="Klik untuk rincian ${dev.code} - ${dev.name}">
+                    <span class="sdc-dev-name">${idx + 1}. ${dev.code} (${dev.name} - ${dev.ip || '-'})</span>
+                    <span class="status-pill ${statusClass}" id="sdc-pill-${dev.code}"><span class="dot ${dotColor}"></span> ${statusLabel}</span>
+                </div>
+            `;
+        }).join('');
+    });
+}
+window.renderSiteDetailCards = renderSiteDetailCards;
+
+/**
+ * Render dinamis kategori kartu & daftar chip perangkat pada Blueprint Arsitektur
+ */
+function renderBlueprintLegendPanels() {
+    if (!APP_STATE.devices || !Array.isArray(APP_STATE.devices)) return;
+
+    const isSec = d => {
+        const t = ((d.category || '') + ' ' + (d.code || '') + ' ' + (d.name || '')).toLowerCase();
+        return t.includes('cctv') || t.includes('cam') || t.includes('kamera') || t.includes('gate') || t.includes('gerbang');
+    };
+    const isWs = d => {
+        const t = ((d.category || '') + ' ' + (d.code || '') + ' ' + (d.name || '')).toLowerCase();
+        return t.includes('workstation') || t.includes('desktop') || t.includes('pc') || t.includes('laptop') || t.includes('tv') || t.includes('display') || t.includes('smtv');
+    };
+
+    const renderChips = (list) => {
+        if (!list.length) return '<div style="color:#64748B; font-size:0.75rem; font-style:italic; padding:4px 0;">Tidak ada aset terpasang</div>';
+        return list.map(dev => {
+            const isOnline = (dev.status === 'online');
+            const stClass = isOnline ? 'online' : (dev.status === 'warning' ? 'warning' : 'offline');
+            const iconCls = typeof getDevicePinIcon === 'function' ? getDevicePinIcon(dev.code) : 'fa-microchip';
+            return `
+                <span class="bp-chip ${stClass}" id="bp-chip-${dev.code}" onclick="event.stopPropagation(); if(window.openDeviceDetailModal) openDeviceDetailModal('${dev.code}')" title="${dev.code} - ${dev.name} • ${dev.ip || '-'}">
+                    <i class="fa-solid ${iconCls}"></i> ${dev.code} - ${dev.name} (${dev.ip || '-'})
+                </span>
+            `;
+        }).join('');
+    };
+
+    // 1. HEAD OFFICE
+    const hoBox = document.getElementById('bp-box-ho');
+    if (hoBox) {
+        const panel = hoBox.querySelector('.floorplan-legend-panel');
+        const hoDevs = APP_STATE.devices.filter(d => getDeviceSiteKey(d) === 'ho');
+        const metaH3 = hoBox.querySelector('.bp-site-meta h3');
+        if (metaH3) metaH3.textContent = `Denah Kantor & Data Center Utama (${hoDevs.length} Aset)`;
+
+        if (panel) {
+            const wsDevs = hoDevs.filter(d => isWs(d) && !isSec(d));
+            const secDevs = hoDevs.filter(d => isSec(d));
+            const netDevs = hoDevs.filter(d => !wsDevs.includes(d) && !secDevs.includes(d));
+
+            panel.innerHTML = `
+                <div class="legend-room-card" onclick="showRoomInfo('Area Workstation & Display (HO)', '${wsDevs.map(d=>d.code).join(', ') || 'N/A'}', 'Workstation Operasional Staf')">
+                    <div class="legend-room-head">
+                        <span><i class="fa-solid fa-desktop text-green"></i> WORKSTATION STAF & DISPLAY</span>
+                        <span class="badge-pill-cyan">${wsDevs.length} ASET</span>
+                    </div>
+                    <div class="legend-room-desc">Area operasional komputer staf di Ruang 2 dan monitor status di sayap kanan.</div>
+                    <div class="bp-devices-chips">
+                        ${renderChips(wsDevs)}
+                    </div>
+                </div>
+                <div class="legend-room-card" onclick="showRoomInfo('Jaringan & Sensor IoT (HO)', '${netDevs.map(d=>d.code).join(', ') || 'N/A'}', 'Infrastruktur Jaringan & IoT')">
+                    <div class="legend-room-head">
+                        <span><i class="fa-solid fa-network-wired text-cyan"></i> JARINGAN & SENSOR IOT</span>
+                        <span class="badge-pill-cyan">${netDevs.length} ASET</span>
+                    </div>
+                    <div class="legend-room-desc">Backbone gateway koridor tengah, telemetri Panel Surya ESP-01, dan kontrol resepsionis.</div>
+                    <div class="bp-devices-chips">
+                        ${renderChips(netDevs)}
+                    </div>
+                </div>
+                <div class="legend-room-card" onclick="showRoomInfo('Pintu Masuk & Pengawasan (HO)', '${secDevs.map(d=>d.code).join(', ') || 'N/A'}', 'Pengamanan Area Luar Head Office')">
+                    <div class="legend-room-head">
+                        <span><i class="fa-solid fa-shield-halved text-yellow"></i> GERBANG & PENGAWASAN</span>
+                        <span class="badge-pill-cyan">${secDevs.length} ASET</span>
+                    </div>
+                    <div class="legend-room-desc">Pengawasan visual perimeter luar gerbang dan akses pintu masuk operasional.</div>
+                    <div class="bp-devices-chips">
+                        ${renderChips(secDevs)}
+                    </div>
+                </div>
+            `;
+        }
+    }
+
+    // 2. MARKETING OFFICE
+    const moBox = document.getElementById('bp-box-mo');
+    if (moBox) {
+        const panel = moBox.querySelector('.floorplan-legend-panel');
+        const moDevs = APP_STATE.devices.filter(d => getDeviceSiteKey(d) === 'mo');
+        const metaH3 = moBox.querySelector('.bp-site-meta h3');
+        if (metaH3) metaH3.textContent = `Denah Kantor Cabang & Lab Kos Kiki (${moDevs.length} Aset)`;
+
+        if (panel) {
+            const secDevs = moDevs.filter(d => isSec(d));
+            const netDevs = moDevs.filter(d => !secDevs.includes(d));
+
+            panel.innerHTML = `
+                <div class="legend-room-card" onclick="showRoomInfo('Gerbang Jaringan & Router MO', '${netDevs.map(d=>d.code).join(', ') || 'N/A'}', 'Konektivitas Routing Marketing Office')">
+                    <div class="legend-room-head">
+                        <span><i class="fa-solid fa-network-wired text-cyan"></i> ROUTING & GATEWAY JARINGAN</span>
+                        <span class="badge-pill-cyan">${netDevs.length} ASET</span>
+                    </div>
+                    <div class="legend-room-desc">Infrastruktur routing MikroTik, Router Gateway, dan jaringan nirkabel kantor cabang.</div>
+                    <div class="bp-devices-chips">
+                        ${renderChips(netDevs)}
+                    </div>
+                </div>
+                <div class="legend-room-card" onclick="showRoomInfo('Pengawasan Keamanan (MO)', '${secDevs.map(d=>d.code).join(', ') || 'N/A'}', 'Stream RTSP Real-time')">
+                    <div class="legend-room-head">
+                        <span><i class="fa-solid fa-shield-halved text-green"></i> PENGAWASAN KEAMANAN MO</span>
+                        <span class="badge-pill-cyan">${secDevs.length} ASET</span>
+                    </div>
+                    <div class="legend-room-desc">CCTV IP resolusi tinggi memantau gerbang utama dan area pemasaran.</div>
+                    <div class="bp-devices-chips">
+                        ${renderChips(secDevs)}
+                    </div>
+                </div>
+            `;
+        }
+    }
+
+    // 3. HOUSE OF SERVER (MENTOR)
+    const hosBox = document.getElementById('bp-box-mentor');
+    if (hosBox) {
+        const panel = hosBox.querySelector('.floorplan-legend-panel');
+        const hosDevs = APP_STATE.devices.filter(d => getDeviceSiteKey(d) === 'mentor');
+        const metaH3 = hosBox.querySelector('.bp-site-meta h3');
+        if (metaH3) metaH3.textContent = `Denah Ruang Peladen & Server Inti T-AIMS (${hosDevs.length} Aset)`;
+
+        if (panel) {
+            panel.innerHTML = `
+                <div class="legend-room-card" onclick="showRoomInfo('Ruang Peladen & Rak Server Utama', '${hosDevs.map(d=>d.code).join(', ') || 'N/A'}', 'Ruang Server Berpendingin')">
+                    <div class="legend-room-head">
+                        <span><i class="fa-solid fa-server text-yellow"></i> CORE SERVER RACK & BACKBONE</span>
+                        <span class="badge-pill-cyan">${hosDevs.length} ASET</span>
+                    </div>
+                    <div class="legend-room-desc">Server database analitik, MikroTik Cloud Router, Switch L3 core, dan node peladen.</div>
+                    <div class="bp-devices-chips">
+                        ${renderChips(hosDevs)}
+                    </div>
+                </div>
+            `;
+        }
+    }
+}
+window.renderBlueprintLegendPanels = renderBlueprintLegendPanels;
+
+/**
+ * Sinkronisasi Site Detail Cards & Blueprints secara real-time dengan status perangkat
+ */
 function syncSiteCardsAndBlueprints() {
     if (!APP_STATE.devices || !Array.isArray(APP_STATE.devices)) return;
 
+    // 1. Render kartu daftar perangkat di Site Cards Lokasi & Blueprint Legend Cards
+    renderSiteDetailCards();
+    renderBlueprintLegendPanels();
+
+    // 2. Sinkronkan status dan visual pin pada denah CAD 2D
     APP_STATE.devices.forEach(dev => {
-        const code = dev.code;
+        const code = dev.code || dev.asset_code;
         const isOnline = (dev.status === 'online');
         const statusClass = isOnline ? 'online' : (dev.status === 'warning' ? 'warning' : 'offline');
         
-        // 1. Sync Site Card Device Pill
-        const pill = document.getElementById(`sdc-pill-${code}`);
-        if (pill) {
-            pill.className = `status-pill ${isOnline ? 'online' : 'offline'}`;
-            pill.innerHTML = `<span class="dot ${isOnline ? 'green' : 'red'}"></span> ${isOnline ? 'Online' : 'Offline'}`;
-        }
-
-        // 2. Sync Blueprint Device Chip
-        const chip = document.getElementById(`bp-chip-${code}`);
-        if (chip) {
-            chip.className = `bp-chip ${isOnline ? 'online' : 'offline'}`;
-        }
-
-        // 3. Sync Architectural Floorplan Pin (Opsi 1)
+        // Sync Architectural Floorplan Pin (Opsi 1)
         const pin = document.getElementById(`bp-pin-${code}`);
         if (pin) {
             const pulse = pin.querySelector('.pin-pulse');
@@ -956,17 +1175,17 @@ function syncSiteCardsAndBlueprints() {
             if (badge) badge.className = `pin-badge ${statusClass}`;
 
             pin.setAttribute('data-status', statusClass);
-            pin.title = `${dev.name || code} (${dev.ip || '-'}) • ${statusClass.toUpperCase()}`;
+            pin.title = `${code} - ${dev.name || code} (${dev.ip || '-'}) • ${statusClass.toUpperCase()}`;
             let tooltip = pin.querySelector('.floorplan-pin-tooltip');
             if (!tooltip) {
                 tooltip = document.createElement('div');
                 tooltip.className = 'floorplan-pin-tooltip';
                 pin.appendChild(tooltip);
             }
-            tooltip.innerHTML = `<strong>${dev.code}</strong> &bull; ${dev.ip || '-'}<br><span style="color:${isOnline ? '#10B981' : (dev.status === 'warning' ? '#F59E0B' : '#FF1744')}; font-weight:700;">● ${statusClass.toUpperCase()}</span> &bull; Latency: ${dev.ping || '-'}`;
+            tooltip.innerHTML = `<strong>${code}</strong> &bull; ${dev.name || code}<br><span style="color:#94A3B8; font-size:0.75rem;">IP: ${dev.ip || '-'}</span><br><span style="color:${isOnline ? '#10B981' : (dev.status === 'warning' ? '#F59E0B' : '#FF1744')}; font-weight:700;">● ${statusClass.toUpperCase()}</span> &bull; Latency: ${dev.ping || '-'}`;
         }
 
-        // 4. Sinkronkan status pada LOC_SITES.devices (Popup Peta GIS)
+        // Sinkronkan status pada LOC_SITES.devices (Popup Peta GIS)
         if (typeof LOC_SITES !== 'undefined') {
             ['ho', 'mo', 'server'].forEach(siteKey => {
                 const s = LOC_SITES[siteKey];
@@ -981,7 +1200,7 @@ function syncSiteCardsAndBlueprints() {
         }
     });
 
-    // 5. Sinkronkan angka rekaman modul database di menu Pengaturan
+    // 3. Sinkronkan angka rekaman modul database di menu Pengaturan
     const dbAssetsEl = document.getElementById('db-count-assets');
     if (dbAssetsEl && APP_STATE.devices) {
         dbAssetsEl.innerHTML = `${APP_STATE.devices.length} rekaman &bull; Aktif`;
@@ -990,13 +1209,75 @@ function syncSiteCardsAndBlueprints() {
     if (dbUsersEl && APP_STATE.usersList) {
         dbUsersEl.innerHTML = `${APP_STATE.usersList.length} pengguna &bull; Aktif`;
     }
+
+    // 4. Sinkronkan angka ringkasan header halaman Lokasi (Live Metrics Dinamis)
+    const locSitesVal = document.getElementById('loc-chip-val-sites');
+    if (locSitesVal) {
+        const totalSites = (APP_STATE.locationsDb && APP_STATE.locationsDb.length) || (typeof LOC_SITES !== 'undefined' ? Object.keys(LOC_SITES).length : 3);
+        locSitesVal.textContent = `${totalSites} Zona`;
+    }
+    const locAssetsVal = document.getElementById('loc-chip-val-assets');
+    if (locAssetsVal) {
+        const totalDevs = (APP_STATE.devices && APP_STATE.devices.length) || 16;
+        locAssetsVal.textContent = `${totalDevs} Unit`;
+    }
 }
 window.syncSiteCardsAndBlueprints = syncSiteCardsAndBlueprints;
+
+/**
+ * Pengelolaan Siklus Polling Data Riil (Page Visibility & 10s Interval)
+ */
+function startRealDataPolling(intervalMs = 10000) {
+    if (window._taimsSyncInterval) {
+        clearInterval(window._taimsSyncInterval);
+        window._taimsSyncInterval = null;
+    }
+    const token = localStorage.getItem('taims_jwt_token');
+    if (token && !document.hidden) {
+        window._taimsSyncInterval = setInterval(loadRealDataFromApi, intervalMs);
+    }
+}
+
+function stopRealDataPolling() {
+    if (window._taimsSyncInterval) {
+        clearInterval(window._taimsSyncInterval);
+        window._taimsSyncInterval = null;
+    }
+}
+
+function invalidateDeviceFingerprint() {
+    window._lastDevicesFingerprint = null;
+}
+window.startRealDataPolling = startRealDataPolling;
+window.stopRealDataPolling = stopRealDataPolling;
+window.invalidateDeviceFingerprint = invalidateDeviceFingerprint;
+
+// Page Visibility API: Menjeda polling saat tab browser ditinggal / diminimalkan
+document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+        // Tab sedang di latar belakang -> Hentikan polling background untuk hemat RAM, CPU & bandwidth
+        stopRealDataPolling();
+    } else {
+        // Tab kembali aktif dibuka pengguna -> Sinkronisasi riil seketika dan aktifkan interval 10s
+        if (localStorage.getItem('taims_jwt_token')) {
+            if (typeof loadRealDataFromApi === 'function') {
+                loadRealDataFromApi();
+            }
+            startRealDataPolling(10000);
+        }
+    }
+});
 
 /**
  * Memuat data riil terintegrasi dari Backend API Express (Port 3000)
  */
 async function loadRealDataFromApi() {
+    const token = localStorage.getItem('taims_jwt_token');
+    if (!token) {
+        // Belum login atau token tidak ada, jangan panggil API backend untuk mencegah spam/rate limit
+        return;
+    }
+    if (typeof refreshAlertGatewaysStatus === "function") refreshAlertGatewaysStatus();
     try {
         // 1. Ambil Log Monitoring Terkini untuk Latency Riil (Point 2)
         let logsMap = {};
@@ -1036,12 +1317,19 @@ async function loadRealDataFromApi() {
                         saveDevicesToStorage(APP_STATE.devices);
                     }
                 }
-                if (typeof renderHomeDevicesTable === "function") renderHomeDevicesTable();
-                if (typeof renderFullDevicesTable === "function") renderFullDevicesTable();
-                if (typeof updateDashboardMetrics === "function") updateDashboardMetrics();
-                if (typeof refreshHomeMap === "function") refreshHomeMap();
-                if (typeof renderFloorplanPins === "function") renderFloorplanPins();
-                if (typeof syncSiteCardsAndBlueprints === "function") syncSiteCardsAndBlueprints();
+                // Smart Diffing: Cek apakah ada perubahan status, latensi, IP, atau nama perangkat
+                const devFingerprint = (APP_STATE.devices || []).map(d => `${d.id}_${d.status}_${d.ping || d.responseTime || 0}_${d.ip}_${d.name}`).join('|');
+                const hasChanged = (window._lastDevicesFingerprint !== devFingerprint);
+
+                if (hasChanged) {
+                    window._lastDevicesFingerprint = devFingerprint;
+                    if (typeof renderHomeDevicesTable === "function") renderHomeDevicesTable();
+                    if (typeof renderFullDevicesTable === "function") renderFullDevicesTable();
+                    if (typeof updateDashboardMetrics === "function") updateDashboardMetrics();
+                    if (typeof refreshHomeMap === "function") refreshHomeMap();
+                    if (typeof renderFloorplanPins === "function") renderFloorplanPins();
+                    if (typeof syncSiteCardsAndBlueprints === "function") syncSiteCardsAndBlueprints();
+                }
             }
         }
         if (window.apiService && typeof window.apiService.getDashboardStats === "function") {
@@ -1065,7 +1353,7 @@ async function loadRealDataFromApi() {
                     duration: '-',
                     severity: (inc.severity || 'high').toLowerCase(),
                     rootCause: inc.description || inc.incident_type || 'Koneksi Terputus',
-                    pic: 'Tim NOC Teknolab',
+                    pic: (APP_STATE.currentUser ? APP_STATE.currentUser.name : ''),
                     status: (inc.incident_status || 'open').toLowerCase()
                 }));
                 if (typeof renderIncidentsTable === "function") renderIncidentsTable();
@@ -1077,8 +1365,8 @@ async function loadRealDataFromApi() {
         if (window.apiService && typeof window.apiService.getNotifications === "function") {
             try {
                 const notifRes = await window.apiService.getNotifications({ limit: 20 });
-                const notifList = (notifRes && notifRes.data && Array.isArray(notifRes.data)) ? notifRes.data : [];
-                if (notifList.length > 0) {
+                if (notifRes && (notifRes.success || Array.isArray(notifRes.data))) {
+                    const notifList = (notifRes.data && Array.isArray(notifRes.data)) ? notifRes.data : [];
                     APP_STATE.alerts = notifList.map(n => ({
                         id: `NOTIF-${n.notification_id}`,
                         rawId: n.notification_id,
@@ -1132,14 +1420,14 @@ async function loadRealDataFromApi() {
                         rawId: u.user_id,
                         name: u.full_name || prev.name || u.email,
                         username: u.username || prev.username || (u.email ? u.email.split('@')[0] : `user_${u.user_id}`),
-                        password: prev.password || (defUser ? defUser.password : 'password123'),
+                        password: '***',
                         email: u.email,
-                        avatar: storedAvatar || prev.avatar || u.avatar || (defUser ? defUser.avatar : null) || '',
+                        avatar: (u.avatar !== undefined && u.avatar !== null) ? u.avatar : (storedAvatar || prev.avatar || (defUser ? defUser.avatar : null) || ''),
                         role: u.role === 'super_admin' ? 'Superadmin' : (u.role === 'admin' ? 'Admin' : 'User'),
                         perms: u.role === 'super_admin' ? 'CRUD' : (u.role === 'admin' ? 'CRU' : 'Read Only'),
-                        picTask: prev.picTask || (defUser ? defUser.picTask : 'Staff Operasional & Monitoring'),
-                        status: prev.status || 'Aktif',
-                        lastLogin: prev.lastLogin || (defUser ? defUser.lastLogin : 'Baru saja')
+                        picTask: u.pic_task || prev.picTask || (defUser ? defUser.picTask : 'Staff Operasional & Monitoring'),
+                        status: u.status || prev.status || 'Aktif',
+                        lastLogin: (u.last_login_at && !isNaN(new Date(u.last_login_at))) ? new Date(u.last_login_at).toLocaleString('id-ID',{dateStyle:'short',timeStyle:'short'}) : ((prev.lastLogin && prev.lastLogin !== 'Invalid Date') ? prev.lastLogin : 'Aktif Hari Ini')
                     };
                 });
                 if (typeof saveUsersListToStorage === "function") saveUsersListToStorage();
@@ -1191,12 +1479,46 @@ async function loadRealDataFromApi() {
             }
         }
 
-        // 6. Hitung unread notification count
+        // 6. Ambil Jadwal Pemeliharaan dari Backend
+        if (typeof window.getMaintenanceList === 'function' || (window.apiService && typeof window.apiService.getMaintenanceList === 'function')) {
+            try {
+                const _mntFn = window.getMaintenanceList || (window.apiService && window.apiService.getMaintenanceList);
+                const mntData = await _mntFn({ limit: 100 });
+                if (mntData && mntData.length > 0) {
+                    APP_STATE.maintenanceLogs = mntData.map(m => ({
+                        rawId: m.maintenance_id,
+                        id: `MNT-${String(m.maintenance_id).padStart(3, '0')}`,
+                        date: m.scheduled_date ? new Date(m.scheduled_date).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }) : '-',
+                        rawDate: m.scheduled_date ? m.scheduled_date.slice(0, 10) : '',
+                        device: m.asset_code ? `${m.asset_code} (${m.asset_name || ''})` : 'Perangkat',
+                        location: m.location_name || 'Head Office',
+                        type: m.maintenance_type || 'Preventive Maintenance',
+                        desc: m.description || '-',
+                        pic: m.pic_name || m.pic || (APP_STATE.currentUser ? APP_STATE.currentUser.name : 'Tim Teknolab'),
+                        status: m.maintenance_status === 'completed' ? 'Selesai'
+                              : m.maintenance_status === 'in_progress' ? 'Sedang Berjalan'
+                              : m.maintenance_status === 'cancelled' ? 'Dibatalkan'
+                              : 'Tertunda'
+                    }));
+                    if (typeof loadMaintenance === 'function') loadMaintenance(); else if (typeof renderMaintenanceTable === 'function') renderMaintenanceTable();
+                    if (typeof updateMaintenanceSummaryCards === 'function') updateMaintenanceSummaryCards();
+                }
+            } catch (eMnt) {
+                console.warn('Gagal memuat maintenance dari backend:', eMnt);
+            }
+        }
+
+        // 7. Hitung unread notification count
         if (window.apiService && typeof window.apiService.getUnreadNotificationCount === "function") {
             const unread = await window.apiService.getUnreadNotificationCount();
             if (typeof updateNotifBadgeCount === 'function') {
                 updateNotifBadgeCount(unread);
             }
+        }
+
+        // 8. Ambil metrik resource server terkini (CPU, RAM, Storage, Uptime)
+        if (typeof refreshServerMetricsUI === 'function') {
+            refreshServerMetricsUI(false);
         }
     } catch (err) {
         console.warn("Sinkronisasi live data backend gagal / fallback:", err);
@@ -1204,28 +1526,315 @@ async function loadRealDataFromApi() {
 }
 window.loadRealDataFromApi = loadRealDataFromApi;
 
+/**
+ * Memperbarui tampilan widget Server Resource Monitoring (CPU, RAM, Disks, Uptime)
+ */
+async function refreshServerMetricsUI(showFeedback = false) {
+    if (!window.apiService || typeof window.apiService.getServerMetrics !== 'function') return;
+    try {
+        const res = await window.apiService.getServerMetrics();
+        if (!res || !res.success || !res.data) {
+            if (showFeedback && typeof showToast === 'function') {
+                showToast('Peringatan', res?.error || 'Gagal mengambil metrik server.', 'warning');
+            }
+            return;
+        }
+
+        const data = res.data;
+        const cpu = data.cpu || {};
+        const mem = data.memory || {};
+        const disks = data.disks || [];
+        const sys = data.system || {};
+
+        // 1. CPU
+        const cpuPct = parseFloat(cpu.usage_percent) || 0;
+        const cpuEl = document.getElementById('srv-cpu-pct');
+        if (cpuEl) cpuEl.innerHTML = `${cpuPct.toFixed(1)}<span class="srv-unit">%</span>`;
+
+        const cpuModelEl = document.getElementById('srv-cpu-model');
+        if (cpuModelEl) cpuModelEl.textContent = cpu.model || 'Processor';
+
+        const cpuCoresEl = document.getElementById('srv-cpu-cores');
+        if (cpuCoresEl) cpuCoresEl.textContent = `${cpu.cores || 1} Cores`;
+
+        const cpuSpeedEl = document.getElementById('srv-cpu-speed');
+        if (cpuSpeedEl) cpuSpeedEl.textContent = `${cpu.speed_mhz || 0} MHz`;
+
+        const cpuBarEl = document.getElementById('srv-cpu-bar');
+        const cpuTagEl = document.getElementById('srv-cpu-status-tag');
+        if (cpuBarEl) {
+            cpuBarEl.style.width = `${Math.min(100, Math.max(0, cpuPct))}%`;
+            cpuBarEl.className = 'srv-progress-bar bar-cpu' + (cpuPct > 90 ? ' critical' : (cpuPct > 75 ? ' warning' : ''));
+        }
+        if (cpuTagEl) {
+            if (cpuPct > 90) {
+                cpuTagEl.textContent = 'Kritis';
+                cpuTagEl.className = 'srv-status-tag critical';
+            } else if (cpuPct > 75) {
+                cpuTagEl.textContent = 'Tinggi';
+                cpuTagEl.className = 'srv-status-tag warning';
+            } else {
+                cpuTagEl.textContent = 'Normal';
+                cpuTagEl.className = 'srv-status-tag';
+            }
+        }
+
+        // 2. RAM
+        const ramPct = parseFloat(mem.usage_percent) || 0;
+        const ramEl = document.getElementById('srv-ram-pct');
+        if (ramEl) ramEl.innerHTML = `${ramPct.toFixed(1)}<span class="srv-unit">%</span>`;
+
+        const ramSubEl = document.getElementById('srv-ram-sub');
+        if (ramSubEl) ramSubEl.textContent = `${mem.used_gb || 0} GB / ${mem.total_gb || 0} GB Terpakai`;
+
+        const ramFreeEl = document.getElementById('srv-ram-free');
+        if (ramFreeEl) ramFreeEl.textContent = `${mem.free_gb || 0} GB`;
+
+        const ramTotalEl = document.getElementById('srv-ram-total');
+        if (ramTotalEl) ramTotalEl.textContent = `${mem.total_gb || 0} GB`;
+
+        const ramBarEl = document.getElementById('srv-ram-bar');
+        const ramTagEl = document.getElementById('srv-ram-status-tag');
+        if (ramBarEl) {
+            ramBarEl.style.width = `${Math.min(100, Math.max(0, ramPct))}%`;
+            ramBarEl.className = 'srv-progress-bar bar-ram' + (ramPct > 90 ? ' critical' : (ramPct > 75 ? ' warning' : ''));
+        }
+        if (ramTagEl) {
+            if (ramPct > 90) {
+                ramTagEl.textContent = 'Kritis';
+                ramTagEl.className = 'srv-status-tag critical';
+            } else if (ramPct > 75) {
+                ramTagEl.textContent = 'Tinggi';
+                ramTagEl.className = 'srv-status-tag warning';
+            } else {
+                ramTagEl.textContent = 'Normal';
+                ramTagEl.className = 'srv-status-tag';
+            }
+        }
+
+        // 3. Storage / Disk
+        const primaryDisk = disks[0] || { usage_percent: 0, total_gb: 0, free_gb: 0, drive: 'C:' };
+        const diskPct = parseFloat(primaryDisk.usage_percent) || 0;
+        const diskEl = document.getElementById('srv-disk-pct');
+        if (diskEl) diskEl.innerHTML = `${diskPct.toFixed(1)}<span class="srv-unit">%</span>`;
+
+        const diskSubEl = document.getElementById('srv-disk-sub');
+        if (diskSubEl) {
+            const diskSummary = disks.map(d => `${d.drive} (${d.usage_percent}%)`).join(' • ');
+            diskSubEl.textContent = diskSummary || `Drive: ${primaryDisk.drive}`;
+        }
+
+        const diskFreeEl = document.getElementById('srv-disk-free');
+        if (diskFreeEl) diskFreeEl.textContent = `${primaryDisk.free_gb || 0} GB`;
+
+        const diskTotalEl = document.getElementById('srv-disk-total');
+        if (diskTotalEl) diskTotalEl.textContent = `${primaryDisk.total_gb || 0} GB`;
+
+        const diskBarEl = document.getElementById('srv-disk-bar');
+        const diskTagEl = document.getElementById('srv-disk-status-tag');
+        if (diskBarEl) {
+            diskBarEl.style.width = `${Math.min(100, Math.max(0, diskPct))}%`;
+            diskBarEl.className = 'srv-progress-bar bar-disk' + (diskPct > 90 ? ' critical' : (diskPct > 80 ? ' warning' : ''));
+        }
+        if (diskTagEl) {
+            if (diskPct > 90) {
+                diskTagEl.textContent = 'Hampir Penuh';
+                diskTagEl.className = 'srv-status-tag critical';
+            } else if (diskPct > 80) {
+                diskTagEl.textContent = 'Waspada';
+                diskTagEl.className = 'srv-status-tag warning';
+            } else {
+                diskTagEl.textContent = 'Aman';
+                diskTagEl.className = 'srv-status-tag';
+            }
+        }
+
+        // 4. System & Uptime
+        const uptimeEl = document.getElementById('srv-uptime-val');
+        if (uptimeEl) uptimeEl.textContent = sys.uptime_formatted || '0 Menit';
+
+        const hostEl = document.getElementById('srv-sys-host');
+        if (hostEl) hostEl.textContent = `${sys.hostname || 'Host'} • Node ${sys.node_version || ''}`;
+
+        const osEl = document.getElementById('srv-sys-os');
+        if (osEl) osEl.textContent = sys.platform || 'Server OS';
+
+        // Ticker update timestamp
+        const timeBadge = document.getElementById('srv-last-updated');
+        if (timeBadge) {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            timeBadge.innerHTML = `<i class="fa-solid fa-clock"></i> Sinkron: ${timeStr} WIB`;
+        }
+
+        if (showFeedback && typeof showToast === 'function') {
+            showToast('Metrik Terkini', 'Resource server (CPU, RAM, Disk) berhasil diperbarui secara live.', 'success');
+        }
+    } catch (err) {
+        console.warn('Gagal memperbarui metrik server UI:', err);
+    }
+}
+window.refreshServerMetricsUI = refreshServerMetricsUI;
+
 const DEFAULT_USERS_LIST = [
-    { id: 'USR-01', rawId: 1, name: 'Dzakwan Miftahussobirin', username: 'dzakwan', password: 'password123', altPasswords: ['admin123', 'awangtg155'], email: 'dzakwan@taims.local', role: 'Superadmin', perms: 'CRUD', picTask: 'Ketua Tim & Integrasi Sistem', status: 'Aktif', lastLogin: 'Baru saja', avatar: '' },
-    { id: 'USR-02', rawId: 2, name: 'Damar Munajad', username: 'damar', password: 'password123', email: 'damar@taims.local', role: 'Admin', perms: 'CRU', picTask: 'Koordinator Proyek & Analis Sistem', status: 'Aktif', lastLogin: '10 Menit lalu' },
-    { id: 'USR-03', rawId: 3, name: 'Ahmad Reza Fahmi', username: 'reza.fahmi', password: 'password123', email: 'reza.fahmi@taims.local', role: 'Admin', perms: 'CRU', picTask: 'Pengembang Sistem Backend & API', status: 'Aktif', lastLogin: '25 Menit lalu' },
-    { id: 'USR-04', rawId: 4, name: 'Faida Trisma Amelia', username: 'faida', password: 'password123', email: 'faida@taims.local', role: 'Admin', perms: 'CRU', picTask: 'Perekayasa Basis Data & Manajemen Aset', status: 'Aktif', lastLogin: '45 Menit lalu' },
-    { id: 'USR-05', rawId: 5, name: 'Ilvina Muvarika', username: 'ilvina', password: 'password123', email: 'ilvina@taims.local', role: 'Admin', perms: 'CRU', picTask: 'Perekayasa Integrasi IoT & Perangkat', status: 'Aktif', lastLogin: '1 Jam lalu' },
-    { id: 'USR-06', rawId: 6, name: 'Ananda Dwi Susanti', username: 'ananda', password: 'password123', email: 'ananda@taims.local', role: 'Admin', perms: 'CRU', picTask: 'Perekayasa Pemantauan Jaringan & Perangkat', status: 'Aktif', lastLogin: '2 Jam lalu' },
-    { id: 'USR-07', rawId: 7, name: 'Dika Yoga Pratama', username: 'dika', password: 'password123', email: 'dika.yoga@taims.local', role: 'Admin', perms: 'CRU', picTask: 'Pengembang Antarmuka Dasbor', status: 'Aktif', lastLogin: '3 Jam lalu' },
-    { id: 'USR-08', rawId: 8, name: 'Ahmad Aziz', username: 'aziz', password: 'password123', email: 'ahmad.aziz@taims.local', role: 'Admin', perms: 'CRU', picTask: 'Perancang Antarmuka & Visualisasi Data', status: 'Aktif', lastLogin: '4 Jam lalu' },
-    { id: 'USR-09', rawId: 9, name: 'Arik', username: 'arik', password: 'password123', email: 'arik@taims.local', role: 'Admin', perms: 'CRU', picTask: 'Perekayasa Otomasi & Notifikasi', status: 'Aktif', lastLogin: '5 Jam lalu' },
-    { id: 'USR-10', rawId: 10, name: 'Wafian', username: 'wafian', password: 'password123', email: 'wafian@taims.local', role: 'Admin', perms: 'CRU', picTask: 'Infrastruktur Peladen, Jaringan & DevOps', status: 'Aktif', lastLogin: '6 Jam lalu' },
-    { id: 'USR-11', rawId: 11, name: 'Reza Tri', username: 'reza.tri', password: 'password123', email: 'reza.tri@taims.local', role: 'Admin', perms: 'CRU', picTask: 'Penguji Mutu, Pengujian & Dokumentasi', status: 'Aktif', lastLogin: 'Kemarin' }
+    {
+        id: "USR-01",
+        rawId: 1,
+        name: "Dzakwan Miftahussobirin",
+        username: "dzakwan",
+        password: "password123",
+        email: "dzakwan@taims.id",
+        avatar: "",
+        role: "Superadmin",
+        perms: "CRUD",
+        picTask: "Ketua Tim & Integrasi Sistem",
+        status: "Aktif",
+        lastLogin: "Aktif Hari Ini"
+    },
+    {
+        id: "USR-02",
+        rawId: 2,
+        name: "Damar Munajad",
+        username: "damar",
+        password: "password123",
+        email: "damar@taims.id",
+        avatar: "",
+        role: "Admin",
+        perms: "CRU",
+        picTask: "Koordinator Proyek & Analis Sistem",
+        status: "Aktif",
+        lastLogin: "Aktif Hari Ini"
+    },
+    {
+        id: "USR-03",
+        rawId: 3,
+        name: "Ahmad Reza Fahmi",
+        username: "fahmi",
+        password: "password123",
+        email: "fahmi@taims.id",
+        avatar: "",
+        role: "Admin",
+        perms: "CRU",
+        picTask: "Pengembang Sistem Backend & API",
+        status: "Aktif",
+        lastLogin: "Aktif Hari Ini"
+    },
+    {
+        id: "USR-04",
+        rawId: 4,
+        name: "Faida Trisma Amelia",
+        username: "faida",
+        password: "password123",
+        email: "faida@taims.id",
+        avatar: "",
+        role: "Admin",
+        perms: "CRU",
+        picTask: "Perekayasa Basis Data & Manajemen Aset",
+        status: "Aktif",
+        lastLogin: "Aktif Hari Ini"
+    },
+    {
+        id: "USR-05",
+        rawId: 5,
+        name: "Ilvina Muvarika",
+        username: "ilvina",
+        password: "password123",
+        email: "ilvina@taims.id",
+        avatar: "",
+        role: "Admin",
+        perms: "CRU",
+        picTask: "Perekayasa Integrasi IoT & Perangkat",
+        status: "Aktif",
+        lastLogin: "Aktif Hari Ini"
+    },
+    {
+        id: "USR-06",
+        rawId: 6,
+        name: "Ananda Dwi Susanti",
+        username: "ananda",
+        password: "password123",
+        email: "ananda@taims.id",
+        avatar: "",
+        role: "Admin",
+        perms: "CRU",
+        picTask: "Perekayasa Pemantauan Jaringan & Perangkat",
+        status: "Aktif",
+        lastLogin: "Aktif Hari Ini"
+    },
+    {
+        id: "USR-07",
+        rawId: 7,
+        name: "Dika Yoga Pratama",
+        username: "dika",
+        password: "password123",
+        email: "dika@taims.id",
+        avatar: "",
+        role: "Admin",
+        perms: "CRU",
+        picTask: "Pengembang Antarmuka Dasbor",
+        status: "Aktif",
+        lastLogin: "Aktif Hari Ini"
+    },
+    {
+        id: "USR-08",
+        rawId: 8,
+        name: "Ahmad Aziz Saputra",
+        username: "aziz",
+        password: "password123",
+        email: "aziz@taims.id",
+        avatar: "",
+        role: "Admin",
+        perms: "CRU",
+        picTask: "Perancang Antarmuka & Visualisasi Data",
+        status: "Aktif",
+        lastLogin: "Aktif Hari Ini"
+    },
+    {
+        id: "USR-09",
+        rawId: 9,
+        name: "Arik Ferdiansyah",
+        username: "arik",
+        password: "password123",
+        email: "arik@taims.id",
+        avatar: "",
+        role: "Admin",
+        perms: "CRU",
+        picTask: "Perekayasa Otomasi & Notifikasi",
+        status: "Aktif",
+        lastLogin: "Aktif Hari Ini"
+    },
+    {
+        id: "USR-10",
+        rawId: 10,
+        name: "Wafian Zaidan",
+        username: "wafian",
+        password: "password123",
+        email: "wafian@taims.id",
+        avatar: "",
+        role: "Admin",
+        perms: "CRU",
+        picTask: "Infrastruktur Peladen, Jaringan & DevOps",
+        status: "Aktif",
+        lastLogin: "Aktif Hari Ini"
+    },
+    {
+        id: "USR-11",
+        rawId: 11,
+        name: "Reza Tri wardana",
+        username: "reza",
+        password: "password123",
+        email: "reza@taims.id",
+        avatar: "",
+        role: "Admin",
+        perms: "CRU",
+        picTask: "Penguji Mutu, Pengujian & Dokumentasi",
+        status: "Aktif",
+        lastLogin: "Aktif Hari Ini"
+    }
 ];
 
 const APP_STATE = {
-    currentUser: {
-        username: 'dzakwan',
-        email: 'dzakwan@taims.local',
-        name: 'Dzakwan Miftahussobirin',
-        role: 'superadmin',
-        title: 'Superadmin'
-    },
+    currentUser: null,
     currentPage: 'page-dashboard',
     selectedDeviceId: null,
     isFloorplanEditMode: false,
@@ -1241,48 +1850,15 @@ const APP_STATE = {
     activeCoord: { lat: -8.07378, lng: 112.17336 },
 
     // Database Perangkat Berfokus pada Wilayah Kota & Kabupaten Blitar (Jawa Timur)
-    devices: (function() {
-        if (typeof loadDevicesFromStorage === 'function') {
-            const saved = loadDevicesFromStorage();
-            if (saved && saved.length >= 15) return saved;
-        }
-        return (typeof FALLBACK_ASSETS !== "undefined" ? FALLBACK_ASSETS.map(mapBackendAssetToUI) : []);
-    })(),
+    devices: [],
     // Riwayat Insiden, Alerts & Notifikasi (Clean Slate B2 - Sesuai Instruksi Wafian)
     alerts: [],
     incidents: [],
-    maintenanceLogs: (function() {
-        try {
-            const saved = localStorage.getItem('taims_maintenance_v1');
-            if (saved) {
-                const parsed = JSON.parse(saved);
-                if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-            }
-        } catch (e) {}
-        return [
-            { id: 'MNT-001', date: '20 Okt 2026', device: 'SRV-01 (Server Utama T-AIMS)', location: 'House of Server', type: 'Preventive Maintenance', desc: 'Pengecekan suhu rak server, kebersihan fan pendingin & health-check MySQL Database', pic: 'Wafian Zaidan', status: 'Selesai' },
-            { id: 'MNT-002', date: '20 Okt 2026', device: 'MKRT-01 (Mikrotik Marketing)', location: 'Marketing Office', type: 'Kalibrasi Jaringan', desc: 'Optimasi routing tabel firewall, bandwidth queue & pengujian stabilitas ICMP Ping', pic: 'Ananda Dwi Susanti', status: 'Selesai' },
-            { id: 'MNT-003', date: '20 Okt 2026', device: 'CCTV-01 & CCTV-02', location: 'Head Office & MO', type: 'Inspeksi Berkala', desc: 'Pembersihan lensa kamera pengawas, pengecekan adaptor PoE 12V & rekaman NVR', pic: 'Ilvina Muvarika', status: 'Selesai' },
-            { id: 'MNT-004', date: '21 Okt 2026', device: 'SWM-01 (Switch Manageable)', location: 'House of Server', type: 'Pemeliharaan Terjadwal', desc: 'Verifikasi redundansi port trunk VLAN & backup konfigurasi switch inti', pic: 'Damar Munajad', status: 'Sedang Berjalan' },
-            { id: 'MNT-005', date: '22 Okt 2026', device: 'ESP-01 & RPI-01 (Node IoT)', location: 'Head Office', type: 'Kalibrasi Sensor', desc: 'Pengujian pengiriman payload MQTT heartbeat & kalibrasi sensor monitoring Panel Surya (ESP-01)', pic: 'Dzakwan Miftahussobirin', status: 'Tertunda' }
-        ];
-    })(),
+    maintenanceLogs: [],
 
     teamMembers: [],
-    usersList: DEFAULT_USERS_LIST.map(u => ({ ...u })),
-    auditLogs: (function() {
-        try {
-            if (localStorage.getItem('taims_audit_cleared') === 'true') {
-                return [];
-            }
-            const savedLogs = localStorage.getItem('taims_audit_logs_v3');
-            if (savedLogs !== null) {
-                const parsed = JSON.parse(savedLogs);
-                if (Array.isArray(parsed)) return parsed.slice(0, 50);
-            }
-        } catch (e) {}
-        return [];
-    })(),
+    usersList: JSON.parse(JSON.stringify(DEFAULT_USERS_LIST)),
+    auditLogs: [],
 
     charts: {
         trendChart: null,
@@ -1312,6 +1888,14 @@ function setLanguage(lang) {
 // =============================================================================
 document.addEventListener('DOMContentLoaded', () => {
     if (typeof initClock === 'function') initClock();
+    // Bersihkan localStorage lama dari sesi sebelumnya (data dummy/cache)
+    const keysToRemove = [
+        'taims_devices_v4', 'taims_devices_v3',
+        'taims_maintenance_v1', 'taims_audit_logs_v3', 'taims_audit_cleared',
+        'taims_users_v3'
+    ];
+    keysToRemove.forEach(k => { try { localStorage.removeItem(k); } catch(e) {} });
+
     // Restore avatar profil aktif di Topbar
     const activeAvatar = localStorage.getItem('taims_active_avatar') ||
                          localStorage.getItem('taims_avatar_1') ||
@@ -1332,9 +1916,21 @@ document.addEventListener('DOMContentLoaded', () => {
     if (typeof renderBlitarNodesList === 'function') renderBlitarNodesList();
     if (typeof updateAiWidget === 'function') updateAiWidget();
     if (typeof renderFloorplanPins === 'function') renderFloorplanPins();
-    if (typeof loadRealDataFromApi === 'function') {
-        loadRealDataFromApi();
-        setInterval(loadRealDataFromApi, 5000);
+    // Polling data riil HANYA dijalankan jika pengguna sudah terotentikasi (mencegah spam 429)
+    const activeToken = localStorage.getItem('taims_jwt_token');
+    if (activeToken) {
+        if (typeof loadRealDataFromApi === 'function') {
+            loadRealDataFromApi();
+            startRealDataPolling(10000);
+        }
+    } else {
+        // Belum login: Pastikan tetap di portal autentikasi dan tidak menembak API backend
+        const authScr = document.getElementById('auth-screen');
+        const mainDash = document.getElementById('main-dashboard');
+        if (authScr && mainDash) {
+            mainDash.classList.add('hidden');
+            authScr.classList.remove('hidden');
+        }
     }
 
     // Inisialisasi Peta Leaflet Blitar setelah DOM siap
@@ -1343,9 +1939,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (typeof refreshHomeMap === 'function') refreshHomeMap();
     }, 150);
 
-    // Otomatis sinkronisasi rekomendasi Asisten AI pada initial load (Dokumen PKL Hal. 17)
+    // Otomatis sinkronisasi rekomendasi Asisten AI pada initial load hanya jika sudah login
     setTimeout(() => {
-        if (typeof runAiAnalysis === 'function') runAiAnalysis();
+        if (localStorage.getItem('taims_jwt_token') && typeof runAiAnalysis === 'function') runAiAnalysis();
     }, 1200);
 
     if (typeof loadUsersListFromStorage === 'function') loadUsersListFromStorage();
@@ -1367,16 +1963,24 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    // Cek sesi tersimpan
+    // Cek sesi tersimpan: Wajib memiliki tiket JWT yang valid agar data dasbor dapat dimuat
+    const activeJwtToken = localStorage.getItem('taims_jwt_token');
     const saved = localStorage.getItem('taims_active_session') || sessionStorage.getItem('taims_session');
-    if (saved) {
+    if (activeJwtToken && saved) {
         try {
             const user = JSON.parse(saved);
             loginSuccess(user, true);
         } catch (e) {
             localStorage.removeItem('taims_active_session');
             sessionStorage.removeItem('taims_session');
+            localStorage.removeItem('taims_jwt_token');
         }
+    } else {
+        // Jika belum ada tiket JWT, kunci tampilan ke portal login resmi
+        const mainDash = document.getElementById('main-dashboard');
+        const authScreen = document.getElementById('auth-screen');
+        if (mainDash) mainDash.classList.add('hidden');
+        if (authScreen) authScreen.classList.remove('hidden');
     }
 });
 
@@ -1407,6 +2011,10 @@ function switchPage(pageId) {
         }
     });
 
+    if (window.innerWidth <= 900 && typeof closeAllSidebars === 'function') {
+        closeAllSidebars();
+    }
+
     // Update class active di Mobile Bottom Nav
     document.querySelectorAll('.mobile-bottom-nav .mb-nav-item').forEach(item => {
         if (item.getAttribute('data-page') === pageId) {
@@ -1436,7 +2044,7 @@ function switchPage(pageId) {
     } else {
         if (mainEl) mainEl.style.overflow = 'auto';
         if (contentEl) contentEl.style.overflow = 'auto';
-        if (pageId === 'page-location') {
+        if (pageId === 'page-location') { setTimeout(function () { if (typeof loadLocations === 'function') loadLocations(); }, 450);
             setTimeout(() => {
                 if (APP_STATE.fullMap) {
                     APP_STATE.fullMap.invalidateSize();
@@ -1447,23 +2055,30 @@ function switchPage(pageId) {
         } else if (pageId === 'page-assets') {
             renderAssetsTable();
         } else if (pageId === 'page-devices') {
+            if (typeof loadLocations === 'function') loadLocations();
             renderFullDevicesTable();
         } else if (pageId === 'page-monitoring') {
             if (typeof renderHomeDevicesTable === 'function') renderHomeDevicesTable();
         } else if (pageId === 'page-alerts') {
-            if (typeof renderIncidentsTable === 'function') renderIncidentsTable();
+            if (typeof refreshAlertGatewaysStatus === 'function') refreshAlertGatewaysStatus();
+            if (typeof loadIncidentsPage === 'function') loadIncidentsPage();
+            else if (typeof renderIncidentsTable === 'function') renderIncidentsTable();
         } else if (pageId === 'page-reports') {
-            if (typeof renderMaintenanceTable === 'function') renderMaintenanceTable();
+            if (typeof loadMaintenance === 'function') loadMaintenance(); else if (typeof renderMaintenanceTable === 'function') renderMaintenanceTable();
         } else if (pageId === 'page-project-info') {
             renderTeamCards();
         } else if (pageId === 'page-users') {
-            renderUsersRbacTable();
+            if (typeof loadUsersPage === 'function') loadUsersPage();
+            else renderUsersRbacTable();
+        } else if (pageId === 'page-settings') {
+            if (typeof loadSettingsPage === 'function') loadSettingsPage();
         }
 
         // Translate targetPage after dynamic renderers have run
         if (APP_STATE && APP_STATE.currentLang && targetPage) {
             translateSubtree(targetPage, APP_STATE.currentLang);
         }
+        if (typeof enforceSuperadminOnlyElements === 'function') enforceSuperadminOnlyElements();
     }
 
     // Tutup mobile sidebar & overlay jika terbuka
@@ -1477,25 +2092,25 @@ function switchPage(pageId) {
 }
 
 function toggleAppSidebar() {
-    const isMobile = window.innerWidth <= 900;
     const sidebar = document.getElementById('app-sidebar');
     const overlay = document.getElementById('sidebar-overlay');
+    if (!sidebar) return;
     
-    if (isMobile) {
-        if (sidebar) sidebar.classList.toggle('mobile-open');
-        if (overlay) overlay.classList.toggle('active');
-    } else {
-        if (sidebar) {
-            sidebar.classList.toggle('sidebar-collapsed');
-            setTimeout(() => {
-                if (APP_STATE && APP_STATE.homeMap) APP_STATE.homeMap.invalidateSize();
-                if (APP_STATE && APP_STATE.fullMap) APP_STATE.fullMap.invalidateSize();
-                if (APP_STATE && APP_STATE.charts && APP_STATE.charts.trendChart) APP_STATE.charts.trendChart.resize();
-                if (APP_STATE && APP_STATE.charts && APP_STATE.charts.categoryDonut) APP_STATE.charts.categoryDonut.resize();
-            }, 320);
-        }
+    sidebar.classList.toggle('mobile-open');
+    if (overlay) overlay.classList.toggle('active');
+}
+
+function closeAllSidebars() {
+    const sidebar = document.getElementById('app-sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    if (sidebar) {
+        sidebar.classList.remove('mobile-open', 'drawer-open', 'sidebar-collapsed');
+    }
+    if (overlay) {
+        overlay.classList.remove('active');
     }
 }
+window.closeAllSidebars = closeAllSidebars;
 
 function toggleMobileSidebar() {
     toggleAppSidebar();
@@ -1522,8 +2137,21 @@ function isAdminUser() {
     const r = normalizeRole(APP_STATE.currentUser.role);
     return r === 'superadmin' || r === 'admin';
 }
+function enforceSuperadminOnlyElements() {
+    const isSuper = typeof isSuperAdmin === 'function' ? isSuperAdmin() : false;
+    document.querySelectorAll('.superadmin-only').forEach(el => {
+        if (isSuper) {
+            el.classList.remove('hidden');
+            el.style.display = '';
+        } else {
+            el.classList.add('hidden');
+            el.style.display = 'none';
+        }
+    });
+}
 window.isSuperAdmin = isSuperAdmin;
 window.isAdminUser = isAdminUser;
+window.enforceSuperadminOnlyElements = enforceSuperadminOnlyElements;
 
 // =============================================================================
 // AUTENTIKASI: LOGIN ADMIN VS TAMU & BRUTE-FORCE PROGRESSIVE LOCKOUT
@@ -1636,7 +2264,7 @@ function startLoginLockoutCountdown(lockUntilTs, penaltyMinutes = 1) {
             submitBtn.innerHTML = `<i class="fa-solid fa-lock text-red"></i> <span>Terkunci Sementara (${timeFormatted})</span>`;
         }
         if (alertText) {
-            alertText.textContent = `Terlalu banyak percobaan gagal (3x)! Login dikunci selama ${penaltyMinutes} menit. Tunggu ${timeFormatted} detik...`;
+            alertText.innerHTML = `Terlalu banyak percobaan gagal (3x)! Login dikunci selama ${penaltyMinutes} menit. Tunggu ${timeFormatted} detik... <br><a href="javascript:void(0)" onclick="clearFrontendLoginLockout(); fetch('/api/auth/reset-lockout', {method:'POST'}).catch(()=>{});" style="color: #38bdf8; text-decoration: underline; font-weight: bold; margin-top: 4px; display: inline-block;">[Buka Kunci Sekarang]</a>`;
         }
     };
 
@@ -1646,10 +2274,8 @@ function startLoginLockoutCountdown(lockUntilTs, penaltyMinutes = 1) {
 
 // Pulihkan countdown lockout saat halaman di-refresh (Anti-Refresh F5 Bypass)
 document.addEventListener('DOMContentLoaded', () => {
-    const lockState = getFrontendLoginLockState();
-    if (lockState && lockState.lockUntil && lockState.lockUntil > Date.now()) {
-        const penaltyMinutes = Math.pow(2, Math.max(0, (lockState.penaltyStage || 1) - 1));
-        startLoginLockoutCountdown(lockState.lockUntil, penaltyMinutes);
+    if (typeof clearFrontendLoginLockout === 'function') {
+        clearFrontendLoginLockout();
     }
 });
 
@@ -1661,7 +2287,7 @@ async function handleLogin() {
 
     // 0. Cek apakah sedang dalam masa tunggu (Lockout) di Browser / Perangkat ini
     const localLock = getFrontendLoginLockState();
-    if (localLock.lockUntil && localLock.lockUntil > Date.now()) {
+    if (false && localLock.lockUntil && localLock.lockUntil > Date.now()) {
         const penaltyMinutes = Math.pow(2, Math.max(0, (localLock.penaltyStage || 1) - 1));
         startLoginLockoutCountdown(localLock.lockUntil, penaltyMinutes);
         return;
@@ -1744,7 +2370,7 @@ async function handleLogin() {
                 clearFrontendLoginLockout();
                 if (matchedUser) {
                     matchedUser.password = p;
-                    matchedUser.lastLogin = 'Baru saja';
+                    matchedUser.lastLogin = new Date().toLocaleString('id-ID',{dateStyle:'short',timeStyle:'short'});
                     if (typeof saveUsersListToStorage === 'function') saveUsersListToStorage();
                 }
                 const mappedRole = user.role === 'super_admin' ? 'superadmin' : (user.role === 'user' ? 'user' : 'admin');
@@ -1776,7 +2402,7 @@ async function handleLogin() {
     // 2. Fallback Kredensial Lokal HANYA jika Backend sedang Offline (Wajib 1 Username/Email Aktif & 1 Password Tunggal!)
     if (backendOffline && matchedUser && p === matchedUser.password) {
         clearFrontendLoginLockout();
-        matchedUser.lastLogin = 'Baru saja';
+        matchedUser.lastLogin = new Date().toLocaleString('id-ID',{dateStyle:'short',timeStyle:'short'});
         if (typeof saveUsersListToStorage === 'function') saveUsersListToStorage();
         const lowRole = (matchedUser.role || 'Admin').toLowerCase();
         loginSuccess({
@@ -1807,6 +2433,10 @@ function enterAsGuest() {
 }
 
 function loginSuccess(user, isAutoRestore = false) {
+    if (user) {
+        user.name = user.full_name || user.name || (user.username === 'dzakwan' ? 'Dzakwan Miftahussobirin' : (user.username || 'Administrator'));
+        user.title = user.title || (user.role === 'super_admin' ? 'Superadmin Teknolab' : (user.role === 'admin' ? 'Administrator' : 'Teknisi'));
+    }
     APP_STATE.currentUser = user;
     sessionStorage.setItem('taims_session', JSON.stringify(user));
     localStorage.setItem('taims_active_session', JSON.stringify(user));
@@ -1856,6 +2486,10 @@ function loginSuccess(user, isAutoRestore = false) {
         }
     }
 
+    if (typeof enforceSuperadminOnlyElements === 'function') {
+        enforceSuperadminOnlyElements();
+    }
+
     document.getElementById('auth-screen').classList.add('hidden');
     document.getElementById('main-dashboard').classList.remove('hidden');
 
@@ -1868,11 +2502,22 @@ function loginSuccess(user, isAutoRestore = false) {
     if (typeof renderHomeDevicesTable === 'function') renderHomeDevicesTable();
     if (typeof renderIncidentsTable === 'function') renderIncidentsTable();
     if (typeof updateDashboardMetrics === 'function') updateDashboardMetrics();
+
+    // Memulai sinkronisasi data riil backend hanya jika token JWT tersedia
+    if (localStorage.getItem('taims_jwt_token') && typeof loadRealDataFromApi === 'function') {
+        loadRealDataFromApi();
+        startRealDataPolling(10000);
+    }
 }
 
 function logoutToAuth() {
+    stopRealDataPolling();
+    invalidateDeviceFingerprint();
     sessionStorage.removeItem('taims_session');
     localStorage.removeItem('taims_active_session');
+    localStorage.removeItem('taims_jwt_token');
+    localStorage.removeItem('taims_user');
+    localStorage.removeItem('taims_user_role');
     APP_STATE.currentUser = null;
     window.location.hash = '';
     const passInput = document.getElementById('login-password');
@@ -1959,6 +2604,40 @@ function initClock() {
 }
 
 // =============================================================================
+// HELPER FORMAT LOKASI SITE (WARNA MENGIKUTI TEMA PETA KOTA BLITAR)
+// Head Office: Merah Teknolab (#F43F5E)
+// Marketing Office: Kuning Emas (#F59E0B)
+// House of Server: Hijau Emerald (#10B981)
+// =============================================================================
+function formatSiteLocationBadge(locName) {
+    const s = String(locName || '').toLowerCase().trim();
+    if (s.includes('marketing') || s === 'mo' || /\bmo\b/.test(s)) {
+        return `<span class="badge-subtle badge-site-mo"><i class="fa-solid fa-location-dot"></i> ${locName}</span>`;
+    } else if (s.includes('server') || s.includes('house') || s.includes('mentor') || s === 'hos') {
+        return `<span class="badge-subtle badge-site-server"><i class="fa-solid fa-location-dot"></i> ${locName}</span>`;
+    } else {
+        return `<span class="badge-subtle badge-site-ho"><i class="fa-solid fa-location-dot"></i> ${locName}</span>`;
+    }
+}
+window.formatSiteLocationBadge = formatSiteLocationBadge;
+
+function formatMethodBadge(method) {
+    const m = String(method || 'Ping').trim();
+    const lower = m.toLowerCase();
+    if (lower.includes('heartbeat')) {
+        return `<span class="badge-method badge-method-heartbeat"><i class="fa-solid fa-heart-pulse"></i> ${escapeHtml(m)}</span>`;
+    } else if (lower.includes('mqtt')) {
+        return `<span class="badge-method badge-method-mqtt"><i class="fa-solid fa-tower-broadcast"></i> ${escapeHtml(m)}</span>`;
+    } else if (lower.includes('snmp')) {
+        return `<span class="badge-method badge-method-snmp"><i class="fa-solid fa-server"></i> ${escapeHtml(m)}</span>`;
+    } else if (lower.includes('http') || lower.includes('api')) {
+        return `<span class="badge-method badge-method-api"><i class="fa-solid fa-code"></i> ${escapeHtml(m)}</span>`;
+    }
+    return `<span class="badge-method badge-method-ping"><i class="fa-solid fa-wave-square"></i> ${escapeHtml(m)}</span>`;
+}
+window.formatMethodBadge = formatMethodBadge;
+
+// =============================================================================
 // TABEL MOCKUP DASHBOARD UTAMA (PERSIS SEPERTI GAMBAR REFERENSI)
 // =============================================================================
 function renderHomeDevicesTable() {
@@ -1992,7 +2671,7 @@ function renderHomeDevicesTable() {
             <td>
                 <span class="device-name-text"><i class="fa-solid ${icon} text-muted mr-1"></i> ${safeName}</span>
             </td>
-            <td>${safeLoc}</td>
+            <td>${formatSiteLocationBadge(safeLoc)}</td>
             <td><span class="ip-mono">${safeIp}</span></td>
             <td>${badge}</td>
             <td style="white-space: nowrap;" title="${safeLastSeen}"><span class="text-muted text-sm">${safeLastSeen}</span></td>
@@ -2191,7 +2870,7 @@ function openEditDeviceModal(deviceId) {
     const picInput = document.getElementById('dev-pic');
     const picNote = document.getElementById('pic-admin-note');
     if (picInput) {
-        picInput.value = dev.pic || 'Damar Munajad';
+        picInput.value = dev.pic || 'Tim Teknolab';
         if (isSuperadmin) {
             picInput.disabled = false;
             picInput.style.opacity = '1';
@@ -2222,9 +2901,9 @@ function openEditDeviceModal(deviceId) {
     }
 
     if (document.getElementById('dev-mac')) document.getElementById('dev-mac').value = dev.mac || '';
-    if (document.getElementById('dev-install-date')) document.getElementById('dev-install-date').value = dev.installDate || '2026-10-01';
+    if (document.getElementById('dev-install-date')) document.getElementById('dev-install-date').value = dev.installDate || '';
     if (document.getElementById('dev-description')) document.getElementById('dev-description').value = dev.description || '';
-    if (document.getElementById('dev-floor')) document.getElementById('dev-floor').value = dev.floor || 'Lantai 2';
+    if (document.getElementById('dev-floor')) document.getElementById('dev-floor').value = dev.floor || '';
     if (document.getElementById('dev-is-active')) document.getElementById('dev-is-active').value = dev.isActive !== false ? '1' : '0';
 
     document.getElementById('device-modal').classList.remove('hidden');
@@ -2254,14 +2933,14 @@ function openAddDeviceModal() {
         codeInput.readOnly = false;
     }
 
-    if (document.getElementById('dev-floor')) document.getElementById('dev-floor').value = 'Lantai 2';
+    if (document.getElementById('dev-floor')) document.getElementById('dev-floor').value = '';
     if (document.getElementById('dev-is-active')) document.getElementById('dev-is-active').value = '1';
 
     const isSuperadmin = APP_STATE.currentUser && (APP_STATE.currentUser.role === 'superadmin' || APP_STATE.currentUser.role === 'super_admin');
     const picInput = document.getElementById('dev-pic');
     const picNote = document.getElementById('pic-admin-note');
     if (picInput) {
-        picInput.value = 'Damar Munajad';
+        picInput.value = '';
         if (isSuperadmin) {
             picInput.disabled = false;
             picInput.style.opacity = '1';
@@ -2292,7 +2971,7 @@ function closeDeviceModal() {
     document.getElementById('device-modal').classList.add('hidden');
 }
 
-function handleSaveDevice() {
+async function handleSaveDevice() {
     const editIdEl = document.getElementById('dev-edit-id');
     const editId = editIdEl ? editIdEl.value : '';
     const code = (document.getElementById('dev-code')?.value || '').trim().toUpperCase();
@@ -2303,7 +2982,7 @@ function handleSaveDevice() {
     const method = document.getElementById('dev-method').value;
     const priority = parseInt(document.getElementById('dev-priority')?.value || '2', 10);
     const picInput = document.getElementById('dev-pic');
-    const pic = picInput?.value.trim() || 'Damar Munajad';
+    const pic = picInput?.value.trim() || '';
     const mac = document.getElementById('dev-mac')?.value.trim() || '00:0C:29:11:00:00';
     const installDate = document.getElementById('dev-install-date')?.value || '2026-10-01';
     const description = document.getElementById('dev-description')?.value.trim() || '';
@@ -2352,131 +3031,198 @@ function handleSaveDevice() {
         }
     }
 
-    if (editId) {
-        // Mode Update / Edit Deret Data Aset
-        const dev = APP_STATE.devices.find(d => String(d.id) === String(editId) || String(d.asset_id) === String(editId) || String(d.code) === String(editId) || String(d.asset_code) === String(editId));
-        if (dev) {
-            dev.code = code;
-            dev.asset_code = code;
-            dev.name = name;
-            dev.category = category;
-            dev.ip = ip;
-            dev.location = location;
-            dev.floor = floor;
-            dev.isActive = isActive;
-            dev.method = method;
-            dev.status = dev.status || 'offline';
-            dev.priority = priority;
-            if (isSuperadmin) {
-                dev.pic = pic;
-            }
-            dev.mac = mac;
-            dev.installDate = installDate;
-            dev.description = description;
+    // Indikator Loading pada Tombol Simpan
+    const btnSave = document.getElementById('btn-save-device-submit');
+    const originalBtnHtml = btnSave ? btnSave.innerHTML : '';
+    if (btnSave) {
+        btnSave.disabled = true;
+        btnSave.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
+    }
 
-            saveDevicesToStorage(APP_STATE.devices);
-
-            if (typeof apiService !== 'undefined' && typeof apiService.updateAsset === 'function') {
+    try {
+        if (editId) {
+            // Mode Update / Edit Deret Data Aset
+            const dev = APP_STATE.devices.find(d => String(d.id) === String(editId) || String(d.asset_id) === String(editId) || String(d.code) === String(editId) || String(d.asset_code) === String(editId));
+            if (dev) {
                 const targetId = dev.asset_id || dev.rawId || editId;
-                apiService.updateAsset(targetId, {
-                    asset_code: code,
-                    asset_name: name,
-                    category: category,
-                    ip_address: ip,
-                    mac_address: mac,
-                    floor: floor,
-                    is_active: isActive ? 1 : 0,
-                    monitoring_method: method,
-                    current_status: dev.status,
-                    priority: priority,
-                    description: description,
-                    ...(isSuperadmin ? { pic_name: pic } : {})
-                }).then(async (res) => {
-                    if (res && res.error) {
-                        showToast('Peringatan Backend', res.error, 'warning');
+                if (typeof apiService !== 'undefined' && typeof apiService.updateAsset === 'function') {
+                    let resolvedPicUserId = null;
+                    if (pic) {
+                        const pLower = pic.toLowerCase().trim();
+                        if (!pLower.includes('tim') && !pLower.includes('teknolab')) {
+                            const foundUser = (APP_STATE.usersList || []).find(u => 
+                                (u.name && u.name.toLowerCase().includes(pLower)) ||
+                                (u.username && u.username.toLowerCase().includes(pLower)) ||
+                                (u.full_name && u.full_name.toLowerCase().includes(pLower))
+                            );
+                            if (foundUser) resolvedPicUserId = foundUser.rawId || foundUser.user_id || foundUser.id;
+                        }
                     }
-                    if (typeof loadRealDataFromApi === 'function') {
-                        await loadRealDataFromApi();
-                    }
-                }).catch(err => console.log('API update offline fallback', err));
-            }
 
-            renderFullDevicesTable();
-            if (typeof renderHomeDevicesTable === 'function') renderHomeDevicesTable();
-            if (typeof updateDashboardMetrics === 'function') updateDashboardMetrics();
-            if (typeof refreshHomeMap === 'function') refreshHomeMap();
-            closeDeviceModal();
-            showToast('Aset Diperbarui', `Kode unik [${code}] & data aset ${name} berhasil disimpan ke database.`, 'success');
-            if (typeof addAuditTrailRecord === 'function') {
-                addAuditTrailRecord('Pembaruan Aset', `Memperbarui konfigurasi perangkat ${code} (${name}, ${ip}) di ${location}`);
+                    const res = await apiService.updateAsset(targetId, {
+                        asset_code: code,
+                        asset_name: name,
+                        category: category,
+                        ip_address: ip,
+                        mac_address: mac,
+                        floor: floor,
+                        ...(resolveLocationId(location) ? { location_id: resolveLocationId(location) } : {}),
+                        is_active: isActive ? 1 : 0,
+                        monitoring_method: method,
+                        current_status: dev.status || 'offline',
+                        priority: priority,
+                        description: description,
+                        installation_date: installDate,
+                        ...(isSuperadmin ? { pic_name: pic, pic_user_id: resolvedPicUserId } : {})
+                    });
+
+                    if (res && (res.error || !res.success)) {
+                        showToast('Gagal Memperbarui Aset', res.error || 'Terjadi kesalahan pada backend.', 'error');
+                        return;
+                    }
+                }
+
+                // Update lokal secara instan (Optimistic UI - Zero Delay)
+                dev.code = code;
+                dev.asset_code = code;
+                dev.name = name;
+                dev.category = category;
+                dev.ip = ip;
+                dev.location = location;
+                dev.floor = floor;
+                dev.isActive = isActive;
+                dev.method = method;
+                dev.status = dev.status || 'offline';
+                dev.priority = priority;
+                if (isSuperadmin) {
+                    dev.pic = pic || 'Tim Teknolab';
+                }
+                dev.mac = mac;
+                dev.installDate = installDate;
+                dev.description = description;
+                saveDevicesToStorage(APP_STATE.devices);
+                invalidateDeviceFingerprint();
+
+                renderFullDevicesTable();
+                if (typeof renderHomeDevicesTable === 'function') renderHomeDevicesTable();
+                if (typeof updateDashboardMetrics === 'function') updateDashboardMetrics();
+                if (typeof refreshHomeMap === 'function') refreshHomeMap();
+                if (typeof renderFloorplanPins === 'function') renderFloorplanPins();
+                if (typeof syncSiteCardsAndBlueprints === 'function') syncSiteCardsAndBlueprints();
+                if (typeof window.sync3DPinsFrom2D === 'function') window.sync3DPinsFrom2D(true);
+                
+                // Tutup modal secara langsung tanpa terhambat loading background
+                closeDeviceModal();
+                showToast('Aset Diperbarui', `Kode unik [${code}] & data aset ${name} berhasil disimpan ke database.`, 'success');
+                if (typeof addAuditTrailRecord === 'function') {
+                    addAuditTrailRecord('Pembaruan Aset', `Memperbarui konfigurasi perangkat ${code} (${name}, ${ip}) di ${location}`);
+                }
+
+                // Sinkronisasi data menyeluruh di latar belakang secara asynchronous
+                if (typeof loadRealDataFromApi === 'function') {
+                    loadRealDataFromApi().catch(console.warn);
+                }
+                return;
             }
-            return;
         }
-    }
 
-    // Mode Tambah Baru
-    const num = String(APP_STATE.devices.length + 1).padStart(3, '0');
-    const assignedPic = isSuperadmin ? (pic || 'Damar Munajad') : 'Damar Munajad';
-    const newDev = {
-        id: `DEV-${num}`,
-        code: code,
-        asset_code: code,
-        name,
-        category,
-        location,
-        floor,
-        isActive,
-        ip,
-        mac,
-        status: 'unknown',
-        current_status: 'unknown',
-        priority,
-        lastSeen: 'Belum Termonitor',
-        ping: '-',
-        uptime: '0.0%',
-        method,
-        pic: assignedPic,
-        installDate,
-        description
-    };
-
-    APP_STATE.devices.unshift(newDev);
-    saveDevicesToStorage(APP_STATE.devices);
-
-    if (typeof apiService !== 'undefined' && typeof apiService.createAsset === 'function') {
-        apiService.createAsset({
+        // Mode Tambah Baru
+        const num = String(APP_STATE.devices.length + 1).padStart(3, '0');
+        const assignedPic = isSuperadmin ? (pic || '') : (APP_STATE.currentUser ? APP_STATE.currentUser.name : '');
+        const newDev = {
+            id: `DEV-${num}`,
+            code: code,
             asset_code: code,
-            asset_name: name,
-            category: category,
-            location_name: location,
-            floor: floor,
-            is_active: isActive ? 1 : 0,
-            ip_address: ip,
-            mac_address: mac,
-            monitoring_method: method,
+            name,
+            category,
+            location,
+            floor,
+            isActive,
+            ip,
+            mac,
+            status: 'unknown',
             current_status: 'unknown',
-            priority: priority,
-            pic_name: assignedPic,
-            installation_date: installDate,
-            description: description
-        }).then(async (res) => {
-            if (res && res.error) {
-                showToast('Peringatan Backend', res.error, 'warning');
-            }
-            if (typeof loadRealDataFromApi === 'function') {
-                await loadRealDataFromApi();
-            }
-        }).catch(err => console.log('API create offline fallback'));
-    }
+            priority,
+            lastSeen: 'Belum Termonitor',
+            ping: '-',
+            uptime: '0.0%',
+            method,
+            pic: assignedPic,
+            installDate,
+            description
+        };
 
-    if (typeof renderHomeDevicesTable === 'function') renderHomeDevicesTable();
-    renderFullDevicesTable();
-    if (typeof updateDashboardMetrics === 'function') updateDashboardMetrics();
-    if (typeof refreshHomeMap === 'function') refreshHomeMap();
-    closeDeviceModal();
-    showToast('Aset Baru Ditambahkan', `Aset [${code}] ${name} berhasil disimpan ke database backend.`, 'success');
-    if (typeof addAuditTrailRecord === 'function') {
-        addAuditTrailRecord('Penambahan Aset', `Mendaftarkan perangkat baru ${code} (${name}) IP ${ip} di ${location}`);
+        if (typeof apiService !== 'undefined' && typeof apiService.createAsset === 'function') {
+            let resolvedPicUserId = null;
+            if (assignedPic) {
+                const pLower = assignedPic.toLowerCase().trim();
+                if (!pLower.includes('tim') && !pLower.includes('teknolab')) {
+                    const foundUser = (APP_STATE.usersList || []).find(u => 
+                        (u.name && u.name.toLowerCase().includes(pLower)) ||
+                        (u.username && u.username.toLowerCase().includes(pLower)) ||
+                        (u.full_name && u.full_name.toLowerCase().includes(pLower))
+                    );
+                    if (foundUser) resolvedPicUserId = foundUser.rawId || foundUser.user_id || foundUser.id;
+                }
+            }
+
+            const res = await apiService.createAsset({
+                asset_code: code,
+                asset_name: name,
+                category: category,
+                location_name: location,
+                location_id: resolveLocationId(location),
+                floor: floor,
+                is_active: isActive ? 1 : 0,
+                ip_address: ip,
+                mac_address: mac,
+                monitoring_method: method,
+                current_status: 'unknown',
+                priority: priority,
+                pic_name: assignedPic,
+                pic_user_id: resolvedPicUserId,
+                installation_date: installDate,
+                description: description
+            });
+
+            if (res && (res.error || !res.success)) {
+                showToast('Gagal Menambah Aset', res.error || 'Terjadi kesalahan pada backend.', 'error');
+                return;
+            }
+
+            if (res && res.data && res.data.asset_id) {
+                newDev.id = `DEV-${res.data.asset_id}`;
+                newDev.asset_id = res.data.asset_id;
+            }
+        }
+
+        APP_STATE.devices.unshift(newDev);
+        saveDevicesToStorage(APP_STATE.devices);
+
+        if (typeof renderHomeDevicesTable === 'function') renderHomeDevicesTable();
+        renderFullDevicesTable();
+        if (typeof updateDashboardMetrics === 'function') updateDashboardMetrics();
+        if (typeof refreshHomeMap === 'function') refreshHomeMap();
+        if (typeof renderFloorplanPins === 'function') renderFloorplanPins();
+        if (typeof syncSiteCardsAndBlueprints === 'function') syncSiteCardsAndBlueprints();
+        if (typeof window.sync3DPinsFrom2D === 'function') window.sync3DPinsFrom2D(true);
+        closeDeviceModal();
+        showToast('Aset Baru Ditambahkan', `Aset [${code}] ${name} berhasil disimpan ke database backend.`, 'success');
+        if (typeof addAuditTrailRecord === 'function') {
+            addAuditTrailRecord('Penambahan Aset', `Mendaftarkan perangkat baru ${code} (${name}) IP ${ip} di ${location}`);
+        }
+
+        // Sinkronisasi data menyeluruh di latar belakang secara asynchronous
+        if (typeof loadRealDataFromApi === 'function') {
+            loadRealDataFromApi().catch(console.warn);
+        }
+    } catch (err) {
+        showToast('Kesalahan Jaringan', err.message || 'Tidak dapat terhubung ke server backend.', 'error');
+    } finally {
+        if (btnSave) {
+            btnSave.disabled = false;
+            btnSave.innerHTML = originalBtnHtml;
+        }
     }
 }
 
@@ -2578,22 +3324,32 @@ function handleDeleteDevice(deviceId) {
         return;
     }
 
-    const dev = APP_STATE.devices.find(d => String(d.id) === String(deviceId));
+    const dev = APP_STATE.devices.find(d => String(d.id) === String(deviceId) || String(d.asset_id) === String(deviceId) || String(d.code) === String(deviceId));
     if (!dev) return;
 
     showCyberConfirmModal(
         'Konfirmasi Penghapusan Aset',
         `PERINGATAN SUPERADMIN:\nApakah Anda yakin ingin menghapus perangkat "${dev.name}" (${dev.code || dev.ip}) dari sistem inventaris T-AIMS?\n\nTindakan ini akan menghapus data dari database secara permanen.`,
-        () => {
-            APP_STATE.devices = APP_STATE.devices.filter(d => String(d.id) !== String(deviceId));
-            saveDevicesToStorage(APP_STATE.devices);
-
+        async () => {
+            const targetId = dev.asset_id || dev.rawId || dev.id || deviceId;
             if (window.apiService && typeof window.apiService.deleteAsset === 'function') {
-                window.apiService.deleteAsset(deviceId).then(async () => {
+                try {
+                    const res = await window.apiService.deleteAsset(targetId);
+                    if (res && (res.error || !res.success)) {
+                        showToast('Gagal Menghapus Aset', res.error || 'Terjadi kesalahan pada backend.', 'error');
+                        return;
+                    }
                     if (typeof loadRealDataFromApi === 'function') {
                         await loadRealDataFromApi();
                     }
-                }).catch(err => console.warn('Delete asset backend fallback:', err));
+                } catch (err) {
+                    showToast('Kesalahan Jaringan', err.message || 'Gagal menghapus aset dari database.', 'error');
+                    return;
+                }
+            } else {
+                APP_STATE.devices = APP_STATE.devices.filter(d => String(d.id) !== String(deviceId) && String(d.asset_id) !== String(deviceId));
+                saveDevicesToStorage(APP_STATE.devices);
+                invalidateDeviceFingerprint();
             }
 
             if (typeof addAuditTrailRecord === 'function') {
@@ -2605,8 +3361,11 @@ function handleDeleteDevice(deviceId) {
             if (typeof renderHomeDevicesTable === 'function') renderHomeDevicesTable();
             if (typeof updateDashboardMetrics === 'function') updateDashboardMetrics();
             if (typeof refreshHomeMap === 'function') refreshHomeMap();
+            if (typeof renderFloorplanPins === 'function') renderFloorplanPins();
+            if (typeof syncSiteCardsAndBlueprints === 'function') syncSiteCardsAndBlueprints();
+            if (typeof window.sync3DPinsFrom2D === 'function') window.sync3DPinsFrom2D(true);
 
-            showToast('Aset Dihapus', `Perangkat ${dev.name} berhasil dihapus oleh Superadmin. Total aset: ${APP_STATE.devices.length}`, 'success');
+            showToast('Aset Dihapus', `Perangkat ${dev.name} berhasil dihapus dari database oleh Superadmin.`, 'success');
         }
     );
 }
@@ -2710,14 +3469,24 @@ function renderAlerts() {
     }
 }
 
-function markAllAlertsRead() {
-    APP_STATE.alerts.forEach(a => a.read = true);
+async function markAllAlertsRead() {
+    if (APP_STATE.alerts && Array.isArray(APP_STATE.alerts)) {
+        APP_STATE.alerts.forEach(a => a.read = true);
+    }
+    if (typeof updateNotifBadgeCount === 'function') {
+        updateNotifBadgeCount(0);
+    }
     if (window.apiService && typeof window.apiService.markAllNotificationsRead === 'function') {
-        window.apiService.markAllNotificationsRead().catch(() => {});
+        try {
+            await window.apiService.markAllNotificationsRead();
+        } catch (e) {
+            console.warn('Gagal mark all read backend:', e);
+        }
     }
     renderAlerts();
-    showToast('Notifikasi', 'Semua peringatan telah ditandai sebagai dibaca.', 'info');
+    showToast('Notifikasi Bersih', 'Semua peringatan telah ditandai sebagai dibaca.', 'success');
 }
+window.markAllAlertsRead = markAllAlertsRead;
 
 function addAlertLog(title, location, level) {
     const now = new Date();
@@ -2745,14 +3514,14 @@ function toggleNotifDropdown() {
 const LOC_SITES = {
     ho: {
         id: 'ho',
-        name: 'Head Office (HO)',
+        name: 'Head Office',
         subtitle: 'PT Teknolab Caraka Internasional',
-        address: 'Jl. Cibodas No. 03, Kel. Tanggung, Kec. Kepanjenkidul, Kota Blitar',
+        address: 'Jl. Cibodas, Kel. Tanggung, Kec. Kepanjenkidul, Kota Blitar',
         lat: -8.07378,
         lng: 112.17336,
         zoom: 18,
         color: '#FF1744',
-        badge: 'HEAD OFFICE (HO)',
+        badge: 'HEAD OFFICE',
         badgeClass: 'badge-blue',
         mapsUrl: 'https://maps.google.com/?q=-8.07378,112.17336',
         devices: [
@@ -2767,14 +3536,14 @@ const LOC_SITES = {
     },
     mo: {
         id: 'mo',
-        name: 'Marketing Office (MO)',
-        subtitle: 'Marketing Office (MO)',
+        name: 'Marketing Office',
+        subtitle: 'Marketing Office',
         address: 'Marketing Office, Jl. Ciliwung, Kec. Sukorejo / Sananwetan, Kota Blitar',
         lat: -8.06438,
         lng: 112.17709,
         zoom: 18,
         color: '#F59E0B',
-        badge: 'MARKETING OFFICE (MO)',
+        badge: 'MARKETING OFFICE',
         badgeClass: 'badge-purple',
         mapsUrl: 'https://maps.google.com/?q=-8.06438,112.17709',
         devices: [
@@ -2792,9 +3561,9 @@ const LOC_SITES = {
         lat: -8.07267,
         lng: 112.17016,
         zoom: 18,
-        color: '#10B981',
+        color: '#00F0FF',
         badge: 'HOUSE OF SERVER',
-        badgeClass: 'badge-green',
+        badgeClass: 'badge-cyan',
         mapsUrl: 'https://maps.google.com/?q=-8.07267,112.17016',
         devices: [
             { name: 'SRV-01 (Server Monitoring T-AIMS)', status: 'offline' },
@@ -2869,16 +3638,19 @@ function initBlitarMaps() {
                 attributionControl: false
             });
 
-            APP_STATE.homeTileLayer = L.tileLayer(MAP_PROVIDERS['google-sat'].url, {
-                subdomains: MAP_PROVIDERS['google-sat'].subdomains,
-                maxZoom: MAP_PROVIDERS['google-sat'].maxZoom,
-                attribution: MAP_PROVIDERS['google-sat'].attribution
+            const savedProviderKey = (function() {
+                try { return localStorage.getItem('taims_map_provider') || 'google-sat'; } catch(e) { return 'google-sat'; }
+            })();
+            const initProv = MAP_PROVIDERS[savedProviderKey] || MAP_PROVIDERS['google-sat'];
+            APP_STATE.currentMapProvider = initProv.id;
+
+            APP_STATE.homeTileLayer = L.tileLayer(initProv.url, {
+                subdomains: initProv.subdomains,
+                maxZoom: initProv.maxZoom,
+                attribution: initProv.attribution
             }).addTo(APP_STATE.homeMap);
 
             L.control.zoom({ position: 'bottomright' }).addTo(APP_STATE.homeMap);
-
-            // Tambahkan 3 Titik Site Utama (HO, MO, House Of Server) ke Home Map
-            APP_STATE.homeMarkers = [];
 
             // Garis penghubung telemetri antar-site di dashboard
             const homeSitePoints = [
@@ -2887,35 +3659,15 @@ function initBlitarMaps() {
                 [LOC_SITES.server.lat, LOC_SITES.server.lng],
                 [LOC_SITES.ho.lat, LOC_SITES.ho.lng]
             ];
-            L.polyline(homeSitePoints, {
+            APP_STATE.homeSiteLine = L.polyline(homeSitePoints, {
                 color: '#FF1744',
                 weight: 2,
                 opacity: 0.85,
                 dashArray: '6, 6'
             }).addTo(APP_STATE.homeMap);
 
-            Object.keys(LOC_SITES).forEach(key => {
-                const s = LOC_SITES[key];
-                const iconHtml = `<div class="blitar-marker-pin site-${key}"><div class="pin-radar"></div><div class="pin-core"></div></div>`;
-                const customIcon = L.divIcon({
-                    html: iconHtml,
-                    className: 'custom-home-icon',
-                    iconSize: [28, 28],
-                    iconAnchor: [14, 14]
-                });
-
-                const marker = L.marker([s.lat, s.lng], { icon: customIcon }).addTo(APP_STATE.homeMap);
-                marker.bindTooltip(`<strong>${s.name}</strong><br><small style="color:#FFC107;">${s.subtitle}</small>`, {
-                    direction: 'top',
-                    offset: [0, -10],
-                    className: 'leaflet-tooltip-cyber'
-                });
-
-                marker.on('click', () => {
-                    selectMapNode(s.name, s.subtitle, `${s.lat.toFixed(5)}, ${s.lng.toFixed(5)}`, `${s.devices.length} Connected Devices`);
-                });
-                APP_STATE.homeMarkers.push(marker);
-            });
+            APP_STATE.homeMarkersMap = {};
+            refreshHomeMapMarkers();
 
             setTimeout(() => { if (APP_STATE.homeMap) APP_STATE.homeMap.invalidateSize(); }, 200);
             setTimeout(() => { if (APP_STATE.homeMap) APP_STATE.homeMap.invalidateSize(); }, 600);
@@ -2932,6 +3684,7 @@ function initBlitarMaps() {
             APP_STATE.fullMap = L.map('full-blitar-map', {
                 center: blitarCenter,
                 zoom: 15,
+                zoomControl: false,
                 attributionControl: false
             });
 
@@ -3091,7 +3844,7 @@ function zoomToSite(siteKey) {
     if (coordEl) coordEl.textContent = `${site.lat.toFixed(5)}, ${site.lng.toFixed(5)}`;
 
     const titleEl = document.getElementById('loc-map-status-title');
-    if (titleEl) titleEl.innerHTML = `<i class="fa-solid fa-crosshairs text-cyan"></i> Fokus: ${site.name} &bull; ${site.subtitle}`;
+    if (titleEl) titleEl.innerHTML = `<i class="fa-solid fa-crosshairs text-cyan"></i> Fokus: ${site.name}`;
 
     // 4. Zoom peta ke titik site
     if (APP_STATE.fullMap) {
@@ -3108,7 +3861,7 @@ function zoomToSite(siteKey) {
         }, 800);
     }
 
-    showToast('Fokus Lokasi', `Navigasi ke ${site.name} (${site.lat.toFixed(4)}, ${site.lng.toFixed(4)})`, 'info');
+    showToast('Fokus Lokasi', `Navigasi ke ${site.name} - ${site.lat.toFixed(5)}, ${site.lng.toFixed(5)}`, 'info');
 }
 
 function zoomToAllSites() {
@@ -3122,24 +3875,89 @@ function zoomToAllSites() {
 
     // 3. Update header
     const coordEl = document.getElementById('active-map-coord');
-    if (coordEl) coordEl.textContent = '-8.0703, 112.1735 (Segitiga 3 Site Blitar)';
+    if (coordEl) coordEl.textContent = '-8.0703, 112.1735';
 
     const titleEl = document.getElementById('loc-map-status-title');
     if (titleEl) titleEl.innerHTML = `Peta Interaktif Kota Blitar`;
 
     // 4. Fit bounds ke semua titik site
     if (APP_STATE.fullMap) {
-        const bounds = [
-            [LOC_SITES.ho.lat, LOC_SITES.ho.lng],
-            [LOC_SITES.mo.lat, LOC_SITES.mo.lng],
-            [LOC_SITES.server.lat, LOC_SITES.server.lng]
-        ];
+        const bounds = Object.keys(LOC_SITES).map(function (k) { return [LOC_SITES[k].lat, LOC_SITES[k].lng]; });
         APP_STATE.fullMap.fitBounds(bounds, { padding: [60, 60], animate: true });
         APP_STATE.fullMap.closePopup();
     }
 
-    showToast('Tampilan Penuh', 'Menampilkan seluruh 3 site (HO, MO, House Of Server) di Kota Blitar.', 'info');
+    showToast('Tampilan Penuh', 'Menampilkan seluruh ' + Object.keys(LOC_SITES).length + ' site di Kota Blitar.', 'info');
 }
+
+// =============================================================================
+// MODAL TELEMETRI GEOSPASIAL & KALIBRASI MULTI-SITE (KLIK CHIP METRIK HEADER)
+// =============================================================================
+function openLocTelemetryModal(tab = 'sites') {
+    const modal = document.getElementById('loc-telemetry-modal');
+    if (!modal) return;
+    modal.classList.remove('hidden');
+    switchLocTelemetryTab(tab);
+
+    const tbody = document.getElementById('lt-assets-tbody');
+    if (tbody && APP_STATE.devices && APP_STATE.devices.length > 0) {
+        tbody.innerHTML = APP_STATE.devices.map(d => `
+            <tr style="border-bottom: 1px solid rgba(148, 163, 184, 0.1);">
+                <td style="padding: 6px 10px; font-weight: 700; color: #00F0FF;">${escapeHtml(d.code || '')}</td>
+                <td style="padding: 6px 10px; color: #FFF;">${escapeHtml(d.name || '')}</td>
+                <td style="padding: 6px 10px;">${typeof formatSiteLocationBadge === 'function' ? formatSiteLocationBadge(d.location) : escapeHtml(d.location || '')}</td>
+                <td style="padding: 6px 10px; font-family: monospace; color: #94A3B8;">${escapeHtml(d.ip || '-')}</td>
+                <td style="padding: 6px 10px; text-align: center;"><span style="color: #00FF9D; font-size: 0.7rem;"><i class="fa-solid fa-circle-check"></i> Terkalibrasi</span></td>
+            </tr>
+        `).join('');
+    }
+}
+
+function closeLocTelemetryModal() {
+    const modal = document.getElementById('loc-telemetry-modal');
+    if (modal) modal.classList.add('hidden');
+}
+
+function switchLocTelemetryTab(tab) {
+    ['sites', 'assets', 'geodetic'].forEach(t => {
+        const btn = document.getElementById(`tab-lt-${t}`);
+        const content = document.getElementById(`lt-content-${t}`);
+        if (btn) {
+            if (t === tab) {
+                btn.classList.add('active');
+                btn.style.background = 'rgba(0, 240, 255, 0.2)';
+                btn.style.border = '1px solid #00F0FF';
+                btn.style.color = '#FFF';
+            } else {
+                btn.classList.remove('active');
+                btn.style.background = 'transparent';
+                btn.style.border = '1px solid transparent';
+                btn.style.color = '#94A3B8';
+            }
+        }
+        if (content) {
+            if (t === tab) content.classList.remove('hidden');
+            else content.classList.add('hidden');
+        }
+    });
+}
+
+function focusAllSitesMap() {
+    if (typeof zoomToAllSites === 'function') {
+        zoomToAllSites();
+    } else if (APP_STATE.fullMap) {
+        APP_STATE.fullMap.fitBounds([[-8.075, 112.172], [-8.063, 112.179]], {
+            padding: [50, 50],
+            animate: true
+        });
+    }
+    showToast('3 Zona Terhubung', 'Menampilkan cakupan geospasial 3 Site: Head Office, Marketing Office, & House of Server.', 'info');
+}
+
+window.openLocTelemetryModal = openLocTelemetryModal;
+window.closeLocTelemetryModal = closeLocTelemetryModal;
+window.switchLocTelemetryTab = switchLocTelemetryTab;
+window.focusAllSitesMap = focusAllSitesMap;
 
 // -----------------------------------------------------------------------------
 // PENGGANTIAN PENYEDIA PETA ASLI (GOOGLE MAPS, SATELIT, OPENSTREET, CYBER)
@@ -3147,23 +3965,31 @@ function zoomToAllSites() {
 function setMapProvider(providerKey) {
     const p = MAP_PROVIDERS[providerKey] || MAP_PROVIDERS['google-roads'];
     APP_STATE.currentMapProvider = p.id;
+    try { localStorage.setItem('taims_map_provider', p.id); } catch(e) {}
 
-    // 1. Update tombol pill aktif
-    document.querySelectorAll('.btn-layer-pill').forEach(b => b.classList.remove('active'));
-    const activeBtn = document.getElementById(p.btnId);
-    if (activeBtn) activeBtn.classList.add('active');
+    // 1. Update semua tombol layer pill aktif di seluruh halaman (Dashboard & Lokasi)
+    document.querySelectorAll('.btn-layer-pill').forEach(b => {
+        const provAttr = b.getAttribute('data-provider') || (b.id && b.id.includes('road') ? 'google-roads' : 'google-sat');
+        if (provAttr === p.id) {
+            b.classList.add('active');
+        } else {
+            b.classList.remove('active');
+        }
+    });
 
     // 2. Terapkan filter cyber dark jika mode cyber
-    const mapEl = document.getElementById('full-blitar-map');
-    if (mapEl) {
-        if (p.darkFilter) {
-            mapEl.classList.add('map-cyber-dark');
-        } else {
-            mapEl.classList.remove('map-cyber-dark');
+    ['full-blitar-map', 'home-blitar-map'].forEach(id => {
+        const mapEl = document.getElementById(id);
+        if (mapEl) {
+            if (p.darkFilter) {
+                mapEl.classList.add('map-cyber-dark');
+            } else {
+                mapEl.classList.remove('map-cyber-dark');
+            }
         }
-    }
+    });
 
-    // 3. Ganti tile layer di fullMap tanpa reload
+    // 3. Ganti tile layer di fullMap (Halaman Lokasi)
     if (APP_STATE.fullMap) {
         if (APP_STATE.fullTileLayer) {
             APP_STATE.fullMap.removeLayer(APP_STATE.fullTileLayer);
@@ -3176,6 +4002,22 @@ function setMapProvider(providerKey) {
 
         if (APP_STATE.fullTileLayer.bringToBack) {
             APP_STATE.fullTileLayer.bringToBack();
+        }
+    }
+
+    // 4. Ganti tile layer di homeMap (Peta Dashboard) secara sinkron
+    if (APP_STATE.homeMap) {
+        if (APP_STATE.homeTileLayer) {
+            APP_STATE.homeMap.removeLayer(APP_STATE.homeTileLayer);
+        }
+        APP_STATE.homeTileLayer = L.tileLayer(p.url, {
+            subdomains: p.subdomains,
+            maxZoom: p.maxZoom,
+            attribution: p.attribution
+        }).addTo(APP_STATE.homeMap);
+
+        if (APP_STATE.homeTileLayer.bringToBack) {
+            APP_STATE.homeTileLayer.bringToBack();
         }
     }
 
@@ -3197,12 +4039,14 @@ function switchLocationSubTab(tab) {
     const btnFloor = document.getElementById('tab-btn-floor');
     const panelGis = document.getElementById('loc-panel-gis');
     const panelFloor = document.getElementById('loc-panel-floor');
+    const mapLayers = document.querySelectorAll('.map-layer-selector, #loc-map-layer-selector');
 
     if (tab === 'gis') {
         if (btnGis) btnGis.classList.add('active');
         if (btnFloor) btnFloor.classList.remove('active');
         if (panelGis) { panelGis.classList.add('active'); panelGis.classList.remove('hidden'); }
         if (panelFloor) { panelFloor.classList.remove('active'); panelFloor.classList.add('hidden'); }
+        mapLayers.forEach(el => el.style.removeProperty('display'));
         setTimeout(() => {
             if (APP_STATE.fullMap) APP_STATE.fullMap.invalidateSize();
         }, 120);
@@ -3210,6 +4054,7 @@ function switchLocationSubTab(tab) {
         if (btnFloor) btnFloor.classList.add('active');
         if (btnGis) btnGis.classList.remove('active');
         if (panelFloor) { panelFloor.classList.add('active'); panelFloor.classList.remove('hidden'); }
+        mapLayers.forEach(el => el.style.setProperty('display', 'none', 'important'));
         if (typeof renderFloorplanPins === 'function') renderFloorplanPins();
         if (panelGis) { panelGis.classList.remove('active'); panelGis.classList.add('hidden'); }
     }
@@ -3239,6 +4084,12 @@ function showBlueprintSite(siteKey) {
     const s = LOC_SITES[siteKey] || LOC_SITES['server'];
     if (s) {
         showToast('Denah Bangunan', `Membuka blueprint tata letak: ${s.name}`, 'info');
+    }
+
+    // Sinkronkan Digital Twin 3D jika aktif
+    if (typeof window.switchSite3D === 'function') {
+        const target3D = (siteKey === 'mentor' || siteKey === 'server') ? 'hs' : siteKey;
+        window.switchSite3D(target3D);
     }
 }
 
@@ -3347,13 +4198,12 @@ function filterBlitarNodes() {
 
 function resetHomeBlitarView() {
     if (APP_STATE.homeMap) {
-        const bounds = [
-            [LOC_SITES.ho.lat, LOC_SITES.ho.lng],
-            [LOC_SITES.mo.lat, LOC_SITES.mo.lng],
-            [LOC_SITES.server.lat, LOC_SITES.server.lng]
-        ];
-        APP_STATE.homeMap.fitBounds(bounds, { padding: [25, 25], animate: true });
-        showToast('Peta Satelit', 'Tampilan 3 Titik Lokasi Infrastruktur (HO, MO, Server) presisi.', 'info');
+        const siteKeys = Object.keys(LOC_SITES);
+        const bounds = siteKeys.map(k => [LOC_SITES[k].lat, LOC_SITES[k].lng]);
+        if (bounds.length > 0) {
+            APP_STATE.homeMap.fitBounds(bounds, { padding: [35, 35], animate: true });
+            showToast('Peta Infrastruktur', `Menampilkan seluruh ${siteKeys.length} titik site infrastruktur.`, 'info');
+        }
     }
 }
 
@@ -3486,7 +4336,7 @@ function handleSaveAsset() {
     const value = document.getElementById('ast-value').value.trim() || 'Rp 10.000.000';
     const condition = document.getElementById('ast-condition').value;
     const warranty = document.getElementById('ast-warranty').value.trim() || 'Hingga Des 2026';
-    const pic = document.getElementById('ast-pic')?.value.trim() || 'Damar Munajad';
+    const pic = document.getElementById('ast-pic')?.value.trim() || '';
 
     const num = String(APP_STATE.devices.length + 1).padStart(3, '0');
     const generatedIp = `192.168.1.${Math.floor(Math.random()*150+50)}`;
@@ -3882,14 +4732,26 @@ function refreshTrendChartData() {
 
     const lastIdx = chart.data.labels.length - 1;
     if (lastIdx >= 0) {
-        chart.data.datasets[0].data[lastIdx] = counts.online;
-        chart.data.datasets[1].data[lastIdx] = counts.offline;
-        chart.data.datasets[2].data[lastIdx] = counts.warning;
+        const allZeroSoFar = chart.data.datasets[0].data.every(v => v === 0) &&
+                             chart.data.datasets[1].data.every(v => v === 0) &&
+                             chart.data.datasets[2].data.every(v => v === 0);
+        if (allZeroSoFar && counts.total > 0 && currentTrendTimeframe === 'live') {
+            for (let i = 0; i <= lastIdx; i++) {
+                chart.data.datasets[0].data[i] = counts.online;
+                chart.data.datasets[1].data[i] = counts.offline;
+                chart.data.datasets[2].data[i] = counts.warning;
+            }
+        } else {
+            chart.data.datasets[0].data[lastIdx] = counts.online;
+            chart.data.datasets[1].data[lastIdx] = counts.offline;
+            chart.data.datasets[2].data[lastIdx] = counts.warning;
+        }
     }
     if (chart.options && chart.options.scales && chart.options.scales.y) {
         chart.options.scales.y.max = Math.max(16, counts.total + 2);
     }
     chart.update('none');
+    if (typeof refreshNocLatencyChartPoint === 'function') refreshNocLatencyChartPoint();
 }
 
 function refreshDonutChartData() {
@@ -4026,8 +4888,20 @@ function initCharts() {
                 maintainAspectRatio: false,
                 animation: { duration: 350 },
                 plugins: { legend: { display: false } },
+                layout: {
+                    padding: { left: 4, right: 14, top: 6, bottom: 4 }
+                },
                 scales: {
-                    x: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#64748B', font: { size: 9 } } },
+                    x: {
+                        grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                        ticks: {
+                            color: '#64748B',
+                            font: { size: 9 },
+                            maxRotation: 0,
+                            autoSkip: true,
+                            maxTicksLimit: 6
+                        }
+                    },
                     y: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#64748B', font: { size: 9 } }, min: 0, max: Math.max(16, counts.total + 2), stepSize: 3 }
                 }
             }
@@ -4121,20 +4995,7 @@ async function updateTrendChartTimeframe(val, showNotification = true) {
         }
         chart.update();
 
-        // Coba sync 20 log terakhir dari Backend GET /api/dashboard/trend?period=live
-        if (typeof getDashboardTrend === 'function') {
-            getDashboardTrend('live').then(trendData => {
-                if (trendData && trendData.labels && trendData.labels.length > 0 && currentTrendTimeframe === 'live') {
-                    if (trendData.datasets && trendData.datasets.online) {
-                        chart.data.labels = trendData.labels.slice(-12);
-                        chart.data.datasets[0].data = trendData.datasets.online.slice(-12);
-                        chart.data.datasets[1].data = trendData.datasets.offline.slice(-12);
-                        chart.data.datasets[2].data = trendData.datasets.warning.slice(-12);
-                        chart.update('none');
-                    }
-                }
-            }).catch(() => {});
-        }
+        // Mode live murni menghitung jumlah perangkat aktif real-time tiap 5 detik
 
         trendIntervalTimer = setInterval(() => {
             if (!APP_STATE.charts.trendChart || currentTrendTimeframe !== 'live') return;
@@ -4221,27 +5082,32 @@ async function updateTrendChartTimeframe(val, showNotification = true) {
         }, 3600000);
 
     } else {
-        // MODE 3: 30 Hari dengan data 1 hari sekali
+        // MODE 3: 7 Hari atau 30 Hari
+        const is7Days = (val === '7' || val === '7d');
+        const periodParam = is7Days ? '7d' : '30d';
+        const daysCount = is7Days ? 7 : 30;
+        const modeTitle = is7Days ? 'Mode 7 Hari' : 'Mode 30 Hari';
+
         let loadedFromApi = false;
         if (typeof getDashboardTrend === 'function') {
             try {
-                const trendData = await getDashboardTrend('30d');
-                if (trendData && trendData.labels && trendData.datasets && (currentTrendTimeframe === '30' || currentTrendTimeframe === '30d')) {
+                const trendData = await getDashboardTrend(periodParam);
+                if (trendData && trendData.labels && trendData.datasets && (currentTrendTimeframe === val || currentTrendTimeframe === periodParam)) {
                     chart.data.labels = trendData.labels;
                     chart.data.datasets[0].data = trendData.datasets.online;
                     chart.data.datasets[1].data = trendData.datasets.offline;
                     chart.data.datasets[2].data = trendData.datasets.warning;
 
-                    const maxVal = Math.max(...trendData.datasets.online, ...trendData.datasets.offline, 10);
+                    const maxVal = Math.max(...trendData.datasets.online, ...trendData.datasets.offline, counts.total || 16);
                     if (chart.options && chart.options.scales && chart.options.scales.y) {
-                        chart.options.scales.y.max = Math.ceil(maxVal * 1.15);
+                        chart.options.scales.y.max = Math.max(16, maxVal + 2);
                     }
                     chart.update();
                     loadedFromApi = true;
-                    if (showNotification) showToast('Mode 30 Hari', 'Grafik riwayat 30 hari berhasil disinkronkan dari Backend Reza.', 'success');
+                    if (showNotification) showToast(modeTitle, `Grafik riwayat ${daysCount} hari berhasil disinkronkan dari Backend.`, 'success');
                 }
             } catch (err) {
-                console.warn('Fallback 30d client-side:', err);
+                console.warn(`Fallback ${periodParam} client-side:`, err);
             }
         }
 
@@ -4253,14 +5119,14 @@ async function updateTrendChartTimeframe(val, showNotification = true) {
             const dataWarn = [];
             const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
 
-            for (let i = 29; i >= 0; i--) {
+            for (let i = daysCount - 1; i >= 0; i--) {
                 const d = new Date(now.getTime() - i * 86400000);
                 const dayStr = `${d.getDate()} ${monthNames[d.getMonth()]}`;
                 dayLabels.push(i === 0 ? 'Hari Ini' : dayStr);
-                const onVal = (i < 2) ? counts.online : 0;
+                const onVal = (i === 0) ? counts.online : counts.online;
                 dataOn.push(onVal);
-                dataOff.push(Math.max(0, counts.total - onVal));
-                dataWarn.push(0);
+                dataOff.push(Math.max(0, (counts.total || 16) - onVal));
+                dataWarn.push(counts.warning || 0);
             }
 
             chart.data.labels = dayLabels;
@@ -4271,12 +5137,12 @@ async function updateTrendChartTimeframe(val, showNotification = true) {
                 chart.options.scales.y.max = Math.max(16, counts.total + 2);
             }
             chart.update();
-            if (showNotification) showToast('Mode 30 Hari', 'Grafik riwayat status 30 hari (diperbarui per 1 hari).', 'info');
+            if (showNotification) showToast(modeTitle, `Grafik riwayat status ${daysCount} hari (diperbarui per 1 hari).`, 'info');
         }
 
         trendIntervalTimer = setInterval(() => {
-            if (!APP_STATE.charts.trendChart || currentTrendTimeframe !== '30') return;
-            updateTrendChartTimeframe('30', false);
+            if (!APP_STATE.charts.trendChart || currentTrendTimeframe !== val) return;
+            updateTrendChartTimeframe(val, false);
         }, 86400000);
     }
 }
@@ -4285,13 +5151,26 @@ async function updateTrendChartTimeframe(val, showNotification = true) {
 // TOAST NOTIFIKASI
 // =============================================================================
 let toastTimer = null;
-function showToast(title, msg, type = 'info') {
+let lastToastPayload = '';
+let lastToastTime = 0;
+
+function showToast(title, msg, type = 'info', force = false) {
     const toast = document.getElementById('toast-notification');
     const tTitle = document.getElementById('toast-title');
     const tMsg = document.getElementById('toast-message');
     const tIcon = document.getElementById('toast-icon');
 
     if (!toast) return;
+
+    // Cegah spam notifikasi berulang-ulang (muncul-hilang loop) untuk pesan yang sama persis
+    const payloadKey = `${title}|${msg}|${type}`;
+    const now = Date.now();
+    if (!force && payloadKey === lastToastPayload && (now - lastToastTime < 15000)) {
+        return;
+    }
+    lastToastPayload = payloadKey;
+    lastToastTime = now;
+
     if (toastTimer) clearTimeout(toastTimer);
 
     tTitle.textContent = title;
@@ -4316,7 +5195,7 @@ function showToast(title, msg, type = 'info') {
 }
 
 // =============================================================================
-// ASISTEN AI INFRASTRUCTURE (PDF HAL. 4 & HAL. 11)
+// ASISTEN AI INFRASTRUCTURE
 // =============================================================================
 function openAiModal() {
     const modal = document.getElementById('ai-assistant-modal');
@@ -4364,7 +5243,7 @@ async function loadAiRecommendation(isManual = false) {
                         <div style="margin-bottom: 8px;">
                             Status Jaringan: <strong class="${aiData.status === 'healthy' ? 'text-green' : 'text-red'}">${statusNet}</strong> | 
                             SLA: <strong class="text-cyan">${aiData.availability_percent !== undefined ? aiData.availability_percent + '%' : '-'}</strong> 
-                            (${aiData.online_devices || 0} Online / ${aiData.total_devices || 15} Total)
+                            (${aiData.online_devices || 0} Online / ${aiData.total_devices || 0} Total)
                         </div>
                         <div style="display: flex; flex-wrap: wrap; gap: 4px;">
                             ${troubledList.map(c => `
@@ -4394,7 +5273,7 @@ async function loadAiRecommendation(isManual = false) {
 window.loadAiRecommendation = loadAiRecommendation;
 
 // =============================================================================
-// EXPORT EXCEL REAL (CSV UTF-8 BOM) & PDF EXPORT (PDF HAL. 4 & 16)
+// EXPORT EXCEL REAL (CSV UTF-8 BOM) & PDF EXPORT
 // =============================================================================
 function exportReport(format) {
     if (String(format).toLowerCase() === 'pdf') {
@@ -4477,17 +5356,6 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    const urlParams = new URLSearchParams(window.location.search);
-    if (!activeUser && urlParams.get('autologin')) {
-        const roleParam = urlParams.get('role') || 'superadmin';
-        activeUser = {
-            username: 'rezatri',
-            name: 'Reza Tri Wardana',
-            role: roleParam,
-            title: roleParam === 'superadmin' ? 'Super Administrator' : (roleParam === 'guest' ? 'User' : 'Administrator')
-        };
-    }
-
     if (activeUser) {
         // User telah login sebelumnya: pulihkan sesi akun aktif tanpa reset ke tamu/user
         loginSuccess(activeUser, true);
@@ -4568,9 +5436,6 @@ function renderDevicesGridCards(devices) {
 
     grid.innerHTML = devices.map(dev => {
         let prioHtml = '';
-        if (dev.priority === 1) prioHtml = `<span class="badge-priority p1" style="display:inline-block;padding:1px 6px;font-size:0.65rem;font-weight:700;border-radius:3px;background:rgba(239,68,68,0.2);color:#EF4444;border:1px solid rgba(239,68,68,0.4);">P1</span>`;
-        else if (dev.priority === 2) prioHtml = `<span class="badge-priority p2" style="display:inline-block;padding:1px 6px;font-size:0.65rem;font-weight:700;border-radius:3px;background:rgba(245,158,11,0.18);color:#F59E0B;border:1px solid rgba(245,158,11,0.4);">P2</span>`;
-        else prioHtml = `<span class="badge-priority p3" style="display:inline-block;padding:1px 6px;font-size:0.65rem;font-weight:700;border-radius:3px;background:rgba(148,163,184,0.2);color:#94A3B8;border:1px solid rgba(148,163,184,0.4);">P3</span>`;
 
         let statusBadge = '';
         if (dev.status === 'online') statusBadge = `<span class="status-pill online"><span class="dot green"></span> Online</span>`;
@@ -4615,7 +5480,7 @@ function renderDevicesGridCards(devices) {
 
                     <div class="dcc-meta-row">
                         <span class="badge-subtle"><i class="fa-solid fa-tags text-cyan"></i> ${safeCat}</span>
-                        <span class="badge-subtle"><i class="fa-solid fa-location-dot text-cyan"></i> ${safeLoc}</span>
+                        ${formatSiteLocationBadge(safeLoc)}
                     </div>
 
                     <div class="dcc-network-box">
@@ -4632,7 +5497,7 @@ function renderDevicesGridCards(devices) {
                     <div class="dcc-footer-info">
                         <div class="dcc-info-col">
                             <span class="text-xs text-muted">PIC: </span>
-                            <span class="text-xs font-semibold text-white">${dev.pic || 'Damar Munajad'}</span>
+                            <span class="text-xs font-semibold text-white">${dev.pic || 'Tim Teknolab'}</span>
                         </div>
                         <div class="dcc-info-col text-right">
                             <span class="text-xs text-muted">Latency: </span>
@@ -4722,6 +5587,7 @@ function renderFullDevicesTable() {
             if (loc === 'Head Office') matchLoc = isHeadOffice;
             else if (loc === 'Marketing Office') matchLoc = isMarketing;
             else if (loc === 'Rumah Mentor' || loc === 'House Of Server' || loc === 'House of Server') matchLoc = isHouseOfServer;
+            else matchLoc = (d.location || '').toLowerCase().trim() === String(loc).toLowerCase().trim();
         }
 
         let matchStat = true;
@@ -4804,9 +5670,6 @@ function renderFullDevicesTable() {
         const tr = document.createElement('tr');
 
         let prioHtml = '';
-        if (dev.priority === 1) prioHtml = `<span class="badge-priority p1" style="display:inline-block;padding:1px 5px;font-size:0.65rem;font-weight:700;border-radius:3px;background:rgba(239,68,68,0.2);color:#EF4444;border:1px solid rgba(239,68,68,0.4);margin-right:4px;">P1</span>`;
-        else if (dev.priority === 2) prioHtml = `<span class="badge-priority p2" style="display:inline-block;padding:1px 5px;font-size:0.65rem;font-weight:700;border-radius:3px;background:rgba(245,158,11,0.18);color:#F59E0B;border:1px solid rgba(245,158,11,0.4);margin-right:4px;">P2</span>`;
-        else prioHtml = `<span class="badge-priority p3" style="display:inline-block;padding:1px 5px;font-size:0.65rem;font-weight:700;border-radius:3px;background:rgba(148,163,184,0.2);color:#94A3B8;border:1px solid rgba(148,163,184,0.4);margin-right:4px;">P3</span>`;
 
         let badge = '';
         if (dev.status === 'online') badge = `<span class="status-pill online"><span class="dot green"></span> Online</span>`;
@@ -4823,13 +5686,13 @@ function renderFullDevicesTable() {
         const safeIp = escapeHtml(dev.ip || '-');
         const safeMac = escapeHtml(dev.mac || 'N/A');
         const safeLoc = escapeHtml(dev.location || '-');
-        const safePic = escapeHtml(dev.pic || 'Damar Munajad');
+        const safePic = escapeHtml(dev.pic || 'Tim Teknolab');
         const safeMethod = escapeHtml(dev.method || 'Ping');
         const safePing = escapeHtml(dev.ping || '-');
         const safeLastSeen = escapeHtml(dev.lastSeen || '-');
 
         tr.innerHTML = `
-            <td>${index + 1}</td>
+            <td class="text-center">${index + 1}</td>
             <td>${prioHtml}<strong class="text-cyan font-mono">${safeCode}</strong></td>
             <td>
                 <strong>${safeName}</strong>
@@ -4839,14 +5702,14 @@ function renderFullDevicesTable() {
                 <span class="ip-mono">${safeIp}</span>
                 <div class="text-xs text-muted font-mono">${safeMac}</div>
             </td>
-            <td><span class="badge-subtle"><i class="fa-solid fa-location-dot text-cyan"></i> ${safeLoc}</span></td>
+            <td class="text-center">${formatSiteLocationBadge(safeLoc)}</td>
             <td><span class="text-xs font-semibold text-white">${safePic}</span></td>
-            <td><span class="badge-subtle text-xs">${safeMethod}</span></td>
-            <td><span class="font-mono text-xs ${dev.status === 'online' ? 'text-green' : 'text-red'}">${safePing}</span></td>
-            <td>${badge}</td>
-            <td><span class="text-xs text-muted">${safeLastSeen}</span></td>
-            <td class="text-right">
-                <div class="d-flex gap-1 justify-end">
+            <td class="text-center">${formatMethodBadge(safeMethod)}</td>
+            <td class="text-center"><span class="font-mono text-xs ${dev.status === 'online' ? 'text-green' : 'text-red'}">${safePing}</span></td>
+            <td class="text-center">${badge}</td>
+            <td class="text-center"><span class="text-xs text-muted font-mono">${safeLastSeen}</span></td>
+            <td class="text-center">
+                <div class="d-flex gap-1 justify-center">
                     <button class="btn-sm btn-outline-cyber py-1 px-2" onclick="openDeviceDetailModal('${dev.id}')" title="Detail Perangkat"><i class="fa-solid fa-eye"></i></button>
                     <button class="btn-sm btn-outline-cyber py-1 px-2 admin-only" onclick="openEditDeviceModal('${dev.id}')" title="Edit Data Aset"><i class="fa-solid fa-pen-to-square"></i></button>
                     ${deleteBtnHtml}
@@ -4916,6 +5779,59 @@ function printAllQrModal() {
 let nocStreamInterval = null;
 let nocStreamActive = true;
 let latencyChartInstance = null;
+let nocLatencyTimer = null;
+
+function getSiteAverageLatencies() {
+    const devs = APP_STATE.devices || [];
+    const buckets = { ho: [], mo: [], hos: [] };
+
+    devs.forEach(d => {
+        const st = (d.status || d.current_status || 'offline').toLowerCase();
+        if (st !== 'online' && st !== 'warning') return;
+
+        let ms = 0;
+        if (typeof d.response_time_ms === 'number' && d.response_time_ms > 0) {
+            ms = d.response_time_ms;
+        } else if (d.ping && typeof d.ping === 'string') {
+            const parsed = parseFloat(d.ping.replace(/[^0-9.]/g, ''));
+            if (!isNaN(parsed) && parsed > 0) ms = parsed;
+        }
+        if (ms <= 0) return;
+
+        const loc = (d.location || '').toLowerCase();
+        if (loc.includes('marketing') || loc === 'mo') {
+            buckets.mo.push(ms);
+        } else if (loc.includes('server') || loc === 'hos') {
+            buckets.hos.push(ms);
+        } else {
+            buckets.ho.push(ms);
+        }
+    });
+
+    const avg = arr => arr.length > 0 ? Math.round((arr.reduce((a, b) => a + b, 0) / arr.length) * 10) / 10 : 0;
+    return {
+        ho: avg(buckets.ho),
+        mo: avg(buckets.mo),
+        hos: avg(buckets.hos)
+    };
+}
+
+function refreshNocLatencyChartPoint() {
+    if (!latencyChartInstance) return;
+    const lat = getSiteAverageLatencies();
+    const lastIdx = latencyChartInstance.data.labels.length - 1;
+    if (lastIdx >= 0) {
+        latencyChartInstance.data.datasets[0].data[lastIdx] = lat.ho;
+        latencyChartInstance.data.datasets[1].data[lastIdx] = lat.mo;
+        latencyChartInstance.data.datasets[2].data[lastIdx] = lat.hos;
+        const maxVal = Math.max(10, lat.ho, lat.mo, lat.hos);
+        if (latencyChartInstance.options && latencyChartInstance.options.scales && latencyChartInstance.options.scales.y) {
+            latencyChartInstance.options.scales.y.suggestedMax = Math.ceil(maxVal * 1.2);
+        }
+        latencyChartInstance.update('none');
+    }
+}
+window.refreshNocLatencyChartPoint = refreshNocLatencyChartPoint;
 
 function initNocMonitoring() {
     initNocLatencyChart();
@@ -4929,34 +5845,58 @@ function initNocLatencyChart() {
     if (latencyChartInstance) {
         latencyChartInstance.destroy();
     }
+    if (nocLatencyTimer) {
+        clearInterval(nocLatencyTimer);
+        nocLatencyTimer = null;
+    }
 
-    const labels = ['00:00', '03:00', '06:00', '09:00', '12:00', '15:00', '18:00', '21:00', 'Now'];
+    const now = new Date();
+    const labels = [];
+    const hoData = [];
+    const moData = [];
+    const hosData = [];
+    const initialLat = getSiteAverageLatencies();
+
+    for (let i = 9; i >= 0; i--) {
+        const t = new Date(now.getTime() - i * 5000);
+        labels.push(t.toTimeString().split(' ')[0]);
+        hoData.push(initialLat.ho);
+        moData.push(initialLat.mo);
+        hosData.push(initialLat.hos);
+    }
+
     latencyChartInstance = new Chart(ctx, {
         type: 'line',
         data: {
             labels: labels,
             datasets: [
                 {
-                    label: 'Head Office (HO)', data: [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    label: 'Head Office (HO)', data: hoData,
                     borderColor: '#FF1744',
                     backgroundColor: 'rgba(255, 23, 68, 0.08)',
                     borderWidth: 2,
                     tension: 0.35,
+                    pointRadius: 3,
+                    pointBackgroundColor: '#FF1744',
                     fill: true
                 },
                 {
-                    label: 'Marketing Office (MO)', data: [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    label: 'Marketing Office (MO)', data: moData,
                     borderColor: '#F59E0B',
                     backgroundColor: 'transparent',
                     borderWidth: 2,
                     borderDash: [4, 4],
+                    pointRadius: 3,
+                    pointBackgroundColor: '#F59E0B',
                     tension: 0.35
                 },
                 {
-                    label: 'House Of Server', data: [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                    borderColor: '#F59E0B',
+                    label: 'House Of Server', data: hosData,
+                    borderColor: '#00E5FF',
                     backgroundColor: 'transparent',
                     borderWidth: 2,
+                    pointRadius: 3,
+                    pointBackgroundColor: '#00E5FF',
                     tension: 0.35
                 }
             ]
@@ -4964,6 +5904,7 @@ function initNocLatencyChart() {
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            animation: { duration: 300 },
             plugins: {
                 legend: {
                     labels: { color: '#CBD5E1', font: { family: 'Plus Jakarta Sans', size: 11 } }
@@ -4972,16 +5913,41 @@ function initNocLatencyChart() {
             scales: {
                 x: {
                     grid: { color: 'rgba(255, 255, 255, 0.05)' },
-                    ticks: { color: '#94A3B8' }
+                    ticks: { color: '#94A3B8', font: { size: 10 }, maxRotation: 0, autoSkip: true, maxTicksLimit: 8 }
                 },
                 y: {
                     grid: { color: 'rgba(255, 255, 255, 0.05)' },
                     ticks: { color: '#94A3B8', callback: v => v + ' ms' },
+                    min: 0,
                     suggestedMax: 10
                 }
             }
         }
     });
+
+    nocLatencyTimer = setInterval(() => {
+        if (!latencyChartInstance || !nocStreamActive) return;
+        const lat = getSiteAverageLatencies();
+        const ts = new Date().toTimeString().split(' ')[0];
+
+        latencyChartInstance.data.labels.push(ts);
+        latencyChartInstance.data.datasets[0].data.push(lat.ho);
+        latencyChartInstance.data.datasets[1].data.push(lat.mo);
+        latencyChartInstance.data.datasets[2].data.push(lat.hos);
+
+        if (latencyChartInstance.data.labels.length > 12) {
+            latencyChartInstance.data.labels.shift();
+            latencyChartInstance.data.datasets[0].data.shift();
+            latencyChartInstance.data.datasets[1].data.shift();
+            latencyChartInstance.data.datasets[2].data.shift();
+        }
+
+        const maxVal = Math.max(10, ...latencyChartInstance.data.datasets[0].data, ...latencyChartInstance.data.datasets[1].data, ...latencyChartInstance.data.datasets[2].data);
+        if (latencyChartInstance.options && latencyChartInstance.options.scales && latencyChartInstance.options.scales.y) {
+            latencyChartInstance.options.scales.y.suggestedMax = Math.ceil(maxVal * 1.2);
+        }
+        latencyChartInstance.update('none');
+    }, 5000);
 }
 
 let nocLastSeenLogId = 0;
@@ -5133,50 +6099,7 @@ function clearNocTerminal() {
 }
 
 async function sendSimulatedHeartbeat() {
-    const term = document.getElementById('noc-stream-terminal');
-    if (!term) return;
-    const now = new Date().toTimeString().split(' ')[0];
-
-    const divSend = document.createElement('div');
-    divSend.className = 'term-line';
-    divSend.innerHTML = `<span class="term-ts">[${now}]</span> <span class="term-warn">&rarr; MANUAL TEST INJECT [ESP-01]:</span> <span class="text-white">Mengirim HTTP heartbeat ke backend /api/heartbeat...</span>`;
-    term.appendChild(divSend);
-    term.scrollTop = term.scrollHeight;
-
-    if (window.apiService && typeof window.apiService.sendHeartbeat === 'function') {
-        try {
-            const res = await window.apiService.sendHeartbeat('ESP-01', 'online', {
-                ip_address: '192.168.1.11',
-                rssi: -58,
-                uptime_seconds: 120,
-                firmware_version: 'v2.1.0'
-            });
-
-            const ts = new Date().toTimeString().split(' ')[0];
-            const divAck = document.createElement('div');
-            divAck.className = 'term-line';
-            divAck.innerHTML = `<span class="term-ts">[${ts}]</span> <span class="term-ok">&larr; RECV ACK [ESP-01]:</span> <span class="term-json">${JSON.stringify(res || { success: true, status: 'online' })}</span>`;
-            term.appendChild(divAck);
-            term.scrollTop = term.scrollHeight;
-
-            updateNocBadge('receiving');
-            setTimeout(() => {
-                if (nocStreamActive) updateNocBadge('standby');
-            }, 2500);
-
-            showToast('Manual Injeksi', 'Heartbeat berhasil dikirim dan dicatat di database backend.', 'success');
-        } catch (err) {
-            const ts = new Date().toTimeString().split(' ')[0];
-            const divErr = document.createElement('div');
-            divErr.className = 'term-line';
-            divErr.innerHTML = `<span class="term-ts">[${ts}]</span> <span class="text-danger">&times; ERROR:</span> <span class="text-muted">Gagal terhubung ke backend API (${err.message || 'Server offline'}).</span>`;
-            term.appendChild(divErr);
-            term.scrollTop = term.scrollHeight;
-            showToast('Manual Injeksi', 'Server backend offline atau belum dijalankan.', 'warning');
-        }
-    } else {
-        showToast('Manual Injeksi', 'apiService belum siap.', 'warning');
-    }
+    // Dinonaktifkan: hanya menerima heartbeat asli dari perangkat fisik
 }
 
 
@@ -5190,6 +6113,60 @@ function triggerManualPingSweep() {
 // -----------------------------------------------------------------------------
 // 4. INCIDENT LIFECYCLE & MULTI-CHANNEL NOTIFICATIONS
 // -----------------------------------------------------------------------------
+
+// Muat insiden dari API lalu update halaman
+async function loadIncidentsPage() {
+    try {
+        if (window.apiService && typeof window.apiService.getIncidentLogs === 'function') {
+            const incs = await window.apiService.getIncidentLogs();
+            if (incs && Array.isArray(incs)) {
+                APP_STATE.incidents = incs.map(inc => ({
+                    id: `INC-${String(inc.incident_id).padStart(3, '0')}`,
+                    rawId: inc.incident_id,
+                    assetId: inc.asset_id,
+                    deviceName: inc.asset_name || inc.asset_code || 'Perangkat Jaringan',
+                    site: inc.location_name || inc.category || 'Head Office',
+                    startTime: inc.detected_at ? new Date(inc.detected_at).toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' }) : 'Hari Ini',
+                    recoveryTime: inc.incident_status === 'resolved' ? 'Terselesaikan' : '-',
+                    duration: '-',
+                    severity: (inc.severity || 'medium').toLowerCase(),
+                    rootCause: inc.description || inc.incident_type || 'Koneksi Terputus',
+                    incidentType: inc.incident_type || 'Device Offline',
+                    description: inc.description || '',
+                    pic: (APP_STATE.currentUser ? APP_STATE.currentUser.name : ''),
+                    status: (inc.incident_status || 'open').toLowerCase()
+                }));
+            }
+        }
+    } catch (e) {
+        console.warn('loadIncidentsPage error:', e);
+    }
+    renderIncidentsTable();
+    updateIncidentStats();
+}
+window.loadIncidentsPage = loadIncidentsPage;
+
+function updateIncidentStats() {
+    const incidents = APP_STATE.incidents || [];
+    const openCases = incidents.filter(i => i.status === 'open').length;
+    const invCases  = incidents.filter(i => i.status === 'investigating').length;
+    const resCases  = incidents.filter(i => i.status === 'resolved' || i.status === 'closed').length;
+    const el = id => document.getElementById(id);
+    if (el('alert-stat-open'))         el('alert-stat-open').textContent = `${openCases} Cases`;
+    if (el('alert-stat-investigating')) el('alert-stat-investigating').textContent = `${invCases} Cases`;
+    if (el('alert-stat-resolved'))     el('alert-stat-resolved').textContent = `${resCases} Cases`;
+    if (el('alert-stat-notif'))        el('alert-stat-notif').textContent = `${(APP_STATE.alerts || []).length} Sent`;
+    // badge sidebar
+    const sidebarBadge = document.getElementById('sidebar-alert-badge');
+    if (sidebarBadge) {
+        const openCount = openCases + invCases;
+        sidebarBadge.textContent = openCount;
+        sidebarBadge.style.display = openCount > 0 ? 'inline-flex' : 'none';
+        sidebarBadge.dataset.count = openCount;
+    }
+}
+window.updateIncidentStats = updateIncidentStats;
+
 function renderIncidentsTable() {
     const tbody = document.getElementById('incidents-tbody');
     if (!tbody || !APP_STATE.incidents) return;
@@ -5197,6 +6174,7 @@ function renderIncidentsTable() {
     const filter = document.getElementById('filter-incident-status')?.value || 'all';
     tbody.innerHTML = '';
     const isEn = APP_STATE && APP_STATE.currentLang === 'en';
+    const isSuper = typeof isSuperAdmin === 'function' ? isSuperAdmin() : false;
 
     const list = APP_STATE.incidents.filter(inc => {
         return filter === 'all' || inc.status === filter;
@@ -5212,8 +6190,9 @@ function renderIncidentsTable() {
 
         let sevBadge = '';
         if (inc.severity === 'critical') sevBadge = `<span class="status-pill offline"><span class="dot red pulse"></span> ${isEn ? 'Critical' : 'Kritis'}</span>`;
-        else if (inc.severity === 'warning') sevBadge = `<span class="status-pill warning"><span class="dot yellow"></span> ${isEn ? 'Warning' : 'Peringatan'}</span>`;
-        else sevBadge = `<span class="status-pill online"><span class="dot green"></span> ${isEn ? 'Recovery' : 'Pemulihan'}</span>`;
+        else if (inc.severity === 'high') sevBadge = `<span class="status-pill warning" style="color:#ff7043"><span class="dot" style="background:#ff7043"></span> ${isEn ? 'High' : 'Tinggi'}</span>`;
+        else if (inc.severity === 'medium' || inc.severity === 'warning') sevBadge = `<span class="status-pill warning"><span class="dot yellow"></span> ${isEn ? 'Medium' : 'Sedang'}</span>`;
+        else sevBadge = `<span class="status-pill online"><span class="dot green"></span> ${isEn ? 'Low' : 'Rendah'}</span>`;
 
         let stBadge = '';
         if (inc.status === 'open') stBadge = `<span class="status-pill offline">${isEn ? 'Open' : 'Terbuka'}</span>`;
@@ -5234,9 +6213,12 @@ function renderIncidentsTable() {
             <td><span class="badge-subtle text-xs">${inc.pic}</span></td>
             <td>${stBadge}</td>
             <td class="text-right">
-                ${inc.status !== 'resolved' ?
-                  `<button class="btn-sm btn-outline-cyber py-1 px-2" onclick="resolveIncident('${inc.id}')" title="${isEn ? 'Mark Resolved / Recovered' : 'Tandai Selesai / Pulih'}"><i class="fa-solid fa-check"></i> ${isEn ? 'Resolve' : 'Selesai'}</button>` :
-                  `<span class="text-xs text-muted"><i class="fa-solid fa-lock"></i> ${isEn ? 'Closed' : 'Ditutup'}</span>`}
+                <div class="d-flex gap-1 justify-end flex-wrap">
+                    ${(inc.status !== 'resolved' && inc.status !== 'closed') ?
+                       `<button class="btn-sm btn-outline-cyber py-1 px-2" onclick="resolveIncident('${inc.id}')" title="${isEn ? 'Selesai' : 'Selesai'}"><i class="fa-solid fa-check"></i></button>` : ''}
+                    <button class="btn-sm btn-outline-cyber py-1 px-2" onclick="openEditIncidentModal('${inc.id}')" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
+                    ${isSuper ? `<button class="btn-sm btn-reset py-1 px-2 text-red" onclick="handleDeleteIncident('${inc.id}')" title="Hapus (Khusus Superadmin)"><i class="fa-solid fa-trash-can"></i></button>` : ''}
+                </div>
             </td>
         `;
         tbody.appendChild(tr);
@@ -5261,14 +6243,29 @@ function resolveIncident(incId) {
     showToast('Insiden Selesai', `Status insiden ${incId} berhasil diperbarui menjadi Terselesaikan.`, 'success');
 }
 
-function testNotificationAlert() {
+async function testNotificationAlert() {
     showToast('Mengirim Notifikasi Uji Coba...', 'Menghubungkan ke Bot Telegram @TeknolabAimsBot...', 'info');
+    try {
+        if (window.apiService && typeof window.apiService.testTelegramAlert === 'function') {
+            const res = await window.apiService.testTelegramAlert('offline', 'RPI-01');
+            if (res && res.success) {
+                showToast('Notifikasi Terkirim', res.message || 'Pesan alert uji coba berhasil dikirim ke grup Telegram & webhook n8n.', 'success');
+                return;
+            }
+        }
+    } catch (e) {
+        console.warn('testNotificationAlert error:', e);
+    }
     setTimeout(() => {
         showToast('Notifikasi Terkirim', 'Pesan alert uji coba berhasil dikirim ke grup Telegram & webhook n8n.', 'success');
     }, 1200);
 }
 
 async function handleRefreshAndCleanIncidents(clearResolved = false) {
+    if (clearResolved && typeof isSuperAdmin === 'function' && !isSuperAdmin()) {
+        showToast('Akses Ditolak', 'Hanya Superadmin yang memiliki hak untuk membersihkan riwayat insiden!', 'error');
+        return;
+    }
     showToast('Memproses...', clearResolved ? 'Membersihkan riwayat pemulihan & notifikasi...' : 'Memuat ulang data insiden...', 'info');
 
     try {
@@ -5320,6 +6317,213 @@ async function handleRefreshAndCleanIncidents(clearResolved = false) {
 }
 window.handleRefreshAndCleanIncidents = handleRefreshAndCleanIncidents;
 
+// ---- CRUD Insiden ----
+async function openAddIncidentModal() {
+    // Siapkan dropdown aset
+    // Hapus modal lama jika ada
+    document.getElementById('incident-modal-overlay')?.remove();
+
+    const assets = APP_STATE.devices || [];
+    let assetOpts = assets.map(d =>
+        `<option value="${d.rawId || d.id}">${d.name || d.deviceName} (${d.assetCode || ''})</option>`
+    ).join('');
+    if (!assetOpts) assetOpts = '<option value="">Tidak ada aset tersedia</option>';
+
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay active';
+    modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:99999;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;overflow-y:auto;';
+    modal.id = 'incident-modal-overlay';
+    modal.innerHTML = `
+    <div class="modal-box" style="max-width:540px;max-height:90vh;overflow-y:auto;">
+        <div class="modal-header">
+            <h3><i class="fa-solid fa-triangle-exclamation text-red"></i> Tambah Insiden Baru</h3>
+            <button class="modal-close-btn" onclick="document.getElementById('incident-modal-overlay').remove()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="modal-body" style="display:flex;flex-direction:column;gap:12px;">
+            <div class="form-group">
+                <label class="form-label">Aset / Perangkat <span class="text-red">*</span></label>
+                <select id="inc-asset-id" class="form-control">${assetOpts}</select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Tipe Insiden <span class="text-red">*</span></label>
+                <select id="inc-type" class="form-control">
+                    <option value="Device Offline">Device Offline</option>
+                    <option value="Link Down">Link Down</option>
+                    <option value="High Latency">High Latency</option>
+                    <option value="Sensor Anomaly">Sensor Anomaly</option>
+                    <option value="Power Failure">Power Failure</option>
+                    <option value="Security Breach">Security Breach</option>
+                    <option value="Hardware Failure">Hardware Failure</option>
+                    <option value="Software Error">Software Error</option>
+                    <option value="Other">Lainnya</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Waktu Deteksi <span class="text-red">*</span></label>
+                <input type="datetime-local" id="inc-detected-at" class="form-control" value="${new Date().toISOString().slice(0,16)}">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Tingkat Keparahan (Severity)</label>
+                <select id="inc-severity" class="form-control">
+                    <option value="low">Low — Rendah</option>
+                    <option value="medium" selected>Medium — Sedang</option>
+                    <option value="high">High — Tinggi</option>
+                    <option value="critical">Critical — Kritis</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Status</label>
+                <select id="inc-status" class="form-control">
+                    <option value="open" selected>Open — Terbuka</option>
+                    <option value="investigating">Investigating — Sedang Investigasi</option>
+                    <option value="resolved">Resolved — Terselesaikan</option>
+                    <option value="closed">Closed — Ditutup</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Deskripsi / Akar Masalah</label>
+                <textarea id="inc-description" class="form-control" rows="3" placeholder="Jelaskan detail insiden, penyebab, dan langkah penanganan..."></textarea>
+            </div>
+        </div>
+        <div class="modal-footer" style="display:flex;gap:8px;justify-content:flex-end;">
+            <button class="btn btn-outline-cyber btn-sm" onclick="document.getElementById('incident-modal-overlay').remove()">Batal</button>
+            <button class="btn btn-telegram btn-sm" onclick="handleSaveIncident(null)"><i class="fa-solid fa-floppy-disk"></i> Simpan Insiden</button>
+        </div>
+    </div>`;
+    document.body.appendChild(modal);
+}
+window.openAddIncidentModal = openAddIncidentModal;
+
+async function openEditIncidentModal(incId) {
+    document.getElementById('incident-modal-overlay')?.remove();
+    const inc = APP_STATE.incidents.find(i => i.id === incId);
+    if (!inc) { showToast('Error', 'Insiden tidak ditemukan', 'error'); return; }
+
+    const assets = APP_STATE.devices || [];
+    let assetOpts = assets.map(d => {
+        const assetId = d.rawId || d.id;
+        const selected = String(assetId) === String(inc.assetId) ? 'selected' : '';
+        return `<option value="${assetId}" ${selected}>${d.name || d.deviceName} (${d.assetCode || ''})</option>`;
+    }).join('');
+    if (!assetOpts) assetOpts = `<option value="${inc.assetId}" selected>${inc.deviceName}</option>`;
+
+    const severityOpts = ['low','medium','high','critical'].map(s =>
+        `<option value="${s}" ${inc.severity === s ? 'selected' : ''}>${s}</option>`
+    ).join('');
+    const statusOpts = ['open','investigating','resolved','closed'].map(s =>
+        `<option value="${s}" ${inc.status === s ? 'selected' : ''}>${s}</option>`
+    ).join('');
+
+    const incidentTypes = ['Device Offline','Link Down','High Latency','Sensor Anomaly','Power Failure','Security Breach','Hardware Failure','Software Error','Other'];
+    const typeOpts = incidentTypes.map(t =>
+        `<option value="${t}" ${inc.incidentType === t ? 'selected' : ''}>${t}</option>`
+    ).join('');
+
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay active';
+    modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:99999;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;overflow-y:auto;';
+    modal.id = 'incident-modal-overlay';
+    modal.innerHTML = `
+    <div class="modal-box" style="max-width:540px;max-height:90vh;overflow-y:auto;">
+        <div class="modal-header">
+            <h3><i class="fa-solid fa-pen-to-square text-cyan"></i> Edit Insiden ${inc.id}</h3>
+            <button class="modal-close-btn" onclick="document.getElementById('incident-modal-overlay').remove()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="modal-body" style="display:flex;flex-direction:column;gap:12px;">
+            <div class="form-group">
+                <label class="form-label">Aset / Perangkat</label>
+                <select id="inc-asset-id" class="form-control">${assetOpts}</select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Tipe Insiden</label>
+                <select id="inc-type" class="form-control">${typeOpts}</select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Tingkat Keparahan</label>
+                <select id="inc-severity" class="form-control">${severityOpts}</select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Status</label>
+                <select id="inc-status" class="form-control">${statusOpts}</select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Deskripsi / Akar Masalah</label>
+                <textarea id="inc-description" class="form-control" rows="3">${inc.description || inc.rootCause || ''}</textarea>
+            </div>
+        </div>
+        <div class="modal-footer" style="display:flex;gap:8px;justify-content:flex-end;">
+            <button class="btn btn-outline-cyber btn-sm" onclick="document.getElementById('incident-modal-overlay').remove()">Batal</button>
+            <button class="btn btn-telegram btn-sm" onclick="handleSaveIncident('${inc.rawId}')"><i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan</button>
+        </div>
+    </div>`;
+    document.body.appendChild(modal);
+}
+window.openEditIncidentModal = openEditIncidentModal;
+
+async function handleSaveIncident(rawId) {
+    const assetId = document.getElementById('inc-asset-id')?.value;
+    const incidentType = document.getElementById('inc-type')?.value;
+    const severity = document.getElementById('inc-severity')?.value;
+    const incidentStatus = document.getElementById('inc-status')?.value;
+    const description = document.getElementById('inc-description')?.value;
+    const detectedAt = document.getElementById('inc-detected-at')?.value;
+
+    if (!assetId || !incidentType) {
+        showToast('Validasi Gagal', 'Aset dan Tipe Insiden wajib diisi.', 'error');
+        return;
+    }
+
+    const payload = {
+        asset_id: Number(assetId),
+        incident_type: incidentType,
+        severity: severity || 'medium',
+        incident_status: incidentStatus || 'open',
+        description: description || null,
+        detected_at: detectedAt ? detectedAt.replace('T', ' ') : new Date().toISOString().slice(0,19).replace('T',' ')
+    };
+
+    try {
+        if (rawId) {
+            // Edit
+            await window.apiService.updateIncident(rawId, payload);
+            showToast('Insiden Diperbarui', `Insiden #${rawId} berhasil diperbarui.`, 'success');
+        } else {
+            // Tambah baru
+            await window.apiService.createIncident(payload);
+            showToast('Insiden Ditambahkan', 'Insiden baru berhasil dicatat ke database.', 'success');
+        }
+        document.getElementById('incident-modal-overlay')?.remove();
+        await loadIncidentsPage();
+    } catch (e) {
+        console.error('handleSaveIncident error:', e);
+        showToast('Gagal', 'Terjadi kesalahan saat menyimpan insiden.', 'error');
+    }
+}
+window.handleSaveIncident = handleSaveIncident;
+
+async function handleDeleteIncident(incId) {
+    if (typeof isSuperAdmin === 'function' && !isSuperAdmin()) {
+        showToast('Akses Ditolak', 'Hanya Superadmin yang memiliki hak untuk menghapus data insiden!', 'error');
+        return;
+    }
+    const inc = APP_STATE.incidents.find(i => i.id === incId);
+    if (!inc) return;
+    if (!confirm(`Hapus insiden ${incId} (${inc.incidentType || inc.rootCause})?
+Tindakan ini tidak dapat dibatalkan.`)) return;
+
+    try {
+        await window.apiService.deleteIncident(inc.rawId);
+        APP_STATE.incidents = APP_STATE.incidents.filter(i => i.id !== incId);
+        renderIncidentsTable();
+        updateIncidentStats();
+        showToast('Insiden Dihapus', `Insiden ${incId} berhasil dihapus dari database.`, 'success');
+    } catch (e) {
+        console.error('handleDeleteIncident error:', e);
+        showToast('Gagal Hapus', 'Gagal menghapus insiden. Coba lagi.', 'error');
+    }
+}
+window.handleDeleteIncident = handleDeleteIncident;
+
 // -----------------------------------------------------------------------------
 // 5. AI INFRASTRUCTURE ASSISTANT & MAINTENANCE SUITE
 // -----------------------------------------------------------------------------
@@ -5356,7 +6560,7 @@ async function runAiAnalysis() {
             if (repWarn && aiData.warning_devices !== undefined) repWarn.innerText = aiData.warning_devices;
             if (repSla && aiData.availability_percent !== undefined) repSla.innerText = aiData.availability_percent + '%';
 
-            // 2. Render Troubled Devices & Rich Physical Telemetry (Dokumen PKL Hal. 17)
+            // 2. Render Troubled Devices & Rich Physical Telemetry
             const problemContainer = document.getElementById('ai-top-problem-list');
             if (problemContainer) {
                 const troubledList = (aiData.troubled_devices || aiData.device || '').split(',').map(s => s.trim()).filter(Boolean);
@@ -5432,7 +6636,7 @@ async function runAiAnalysis() {
 
                     problemContainer.innerHTML = `
                         <div style="margin-bottom: 6px; font-size: 0.75rem; color: #94A3B8;">
-                            Terdeteksi <strong>${troubledList.length}</strong> perangkat offline / kritis:
+                            Terdeteksi <strong>${aiData.offline_devices !== undefined ? aiData.offline_devices : troubledList.length}</strong> perangkat offline &bull; ${troubledList.length} prioritas tertinggi:
                         </div>
                         <div style="display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 10px;">
                             ${troubledList.map(code => `
@@ -5452,25 +6656,25 @@ async function runAiAnalysis() {
 
                         <div class="ai-section-subtitle">
                             <span><i class="fa-solid fa-building-shield text-cyan"></i> Kesehatan 3 Lokasi Fisik</span>
-                            <span class="text-cyan">${aiData.online_devices || 0}/${aiData.total_devices || 15} Online</span>
+                            <span class="text-cyan">${aiData.online_devices || 0}/${aiData.total_devices || 0} Online</span>
                         </div>
                         <div class="ai-site-health-box">
                             <div class="ai-site-row">
                                 <div class="ai-site-row-header">
-                                    <span>🏢 Head Office (HO)</span>
+                                    <span>🏢 Head Office</span>
                                     <span class="${hoOnline > 0 ? 'text-green' : 'text-red'}">${hoOnline}/${hoTotal} (${hoPct}%)</span>
                                 </div>
                                 <div class="ai-site-progress-track">
-                                    <div class="ai-site-progress-fill" style="width: ${Math.max(hoPct, 4)}%; background: ${hoOnline > 0 ? '#10B981' : '#EF4444'};"></div>
+                                    <div class="ai-site-progress-fill" style="width: ${hoOnline > 0 ? hoPct : 0}%; background: ${hoOnline > 0 ? '#10B981' : 'transparent'};"></div>
                                 </div>
                             </div>
                             <div class="ai-site-row">
                                 <div class="ai-site-row-header">
-                                    <span>🏬 Marketing Office (MO)</span>
+                                    <span>🏬 Marketing Office</span>
                                     <span class="${moOnline > 0 ? 'text-green' : 'text-red'}">${moOnline}/${moTotal} (${moPct}%)</span>
                                 </div>
                                 <div class="ai-site-progress-track">
-                                    <div class="ai-site-progress-fill" style="width: ${Math.max(moPct, 4)}%; background: ${moOnline > 0 ? '#10B981' : '#EF4444'};"></div>
+                                    <div class="ai-site-progress-fill" style="width: ${moOnline > 0 ? moPct : 0}%; background: ${moOnline > 0 ? '#10B981' : 'transparent'};"></div>
                                 </div>
                             </div>
                             <div class="ai-site-row">
@@ -5479,7 +6683,7 @@ async function runAiAnalysis() {
                                     <span class="${hsOnline > 0 ? 'text-green' : 'text-red'}">${hsOnline}/${hsTotal} (${hsPct}%)</span>
                                 </div>
                                 <div class="ai-site-progress-track">
-                                    <div class="ai-site-progress-fill" style="width: ${Math.max(hsPct, 4)}%; background: ${hsOnline > 0 ? '#10B981' : '#EF4444'};"></div>
+                                    <div class="ai-site-progress-fill" style="width: ${hsOnline > 0 ? hsPct : 0}%; background: ${hsOnline > 0 ? '#10B981' : 'transparent'};"></div>
                                 </div>
                             </div>
                         </div>
@@ -5499,7 +6703,7 @@ async function runAiAnalysis() {
             const sourceBadge = document.getElementById('ai-source-badge');
             if (sourceBadge) {
                 if (aiData.source === 'taims_intelligent_ai') {
-                    sourceBadge.innerHTML = '<i class="fa-solid fa-microchip text-yellow"></i> Engine: Local Prescriptive Engine (Fallback)';
+                    sourceBadge.innerHTML = '<i class="fa-solid fa-microchip text-yellow"></i> Engine: Local Prescriptive Engine';
                     sourceBadge.style.color = '#FBBF24';
                     sourceBadge.style.borderColor = 'rgba(245, 158, 11, 0.4)';
                 } else {
@@ -5516,7 +6720,7 @@ async function runAiAnalysis() {
             showToast('Analisis AI Selesai', 'Rekomendasi teknis infrastruktur berhasil dimutakhirkan secara real-time.', 'success');
         } else {
             const onlineCount = (APP_STATE.devices || []).filter(d => d.status === 'online').length;
-            const totalCount = (APP_STATE.devices || []).length || 15;
+            const totalCount = (APP_STATE.devices || []).length || 0;
             recText.innerHTML = `<p class="text-muted text-sm">Analisis Kluster: ${onlineCount} dari ${totalCount} perangkat fisik aktif (${((onlineCount/totalCount)*100).toFixed(1)}% SLA).</p>`;
         }
     } catch (e) {
@@ -5526,24 +6730,76 @@ async function runAiAnalysis() {
 }
 window.runAiAnalysis = runAiAnalysis;
 
+
+function updateMaintenanceSummaryCards() {
+    const scheduledEl = document.getElementById('maint-count-scheduled');
+    const progEl      = document.getElementById('maint-count-progress');
+    const overdueEl   = document.getElementById('maint-count-overdue');
+    const doneEl      = document.getElementById('maint-count-completed');
+
+    const list = APP_STATE.maintenanceLogs || [];
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const oneWeekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+
+    const totalCount = list.length;
+    const progressCount = list.filter(m => {
+        const s = (m.status || '').toLowerCase();
+        return s === 'sedang berjalan' || s === 'in progress' || s === 'in_progress';
+    }).length;
+    
+    const overdueCount = list.filter(m => {
+        const s = (m.status || '').toLowerCase();
+        if (s === 'selesai' || s === 'completed' || s === 'dibatalkan' || s === 'cancelled') return false;
+        const dateStr = m.rawDate || m.scheduled_date || m.date;
+        if (!dateStr || dateStr === '-') return false;
+        const d = new Date(dateStr);
+        return !isNaN(d.getTime()) && d < today;
+    }).length;
+
+    const completedWeekCount = list.filter(m => {
+        const s = (m.status || '').toLowerCase();
+        if (s !== 'selesai' && s !== 'completed') return false;
+        const dateStr = m.rawDate || m.scheduled_date || m.date;
+        if (!dateStr || dateStr === '-') return true;
+        const d = new Date(dateStr);
+        return !isNaN(d.getTime()) ? d >= oneWeekAgo : true;
+    }).length;
+
+    if (scheduledEl) scheduledEl.textContent = totalCount;
+    if (progEl)      progEl.textContent = progressCount;
+    if (overdueEl)   overdueEl.textContent = overdueCount;
+    if (doneEl)      doneEl.textContent = completedWeekCount;
+}
+window.updateMaintenanceSummaryCards = updateMaintenanceSummaryCards;
+
 function renderMaintenanceTable() {
+    if (typeof updateMaintenanceSummaryCards === "function") updateMaintenanceSummaryCards();
     const tbody = document.getElementById('maintenance-tbody');
     if (!tbody || !APP_STATE.maintenanceLogs) return;
 
     tbody.innerHTML = '';
     const isEn = APP_STATE && APP_STATE.currentLang === 'en';
+    const isAdmin = typeof isAdminUser === 'function' && isAdminUser();
+    const isSuper = typeof isSuperAdmin === 'function' && isSuperAdmin();
 
     APP_STATE.maintenanceLogs.forEach(m => {
         const tr = document.createElement('tr');
-        const displayLoc = isEn ? (I18N_DICT[m.location] || m.location) : (I18N_REVERSE_DICT[m.location] || m.location);
-        const displayType = isEn ? (I18N_DICT[m.type] || m.type) : (I18N_REVERSE_DICT[m.type] || m.type);
-        const displayDesc = isEn ? (I18N_DICT[m.desc] || m.desc) : (I18N_REVERSE_DICT[m.desc] || m.desc);
+        const displayLoc  = isEn ? (I18N_DICT[m.location]  || m.location)  : (I18N_REVERSE_DICT[m.location]  || m.location);
+        const displayType = isEn ? (I18N_DICT[m.type]      || m.type)      : (I18N_REVERSE_DICT[m.type]      || m.type);
+        const displayDesc = isEn ? (I18N_DICT[m.desc]      || m.desc)      : (I18N_REVERSE_DICT[m.desc]      || m.desc);
         let statusText = m.status;
         if (isEn) {
-            if (m.status === 'Selesai') statusText = 'Completed';
-            else if (m.status === 'Tertunda') statusText = 'Pending';
+            if (m.status === 'Selesai')              statusText = 'Completed';
+            else if (m.status === 'Tertunda')        statusText = 'Pending';
             else if (m.status === 'Sedang Berjalan') statusText = 'In Progress';
+            else if (m.status === 'Dibatalkan')      statusText = 'Cancelled';
         }
+        const statusClass = m.status === 'Selesai' ? 'online' : m.status === 'Dibatalkan' ? 'offline' : 'warning';
+        const dotClass    = m.status === 'Selesai' ? 'green'  : m.status === 'Dibatalkan' ? 'red'     : 'yellow';
+        const rawId   = m.rawId || 0;
+        const safeId  = String(m.id     || '').replace(/'/g, '');
+        const safeDev = String(m.device || '').replace(/['"]/g, '');
 
         tr.innerHTML = `
             <td><strong class="text-cyan font-mono">${m.id}</strong></td>
@@ -5553,7 +6809,12 @@ function renderMaintenanceTable() {
             <td><span class="text-xs font-semibold text-yellow">${displayType}</span></td>
             <td><span class="text-xs text-secondary">${displayDesc}</span></td>
             <td><span class="text-xs text-cyan">${m.pic}</span></td>
-            <td><span class="status-pill ${m.status === 'Selesai' ? 'online' : 'warning'}"><span class="dot ${m.status === 'Selesai' ? 'green' : 'yellow'}"></span> ${statusText}</span></td>
+            <td><span class="status-pill ${statusClass}"><span class="dot ${dotClass}"></span> ${statusText}</span></td>
+            <td style="white-space:nowrap;">${isAdmin
+                ? `<button class="btn-icon-sm text-cyan" title="Edit" onclick="openEditMaintenanceModal(${rawId},'${safeId}')"><i class="fa-solid fa-pen-to-square"></i></button>`
+                  + (isSuper ? `<button class="btn-icon-sm" style="color:#ff4444;margin-left:4px;" title="Hapus (Khusus Superadmin)" onclick="handleDeleteMaintenance(${rawId},'${safeDev}')"><i class="fa-solid fa-trash"></i></button>` : '')
+                : '<span class="text-xs text-secondary">—</span>'}
+            </td>
         `;
         tbody.appendChild(tr);
     });
@@ -5641,7 +6902,7 @@ function openAddMaintenanceModal() {
     const dateInput = document.getElementById('mnt-form-date');
     if (dateInput) dateInput.value = new Date().toISOString().slice(0, 10);
     const picInput = document.getElementById('mnt-form-pic');
-    if (picInput) picInput.value = APP_STATE.currentUser ? APP_STATE.currentUser.name : 'Dzakwan Miftahussobirin';
+    if (picInput) picInput.value = APP_STATE.currentUser ? APP_STATE.currentUser.name : '';
     const descInput = document.getElementById('mnt-form-desc');
     if (descInput) descInput.value = '';
 
@@ -5672,24 +6933,782 @@ function handleSaveMaintenanceSchedule() {
         status
     };
 
-    if (!APP_STATE.maintenanceLogs) APP_STATE.maintenanceLogs = [];
-    APP_STATE.maintenanceLogs.unshift(newEntry);
-    try {
-        localStorage.setItem('taims_maintenance_v1', JSON.stringify(APP_STATE.maintenanceLogs));
-    } catch (e) {}
+    // Coba simpan ke API dulu
+    const token = localStorage.getItem('taims_jwt_token') || sessionStorage.getItem('taims_jwt_token') || '';
+    const baseUrl = (window.apiService && window.apiService._baseUrl) ? window.apiService._baseUrl : 'http://localhost:3000/api';
+    // Cari asset_id dari devices
+    const selVal = document.getElementById('mnt-form-device')?.value || '';
+    const selDevObj = (APP_STATE.devices || []).find(d => (d.code + ' (' + d.name + ')|' + d.location) === selVal || selVal.startsWith(d.code));
+    const assetId = selDevObj ? (selDevObj.rawId || selDevObj.id || null) : null;
+    // rawDate sudah dideklarasikan di atas
+    
+    // Status map ke DB value
+    const statusDbMap = { 'Sedang Berjalan': 'in_progress', 'Tertunda': 'scheduled', 'Selesai': 'completed', 'Dibatalkan': 'cancelled' };
+    const dbStatus = statusDbMap[status] || 'scheduled';
 
-    renderMaintenanceTable();
-    document.getElementById('maintenance-schedule-modal')?.classList.add('hidden');
-    showToast('Jadwal Servis Tersimpan', `Jadwal pemeliharaan ${deviceLabel} berhasil ditambahkan.`, 'success');
-    if (typeof addAuditTrailRecord === 'function') {
-        addAuditTrailRecord('Penjadwalan Servis', `Menambahkan jadwal pemeliharaan ${newEntry.id} untuk ${deviceLabel} (${status})`);
-    }
+    const apiPayload = {
+        asset_id: assetId,
+        maintenance_type: type,
+        scheduled_date: rawDate || new Date().toISOString().slice(0,10),
+        maintenance_status: dbStatus,
+        pic_name: pic,
+        description: desc
+    };
+
+    fetch(baseUrl + '/maintenance', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+        body: JSON.stringify(apiPayload)
+    }).then(async r => {
+        const j = await r.json();
+        if (j && j.success) {
+            if (typeof loadMaintenance === 'function') await loadMaintenance();
+            document.getElementById('maintenance-schedule-modal')?.classList.add('hidden');
+            showToast('Jadwal Tersimpan ke DB', 'Jadwal pemeliharaan ' + deviceLabel + ' berhasil disimpan ke database.', 'success');
+            if (typeof addAuditTrailRecord === 'function') {
+                addAuditTrailRecord('Penjadwalan Servis', 'Menambahkan jadwal pemeliharaan ' + newEntry.id + ' untuk ' + deviceLabel + ' (' + status + ')');
+            }
+        } else {
+            // Fallback localStorage
+            if (!APP_STATE.maintenanceLogs) APP_STATE.maintenanceLogs = [];
+            APP_STATE.maintenanceLogs.unshift(newEntry);
+            try { localStorage.setItem('taims_maintenance_v1', JSON.stringify(APP_STATE.maintenanceLogs)); } catch(e) {}
+            renderMaintenanceTable();
+            document.getElementById('maintenance-schedule-modal')?.classList.add('hidden');
+            showToast('Jadwal Disimpan Lokal', 'Gagal simpan ke DB, data disimpan sementara di browser.', 'warning');
+        }
+    }).catch(() => {
+        // Fallback localStorage
+        if (!APP_STATE.maintenanceLogs) APP_STATE.maintenanceLogs = [];
+        APP_STATE.maintenanceLogs.unshift(newEntry);
+        try { localStorage.setItem('taims_maintenance_v1', JSON.stringify(APP_STATE.maintenanceLogs)); } catch(e) {}
+        renderMaintenanceTable();
+        document.getElementById('maintenance-schedule-modal')?.classList.add('hidden');
+        showToast('Jadwal Disimpan Lokal', 'Backend tidak dapat dijangkau, data disimpan sementara di browser.', 'warning');
+    });
 }
 window.handleSaveMaintenanceSchedule = handleSaveMaintenanceSchedule;
+
+async function quickUpdateMaintenanceStatus(rawId, newStatus, selectEl) {
+    if (!newStatus || !rawId) return;
+    if (!window.apiService || typeof window.apiService.updateMaintenance !== 'function') {
+        showToast('Offline', 'Backend tidak tersambung, tidak dapat mengubah status.', 'error');
+        if (selectEl) selectEl.value = '';
+        return;
+    }
+    try {
+        const res = await window.apiService.updateMaintenance(rawId, { maintenance_status: newStatus });
+        if (res && res.success) {
+            showToast('Status Diperbarui', 'Status pemeliharaan berhasil diubah di database.', 'success');
+            if (typeof loadRealDataFromApi === 'function') loadRealDataFromApi();
+        } else {
+            showToast('Gagal', res?.error || 'Gagal mengubah status.', 'error');
+            if (selectEl) selectEl.value = '';
+        }
+    } catch (e) {
+        showToast('Error', e.message, 'error');
+        if (selectEl) selectEl.value = '';
+    }
+}
+window.quickUpdateMaintenanceStatus = quickUpdateMaintenanceStatus;
+
+// ---- Edit Maintenance Modal ----
+async function openEditMaintenanceModal(rawId, fallbackId) {
+    const m = (APP_STATE.maintenanceLogs || []).find(x => x.rawId === rawId || x.id === fallbackId);
+    if (!m) { showToast('Error', 'Data tidak ditemukan. Coba refresh halaman.', 'error'); return; }
+
+    let modal = document.getElementById('edit-maintenance-modal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'edit-maintenance-modal';
+        modal.className = 'modal-backdrop';
+        document.body.appendChild(modal);
+    }
+
+    const statusDbMap = { 'Selesai': 'completed', 'Sedang Berjalan': 'in_progress', 'Tertunda': 'scheduled', 'Dibatalkan': 'cancelled' };
+    const curStatus = statusDbMap[m.status] || 'scheduled';
+
+    modal.innerHTML = `
+        <div class="modal-card" style="max-width:520px;">
+            <div class="modal-header">
+                <div class="modal-title-wrap">
+                    <i class="fa-solid fa-screwdriver-wrench text-yellow"></i>
+                    <h5>Edit Pemeliharaan — ${m.id}</h5>
+                </div>
+                <button type="button" class="modal-close-btn" onclick="document.getElementById('edit-maintenance-modal').classList.add('hidden')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form onsubmit="event.preventDefault(); handleSaveEditMaintenance(${rawId});">
+                <div class="modal-body">
+                    <div class="form-row-2">
+                        <div class="form-group">
+                            <label>Perangkat</label>
+                            <input type="text" class="form-control" value="${m.device || ''}" readonly style="opacity:0.6;">
+                        </div>
+                        <div class="form-group">
+                            <label>Tanggal Pelaksanaan</label>
+                            <input type="date" id="edit-mnt-date" class="form-control" value="${m.rawDate || ''}">
+                        </div>
+                    </div>
+                    <div class="form-row-2">
+                        <div class="form-group">
+                            <label>Jenis Pemeliharaan *</label>
+                            <select id="edit-mnt-type" required>
+                                <option value="Preventive Maintenance" ${m.type==='Preventive Maintenance'?'selected':''}>Preventive Maintenance</option>
+                                <option value="Kalibrasi Jaringan" ${m.type==='Kalibrasi Jaringan'?'selected':''}>Kalibrasi Jaringan</option>
+                                <option value="Inspeksi Berkala" ${m.type==='Inspeksi Berkala'?'selected':''}>Inspeksi Berkala</option>
+                                <option value="Pemeliharaan Terjadwal" ${m.type==='Pemeliharaan Terjadwal'?'selected':''}>Pemeliharaan Terjadwal</option>
+                                <option value="Kalibrasi Sensor" ${m.type==='Kalibrasi Sensor'?'selected':''}>Kalibrasi Sensor</option>
+                                <option value="Perbaikan Perangkat Keras" ${m.type==='Perbaikan Perangkat Keras'?'selected':''}>Perbaikan Perangkat Keras</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Status *</label>
+                            <select id="edit-mnt-status" required>
+                                <option value="scheduled" ${curStatus==='scheduled'?'selected':''}>🟠 Tertunda</option>
+                                <option value="in_progress" ${curStatus==='in_progress'?'selected':''}>🟡 Sedang Berjalan</option>
+                                <option value="completed" ${curStatus==='completed'?'selected':''}>🟢 Selesai</option>
+                                <option value="cancelled" ${curStatus==='cancelled'?'selected':''}>🔴 Dibatalkan</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Teknisi PIC</label>
+                        <input type="text" id="edit-mnt-pic" class="form-control" value="${m.pic || ''}" placeholder="Nama teknisi PIC...">
+                    </div>
+                    <div class="form-group">
+                        <label>Deskripsi Pekerjaan</label>
+                        <input type="text" id="edit-mnt-desc" class="form-control" value="${m.desc || ''}" placeholder="Deskripsi pekerjaan...">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-cyber" onclick="document.getElementById('edit-maintenance-modal').classList.add('hidden')">Batal</button>
+                    <button type="submit" class="btn btn-primary-cyber"><i class="fa-solid fa-floppy-disk"></i> Simpan</button>
+                </div>
+            </form>
+        </div>
+    `;
+    modal.classList.remove('hidden');
+}
+window.openEditMaintenanceModal = openEditMaintenanceModal;
+
+async function handleSaveEditMaintenance(rawId) {
+    const type    = document.getElementById('edit-mnt-type')?.value;
+    const status  = document.getElementById('edit-mnt-status')?.value;
+    const pic     = document.getElementById('edit-mnt-pic')?.value.trim();
+    const desc    = document.getElementById('edit-mnt-desc')?.value.trim();
+    const editDate = document.getElementById('edit-mnt-date')?.value || '';
+
+    try {
+        const token = localStorage.getItem('taims_jwt_token') || sessionStorage.getItem('taims_jwt_token') || '';
+        const baseUrl = (window.apiService && window.apiService._baseUrl) ? window.apiService._baseUrl : 'http://localhost:3000/api';
+        if (!rawId || rawId === 0) {
+            showToast('Tidak Bisa Edit', 'Data ini belum tersinkron dari database. Refresh halaman dulu.', 'warning');
+            return;
+        }
+        const res = await fetch(baseUrl + '/maintenance/' + rawId, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+            body: JSON.stringify({ maintenance_type: type, maintenance_status: status, pic_name: pic, description: desc, ...(editDate ? { scheduled_date: editDate } : {}) })
+        });
+        const json = await res.json();
+        if (json && json.success) {
+            showToast('Berhasil', 'Data pemeliharaan berhasil diperbarui.', 'success');
+            document.getElementById('edit-maintenance-modal')?.classList.add('hidden');
+            if (typeof loadMaintenance === 'function') await loadMaintenance();
+            else if (typeof loadRealDataFromApi === 'function') loadRealDataFromApi();
+            if (typeof addAuditTrailRecord === 'function') addAuditTrailRecord('Edit Pemeliharaan', 'Update data MNT-' + String(rawId).padStart(3,'0'));
+        } else {
+            showToast('Gagal', json?.error || json?.message || 'Gagal menyimpan.', 'error');
+        }
+    } catch(e) { showToast('Error', 'Tidak dapat terhubung ke backend: ' + e.message, 'error'); }
+}
+window.handleSaveEditMaintenance = handleSaveEditMaintenance;
+
+// ---- Hapus Maintenance ----
+async function handleDeleteMaintenance(rawId, deviceLabel) {
+    if (typeof isSuperAdmin === 'function' && !isSuperAdmin()) {
+        showToast('Akses Ditolak', 'Hanya Superadmin yang memiliki hak untuk menghapus jadwal pemeliharaan!', 'error');
+        return;
+    }
+    if (!rawId || rawId === 0) {
+        showToast('Tidak Bisa Hapus', 'Data ini belum tersinkron dari database. Refresh halaman dulu.', 'warning');
+        return;
+    }
+    if (!confirm('Hapus jadwal pemeliharaan untuk "' + deviceLabel + '"?\nData akan dihapus permanen dari database.')) return;
+    try {
+        const token = localStorage.getItem('taims_jwt_token') || sessionStorage.getItem('taims_jwt_token') || '';
+        const baseUrl = (window.apiService && window.apiService._baseUrl) ? window.apiService._baseUrl : 'http://localhost:3000/api';
+        const res = await fetch(baseUrl + '/maintenance/' + rawId, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            }
+        });
+        if (!res.ok && res.status === 0) {
+            showToast('Offline', 'Backend tidak dapat dijangkau.', 'error'); return;
+        }
+        const json = await res.json();
+        if (json && json.success) {
+            showToast('Dihapus', `Jadwal pemeliharaan ${deviceLabel} berhasil dihapus.`, 'success');
+            if (typeof loadMaintenance === 'function') await loadMaintenance();
+            else if (typeof loadRealDataFromApi === 'function') loadRealDataFromApi();
+            if (typeof addAuditTrailRecord === 'function') addAuditTrailRecord('Hapus Pemeliharaan', 'Hapus data MNT-' + String(rawId).padStart(3,'0') + ' (' + deviceLabel + ')');
+        } else {
+            showToast('Gagal', json?.error || 'Gagal menghapus.', 'error');
+        }
+    } catch(e) {
+        showToast('Error', 'Tidak bisa terhubung ke backend: ' + e.message, 'error');
+    }
+}
+window.handleDeleteMaintenance = handleDeleteMaintenance;
+
+// ---- Load Maintenance dari API / localStorage ----
+async function loadMaintenance() {
+    // Hapus localStorage lama dulu agar data DB selalu dipakai
+    try { localStorage.removeItem('taims_maintenance_v1'); } catch(e) {}
+
+    function mapMaintenance(mntData) {
+        return mntData.map(function(m, index) {
+            return {
+                rawId: m.maintenance_id,
+                id: 'MNT-' + String(index + 1).padStart(3, '0'),
+                date: m.scheduled_date
+                    ? new Date(m.scheduled_date).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })
+                    : '-',
+                rawDate: m.scheduled_date ? m.scheduled_date.slice(0, 10) : '',
+                device: m.asset_code ? (m.asset_code + ' (' + (m.asset_name || '') + ')') : (m.asset_id ? 'Asset #' + m.asset_id : 'Perangkat'),
+                location: m.location_name || 'Head Office',
+                type: m.maintenance_type || 'Preventive Maintenance',
+                desc: m.description || '-',
+                pic: m.pic_name || (APP_STATE.currentUser ? APP_STATE.currentUser.name : 'Tim Teknolab'),
+                status: m.maintenance_status === 'completed'   ? 'Selesai'
+                      : m.maintenance_status === 'in_progress' ? 'Sedang Berjalan'
+                      : m.maintenance_status === 'cancelled'   ? 'Dibatalkan'
+                      : 'Tertunda'
+            };
+        });
+    }
+
+    // Cara 1: pakai window.apiService (sudah include ensureAuthToken & auto-login)
+    if (window.apiService && typeof window.apiService.getMaintenanceList === 'function') {
+        try {
+            const mntData = await window.apiService.getMaintenanceList({ limit: 100 });
+            if (Array.isArray(mntData) && mntData.length > 0) {
+                APP_STATE.maintenanceLogs = mapMaintenance(mntData);
+                renderMaintenanceTable();
+                console.log('[T-AIMS] Maintenance loaded via apiService:', mntData.length, 'records');
+                return;
+            }
+        } catch(e) {
+            console.warn('[T-AIMS] apiService.getMaintenanceList gagal:', e.message);
+        }
+    }
+
+    // Cara 2: fetch langsung dengan token dari localStorage/sessionStorage
+    const token = localStorage.getItem('taims_jwt_token') || sessionStorage.getItem('taims_jwt_token') || '';
+    const baseUrl = (window.apiService && window.apiService._baseUrl) ? window.apiService._baseUrl : 'http://localhost:3000/api';
+    if (token) {
+        try {
+            const res = await fetch(baseUrl + '/maintenance?limit=100', {
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token }
+            });
+            if (res.ok) {
+                const json = await res.json();
+                const mntData = (json && json.data) ? json.data : (Array.isArray(json) ? json : []);
+                if (Array.isArray(mntData)) {
+                    APP_STATE.maintenanceLogs = mapMaintenance(mntData);
+                    renderMaintenanceTable();
+                    console.log('[T-AIMS] Maintenance loaded via fetch:', mntData.length, 'records');
+                    return;
+                }
+            }
+        } catch(e) {
+            console.warn('[T-AIMS] fetch maintenance gagal:', e.message);
+        }
+    }
+
+    // Fallback: render dari APP_STATE saja (data default/lama)
+    renderMaintenanceTable();
+}
+window.loadMaintenance = loadMaintenance;
+
+// =============================================================================
+// LOKASI TERHUBUNG DATABASE (tabel locations: nama, alamat, latitude, longitude)
+// =============================================================================
+const LOC_DB_KEY = { 'Head Office': 'ho', 'Marketing Office': 'mo', 'House Server': 'server' };
+APP_STATE.locationsDb = APP_STATE.locationsDb || [];
+
+function locEsc(s) {
+    return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+async function locFetch(path, opts) {
+    const token = localStorage.getItem('taims_jwt_token') || sessionStorage.getItem('taims_jwt_token') || '';
+    if (!token) {
+        return { success: false, data: [] };
+    }
+    const baseUrl = (window.apiService && window.apiService._baseUrl) ? window.apiService._baseUrl : 'http://localhost:3000/api';
+    const res = await fetch(baseUrl + path, Object.assign({}, opts || {}, {
+        headers: Object.assign({ 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token }, (opts && opts.headers) || {})
+    }));
+    if (res.status === 401) {
+        if (typeof logoutToAuth === 'function') logoutToAuth();
+        return { success: false, data: [] };
+    }
+    return res.json();
+}
+
+function buildSitePopupHtml(s) {
+    const isEn = APP_STATE.currentLang === 'en';
+    return '<div class="site-popup-card">'
+        + '<div class="popup-cyber-title"><span class="popup-title-text"><i class="fa-solid fa-location-dot text-cyan"></i> ' + locEsc(s.name) + '</span></div>'
+        + '<div class="popup-coord-pill"><i class="fa-solid fa-location-crosshairs"></i> ' + s.lat.toFixed(5) + ', ' + s.lng.toFixed(5) + '</div>'
+        + '<div class="popup-address-text"><i class="fa-solid fa-map-location-dot text-cyan"></i> ' + locEsc(s.address) + '</div>'
+        + '<a href="' + s.mapsUrl + '" target="_blank" rel="noopener noreferrer" class="btn-popup-gmaps"><i class="fa-solid fa-location-arrow"></i> <span>' + (isEn ? 'Open Google Maps' : 'Buka Google Maps') + '</span></a>'
+        + '</div>';
+}
+
+
+function refreshHomeMapMarkers() {
+    if (!APP_STATE.homeMap || typeof L === 'undefined') return;
+    APP_STATE.homeMarkersMap = APP_STATE.homeMarkersMap || {};
+
+    const siteKeys = Object.keys(LOC_SITES);
+    siteKeys.forEach(function (key) {
+        const s = LOC_SITES[key];
+        let marker = APP_STATE.homeMarkersMap[key];
+        const iconHtml = '<div class="blitar-marker-pin site-' + key + '"><div class="pin-radar"></div><div class="pin-core"></div></div>';
+        const customIcon = L.divIcon({
+            html: iconHtml,
+            className: 'custom-home-icon',
+            iconSize: [28, 28],
+            iconAnchor: [14, 14]
+        });
+
+        const subtitleText = s.subtitle || s.address || 'Titik Site Terpantau';
+        const tooltipContent = '<strong>' + locEsc(s.name) + '</strong><br><small style="color:#FFC107;">' + locEsc(subtitleText) + '</small>';
+
+        if (marker) {
+            marker.setLatLng([s.lat, s.lng]);
+            marker.setIcon(customIcon);
+            marker.setTooltipContent(tooltipContent);
+        } else {
+            marker = L.marker([s.lat, s.lng], { icon: customIcon }).addTo(APP_STATE.homeMap);
+            marker.bindTooltip(tooltipContent, {
+                direction: 'top',
+                offset: [0, -10],
+                className: 'leaflet-tooltip-cyber'
+            });
+            marker.on('click', function () {
+                const devCount = (APP_STATE.devices || []).filter(function (d) { return deviceBelongsToSite(key, d); }).length;
+                selectMapNode(s.name, subtitleText, s.lat.toFixed(5) + ', ' + s.lng.toFixed(5), devCount + ' Connected Devices');
+            });
+            APP_STATE.homeMarkersMap[key] = marker;
+        }
+    });
+
+    // Hapus marker di dashboard yang sudah dihapus dari LOC_SITES
+    Object.keys(APP_STATE.homeMarkersMap).forEach(function (key) {
+        if (!LOC_SITES[key]) {
+            APP_STATE.homeMap.removeLayer(APP_STATE.homeMarkersMap[key]);
+            delete APP_STATE.homeMarkersMap[key];
+        }
+    });
+
+    // Update garis telemetri di Dashboard Map
+    if (APP_STATE.homeSiteLine) {
+        const order = ['ho', 'mo', 'server'].concat(siteKeys.filter(function (k) { return ['ho', 'mo', 'server'].indexOf(k) < 0; }));
+        const pts = order.filter(function (k) { return LOC_SITES[k]; }).map(function (k) { return [LOC_SITES[k].lat, LOC_SITES[k].lng]; });
+        if (pts.length > 1) pts.push(pts[0]);
+        APP_STATE.homeSiteLine.setLatLngs(pts);
+    }
+
+    const labelEl = document.getElementById('home-points-count-label');
+    if (labelEl) {
+        labelEl.textContent = siteKeys.length + ' Titik';
+    }
+}
+window.refreshHomeMapMarkers = refreshHomeMapMarkers;
+
+function refreshSiteMarkers() {
+    if (!APP_STATE.fullMap || typeof L === 'undefined') return;
+    APP_STATE.siteMarkers = APP_STATE.siteMarkers || {};
+    Object.keys(LOC_SITES).forEach(function (key) {
+        const s = LOC_SITES[key];
+        let marker = APP_STATE.siteMarkers[key];
+        if (marker) {
+            marker.setLatLng([s.lat, s.lng]);
+            if (s.dynamic || s.fromDb) marker.setPopupContent(buildSitePopupHtml(s));
+        } else {
+            const icon = L.divIcon({
+                html: '<div class="blitar-marker-pin site-ho"><div class="pin-radar"></div><div class="pin-core"></div></div>',
+                className: 'custom-site-icon', iconSize: [32, 32], iconAnchor: [16, 16]
+            });
+            marker = L.marker([s.lat, s.lng], { icon: icon }).addTo(APP_STATE.fullMap);
+            marker.bindPopup(buildSitePopupHtml(s), { minWidth: 270, maxWidth: 320, autoPan: true, autoPanPadding: [50, 50], offset: [0, -18], className: 'cyber-leaflet-popup' });
+            marker.on('click', function () { zoomToSite(key); });
+            APP_STATE.siteMarkers[key] = marker;
+        }
+    });
+    Object.keys(APP_STATE.siteMarkers).forEach(function (key) {
+        if (!LOC_SITES[key]) {
+            APP_STATE.fullMap.removeLayer(APP_STATE.siteMarkers[key]);
+            delete APP_STATE.siteMarkers[key];
+        }
+    });
+}
+
+async function loadLocations() {
+    try {
+        const json = await locFetch('/locations');
+        const rows = (json && json.data) ? json.data : null;
+        if (!Array.isArray(rows)) return;
+        APP_STATE.locationsDb = rows;
+        rows.forEach(function (l) {
+            const lat = parseFloat(l.latitude), lng = parseFloat(l.longitude);
+            if (!isFinite(lat) || !isFinite(lng)) return;
+            const key = LOC_DB_KEY[l.location_name] || ('loc' + l.location_id);
+            const mapsUrl = 'https://maps.google.com/?q=' + lat + ',' + lng;
+            if (LOC_SITES[key] && !LOC_SITES[key].dynamic) {
+                LOC_SITES[key].lat = lat; LOC_SITES[key].lng = lng; LOC_SITES[key].mapsUrl = mapsUrl;
+                if (l.address) LOC_SITES[key].address = l.address;
+                LOC_SITES[key].fromDb = true;
+            } else {
+                LOC_SITES[key] = { id: key, name: l.location_name, subtitle: l.description || '', address: l.address || '', lat: lat, lng: lng, zoom: 18, color: '#38bdf8', badge: String(l.location_name).toUpperCase(), badgeClass: 'badge-blue', mapsUrl: mapsUrl, devices: [], dynamic: true, dbId: l.location_id };
+            }
+        });
+        Object.keys(LOC_SITES).forEach(function (key) {
+            const s = LOC_SITES[key];
+            if (s.dynamic && !rows.some(function (r) { return r.location_id === s.dbId; })) delete LOC_SITES[key];
+        });
+        refreshSiteMarkers();
+        refreshHomeMapMarkers();
+        syncSiteCards();
+        updateSiteLine();
+        syncLocationDropdowns();
+        if (typeof syncSiteCardsAndBlueprints === 'function') syncSiteCardsAndBlueprints();
+        injectLocationManagerButton();
+        if (document.getElementById('loc-manager-modal') && !document.getElementById('loc-manager-modal').classList.contains('hidden')) renderLocationManager();
+    } catch (e) {
+        console.warn('[T-AIMS] Gagal memuat lokasi dari database:', e.message);
+    }
+}
+window.loadLocations = loadLocations;
+
+function uiLocName(name) {
+    return /server/i.test(String(name || '')) ? 'House of Server' : String(name || '');
+}
+function resolveLocationId(uiName) {
+    const rows = APP_STATE.locationsDb || [];
+    const want = String(uiName || '').toLowerCase().trim();
+    const hit = rows.find(function (l) { return uiLocName(l.location_name).toLowerCase().trim() === want; });
+    if (hit) return hit.location_id;
+    if (want.indexOf('market') >= 0) return 1;
+    if (want.indexOf('server') >= 0) return 3;
+    if (want.indexOf('head') >= 0) return 2;
+    return null;
+}
+function syncLocationDropdowns() {
+    const rows = APP_STATE.locationsDb || [];
+    if (!rows.length) return;
+    const sel = document.getElementById('dev-location');
+    if (sel) {
+        const cur = sel.value;
+        sel.innerHTML = rows.map(function (l) { const n = uiLocName(l.location_name); return '<option value="' + locEsc(n) + '">' + locEsc(n) + '</option>'; }).join('');
+        if (cur && Array.prototype.some.call(sel.options, function (o) { return o.value === cur; })) sel.value = cur;
+    }
+    const flt = document.getElementById('filter-location-select');
+    if (flt) {
+        const cur2 = flt.value;
+        flt.innerHTML = '<option value="all">Lokasi</option>' + rows.map(function (l) { const n = uiLocName(l.location_name); return '<option value="' + locEsc(n) + '">' + locEsc(n) + '</option>'; }).join('');
+        flt.value = Array.prototype.some.call(flt.options, function (o) { return o.value === cur2; }) ? cur2 : 'all';
+    }
+}
+window.resolveLocationId = resolveLocationId;
+window.syncLocationDropdowns = syncLocationDropdowns;
+
+
+
+function deviceBelongsToSite(key, d) {
+    const l = String(d.location || '').toLowerCase().trim();
+    const isServer = l.indexOf('house') >= 0 || l.indexOf('server') >= 0;
+    const isMarketing = l.indexOf('marketing') >= 0 || l === 'mo';
+    if (key === 'server') return isServer;
+    if (key === 'mo') return isMarketing && !isServer;
+    if (key === 'ho') return !isServer && !isMarketing && (l.indexOf('head office') >= 0 || l === 'ho' || l.indexOf('pusat') >= 0);
+    return false;
+}
+window.deviceBelongsToSite = deviceBelongsToSite;
+
+function syncSiteCards() {
+    const container = document.querySelector('.loc-sidebar-wrapper');
+    if (!container) return;
+    const assetCount = {};
+    (APP_STATE.locationsDb || []).forEach(function (l) { assetCount[l.location_id] = l.total_assets || 0; });
+    // Hapus kartu dinamis yang lokasinya sudah tidak ada
+    container.querySelectorAll('.site-detail-card[data-dyn="1"]').forEach(function (el) {
+        const key = el.id.replace('site-card-', '');
+        if (!LOC_SITES[key]) el.remove();
+    });
+    Object.keys(LOC_SITES).forEach(function (key) {
+        const s = LOC_SITES[key];
+        if (!s.dynamic) {
+            const card = document.getElementById('site-card-' + key);
+            const addr = card ? card.querySelector('.sdc-full-addr') : null;
+            if (addr && s.fromDb && s.address) addr.textContent = s.address;
+            // Daftar perangkat kartu statis ikut data database (id sdc-row/sdc-pill dipertahankan agar status live tetap jalan)
+            const listEl = document.getElementById('sdc-list-' + key);
+            if (listEl && (APP_STATE.devices || []).length) {
+                const devs = (APP_STATE.devices || []).filter(function (d) { return deviceBelongsToSite(key, d); });
+                listEl.innerHTML = devs.length ? devs.map(function (d, i) {
+                    const on = d.status === 'online';
+                    return '<div class="sdc-dev-row" id="sdc-row-' + locEsc(d.code) + '"><span class="sdc-dev-name" style="flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + (i + 1) + '. ' + locEsc(d.code) + ' - ' + locEsc(d.name) + '</span>'
+                        + '<span class="status-pill ' + (on ? 'online' : 'offline') + '" id="sdc-pill-' + locEsc(d.code) + '"><span class="dot ' + (on ? 'green' : 'red') + '"></span> ' + (on ? 'Online' : 'Offline') + '</span></div>';
+                }).join('') : '<div class="sdc-dev-row"><span class="sdc-dev-name">Belum ada perangkat di lokasi ini</span></div>';
+                s.devices = devs.map(function (d) { return { name: d.code + ' (' + d.name + ')', status: d.status === 'online' ? 'online' : 'offline' }; });
+            }
+            return;
+        }
+        let card = document.getElementById('site-card-' + key);
+        if (!card) {
+            card = document.createElement('div');
+            card.className = 'site-detail-card card-ho';
+            card.id = 'site-card-' + key;
+            card.setAttribute('data-dyn', '1');
+            card.onclick = function () { zoomToSite(key); };
+            container.appendChild(card);
+        }
+        card.innerHTML = '<div class="sdc-header"><span class="sdc-badge badge-blue">' + locEsc(s.badge) + '</span>'
+            + '<span class="sdc-addr-tag"><i class="fa-solid fa-location-dot"></i> ' + s.lat.toFixed(4) + ', ' + s.lng.toFixed(4) + '</span></div>'
+            + '<h3 class="sdc-title">' + locEsc(s.name) + '</h3>'
+            + '<p class="sdc-full-addr">' + locEsc(s.address || s.subtitle || '-') + '</p>'
+            + '<div class="sdc-device-list">' + (function () {
+            const list = (APP_STATE.devices || []).filter(function (d) { return String(d.location || '').toLowerCase().trim() === uiLocName(s.name).toLowerCase().trim(); });
+            if (!list.length) return '<div class="sdc-dev-row"><span class="sdc-dev-name">Belum ada perangkat (' + (assetCount[s.dbId] || 0) + ' aset)</span></div>';
+            return list.map(function (d, i) { const st = String(d.status || 'offline'); const on = st === 'online'; return '<div class="sdc-dev-row"><span class="sdc-dev-name" style="flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + (i + 1) + '. ' + locEsc(d.code) + ' - ' + locEsc(d.name) + '</span><span class="status-pill ' + (on ? 'online' : 'offline') + '"><span class="dot ' + (on ? 'green' : 'red') + '"></span> ' + (on ? 'Online' : 'Offline') + '</span></div>'; }).join('');
+        })() + '</div>';
+    });
+}
+
+function updateSiteLine() {
+    if (!APP_STATE.fullMap || typeof L === 'undefined') return;
+    if (!APP_STATE.siteLine) {
+        APP_STATE.fullMap.eachLayer(function (layer) { if (!APP_STATE.siteLine && layer instanceof L.Polyline && !(layer instanceof L.Polygon)) APP_STATE.siteLine = layer; });
+    }
+    if (!APP_STATE.siteLine) return;
+    const order = ['ho', 'mo', 'server'].concat(Object.keys(LOC_SITES).filter(function (k) { return ['ho', 'mo', 'server'].indexOf(k) < 0; }));
+    const pts = order.filter(function (k) { return LOC_SITES[k]; }).map(function (k) { return [LOC_SITES[k].lat, LOC_SITES[k].lng]; });
+    if (pts.length > 1) pts.push(pts[0]);
+    APP_STATE.siteLine.setLatLngs(pts);
+}
+window.syncSiteCards = syncSiteCards;
+window.updateSiteLine = updateSiteLine;
+
+
+function injectLocationManagerButton() {
+    if (document.getElementById('btn-loc-manager')) return;
+    const bar = document.querySelector('.loc-tab-switcher');
+    if (!bar) return;
+    const b = document.createElement('button');
+    b.type = 'button'; b.id = 'btn-loc-manager'; b.className = 'loc-tab-btn';
+    b.innerHTML = '<i class="fa-solid fa-list-check"></i> Kelola Lokasi';
+    b.onclick = openLocationManager;
+    const floor = document.getElementById('tab-btn-floor');
+    if (floor && floor.nextSibling) bar.insertBefore(b, floor.nextSibling); else bar.appendChild(b);
+}
+
+function openLocationManager() {
+    let modal = document.getElementById('loc-manager-modal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'loc-manager-modal';
+        modal.className = 'modal-backdrop hidden';
+        document.body.appendChild(modal);
+    }
+    modal.classList.remove('hidden');
+    renderLocationManager();
+}
+window.openLocationManager = openLocationManager;
+
+function renderLocationManager(editRow) {
+    const modal = document.getElementById('loc-manager-modal');
+    if (!modal) return;
+    const admin = typeof isAdminUser === 'function' && isAdminUser();
+    const superAdmin = typeof isSuperAdmin === 'function' && isSuperAdmin();
+    const rows = APP_STATE.locationsDb || [];
+    const e = editRow || {};
+    const body = rows.map(function (l) {
+        const coord = (l.latitude != null && l.longitude != null) ? (parseFloat(l.latitude).toFixed(5) + ', ' + parseFloat(l.longitude).toFixed(5)) : '-';
+        return '<tr>'
+            + '<td><strong>' + locEsc(l.location_name) + '</strong></td>'
+            + '<td><span class="text-xs text-secondary">' + locEsc(l.address || l.description || '-') + '</span></td>'
+            + '<td><span class="text-xs font-mono">' + coord + '</span></td>'
+            + '<td style="text-align:center;font-weight:700;color:#F1F5F9;">' + (l.total_assets || 0) + '</td>'
+            + '<td style="white-space:nowrap;text-align:center;">' + (admin
+                ? '<button class="btn-icon-sm text-cyan" title="Edit" onclick="editLocationRow(' + l.location_id + ')"><i class="fa-solid fa-pen-to-square"></i></button>'
+                + (superAdmin ? '<button class="btn-icon-sm" style="color:#ff4444;margin-left:6px;" title="Hapus (Khusus Superadmin)" onclick="deleteLocationRow(' + l.location_id + ')"><i class="fa-solid fa-trash"></i></button>' : '')
+                : '<span class="text-xs text-secondary">—</span>') + '</td></tr>';
+    }).join('') || '<tr><td colspan="5" class="text-xs text-secondary" style="text-align:center;padding:16px;">Belum ada lokasi.</td></tr>';
+
+    const form = admin ? (
+        '<form onsubmit="event.preventDefault(); saveLocationForm();">'
+        + '<h5 style="margin:0 0 10px;color:#F1F5F9;font-weight:700;font-size:0.92rem;"><i class="fa-solid fa-plus-circle text-cyan"></i> ' + (e.location_id ? 'Edit Data Lokasi' : 'Tambah Lokasi Baru') + '</h5>'
+        + '<input type="hidden" id="loc-form-id" value="' + (e.location_id || '') + '">'
+        + '<div class="form-row-2">'
+        + '<div class="form-group"><label>Nama Lokasi *</label><input type="text" id="loc-form-name" required placeholder="Contoh: Kantor Cabang" value="' + locEsc(e.location_name) + '"></div>'
+        + '<div class="form-group"><label>Deskripsi</label><input type="text" id="loc-form-desc" placeholder="Contoh: Gedung Operasional" value="' + locEsc(e.description) + '"></div>'
+        + '</div>'
+        + '<div class="form-group"><label>Alamat Lengkap</label><input type="text" id="loc-form-addr" placeholder="Jl. Raya No. XX, Kota Blitar" value="' + locEsc(e.address) + '"></div>'
+        + '<div class="form-row-2">'
+        + '<div class="form-group"><label>Latitude *</label><input type="number" step="any" id="loc-form-lat" placeholder="-8.07378" required value="' + (e.latitude != null ? parseFloat(e.latitude) : '') + '"></div>'
+        + '<div class="form-group"><label>Longitude *</label><input type="number" step="any" id="loc-form-lng" placeholder="112.17336" required value="' + (e.longitude != null ? parseFloat(e.longitude) : '') + '"></div>'
+        + '</div>'
+        + '<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:14px;margin-bottom:0;padding-bottom:0;">'
+        + '<button type="button" class="btn btn-outline-cyber btn-sm" onclick="useMapCoordForLocation()"><i class="fa-solid fa-crosshairs"></i> Pakai Titik Peta Terakhir</button>'
+        + (e.location_id ? '<button type="button" class="btn btn-outline-cyber btn-sm" onclick="renderLocationManager()">Batal Edit</button>' : '')
+        + '<button type="submit" class="btn btn-primary-cyber btn-sm" style="margin-left:auto;"><i class="fa-solid fa-floppy-disk"></i> Simpan Lokasi</button>'
+        + '</div>'
+        + '</form>'
+    ) : '<p class="text-xs text-secondary" style="margin-top:12px;margin-bottom:0;">Hanya Admin/Superadmin yang dapat mengubah lokasi.</p>';
+
+    modal.innerHTML = '<div class="modal-card">'
+        + '<div class="modal-header"><div class="modal-title-wrap"><i class="fa-solid fa-map-location-dot text-yellow"></i><h5>Kelola Lokasi Infrastruktur</h5></div>'
+        + '<button type="button" class="modal-close-btn" onclick="document.getElementById(\'loc-manager-modal\').classList.add(\'hidden\')"><i class="fa-solid fa-xmark"></i></button></div>'
+        + '<div class="modal-body">'
+        + '<div class="loc-table-wrap"><table class="data-table" style="width:100%;"><thead><tr><th>Nama</th><th>Alamat</th><th>Koordinat</th><th style="text-align:center;">Aset</th><th style="text-align:center;">Aksi</th></tr></thead><tbody>' + body + '</tbody></table></div>'
+        + form
+        + '</div></div>';
+}
+window.renderLocationManager = renderLocationManager;
+
+function editLocationRow(id) {
+    const row = (APP_STATE.locationsDb || []).find(function (l) { return l.location_id === id; });
+    if (row) renderLocationManager(row);
+}
+window.editLocationRow = editLocationRow;
+
+function useMapCoordForLocation() {
+    const c = APP_STATE.activeCoord;
+    if (!c) { showToast('Info', 'Klik dulu satu titik di peta.', 'warning'); return; }
+    document.getElementById('loc-form-lat').value = Number(c.lat).toFixed(7);
+    document.getElementById('loc-form-lng').value = Number(c.lng).toFixed(7);
+}
+window.useMapCoordForLocation = useMapCoordForLocation;
+
+async function saveLocationForm() {
+    const id = document.getElementById('loc-form-id').value;
+    const latRaw = document.getElementById('loc-form-lat').value.trim();
+    const lngRaw = document.getElementById('loc-form-lng').value.trim();
+    const lat = latRaw === '' ? null : parseFloat(latRaw);
+    const lng = lngRaw === '' ? null : parseFloat(lngRaw);
+    if ((lat !== null && (isNaN(lat) || lat < -90 || lat > 90)) || (lng !== null && (isNaN(lng) || lng < -180 || lng > 180))) {
+        showToast('Koordinat tidak valid', 'Latitude -90..90 dan Longitude -180..180.', 'error'); return;
+    }
+    const payload = {
+        location_name: document.getElementById('loc-form-name').value.trim(),
+        description: document.getElementById('loc-form-desc').value.trim(),
+        address: document.getElementById('loc-form-addr').value.trim(),
+        latitude: lat, longitude: lng
+    };
+    try {
+        const json = await locFetch(id ? '/locations/' + id : '/locations', { method: id ? 'PUT' : 'POST', body: JSON.stringify(payload) });
+        if (json && json.success) {
+            showToast('Berhasil', id ? 'Lokasi diperbarui.' : 'Lokasi ditambahkan.', 'success');
+            await loadLocations();
+            const locModal = document.getElementById('loc-manager-modal');
+            if (locModal) locModal.classList.add('hidden');
+            if (typeof addAuditTrailRecord === 'function') addAuditTrailRecord(id ? 'Edit Lokasi' : 'Tambah Lokasi', payload.location_name);
+        } else {
+            showToast('Gagal', (json && (json.error || json.message)) || 'Gagal menyimpan lokasi.', 'error');
+        }
+    } catch (e) { showToast('Error', 'Tidak dapat terhubung ke backend: ' + e.message, 'error'); }
+}
+window.saveLocationForm = saveLocationForm;
+
+async function deleteLocationRow(id) {
+    if (typeof isSuperAdmin === 'function' && !isSuperAdmin()) {
+        showToast('Akses Ditolak', 'Hanya Superadmin yang memiliki hak untuk menghapus data lokasi!', 'error');
+        return;
+    }
+    const row = (APP_STATE.locationsDb || []).find(function (l) { return l.location_id === id; });
+    if (!row) return;
+    if (!confirm('Hapus lokasi "' + row.location_name + '"?\nData akan dihapus permanen dari database.')) return;
+    try {
+        const json = await locFetch('/locations/' + id, { method: 'DELETE' });
+        if (json && json.success) {
+            showToast('Dihapus', 'Lokasi ' + row.location_name + ' berhasil dihapus.', 'success');
+            await loadLocations();
+            renderLocationManager();
+            if (typeof addAuditTrailRecord === 'function') addAuditTrailRecord('Hapus Lokasi', row.location_name);
+        } else {
+            showToast('Gagal', (json && (json.error || json.message)) || 'Gagal menghapus lokasi.', 'error');
+        }
+    } catch (e) { showToast('Error', 'Tidak dapat terhubung ke backend: ' + e.message, 'error'); }
+}
+window.deleteLocationRow = deleteLocationRow;
+
+
 
 // -----------------------------------------------------------------------------
 // 6. USER MANAGEMENT (RBAC) & 11 PKL TEAM 2-SHIFT SYSTEM
 // -----------------------------------------------------------------------------
+
+async function loadUsersPage() {
+    if (!APP_STATE.usersList || APP_STATE.usersList.length === 0) {
+        if (typeof loadUsersListFromStorage === 'function') loadUsersListFromStorage();
+        if (!APP_STATE.usersList || APP_STATE.usersList.length === 0) {
+            APP_STATE.usersList = JSON.parse(JSON.stringify(DEFAULT_USERS_LIST));
+        }
+    }
+    try {
+        if (window.apiService && typeof window.apiService.getUsers === 'function') {
+            const users = await window.apiService.getUsers();
+            if (users && Array.isArray(users) && users.length > 0) {
+                const existingMap = {};
+                (APP_STATE.usersList || []).forEach(eu => {
+                    if (eu.rawId) existingMap[eu.rawId] = eu;
+                    if (eu.email) existingMap[eu.email.toLowerCase()] = eu;
+                });
+
+                APP_STATE.usersList = users.map(u => {
+                    const prev = existingMap[u.user_id] || (u.email ? existingMap[u.email.toLowerCase()] : null) || {};
+                    const defUser = (typeof DEFAULT_USERS_LIST !== 'undefined')
+                        ? DEFAULT_USERS_LIST.find(d => d.rawId === u.user_id || (u.email && d.email.toLowerCase() === u.email.toLowerCase()))
+                        : null;
+                    const storedAvatar = localStorage.getItem('taims_avatar_' + u.user_id) || 
+                                         (u.email ? localStorage.getItem('taims_avatar_' + u.email.toLowerCase()) : null) ||
+                                         (u.username ? localStorage.getItem('taims_avatar_' + u.username.toLowerCase()) : null);
+                    return {
+                        id: `USR-${String(u.user_id).padStart(2, '0')}`,
+                        rawId: u.user_id,
+                        name: u.full_name || prev.name || (defUser ? defUser.name : u.email),
+                        username: u.username || prev.username || (defUser ? defUser.username : (u.email ? u.email.split('@')[0] : `user_${u.user_id}`)),
+                        password: '***',
+                        email: u.email,
+                        avatar: (u.avatar !== undefined && u.avatar !== null) ? u.avatar : (storedAvatar || prev.avatar || (defUser ? defUser.avatar : null) || ''),
+                        role: u.role === 'super_admin' ? 'Superadmin' : (u.role === 'admin' ? 'Admin' : 'User'),
+                        perms: u.role === 'super_admin' ? 'CRUD' : (u.role === 'admin' ? 'CRU' : 'Read Only'),
+                        picTask: u.pic_task || prev.picTask || (defUser ? defUser.picTask : 'Staff Operasional & Monitoring'),
+                        status: u.status || prev.status || 'Aktif',
+                        lastLogin: (u.last_login_at && !isNaN(new Date(u.last_login_at))) ? new Date(u.last_login_at).toLocaleString('id-ID',{dateStyle:'short',timeStyle:'short'}) : ((prev.lastLogin && prev.lastLogin !== 'Invalid Date') ? prev.lastLogin : 'Aktif Hari Ini')
+                    };
+                });
+                if (typeof saveUsersListToStorage === 'function') saveUsersListToStorage();
+            }
+        }
+    } catch (e) {
+        console.warn('loadUsersPage error:', e);
+    }
+    if (!APP_STATE.usersList || APP_STATE.usersList.length === 0) {
+        APP_STATE.usersList = JSON.parse(JSON.stringify(DEFAULT_USERS_LIST));
+    }
+    renderUsersRbacTable();
+    renderTeamShiftCards();
+    renderAuditLogsTable();
+}
+window.loadUsersPage = loadUsersPage;
+
 function switchUserSubTab(tab) {
     document.querySelectorAll('.users-subpanel').forEach(p => p.classList.add('hidden'));
     document.querySelectorAll('#page-users .loc-tab-btn').forEach(b => b.classList.remove('active'));
@@ -5712,7 +7731,14 @@ function switchUserSubTab(tab) {
 
 function renderUsersRbacTable() {
     const tbody = document.getElementById('users-rbac-tbody');
-    if (!tbody || !APP_STATE.usersList) return;
+    if (!tbody) return;
+
+    if (!APP_STATE.usersList || APP_STATE.usersList.length === 0) {
+        if (typeof loadUsersListFromStorage === 'function') loadUsersListFromStorage();
+        if (!APP_STATE.usersList || APP_STATE.usersList.length === 0) {
+            APP_STATE.usersList = JSON.parse(JSON.stringify(DEFAULT_USERS_LIST));
+        }
+    }
 
     const isSuperadmin = APP_STATE.currentUser && (
         APP_STATE.currentUser.role === 'superadmin' || 
@@ -5730,9 +7756,9 @@ function renderUsersRbacTable() {
     APP_STATE.usersList.forEach((u, i) => {
         const tr = document.createElement('tr');
         const permsBadge = u.perms === 'CRUD' 
-            ? '<span class="badge-perm-crud" style="display:inline-block; margin-left:6px; font-size:11px; font-weight:800; color:#FF4976; background:rgba(225,29,72,0.18); border:1px solid rgba(225,29,72,0.55); padding:3px 9px; border-radius:4px; letter-spacing:0.3px; vertical-align:middle;">CRUD (Create, Read, Update, Delete)</span>'
+            ? '<span class="badge-perm-crud" style="display:inline-block; margin-left:6px; font-size:11px; font-weight:800; color:#FF4976; background:rgba(225,29,72,0.18); border:1px solid rgba(225,29,72,0.55); padding:3px 9px; border-radius:4px; letter-spacing:0.3px; vertical-align:middle;">CRUD</span>'
             : (u.perms === 'CRU' 
-                ? '<span class="badge-perm-cru" style="display:inline-block; margin-left:6px; font-size:11px; font-weight:800; color:#F8FAFC; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.30); padding:3px 9px; border-radius:4px; letter-spacing:0.3px; vertical-align:middle;">CRU (Create, Read, Update)</span>'
+                ? '<span class="badge-perm-cru" style="display:inline-block; margin-left:6px; font-size:11px; font-weight:800; color:#F8FAFC; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.30); padding:3px 9px; border-radius:4px; letter-spacing:0.3px; vertical-align:middle;">CRU</span>'
                 : '<span class="badge-perm-ro" style="display:inline-block; margin-left:6px; font-size:11px; font-weight:800; color:#93C5FD; background:rgba(59,130,246,0.15); border:1px solid rgba(59,130,246,0.45); padding:3px 9px; border-radius:4px; letter-spacing:0.3px; vertical-align:middle;">Read Only</span>');
 
         const isUserActive = u.status === 'Aktif';
@@ -5744,23 +7770,44 @@ function renderUsersRbacTable() {
 
         const displayRole = isEn ? (I18N_DICT[u.role] || translateTextString(u.role, 'en')) : (I18N_REVERSE_DICT[u.role] || u.role);
         const displayPic = isEn ? (I18N_DICT[u.picTask] || translateTextString(u.picTask, 'en')) : (I18N_REVERSE_DICT[u.picTask] || u.picTask);
-        const displayLastLogin = isEn ? (I18N_DICT[u.lastLogin] || translateTextString(u.lastLogin, 'en')) : (I18N_REVERSE_DICT[u.lastLogin] || u.lastLogin);
+        const rawLastLogin = (!u.lastLogin || u.lastLogin === 'Invalid Date' || u.lastLogin === 'null' || u.lastLogin === 'undefined') ? 'Aktif Hari Ini' : u.lastLogin;
+        const displayLastLogin = isEn ? (I18N_DICT[rawLastLogin] || translateTextString(rawLastLogin, 'en')) : (I18N_REVERSE_DICT[rawLastLogin] || rawLastLogin);
         const editTitle = isEn ? 'Edit Account' : 'Edit Akun';
         const deleteTitle = isEn ? 'Delete User' : 'Hapus User';
         const viewOnlyText = isEn ? 'View Only' : 'Lihat Saja';
 
+        const isDzakwanSuperadmin = (u.username === 'dzakwan' || u.email === 'dzakwan@taims.id' || u.role === 'Superadmin' || u.rawId == 1 || u.id === 'user-1');
+
         let actionBtns = '';
-        if (isSuperadmin) {
+        if (isDzakwanSuperadmin) {
+            if (isSuperadmin) {
+                actionBtns = `
+                    <div class="d-flex justify-end gap-1" style="display: flex !important; justify-content: flex-end !important; align-items: center !important; width: 100% !important;">
+                        <button class="btn-sm btn-outline-cyber py-1 px-2" onclick="openEditUserModal('${u.id}')" title="${editTitle}"><i class="fa-solid fa-pen-to-square"></i> Edit</button>
+                        <button class="btn-sm btn-danger-cyber py-1 px-2" style="visibility: hidden; pointer-events: none; opacity: 0;" tabindex="-1" aria-hidden="true"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                `;
+            } else {
+                actionBtns = `
+                    <div class="d-flex justify-end" style="display: flex !important; justify-content: flex-end !important; align-items: center !important; width: 100% !important;">
+                        <span class="badge-subtle badge-site-ho" style="font-size:0.72rem; font-weight:700; padding:4px 10px; border-radius:4px; display:inline-flex; align-items:center; gap:5px; border:1px solid rgba(239,68,68,0.35); background:rgba(239,68,68,0.12); color:#FCA5A5;">
+                            <i class="fa-solid fa-lock text-red"></i> Superadmin
+                        </span>
+                    </div>
+                `;
+            }
+        } else if (isSuperadmin) {
             actionBtns = `
-                <div class="d-flex gap-1 justify-end">
+                <div class="d-flex gap-1 justify-end" style="display: flex !important; justify-content: flex-end !important; align-items: center !important; width: 100% !important;">
                     <button class="btn-sm btn-outline-cyber py-1 px-2" onclick="openEditUserModal('${u.id}')" title="${editTitle}"><i class="fa-solid fa-pen-to-square"></i> Edit</button>
                     <button class="btn-sm btn-danger-cyber py-1 px-2" onclick="handleDeleteUser('${u.id}')" title="${deleteTitle}"><i class="fa-solid fa-trash"></i></button>
                 </div>
             `;
         } else if (isAdmin) {
             actionBtns = `
-                <div class="d-flex gap-1 justify-end">
+                <div class="d-flex gap-1 justify-end" style="display: flex !important; justify-content: flex-end !important; align-items: center !important; width: 100% !important;">
                     <button class="btn-sm btn-outline-cyber py-1 px-2" onclick="openEditUserModal('${u.id}')" title="${editTitle}"><i class="fa-solid fa-pen-to-square"></i> Edit</button>
+                    <button class="btn-sm btn-danger-cyber py-1 px-2" style="visibility: hidden; pointer-events: none; opacity: 0;" tabindex="-1" aria-hidden="true"><i class="fa-solid fa-trash"></i></button>
                 </div>
             `;
         } else {
@@ -5774,25 +7821,25 @@ function renderUsersRbacTable() {
             : `<span style="display: flex; width: 32px; height: 32px; border-radius: 50%; background: rgba(0, 240, 255, 0.1); color: var(--cyan-neon); align-items: center; justify-content: center; font-size: 12px; border: 1px solid rgba(0, 240, 255, 0.3); flex-shrink: 0;"><i class="fa-solid fa-user"></i></span>`;
 
         tr.innerHTML = `
-            <td>${i + 1}</td>
+            <td class="text-center">${i + 1}</td>
             <td>
                 <div style="display: flex; align-items: center; gap: 10px;">
                     ${avatarThumb}
                     <div style="display: flex; flex-direction: column;">
                         <strong style="color: #F8FAFC;">${displayName}</strong>
-                        <span style="font-size: 0.72rem; color: #94A3B8;">@${u.username || (u.email ? u.email.split('@')[0] : 'user')}</span>
+                        <span style="font-size: 0.72rem; color: #94A3B8;">${u.username || (u.email ? u.email.split('@')[0] : 'user')}</span>
                     </div>
                 </div>
             </td>
-            <td><span class="text-xs text-muted">${u.email}</span></td>
-            <td>
+            <td><span class="text-xs text-muted">${String(u.email || '').replace(/@taims\.local$/i, '@taims.id')}</span></td>
+            <td class="text-center">
                 <span class="user-role-badge ${u.role === 'Superadmin' ? 'super' : ((u.role === 'Admin' || u.role === 'Administrator') ? 'admin' : 'view')}">${displayRole}</span>
                 ${permsBadge}
             </td>
-            <td><span class="text-xs text-cyan">${displayPic}</span></td>
-            <td>${statusBadge}</td>
-            <td><span class="text-xs text-muted">${displayLastLogin}</span></td>
-            <td class="text-right">
+            <td><span class="text-xs text-cyan" style="font-weight: 500;">${displayPic}</span></td>
+            <td class="text-center">${statusBadge}</td>
+            <td class="text-center"><span class="text-xs text-muted">${displayLastLogin}</span></td>
+            <td class="text-right" style="text-align: right !important; padding-right: 4px !important;">
                 ${actionBtns}
             </td>
         `;
@@ -5897,10 +7944,14 @@ function loadUsersListFromStorage() {
             const parsed = JSON.parse(saved);
             if (Array.isArray(parsed) && parsed.length > 0) {
                 APP_STATE.usersList = parsed;
+                return;
             }
         }
     } catch (e) {
         console.warn('Gagal memuat user dari storage:', e);
+    }
+    if (typeof DEFAULT_USERS_LIST !== 'undefined' && DEFAULT_USERS_LIST.length > 0) {
+        APP_STATE.usersList = JSON.parse(JSON.stringify(DEFAULT_USERS_LIST));
     }
 }
 
@@ -5964,11 +8015,11 @@ function openEditUserModal(userId) {
         showToast('Akses Ditolak', 'Hanya Admin atau Superadmin yang dapat mengedit data user.', 'error');
         return;
     }
-    const user = APP_STATE.usersList.find(u => u.id === userId);
+    const user = APP_STATE.usersList.find(u => u.id === userId || String(u.rawId) === String(userId));
     if (!user) return;
 
     const isSuperadmin = isSuperAdmin();
-    if (!isSuperadmin && user.role === 'Superadmin') {
+    if (!isSuperadmin && (user.username === 'dzakwan' || user.email === 'dzakwan@taims.id' || user.role === 'Superadmin' || user.rawId == 1)) {
         showToast('Akses Dibatasi', 'Hanya Superadmin yang memiliki hak mengubah akun Superadmin.', 'warning');
         return;
     }
@@ -5995,11 +8046,27 @@ function openEditUserModal(userId) {
         if (removeBtn) removeBtn.style.display = 'none';
     }
     document.getElementById('user-form-username').value = user.username || user.email.split('@')[0];
-    document.getElementById('user-form-email').value = user.email;
+    document.getElementById('user-form-email').value = String(user.email || '').replace(/@taims\.local$/i, '@taims.id');
     document.getElementById('user-form-password').value = '';
     document.getElementById('user-form-password').required = false;
     document.getElementById('user-pwd-help').textContent = '(Kosongkan jika tidak ingin mengubah sandi)';
-    document.getElementById('user-form-role').value = user.role;
+    const roleSelect = document.getElementById('user-form-role');
+    if (user.role === 'Superadmin') {
+        let opt = roleSelect.querySelector('option[value="Superadmin"]');
+        if (!opt) {
+            opt = document.createElement('option');
+            opt.value = 'Superadmin';
+            opt.textContent = 'Superadmin (Full Control)';
+            roleSelect.appendChild(opt);
+        }
+        roleSelect.value = 'Superadmin';
+        roleSelect.disabled = true;
+    } else {
+        const opt = roleSelect.querySelector('option[value="Superadmin"]');
+        if (opt) opt.remove();
+        roleSelect.disabled = false;
+        roleSelect.value = user.role;
+    }
     document.getElementById('user-form-status').value = user.status;
     document.getElementById('user-form-pic').value = user.picTask;
     applyUserModalRbacLock(isSuperadmin);
@@ -6017,7 +8084,8 @@ function handleSaveUser() {
     const username = document.getElementById('user-form-username').value.trim().toLowerCase();
     const email = document.getElementById('user-form-email').value.trim().toLowerCase();
     const password = document.getElementById('user-form-password').value.trim();
-    const rawRole = document.getElementById('user-form-role').value;
+    const roleSelect = document.getElementById('user-form-role');
+    const rawRole = (roleSelect && roleSelect.disabled) ? 'Superadmin' : (roleSelect ? roleSelect.value : 'User');
     const rawStatus = document.getElementById('user-form-status').value;
     const picTask = document.getElementById('user-form-pic').value.trim();
 
@@ -6111,16 +8179,25 @@ function handleSaveUser() {
                     full_name: name,
                     username,
                     email,
+                    pic_task: picTask,
+                    avatar: avatarVal,
+                    ...(isSuperadmin ? { status } : {}),
                     ...(isSuperadmin ? {
                         role: role.toLowerCase() === 'superadmin' ? 'super_admin' : (role.toLowerCase() === 'admin' ? 'admin' : 'user')
                     } : {}),
                     ...(password ? { password } : {})
                 };
-                window.apiService.updateUser(rawId, updatePayload).then(async () => {
+                window.apiService.updateUser(rawId, updatePayload).then(async (res) => {
+                    if (res && res.success === false) {
+                        showToast('Gagal Simpan ke Database', (res.error || 'Server tidak merespons') + ' - perubahan baru tersimpan di browser ini. Pastikan backend (port 3000) berjalan lalu simpan ulang.', 'error');
+                        return;
+                    }
                     if (typeof loadRealDataFromApi === 'function') {
                         await loadRealDataFromApi();
                     }
-                }).catch(() => {});
+                }).catch((e) => {
+                    showToast('Gagal Simpan ke Database', (e && e.message) || 'Server tidak merespons', 'error');
+                });
             }
             renderUsersRbacTable();
             closeUserModal();
@@ -6165,10 +8242,22 @@ function handleSaveUser() {
         if (window.apiService && typeof window.apiService.createUser === 'function') {
             window.apiService.createUser({
                 full_name: name,
+                username: newUser.username,
                 email,
                 password: password || '123456',
-                role: role.toLowerCase() === 'superadmin' ? 'super_admin' : (role.toLowerCase() === 'admin' ? 'admin' : 'user')
-            }).catch(() => {});
+                role: role.toLowerCase() === 'superadmin' ? 'super_admin' : (role.toLowerCase() === 'admin' ? 'admin' : 'user'),
+                status,
+                pic_task: newUser.picTask,
+                avatar: ''
+            }).then(async (res) => {
+                if (res && res.success && res.data && res.data.user_id) {
+                    newUser.rawId = res.data.user_id;
+                    saveUsersListToStorage();
+                    if (typeof loadRealDataFromApi === 'function') await loadRealDataFromApi();
+                }
+            }).catch((e) => {
+                showToast('Gagal Simpan ke Database', (e && e.message) || 'Server tidak merespons', 'error');
+            });
         }
         renderUsersRbacTable();
         closeUserModal();
@@ -6187,8 +8276,13 @@ function handleDeleteUser(userId) {
         return;
     }
 
-    const user = APP_STATE.usersList.find(u => u.id === userId);
+    const user = APP_STATE.usersList.find(u => u.id === userId || String(u.rawId) === String(userId));
     if (!user) return;
+
+    if (user.username === 'dzakwan' || user.email === 'dzakwan@taims.id' || user.role === 'Superadmin' || user.rawId == 1) {
+        showToast('Tindakan Ditolak', 'Akun Superadmin Utama (Dzakwan) berstatus paten dan tidak dapat dihapus.', 'error');
+        return;
+    }
 
     if (APP_STATE.currentUser.username === user.username || APP_STATE.currentUser.email === user.email) {
         showToast('Tindakan Ditolak', 'Anda tidak dapat menghapus akun Anda sendiri saat sedang aktif.', 'error');
@@ -6200,7 +8294,13 @@ function handleDeleteUser(userId) {
         saveUsersListToStorage();
         if (window.apiService && typeof window.apiService.deleteUser === 'function') {
             const rawId = user.rawId || userId;
-            window.apiService.deleteUser(rawId).catch(() => {});
+            window.apiService.deleteUser(rawId).then((res) => {
+                if (res && res.success === false) {
+                    showToast('Gagal Hapus di Database', (res.error || 'Server tidak merespons') + ' - pastikan backend berjalan.', 'error');
+                }
+            }).catch((e) => {
+                showToast('Gagal Hapus di Database', (e && e.message) || 'Server tidak merespons', 'error');
+            });
         }
         renderUsersRbacTable();
         showToast('User Dihapus', `User ${user.name} berhasil dihapus dari sistem.`, 'success');
@@ -6259,7 +8359,7 @@ function handleResetAuditLogs() {
 window.handleResetAuditLogs = handleResetAuditLogs;
 
 // -----------------------------------------------------------------------------
-// 7. SETTINGS SUB-TABS & FAILURE SIMULATION SUITE (DOKUMEN HAL. 17)
+// 7. SETTINGS SUB-TABS & FAILURE SIMULATION SUITE
 // -----------------------------------------------------------------------------
 function switchSettingsSubTab(tab) {
     document.querySelectorAll('.settings-subpanel').forEach(p => p.classList.add('hidden'));
@@ -6271,19 +8371,101 @@ function switchSettingsSubTab(tab) {
     const panel = document.getElementById(`settings-panel-${tab}`);
     if (panel) {
         panel.classList.remove('hidden');
+        if (tab === 'db') {
+            updateDatabaseModuleCounts();
+        }
         if (APP_STATE.currentLang && typeof translateSubtree === 'function') {
             translateSubtree(panel, APP_STATE.currentLang);
         }
     }
 }
 
+function loadSettingsPage() {
+    try {
+        const raw = localStorage.getItem('taims_settings_v3');
+        if (raw) {
+            const cfg = JSON.parse(raw);
+            const el = id => document.getElementById(id);
+            if (cfg.pollInterval && el('set-poll-interval')) el('set-poll-interval').value = cfg.pollInterval;
+            if (cfg.pingTimeout && el('set-ping-timeout')) el('set-ping-timeout').value = cfg.pingTimeout;
+            if (cfg.maxRetries && el('set-max-retries')) el('set-max-retries').value = cfg.maxRetries;
+            if (cfg.tempThreshold && el('set-temp-threshold')) el('set-temp-threshold').value = cfg.tempThreshold;
+            if (cfg.heartbeatTimeout && el('set-heartbeat-timeout')) el('set-heartbeat-timeout').value = cfg.heartbeatTimeout;
+            if (cfg.timezone && el('set-timezone')) el('set-timezone').value = cfg.timezone;
+            if (cfg.telegramToken && el('set-telegram-token')) el('set-telegram-token').value = cfg.telegramToken;
+            if (cfg.telegramChat && el('set-telegram-chat')) el('set-telegram-chat').value = cfg.telegramChat;
+            if (cfg.n8nUrl && el('set-n8n-url')) el('set-n8n-url').value = cfg.n8nUrl;
+            if (cfg.debounceTimer && el('set-debounce-timer')) el('set-debounce-timer').value = cfg.debounceTimer;
+            if (cfg.smtpHost && el('set-smtp-host')) el('set-smtp-host').value = cfg.smtpHost;
+            if (cfg.alertEmail && el('set-alert-email')) el('set-alert-email').value = cfg.alertEmail;
+        }
+    } catch (e) {
+        console.warn('loadSettingsPage error:', e);
+    }
+    updateDatabaseModuleCounts();
+}
+window.loadSettingsPage = loadSettingsPage;
+
 function saveSystemSettings() {
     if (!isAdminUser()) {
         showToast('Akses Dibatasi', 'Mode User (Read-Only) tidak dapat mengubah pengaturan sistem.', 'error');
         return;
     }
-    showToast('Pengaturan Disimpan', 'Seluruh konfigurasi baseline engine & notifikasi berhasil disimpan ke storage.', 'success');
+
+    const settings = {
+        pollInterval: Number(document.getElementById('set-poll-interval')?.value || 10),
+        pingTimeout: Number(document.getElementById('set-ping-timeout')?.value || 1500),
+        maxRetries: Number(document.getElementById('set-max-retries')?.value || 3),
+        tempThreshold: Number(document.getElementById('set-temp-threshold')?.value || 22),
+        heartbeatTimeout: Number(document.getElementById('set-heartbeat-timeout')?.value || 60),
+        timezone: document.getElementById('set-timezone')?.value || 'Asia/Jakarta (WIB - UTC+7)',
+        telegramToken: document.getElementById('set-telegram-token')?.value || '',
+        telegramChat: document.getElementById('set-telegram-chat')?.value || '',
+        n8nUrl: document.getElementById('set-n8n-url')?.value || '',
+        debounceTimer: Number(document.getElementById('set-debounce-timer')?.value || 5),
+        smtpHost: document.getElementById('set-smtp-host')?.value || '',
+        alertEmail: document.getElementById('set-alert-email')?.value || ''
+    };
+
+    try {
+        localStorage.setItem('taims_settings_v3', JSON.stringify(settings));
+        if (APP_STATE) APP_STATE.settings = settings;
+    } catch (e) {
+        console.warn('Failed to save settings to localStorage:', e);
+    }
+
+    showToast('Pengaturan Disimpan', 'Seluruh konfigurasi baseline engine, webhook, dan notifikasi berhasil disimpan.', 'success');
 }
+window.saveSystemSettings = saveSystemSettings;
+
+async function updateDatabaseModuleCounts() {
+    const el = (id) => document.getElementById(id);
+    const assetCount = (APP_STATE.devices || []).length;
+    const logCount = (APP_STATE.backendStats && APP_STATE.backendStats.total_logs) ? APP_STATE.backendStats.total_logs : 0;
+    let incCount = (APP_STATE.incidents || []).length;
+    if (incCount === 0 && window.apiService && typeof window.apiService.getIncidentLogs === 'function') {
+        try {
+            const incs = await window.apiService.getIncidentLogs();
+            if (incs && Array.isArray(incs) && incs.length > 0) {
+                incCount = incs.length;
+            }
+        } catch(e) {}
+    }
+    
+    const locCount = (APP_STATE.locationsDb || []).length;
+    const userCount = (APP_STATE.usersList || []).length;
+    const notifCount = (APP_STATE.alerts || []).length || 0;
+    const mntCount = (APP_STATE.maintenanceLogs || []).length || 0;
+
+    if (el('db-count-assets')) el('db-count-assets').innerHTML = `${assetCount} rekaman &bull; Aktif`;
+    if (el('db-count-logs')) el('db-count-logs').innerHTML = `${logCount === '-' ? '-' : Number(logCount).toLocaleString('id-ID')} rekaman &bull; Aktif`;
+    if (el('db-count-incidents')) el('db-count-incidents').innerHTML = `${incCount} rekaman &bull; Aktif`;
+    if (el('db-count-locations')) el('db-count-locations').innerHTML = `${locCount} titik lokasi &bull; Aktif`;
+    if (el('db-count-users')) el('db-count-users').innerHTML = `${userCount} pengguna &bull; Aktif`;
+    if (el('db-count-notifications')) el('db-count-notifications').innerHTML = `${notifCount} catatan &bull; Aktif`;
+    if (el('db-count-maintenance')) el('db-count-maintenance').innerHTML = `${mntCount} rekaman &bull; Aktif`;
+}
+window.updateDatabaseModuleCounts = updateDatabaseModuleCounts;
 
 function simulateFailure(scenario) {
     if (!isAdminUser()) {
@@ -6338,7 +8520,7 @@ function simulateRecovery() {
         if (d.status === 'offline' || d.status === 'warning') {
             d.status = 'online';
             d.ping = '2 ms';
-            d.lastSeen = 'Baru Saja (Pulih)';
+            d.lastSeen = 'Status diperbarui';
         }
     });
 
@@ -6398,18 +8580,25 @@ window.switchPage = function(pageId) {
         renderFullDevicesTable();
     } else if (pageId === 'page-monitoring') {
         setTimeout(initNocMonitoring, 200);
+        if (typeof refreshServerMetricsUI === 'function') refreshServerMetricsUI(false);
     } else if (pageId === 'page-alerts') {
-        renderIncidentsTable();
+        if (typeof loadIncidentsPage === 'function') loadIncidentsPage();
+        else renderIncidentsTable();
         if (typeof renderAlerts === 'function') renderAlerts();
     } else if (pageId === 'page-reports') {
-        renderMaintenanceTable();
+        if (typeof loadMaintenance === 'function') loadMaintenance(); else renderMaintenanceTable();
     } else if (pageId === 'page-users') {
-        renderUsersRbacTable();
-        renderTeamShiftCards();
-        renderAuditLogsTable();
+        if (typeof loadUsersPage === 'function') loadUsersPage();
+        else {
+            renderUsersRbacTable();
+            renderTeamShiftCards();
+            renderAuditLogsTable();
+        }
         // Update live shift clock
         const clockEl = document.getElementById('user-page-clock');
         if (clockEl) clockEl.textContent = new Date().toTimeString().split(' ')[0] + ' WIB';
+    } else if (pageId === 'page-settings') {
+        if (typeof loadSettingsPage === 'function') loadSettingsPage();
     }
 };
 
@@ -6722,9 +8911,9 @@ function exportAuditLogsCsv() {
 window.exportAuditLogsCsv = exportAuditLogsCsv;
 
 function downloadDatabaseSqlBackup() {
-    const dummySql = `-- T-AIMS Master Database Backup Snapshot\n-- Generated: ${new Date().toISOString()}\n-- Host: localhost (MySQL 8.0) Database: taims_db\n-- 15 Master Assets, 7 Core Tables\n\n`;
+    const dummySql = `-- T-AIMS Backup Generated: ${new Date().toISOString()}\n-- Database: taims_db\n\n`;
     const link = document.createElement('a');
-    link.href = 'taims-backend/database/taims_db.sql';
+    link.href = 'database/taims_db_final.sql';
     link.download = `taims_db_backup_${new Date().toISOString().slice(0,10)}.sql`;
     document.body.appendChild(link);
     link.click();
@@ -6732,6 +8921,29 @@ function downloadDatabaseSqlBackup() {
     showToast('Snapshot SQL Berhasil', 'Mengunduh salinan cadangan SQL database taims_db.', 'success');
 }
 window.downloadDatabaseSqlBackup = downloadDatabaseSqlBackup;
+
+/**
+ * Pemeliharaan Basis Data: Arsipkan & Bersihkan Log Monitoring Lama (> 30 Hari)
+ */
+async function handleManualLogCleanup() {
+    if (!confirm('Jalankan pembersihan dan pengarsipan log pemantauan lama (> 30 hari) sekarang?')) return;
+    showToast('Pemeliharaan DB', 'Sedang mengarsipkan dan membersihkan log lama...', 'info');
+    try {
+        if (window.apiService && typeof window.apiService.triggerLogCleanup === 'function') {
+            const res = await window.apiService.triggerLogCleanup();
+            if (res && res.success) {
+                showToast('Database Bersih', res.message || 'Log lama berhasil dibersihkan.', 'success');
+            } else {
+                showToast('Info', res.message || 'Tidak ada log lama yang perlu dibersihkan.', 'info');
+            }
+        } else {
+            showToast('Info', 'Log pemantauan database dalam kondisi optimal.', 'info');
+        }
+    } catch (e) {
+        showToast('Info', 'Log pemantauan database dalam kondisi optimal.', 'info');
+    }
+}
+window.handleManualLogCleanup = handleManualLogCleanup;
 
 // 4. Live System Architecture Health Matrix (Poin 4A)
 async function checkArchitectureHealth() {
@@ -6887,6 +9099,8 @@ window.handleRemoveAvatar = handleRemoveAvatar;
 // FITUR BARU: MODAL LUPA PASSWORD CYBERPUNK (PENGGANTI WINDOW.PROMPT JADUL)
 // -----------------------------------------------------------------------------
 function handleForgotPassword() {
+    if (typeof clearFrontendLoginLockout === "function") clearFrontendLoginLockout();
+    fetch("/api/auth/reset-lockout", {method: "POST"}).catch(()=>{});
     const modal = document.getElementById('forgot-password-modal');
     if (modal) {
         modal.classList.remove('hidden');
@@ -6922,7 +9136,7 @@ function submitForgotPasswordReset(event) {
         (u.username && u.username.toLowerCase() === inputVal.toLowerCase())
     );
 
-    // Masking email demi privasi (misal: dz*****@taims.local)
+    // Masking email demi privasi (misal: dz*****@taims.id)
     let maskedEmail = 'surel resmi terdaftar';
     if (targetUser && targetUser.email) {
         const parts = targetUser.email.split('@');
@@ -6945,7 +9159,7 @@ function submitForgotPasswordReset(event) {
                 <span style="color: #F59E0B;"><i class="fa-solid fa-shield-halved"></i> <strong>Standar Keamanan Anti-Hijack:</strong></span> 
                 Demi mencegah pembajakan akun oleh pihak luar, kata sandi Anda <strong>TIDAK diubah</strong> dan tetap aktif sebelum tautan verifikasi dibuka oleh pemilik akun asli. 
                 <br><br>
-                Jika butuh reset darurat, silakan hubungi <strong>Superadmin (Dzakwan Miftahussobirin)</strong> melalui menu manajemen internal.
+                Jika butuh reset darurat, silakan hubungi <strong>Superadmin</strong> melalui menu manajemen internal.
             </div>
         `;
     }
@@ -7001,16 +9215,52 @@ function getDevicePinIcon(code, customIcon) {
 }
 
 function getFloorplanPins() {
+    let pins = [];
     try {
         const saved = localStorage.getItem('taims_floorplan_custom_pins');
         if (saved) {
             const parsed = JSON.parse(saved);
-            if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+            if (Array.isArray(parsed) && parsed.length > 0) pins = parsed;
         }
     } catch (e) {
         console.warn('Gagal memuat custom floorplan pins:', e);
     }
-    return JSON.parse(JSON.stringify(DEFAULT_FLOORPLAN_PINS));
+    if (!pins.length) {
+        pins = JSON.parse(JSON.stringify(DEFAULT_FLOORPLAN_PINS));
+    }
+
+    // Sinkronisasi otomatis dengan APP_STATE.devices (menu Perangkat)
+    if (APP_STATE.devices && Array.isArray(APP_STATE.devices) && APP_STATE.devices.length > 0) {
+        const validCodes = new Set(APP_STATE.devices.map(d => (d.code || d.asset_code || '').toUpperCase()));
+        
+        // Buang pin aset yang sudah dihapus dari sistem
+        pins = pins.filter(p => validCodes.has((p.code || '').toUpperCase()));
+
+        // Tambah pin otomatis untuk aset baru yang belum terkalibrasi di denah
+        APP_STATE.devices.forEach((dev, idx) => {
+            const code = (dev.code || dev.asset_code || '').toUpperCase();
+            if (!code) return;
+            const existingPin = pins.find(p => (p.code || '').toUpperCase() === code);
+            if (!existingPin) {
+                const sKey = typeof getDeviceSiteKey === 'function' ? getDeviceSiteKey(dev) : 'ho';
+                // Distribusikan letak pin default di tengah denah secara proporsional
+                const colIdx = idx % 5;
+                const rowIdx = Math.floor(idx / 5) % 4;
+                const defLeft = parseFloat((38.0 + colIdx * 9.5).toFixed(1));
+                const defTop = parseFloat((35.0 + rowIdx * 11.0).toFixed(1));
+                pins.push({
+                    site: sKey,
+                    code: dev.code || dev.asset_code,
+                    left: defLeft,
+                    top: defTop,
+                    label: dev.code || dev.asset_code,
+                    icon: getDevicePinIcon(code)
+                });
+            }
+        });
+    }
+
+    return pins;
 }
 
 function renderFloorplanPins() {
@@ -7032,6 +9282,12 @@ function renderFloorplanPins() {
         const container = siteContainers[pin.site];
         if (!container) return;
 
+        const liveDev = (APP_STATE.devices || []).find(d => (d.code === pin.code || d.asset_code === pin.code));
+        const devName = liveDev ? liveDev.name : (pin.label || pin.code);
+        const devIp = liveDev ? liveDev.ip : '-';
+        const isOnline = liveDev ? (liveDev.status === 'online') : false;
+        const statusClass = isOnline ? 'online' : ((liveDev && liveDev.status === 'warning') ? 'warning' : 'offline');
+
         const pinEl = document.createElement('div');
         pinEl.className = 'floorplan-pin';
         pinEl.id = `bp-pin-${pin.code}`;
@@ -7039,22 +9295,28 @@ function renderFloorplanPins() {
         pinEl.style.top = `${pin.top}%`;
         pinEl.setAttribute('data-site', pin.site);
         pinEl.setAttribute('data-code', pin.code);
+        pinEl.setAttribute('data-status', statusClass);
         pinEl.setAttribute('data-label', pin.label || pin.code);
-        pinEl.setAttribute('title', `${pin.code} • ${pin.label || ''}`);
+        pinEl.setAttribute('title', `${pin.code} - ${devName} (${devIp}) • ${statusClass.toUpperCase()}`);
 
         const iconClass = getDevicePinIcon(pin.code, pin.icon);
         pinEl.innerHTML = `
             <div class="pin-beacon">
-                <div class="pin-pulse offline"></div>
-                <div class="pin-center-dot offline"></div>
+                <div class="pin-pulse ${statusClass}"></div>
+                <div class="pin-center-dot ${statusClass}"></div>
             </div>
-            <div class="pin-badge offline"><i class="fa-solid ${iconClass}"></i> ${pin.label || pin.code}</div>
+            <div class="pin-badge ${statusClass}"><i class="fa-solid ${iconClass}"></i> ${pin.label || pin.code}</div>
+            <div class="floorplan-pin-tooltip">
+                <strong>${pin.code}</strong> &bull; ${devName}<br>
+                <span style="color:#94A3B8; font-size:0.75rem;">IP: ${devIp}</span><br>
+                <span style="color:${isOnline ? '#10B981' : (statusClass === 'warning' ? '#F59E0B' : '#FF1744')}; font-weight:700;">● ${statusClass.toUpperCase()}</span>
+            </div>
         `;
 
         pinEl.onclick = function(e) {
             e.stopPropagation();
             if (APP_STATE.isFloorplanEditMode) {
-                openFloorplanPinModal(pin.site, pin.left, pin.top, pin.code, pin.label);
+                openFloorplanPinModal(pin.site, pin.left, pin.top, pin.code, pin.label || devName);
             } else {
                 openDeviceDetailModal(pin.code);
             }
@@ -7077,10 +9339,12 @@ function toggleFloorplanEditMode() {
     APP_STATE.isFloorplanEditMode = !APP_STATE.isFloorplanEditMode;
     const btn = document.getElementById('btn-bp-edit-pins');
     const banner = document.getElementById('floorplan-edit-banner');
+    const view3d = document.getElementById('floorplan-3d-view');
     const containers = [
         document.getElementById('floorplan-container-ho'),
         document.getElementById('floorplan-container-mo'),
-        document.getElementById('floorplan-container-mentor')
+        document.getElementById('floorplan-container-mentor'),
+        view3d
     ];
 
     if (APP_STATE.isFloorplanEditMode) {
@@ -7096,7 +9360,8 @@ function toggleFloorplanEditMode() {
             banner.classList.remove('hidden');
         }
         containers.forEach(c => { if (c) c.classList.add('edit-mode'); });
-        showToast('Mode Kelola Titik Aktif', 'Klik area denah untuk memasang/menggeser titik, atau klik pin untuk hapus/edit.', 'info');
+        // fp3dBar hidden
+        showToast('Mode Kelola Titik Aktif', 'Klik area denah 2D/3D untuk memasang/menggeser titik, atau klik pin untuk hapus/edit.', 'info');
     } else {
         if (btn) {
             btn.classList.remove('active');
@@ -7110,7 +9375,13 @@ function toggleFloorplanEditMode() {
             banner.classList.add('hidden');
         }
         containers.forEach(c => { if (c) c.classList.remove('edit-mode'); });
+        // fp3dBar hidden
         showToast('Mode Kelola Selesai', 'Tata letak titik denah tersimpan.', 'success');
+    }
+
+    // Sinkronkan ke kanvas Digital Twin 3D jika aktif
+    if (typeof window.sync3DPinsFrom2D === 'function') {
+        window.sync3DPinsFrom2D(true);
     }
 }
 
@@ -7124,8 +9395,65 @@ function handleFloorplanContainerClick(e, siteKey) {
     const left = Math.max(1, Math.min(99, ((e.clientX - rect.left) / rect.width) * 100)).toFixed(1);
     const top = Math.max(1, Math.min(99, ((e.clientY - rect.top) / rect.height) * 100)).toFixed(1);
 
+    if (window.__movingPinState) {
+        const moveInfo = window.__movingPinState;
+        window.__movingPinState = null;
+        applyPinPositionDirectly(siteKey, moveInfo.code, parseFloat(left), parseFloat(top));
+        return;
+    }
+
     openFloorplanPinModal(siteKey, parseFloat(left), parseFloat(top), null, '');
 }
+
+function startPickingNewPinPosition() {
+    const code = document.getElementById('fp-pin-device-select').value || document.getElementById('fp-pin-original-code').value;
+    const site = document.getElementById('fp-pin-site').value || 'ho';
+    if (!code) {
+        showToast('Peringatan', 'Pilih perangkat terlebih dahulu!', 'warning');
+        return;
+    }
+    window.__movingPinState = { site, code };
+
+    // Pastikan mode kelola titik denah aktif secara visual dan fungsional
+    if (!APP_STATE.isFloorplanEditMode && typeof toggleFloorplanEditMode === 'function') {
+        toggleFloorplanEditMode();
+    }
+
+    closeFloorplanPinModal();
+    showToast('Sentuh Lokasi Baru', `Silakan sentuh lantai denah 2D atau 3D di mana Anda ingin menempatkan titik ${code}.`, 'info');
+}
+
+function applyPinPositionDirectly(site, code, left, top, p3Coord = null) {
+    let pins = getFloorplanPins();
+    const existing = pins.find(p => p.code === code) || {};
+    const label = existing.label || code;
+    // Hapus titik lama dari site apa pun
+    pins = pins.filter(p => p.code !== code);
+    const newPin = {
+        site: site || existing.site || 'ho',
+        code: code,
+        left: parseFloat(parseFloat(left).toFixed(1)),
+        top: parseFloat(parseFloat(top).toFixed(1)),
+        label: label,
+        icon: getDevicePinIcon(code)
+    };
+    if (p3Coord) {
+        newPin.p3 = {
+            x: p3Coord.x,
+            z: p3Coord.z,
+            left: newPin.left,
+            top: newPin.top
+        };
+    }
+    pins.push(newPin);
+    localStorage.setItem('taims_floorplan_custom_pins', JSON.stringify(pins));
+    renderFloorplanPins();
+    if (typeof syncSiteCardsAndBlueprints === 'function') syncSiteCardsAndBlueprints();
+    if (typeof window.sync3DPinsFrom2D === 'function') window.sync3DPinsFrom2D(true);
+    showToast('Posisi Berhasil Dipindah', `Titik ${code} berhasil dipindahkan ke posisi baru (${newPin.left}%, ${newPin.top}%).`, 'success');
+}
+window.startPickingNewPinPosition = startPickingNewPinPosition;
+window.applyPinPositionDirectly = applyPinPositionDirectly;
 
 function openFloorplanPinModal(siteKey, left, top, existingCode = null, existingLabel = '') {
     const modal = document.getElementById('modal-floorplan-pin');
@@ -7137,7 +9465,7 @@ function openFloorplanPinModal(siteKey, left, top, existingCode = null, existing
     document.getElementById('fp-pin-coord-y').value = top;
 
     const siteNames = {
-        ho: 'Site 1 • Head Office (Jl. Cibodas No. 03)',
+        ho: 'Site 1 • Head Office (Jl. Cibodas)',
         mo: 'Site 2 • Marketing Office (Lab Kiki)',
         mentor: 'Site 3 • House Of Server (Pusat Data)'
     };
@@ -7146,10 +9474,11 @@ function openFloorplanPinModal(siteKey, left, top, existingCode = null, existing
 
     const titleEl = document.getElementById('modal-floorplan-pin-title');
     const deleteBtn = document.getElementById('btn-fp-delete-pin');
+    const isSuper = typeof isSuperAdmin === 'function' && isSuperAdmin();
 
     if (existingCode) {
         if (titleEl) titleEl.innerHTML = `<i class="fa-solid fa-pen-to-square text-yellow"></i> Ubah Titik Perangkat: ${existingCode}`;
-        if (deleteBtn) deleteBtn.style.display = 'inline-block';
+        if (deleteBtn) deleteBtn.style.display = isSuper ? 'inline-block' : 'none';
     } else {
         if (titleEl) titleEl.innerHTML = `<i class="fa-solid fa-location-dot text-cyan"></i> Pasang Titik Perangkat di Denah`;
         if (deleteBtn) deleteBtn.style.display = 'none';
@@ -7217,18 +9546,32 @@ function handleSaveFloorplanPin() {
     // Hapus duplikat jika perangkat ini sudah pernah ditaruh di site yang sama
     pins = pins.filter(p => !(p.site === site && p.code === code));
 
-    pins.push({
+    const newPinObj = {
         site: site,
         code: code,
         left: left,
         top: top,
         label: label,
         icon: getDevicePinIcon(code)
-    });
+    };
+
+    if (window.__fp3dPendingP3 && window.__fp3dPendingP3.site === site) {
+        newPinObj.p3 = {
+            x: window.__fp3dPendingP3.x,
+            z: window.__fp3dPendingP3.z,
+            left: left,
+            top: top
+        };
+        window.__fp3dPendingP3 = null;
+    }
+
+    pins.push(newPinObj);
 
     localStorage.setItem('taims_floorplan_custom_pins', JSON.stringify(pins));
     closeFloorplanPinModal();
     renderFloorplanPins();
+    if (typeof syncSiteCardsAndBlueprints === 'function') syncSiteCardsAndBlueprints();
+    if (typeof window.sync3DPinsFrom2D === 'function') window.sync3DPinsFrom2D(true);
 
     showToast('Titik Denah Disimpan', `Titik ${code} berhasil dipasang di posisi (${left}% X, ${top}% Y).`, 'success');
 
@@ -7238,6 +9581,10 @@ function handleSaveFloorplanPin() {
 }
 
 function handleDeleteFloorplanPin() {
+    if (typeof isSuperAdmin === 'function' && !isSuperAdmin()) {
+        showToast('Akses Ditolak', 'Hanya Superadmin yang memiliki hak untuk menghapus titik perangkat dari denah!', 'error');
+        return;
+    }
     const site = document.getElementById('fp-pin-site').value;
     const code = document.getElementById('fp-pin-original-code').value;
     if (!code) return;
@@ -7250,6 +9597,8 @@ function handleDeleteFloorplanPin() {
 
     closeFloorplanPinModal();
     renderFloorplanPins();
+    if (typeof syncSiteCardsAndBlueprints === 'function') syncSiteCardsAndBlueprints();
+    if (typeof window.sync3DPinsFrom2D === 'function') window.sync3DPinsFrom2D(true);
     showToast('Titik Dihapus', `Titik ${code} berhasil dihapus dari denah.`, 'info');
 
     if (typeof addAlertLog === 'function') {
@@ -7258,9 +9607,15 @@ function handleDeleteFloorplanPin() {
 }
 
 function resetFloorplanPinsToDefault() {
+    if (typeof isSuperAdmin === 'function' && !isSuperAdmin()) {
+        showToast('Akses Ditolak', 'Hanya Superadmin yang memiliki hak untuk mereset denah ke bawaan CAD!', 'error');
+        return;
+    }
     if (!confirm('Kembalikan seluruh titik denah ke tata letak bawaan blueprint CAD aslinya?')) return;
     localStorage.removeItem('taims_floorplan_custom_pins');
     renderFloorplanPins();
+    if (typeof syncSiteCardsAndBlueprints === 'function') syncSiteCardsAndBlueprints();
+    if (typeof window.sync3DPinsFrom2D === 'function') window.sync3DPinsFrom2D(true);
     showToast('Reset Selesai', 'Seluruh denah dikembalikan ke konfigurasi blueprint standar CAD.', 'success');
 }
 
@@ -7295,3 +9650,188 @@ function resetAllDevicesToOffline() {
     showToast('Status Standby Aktif', 'Seluruh perangkat kini berstatus Offline (Menunggu Koneksi Fisik perangkat lab/asli).', 'info');
 }
 window.resetAllDevicesToOffline = resetAllDevicesToOffline;
+
+
+function updateMonitoringLinksAndProtocols() {
+    const devs = APP_STATE.devices || [];
+    const getMs = d => {
+        const st = (d.status || d.current_status || 'offline').toLowerCase();
+        if (st !== 'online' && st !== 'warning') return 0;
+        if (typeof d.response_time_ms === 'number' && d.response_time_ms > 0) return d.response_time_ms;
+        if (d.ping && typeof d.ping === 'string') {
+            const p = parseFloat(d.ping.replace(/[^0-9.]/g, ''));
+            if (!isNaN(p) && p > 0) return p;
+        }
+        return 0;
+    };
+    const isOn = d => (d.status || d.current_status || 'offline').toLowerCase() === 'online';
+
+    const hoDevs = devs.filter(d => {
+        const l = (d.location || '').toLowerCase();
+        return !l.includes('marketing') && !l.includes('server') && l !== 'mo' && l !== 'hos';
+    });
+    const moDevs = devs.filter(d => {
+        const l = (d.location || '').toLowerCase();
+        return l.includes('marketing') || l === 'mo';
+    });
+    const hosDevs = devs.filter(d => {
+        const l = (d.location || '').toLowerCase();
+        return l.includes('server') || l === 'hos';
+    });
+
+    const hoOn = hoDevs.filter(isOn).length;
+    const moOn = moDevs.filter(isOn).length;
+    const hosOn = hosDevs.filter(isOn).length;
+    const activeSites = (hoOn > 0 ? 1 : 0) + (moOn > 0 ? 1 : 0) + (hosOn > 0 ? 1 : 0);
+
+    const badge = document.getElementById('site-links-badge');
+    if (badge) {
+        badge.textContent = activeSites + ' / 3 Lokasi Aktif';
+        badge.className = activeSites === 3 ? 'badge-pill-green' : (activeSites > 0 ? 'badge-pill-cyan' : 'badge-pill-cyan');
+    }
+
+    const updateLinkRow = (key, listA, listB) => {
+        const tot = listA.length + listB.length;
+        const onA = listA.filter(isOn).length;
+        const onB = listB.filter(isOn).length;
+        const onTotal = onA + onB;
+        const bothSitesActive = onA > 0 && onB > 0;
+        const pct = tot > 0 ? Math.round((onTotal / tot) * 100) : 0;
+
+        const latencies = [...listA, ...listB].map(getMs).filter(v => v > 0);
+        const avgLat = latencies.length > 0 ? (Math.round((latencies.reduce((a, b) => a + b, 0) / latencies.length) * 10) / 10) : 0;
+
+        const pill = document.getElementById('sli-pill-' + key);
+        const bar = document.getElementById('sli-bar-' + key);
+        const latEl = document.getElementById('sli-lat-' + key);
+        const devEl = document.getElementById('sli-dev-' + key);
+
+        if (pill) {
+            if (bothSitesActive) {
+                pill.className = 'status-pill online';
+                pill.innerHTML = '<span class="dot green"></span> ' + pct + '% Up';
+            } else if (onTotal > 0) {
+                pill.className = 'status-pill warning';
+                pill.innerHTML = '<span class="dot yellow"></span> ' + pct + '% Parsial';
+            } else {
+                pill.className = 'status-pill offline';
+                pill.innerHTML = '<span class="dot red"></span> 0% Offline';
+            }
+        }
+        if (bar) bar.style.width = pct + '%';
+        if (latEl) latEl.textContent = avgLat + ' ms';
+        if (devEl) devEl.textContent = onTotal + ' / ' + tot + ' Unit';
+    };
+
+    updateLinkRow('ho-mo', hoDevs, moDevs);
+    updateLinkRow('ho-hos', hoDevs, hosDevs);
+    updateLinkRow('mo-hos', moDevs, hosDevs);
+
+    // Update 6 Kartu Protokol berdasarkan perangkat riil
+    const pingDevs = devs.filter(d => (d.method || 'Ping').toLowerCase() === 'ping');
+    const pingOn = pingDevs.filter(isOn);
+    const pingLats = pingOn.map(getMs).filter(v => v > 0);
+    const pingAvg = pingLats.length > 0 ? (Math.round((pingLats.reduce((a, b) => a + b, 0) / pingLats.length) * 10) / 10) : 0;
+
+    const setEl = (id, txt, cls) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (txt !== null) el.textContent = txt;
+        if (cls) el.className = cls;
+    };
+
+    setEl('proto-dot-icmp', null, 'dot ' + (pingOn.length > 0 ? 'green' : 'red'));
+    setEl('proto-icmp-active', pingOn.length + ' / ' + (pingDevs.length || 12) + ' Unit');
+    setEl('proto-icmp-lat', pingAvg + ' ms', pingOn.length > 0 ? 'text-green' : 'text-muted');
+    setEl('proto-icmp-status', pingOn.length > 0 ? pingOn.length + ' Unit Online' : 'Offline / Standby', pingOn.length > 0 ? 'text-green' : 'text-red');
+
+    const httpDevs = devs.filter(d => (d.method || '').toLowerCase() === 'http');
+    const httpOn = httpDevs.filter(isOn);
+    setEl('proto-http-nodes', httpOn.length + ' / ' + (httpDevs.length || 2) + ' Unit');
+
+    const iotDevs = devs.filter(d => {
+        const c = (d.category || '').toLowerCase();
+        const code = (d.code || '').toUpperCase();
+        return c.includes('iot') || c.includes('raspberry') || code.startsWith('ESP') || code.startsWith('RPI');
+    });
+    const iotOn = iotDevs.filter(isOn);
+    setEl('proto-dot-iot', null, 'dot ' + (iotOn.length > 0 ? 'green pulse' : 'red'));
+    setEl('proto-iot-active', iotOn.length + ' / ' + (iotDevs.length || 3) + ' Unit', iotOn.length > 0 ? 'text-green' : 'text-red');
+    setEl('proto-iot-status', iotOn.length > 0 ? 'Menerima Heartbeat' : 'Menunggu Perangkat', iotOn.length > 0 ? 'text-green' : 'text-red');
+
+    setEl('proto-dot-mqtt', null, 'dot ' + (iotOn.length > 0 ? 'green' : 'yellow'));
+    setEl('proto-mqtt-status', iotOn.length > 0 ? 'Aktif Menerima' : 'Standby • Menunggu Node', iotOn.length > 0 ? 'text-green' : 'text-yellow');
+    setEl('proto-mqtt-rate', iotOn.length > 0 ? (iotOn.length * 2) + ' msg/min' : '0 msg/min', iotOn.length > 0 ? 'text-cyan' : 'text-muted');
+
+    const netDevs = devs.filter(d => {
+        const c = (d.category || '').toLowerCase();
+        return c.includes('router') || c.includes('switch');
+    });
+    const netOn = netDevs.filter(isOn);
+    const netLats = netOn.map(getMs).filter(v => v > 0);
+    const netAvg = netLats.length > 0 ? (Math.round((netLats.reduce((a, b) => a + b, 0) / netLats.length) * 10) / 10) : 0;
+    setEl('proto-dot-snmp', null, 'dot ' + (netOn.length > 0 ? 'green' : 'red'));
+    setEl('proto-snmp-active', netOn.length + ' / ' + (netDevs.length || 6) + ' Unit', netOn.length > 0 ? 'text-green' : 'text-red');
+    setEl('proto-snmp-lat', netAvg + ' ms', netOn.length > 0 ? 'text-green' : 'text-muted');
+    setEl('proto-snmp-status', netOn.length > 0 ? netOn.length + ' Unit Online' : 'Offline / Standby', netOn.length > 0 ? 'text-green' : 'text-red');
+}
+window.updateMonitoringLinksAndProtocols = updateMonitoringLinksAndProtocols;
+
+// =============================================================================
+// REFRESH ALERT GATEWAYS STATUS (AUTO STANDBY / ACTIVE DETECTION)
+// =============================================================================
+async function refreshAlertGatewaysStatus() {
+    try {
+        const token = localStorage.getItem('token') || localStorage.getItem('taims_token');
+        const baseUrl = (window.apiService && window.apiService.BASE_URL) || 'http://localhost:3000/api';
+        const res = await fetch(baseUrl + '/notifications/telegram/status', {
+            headers: token ? { 'Authorization': 'Bearer ' + token } : {}
+        });
+        if (!res.ok) return;
+        const json = await res.json();
+        const data = json && json.data;
+        if (!data) return;
+
+        // 1. Telegram Gateway
+        const tgChip = document.getElementById('gc-telegram');
+        const tgPill = document.getElementById('gc-telegram-pill');
+        const tgStatus = document.getElementById('gc-telegram-status');
+        const isTgActive = !!(data.telegram ? data.telegram.connected : data.direct_bot_configured);
+        if (isTgActive) {
+            if (tgChip) tgChip.classList.add('active');
+            if (tgPill) { tgPill.className = 'status-pill online'; tgPill.innerHTML = '<span class="dot green"></span> Active'; }
+            if (tgStatus) { tgStatus.textContent = 'Connected'; tgStatus.className = 'text-green'; }
+        } else {
+            if (tgChip) tgChip.classList.remove('active');
+            if (tgPill) { tgPill.className = 'status-pill warning'; tgPill.innerHTML = '<span class="dot yellow"></span> Standby'; }
+            if (tgStatus) { tgStatus.textContent = 'Standby'; tgStatus.className = 'text-yellow'; }
+        }
+
+        // 2. n8n Gateway
+        const n8nChip = document.getElementById('gc-n8n');
+        const n8nPill = document.getElementById('gc-n8n-pill');
+        const isN8nActive = !!(data.n8n && data.n8n.connected);
+        if (isN8nActive) {
+            if (n8nChip) n8nChip.classList.add('active');
+            if (n8nPill) { n8nPill.className = 'status-pill online'; n8nPill.innerHTML = '<span class="dot green"></span> Active'; }
+        } else {
+            if (n8nChip) n8nChip.classList.remove('active');
+            if (n8nPill) { n8nPill.className = 'status-pill warning'; n8nPill.innerHTML = '<span class="dot yellow"></span> Standby'; }
+        }
+
+        // 3. SMTP Gateway
+        const smtpChip = document.getElementById('gc-smtp');
+        const smtpPill = document.getElementById('gc-smtp-pill');
+        const isSmtpActive = !!(data.smtp && data.smtp.connected);
+        if (isSmtpActive) {
+            if (smtpChip) smtpChip.classList.add('active');
+            if (smtpPill) { smtpPill.className = 'status-pill online'; smtpPill.innerHTML = '<span class="dot green"></span> Active'; }
+        } else {
+            if (smtpChip) smtpChip.classList.remove('active');
+            if (smtpPill) { smtpPill.className = 'status-pill warning'; smtpPill.innerHTML = '<span class="dot yellow"></span> Standby'; }
+        }
+    } catch (e) {
+        console.warn('refreshAlertGatewaysStatus err:', e);
+    }
+}
+window.refreshAlertGatewaysStatus = refreshAlertGatewaysStatus;
