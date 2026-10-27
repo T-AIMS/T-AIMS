@@ -75,3 +75,35 @@ Bundel ini dirancang khusus untuk deployment instan (1-Click Upload) di control 
    * Masuk ke tab **SSL/TLS Certificates** pada situs `taims.id` dan `api.taims.id`.
    * Klik **+ New Certificate** -> Pilih **Let's Encrypt Certificate** -> Klik **Create and Install**.
 4. Selesai! Web T-AIMS kini sudah aktif online secara aman dengan HTTPS di seluruh dunia.
+
+---
+
+### LANGKAH 4: Konfigurasi Device API Key di CloudPanel (.env)
+Agar Backend di CloudPanel dapat menerima telemetri dari agen monitoring perangkat secara aman tanpa terbentur proteksi login pengguna:
+1. Di File Manager situs backend (`api.taims.id`), pastikan baris `DEVICE_API_KEY` terisi di `.env`:
+   ```env
+   DEVICE_API_KEY=taims_dev_5bee447416b0fac135fcb60e4a6b84621ec75fdb132549f1
+   ```
+2. Restart backend Node.js di CloudPanel agar konfigurasi aktif.
+
+---
+
+### LANGKAH 5: Setup Agen Monitoring On-Premise (Edge Daemon)
+Karena server CloudPanel berada di cloud publik, server tidak dapat melakukan ICMP ping langsung ke IP lokal kantor (`192.168.1.x`). Oleh karena itu, skrip agen dijalankan di jaringan lokal kantor (misal: di Raspberry Pi kantor atau PC server kantor):
+
+1. **Salin Folder `network-monitoring` ke Perangkat Lokal (Raspberry Pi / PC Kantor).**
+2. **Jalankan Agen dengan mengarahkan ke Domain CloudPanel:**
+   * Di terminal Linux/Raspberry Pi:
+     ```bash
+     export BACKEND_URL="https://api.taims.id/api"
+     export DEVICE_API_KEY="taims_dev_5bee447416b0fac135fcb60e4a6b84621ec75fdb132549f1"
+     python3 network-monitoring/monitoring_engine.py
+     ```
+   * Atau jalankan otomatis di background via systemd service / PM2:
+     ```bash
+     pm2 start network-monitoring/monitoring_engine.py --name "taims-edge-monitor" --interpreter python3
+     ```
+3. **Verifikasi:**
+   * Agen lokal akan mengeping CCTV (`192.168.1.39`), Smart TV, dan Router kantor.
+   * Setiap status otomatis dikirim ke `https://api.taims.id/api/monitoring/ping` menggunakan `X-API-Key`.
+   * Dashboard web `taims.id` seketika menampilkan seluruh perangkat menyala hijau (**Online**) secara real-time!

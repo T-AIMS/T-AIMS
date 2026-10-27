@@ -42,44 +42,22 @@ INTERVAL = 10
 # Nama file CSV untuk menyimpan hasil monitoring lokal
 LOG_FILE = "monitoring_logs.csv"
 
-# Konfigurasi Backend API & Database (Ananda & Wafian)
+# Konfigurasi Backend API & Device API Key (Wafian & Ananda)
 BACKEND_URL = os.getenv("BACKEND_URL", "http://127.0.0.1:3000/api")
-AUTH_EMAIL = os.getenv("AUTH_EMAIL", "reza.fahmi@taims_db.local")
-AUTH_PASSWORD = os.getenv("AUTH_PASSWORD", "password123")
+DEVICE_API_KEY = os.getenv("DEVICE_API_KEY", "taims_dev_5bee447416b0fac135fcb60e4a6b84621ec75fdb132549f1")
 
 DB_HOST = os.getenv('DB_HOST', 'localhost')
 DB_USER = os.getenv('DB_USER', 'root')
 DB_PASS = os.getenv('DB_PASS', '')
 DB_NAME = os.getenv('DB_NAME', 'taims_db')
 
-# Token awal hasil login (dinamis)
-cached_token = os.getenv("AUTH_TOKEN", "")
-
 
 # ==========================================
-# FUNGSI AUTO-AUTH & BACKEND API (WAFIAN)
+# FUNGSI PENGIRIMAN TELEMETRI KE BACKEND (WAFIAN)
 # ==========================================
-
-def get_auth_token():
-    """Fungsi auto-login untuk refresh token jika expired."""
-    global cached_token
-    try:
-        res = requests.post(
-            f"{BACKEND_URL}/auth/login",
-            json={"email": AUTH_EMAIL, "password": AUTH_PASSWORD},
-            timeout=5
-        )
-        if res.status_code == 200:
-            cached_token = res.json().get("data", {}).get("token")
-            return cached_token
-    except Exception as e:
-        print(f"[!] Gagal auto-login backend: {e}")
-    return cached_token
-
 
 def send_to_backend(device_name, status, response_time_ms):
-    """Kirim hasil monitoring per device ke Backend API T-AIMS."""
-    global cached_token
+    """Kirim hasil monitoring per device ke Backend API T-AIMS via X-API-Key."""
     asset_id = ASSET_MAP.get(device_name)
     if not asset_id:
         return False
@@ -93,18 +71,11 @@ def send_to_backend(device_name, status, response_time_ms):
 
     headers = {
         "Content-Type": "application/json",
-        "Authorization": f"Bearer {cached_token}"
+        "X-API-Key": DEVICE_API_KEY
     }
 
     try:
         resp = requests.post(f"{BACKEND_URL}/monitoring/ping", json=payload, headers=headers, timeout=5)
-        # Jika token expired (401), ambil token baru dan coba lagi sekali
-        if resp.status_code in [401, 403]:
-            new_token = get_auth_token()
-            if new_token:
-                headers["Authorization"] = f"Bearer {new_token}"
-                resp = requests.post(f"{BACKEND_URL}/monitoring/ping", json=payload, headers=headers, timeout=5)
-
         return resp.status_code in [200, 201]
     except Exception as e:
         print(f"[!] Error kirim backend ({device_name}): {e}")
