@@ -8602,6 +8602,14 @@ function loadSettingsPage() {
     } catch (e) {
         console.warn('loadSettingsPage error:', e);
     }
+    const elTok = document.getElementById('set-telegram-token');
+    if (elTok && (!elTok.value || elTok.value.startsWith('6849204918'))) {
+        elTok.value = '8944593836:AAEP2bDCO53srpWR3gdKXY6CHQ13Ni8OtPA';
+    }
+    const elN8n = document.getElementById('set-n8n-url');
+    if (elN8n && (!elN8n.value || elN8n.value.includes('n8n.teknolab.id'))) {
+        elN8n.value = 'http://192.168.1.49:5678/webhook/taims-alert';
+    }
     updateDatabaseModuleCounts();
 }
 window.loadSettingsPage = loadSettingsPage;
