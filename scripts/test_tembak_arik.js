@@ -72,15 +72,20 @@ async function testRecoveryWebhook() {
 
   const payload = {
     type: 'recovery',
-    asset_code: 'AST-L1-002',
-    asset_name: 'CCTV Lobby Utama',
-    category: 'CCTV',
-    ip_address: '192.168.1.101',
-    location: 'Lantai 1 - Gedung Utama',
     status: 'online',
-    downtime_duration: '3 menit 45 detik',
+    asset_code: 'AST-CORE-002',
+    device_id: 'AST-CORE-002',
+    asset_name: 'Switch Core 02 (Ruang Server)',
+    device_name: 'Switch Core 02 (Ruang Server)',
+    device: 'Switch Core 02 (Ruang Server)',
+    ip_address: '192.168.1.2',
+    ip: '192.168.1.2',
+    location: 'Ruang Server Utama',
+    category: 'Switch',
+    downtime_duration: '5 menit 20 detik',
+    duration: '5 menit 20 detik',
     timestamp: new Date().toISOString(),
-    message: '🟢 [RECOVERY ONLINE] Perangkat CCTV Lobby Utama (192.168.1.101) telah kembali pulih dan normal!'
+    message: '🟢 RECOVERY ALERT - AST-CORE-002\n\nStatus: ONLINE\nPerangkat Switch Core 02 (192.168.1.2) telah KEMBALI PULIH dan beroperasi normal.\nDurasi Gangguan: 5 menit 20 detik.'
   };
 
   try {
