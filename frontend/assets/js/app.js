@@ -8795,6 +8795,7 @@ window.switchPage = function(pageId) {
         if (typeof renderAlerts === 'function') renderAlerts();
     } else if (pageId === 'page-reports') {
         if (typeof loadMaintenance === 'function') loadMaintenance(); else renderMaintenanceTable();
+        if (typeof runAiAnalysis === 'function') setTimeout(runAiAnalysis, 100);
     } else if (pageId === 'page-users') {
         if (typeof loadUsersPage === 'function') loadUsersPage();
         else {
