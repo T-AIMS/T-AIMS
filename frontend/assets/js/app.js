@@ -6408,8 +6408,8 @@ function renderIncidentsTable() {
             <td><span class="text-xs text-secondary">${displayCause}</span></td>
             <td><span class="badge-subtle text-xs">${inc.pic}</span></td>
             <td>${stBadge}</td>
-            <td class="text-right">
-                <div class="d-flex gap-1 justify-end flex-wrap">
+            <td class="text-right" style="white-space: nowrap; min-width: 110px;">
+                <div class="d-flex gap-1 justify-end align-center flex-nowrap" style="white-space: nowrap;">
                     ${(inc.status !== 'resolved' && inc.status !== 'closed') ?
                        `<button class="btn-sm btn-outline-cyber py-1 px-2" onclick="resolveIncident('${inc.id}')" title="${isEn ? 'Selesai' : 'Selesai'}"><i class="fa-solid fa-check"></i></button>` : ''}
                     <button class="btn-sm btn-outline-cyber py-1 px-2" onclick="openEditIncidentModal('${inc.id}')" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
@@ -8922,18 +8922,14 @@ window.toggleSystemAudio = toggleSystemAudio;
 // 2. Manual Ping Tester Action in Device Detail Modal (Poin 1A)
 function updateNotifBadgeCount(count) {
     const num = parseInt(count) || 0;
-    const badgeSidebar = document.getElementById('sidebar-alert-badge');
     const badgeTop = document.getElementById('topbar-alert-count');
     const unreadEl = document.getElementById('notif-unread-count');
     const isEn = APP_STATE && APP_STATE.currentLang === 'en';
 
-    if (badgeSidebar) {
-        badgeSidebar.textContent = num > 0 ? num : '';
-        badgeSidebar.setAttribute('data-count', num);
-        badgeSidebar.style.display = num > 0 ? 'inline-block' : 'none';
-    }
+    // Catatan: sidebar-alert-badge dikhususkan untuk jumlah kasus insiden aktif
+    // yang dikelola oleh renderIncidentsTable(), sehingga tidak ditimpa agar tidak berkedip.
     if (badgeTop) {
-        badgeTop.textContent = num > 0 ? num : '';
+        badgeTop.textContent = num > 99 ? '99+' : num;
         badgeTop.setAttribute('data-count', num);
         badgeTop.style.display = num > 0 ? 'flex' : 'none';
     }
