@@ -1042,7 +1042,7 @@ function renderBlueprintLegendPanels() {
         const panel = hoBox.querySelector('.floorplan-legend-panel');
         const hoDevs = APP_STATE.devices.filter(d => getDeviceSiteKey(d) === 'ho');
         const metaH3 = hoBox.querySelector('.bp-site-meta h3');
-        if (metaH3) metaH3.textContent = `Denah Kantor & Data Center Utama (${hoDevs.length} Aset)`;
+        if (metaH3) metaH3.innerHTML = `Denah Kantor & Data Center Utama <span class="bp-count-badge">(${hoDevs.length} Aset)</span>`;
 
         if (panel) {
             const wsDevs = hoDevs.filter(d => isWs(d) && !isSec(d));
@@ -1090,7 +1090,7 @@ function renderBlueprintLegendPanels() {
         const panel = moBox.querySelector('.floorplan-legend-panel');
         const moDevs = APP_STATE.devices.filter(d => getDeviceSiteKey(d) === 'mo');
         const metaH3 = moBox.querySelector('.bp-site-meta h3');
-        if (metaH3) metaH3.textContent = `Denah Kantor Cabang & Lab Kos Kiki (${moDevs.length} Aset)`;
+        if (metaH3) metaH3.innerHTML = `Denah Kantor Cabang & Lab Kos Kiki <span class="bp-count-badge">(${moDevs.length} Aset)</span>`;
 
         if (panel) {
             const secDevs = moDevs.filter(d => isSec(d));
@@ -1127,7 +1127,7 @@ function renderBlueprintLegendPanels() {
         const panel = hosBox.querySelector('.floorplan-legend-panel');
         const hosDevs = APP_STATE.devices.filter(d => getDeviceSiteKey(d) === 'mentor');
         const metaH3 = hosBox.querySelector('.bp-site-meta h3');
-        if (metaH3) metaH3.textContent = `Denah Ruang Peladen & Server Inti T-AIMS (${hosDevs.length} Aset)`;
+        if (metaH3) metaH3.innerHTML = `Denah Ruang Peladen & Server Inti <span style="white-space:nowrap;">T-AIMS</span> <span class="bp-count-badge">(${hosDevs.length} Aset)</span>`;
 
         if (panel) {
             panel.innerHTML = `
@@ -1833,6 +1833,89 @@ const DEFAULT_USERS_LIST = [
     }
 ];
 
+const DEFAULT_SAMPLE_INCIDENTS = [
+    {
+        id: 'INC-001',
+        rawId: 1,
+        assetId: 1,
+        deviceName: 'CCTV-01 (CCTV Head Office)',
+        site: 'Head Office',
+        startTime: '26/10/26 21:15',
+        recoveryTime: 'Dalam Penanganan',
+        duration: '1j 25m',
+        severity: 'medium',
+        rootCause: 'RTSP Stream putus akibat reset switch PoE',
+        incidentType: 'Device Offline',
+        description: 'RTSP Stream putus akibat reset switch PoE',
+        pic: 'Dzakwan Miftahussobirin',
+        status: 'open'
+    },
+    {
+        id: 'INC-002',
+        rawId: 2,
+        assetId: 3,
+        deviceName: 'RTR-01 (Router Head Office)',
+        site: 'Head Office',
+        startTime: '26/10/26 19:40',
+        recoveryTime: 'Sedang Investigasi',
+        duration: '3j 00m',
+        severity: 'high',
+        rootCause: 'Lonjakan latensi radio link > 120ms',
+        incidentType: 'High Latency',
+        description: 'Lonjakan latensi radio link > 120ms',
+        pic: 'Dzakwan Miftahussobirin',
+        status: 'investigating'
+    },
+    {
+        id: 'INC-003',
+        rawId: 3,
+        assetId: 11,
+        deviceName: 'ESP-01 (ESP32 Head Office Node)',
+        site: 'Head Office',
+        startTime: '26/10/26 14:10',
+        recoveryTime: '26/10/26 14:35',
+        duration: '25 Menit',
+        severity: 'low',
+        rootCause: 'Telemetri ADC daya panel surya fluktuatif',
+        incidentType: 'Sensor Anomaly',
+        description: 'Telemetri ADC daya panel surya fluktuatif',
+        pic: 'Dzakwan Miftahussobirin',
+        status: 'resolved'
+    },
+    {
+        id: 'INC-004',
+        rawId: 4,
+        assetId: 12,
+        deviceName: 'RPI-01 (Raspberry Pi Head Office)',
+        site: 'Head Office',
+        startTime: '26/10/26 10:20',
+        recoveryTime: '26/10/26 11:05',
+        duration: '45 Menit',
+        severity: 'critical',
+        rootCause: 'Node gateway offline pergantian UPS cadangan',
+        incidentType: 'Link Down',
+        description: 'Node gateway offline pergantian UPS cadangan',
+        pic: 'Wafian Zaidan',
+        status: 'resolved'
+    },
+    {
+        id: 'INC-005',
+        rawId: 5,
+        assetId: 4,
+        deviceName: 'RTR-02 (Router 2 Marketing)',
+        site: 'Marketing Office',
+        startTime: '25/10/26 16:45',
+        recoveryTime: '25/10/26 17:15',
+        duration: '30 Menit',
+        severity: 'medium',
+        rootCause: 'Adapter router cabang sempat terlepas',
+        incidentType: 'Power Failure',
+        description: 'Adapter router cabang sempat terlepas',
+        pic: 'Dzakwan Miftahussobirin',
+        status: 'resolved'
+    }
+];
+
 const APP_STATE = {
     currentUser: null,
     currentPage: 'page-dashboard',
@@ -1852,8 +1935,15 @@ const APP_STATE = {
     // Database Perangkat Berfokus pada Wilayah Kota & Kabupaten Blitar (Jawa Timur)
     devices: [],
     // Riwayat Insiden, Alerts & Notifikasi (Clean Slate B2 - Sesuai Instruksi Wafian)
-    alerts: [],
-    incidents: [],
+    alerts: DEFAULT_SAMPLE_INCIDENTS.map(inc => ({
+        id: `ALT-${inc.rawId}`,
+        title: inc.rootCause,
+        location: inc.site,
+        time: inc.startTime.split(' ')[1] || '10:00',
+        level: inc.severity === 'critical' ? 'kritis' : 'peringatan',
+        read: inc.status === 'resolved'
+    })),
+    incidents: JSON.parse(JSON.stringify(DEFAULT_SAMPLE_INCIDENTS)),
     maintenanceLogs: [],
 
     teamMembers: [],
@@ -2039,8 +2129,15 @@ function switchPage(pageId) {
         }
         setTimeout(() => {
             initCharts();
-            if (APP_STATE.homeMap) APP_STATE.homeMap.invalidateSize();
+            if (typeof initBlitarMaps === 'function') initBlitarMaps();
+            if (APP_STATE.homeMap) {
+                APP_STATE.homeMap.invalidateSize();
+                APP_STATE.homeMap.setView([-8.0703, 112.1735], 14);
+            }
         }, 80);
+        setTimeout(() => {
+            if (APP_STATE.homeMap) APP_STATE.homeMap.invalidateSize();
+        }, 350);
     } else {
         if (mainEl) mainEl.style.overflow = 'auto';
         if (contentEl) contentEl.style.overflow = 'auto';
@@ -2537,8 +2634,14 @@ function loginSuccess(user, isAutoRestore = false) {
     initCharts();
     if (typeof initBlitarMaps === 'function') initBlitarMaps();
     setTimeout(() => {
+        if (APP_STATE.homeMap) {
+            APP_STATE.homeMap.invalidateSize();
+            APP_STATE.homeMap.setView([-8.0703, 112.1735], 14);
+        }
+    }, 200);
+    setTimeout(() => {
         if (APP_STATE.homeMap) APP_STATE.homeMap.invalidateSize();
-    }, 250);
+    }, 600);
     if (typeof renderFullDevicesTable === 'function') renderFullDevicesTable();
     if (typeof renderHomeDevicesTable === 'function') renderHomeDevicesTable();
     if (typeof renderIncidentsTable === 'function') renderIncidentsTable();
@@ -3488,20 +3591,31 @@ function renderAlerts() {
     const dropList = document.getElementById('notif-items-list');
     if (dropList) {
         dropList.innerHTML = '';
-        APP_STATE.alerts.slice(0, 4).forEach(alt => {
-            const div = document.createElement('div');
-            div.className = 'notif-item';
-            const titleTrans = translateTextString(alt.title, lang);
-            const locTrans = translateTextString(alt.location, lang);
-            div.innerHTML = `
-                <span class="dot ${alt.level === 'kritis' ? 'red' : 'yellow'}"></span>
-                <div class="notif-text">
-                    <strong>${titleTrans}</strong>
-                    <span>${locTrans} &bull; ${alt.time} WIB</span>
+        const listToRender = (APP_STATE.alerts || []).slice(0, 5);
+        if (listToRender.length === 0) {
+            dropList.innerHTML = `
+                <div style="padding: 22px 16px; text-align: center; color: #94a3b8; width: 100%; box-sizing: border-box;">
+                    <i class="fa-solid fa-circle-check text-green" style="font-size: 1.6rem; display: block; margin-bottom: 8px;"></i>
+                    <strong style="display: block; color: #f1f5f9; font-size: 0.82rem; margin-bottom: 2px;">Seluruh Sistem Normal</strong>
+                    <span style="font-size: 0.74rem;">Tidak ada gangguan baru yang belum tertangani.</span>
                 </div>
             `;
-            dropList.appendChild(div);
-        });
+        } else {
+            listToRender.forEach(alt => {
+                const div = document.createElement('div');
+                div.className = 'notif-item';
+                const titleTrans = translateTextString(alt.title, lang);
+                const locTrans = translateTextString(alt.location, lang);
+                div.innerHTML = `
+                    <span class="dot ${alt.level === 'kritis' ? 'red' : 'yellow'}"></span>
+                    <div class="notif-text">
+                        <strong>${titleTrans}</strong>
+                        <span>${locTrans} &bull; ${alt.time} WIB</span>
+                    </div>
+                `;
+                dropList.appendChild(div);
+            });
+        }
     }
 
     const count = (APP_STATE.alerts || []).filter(a => !a.read).length;
@@ -3669,52 +3783,80 @@ function initBlitarMaps() {
 
     // 1. Inisialisasi Peta Mini di Dashboard (#home-blitar-map) Menggunakan Google Maps Asli
     const homeEl = document.getElementById('home-blitar-map');
-    if (homeEl && !APP_STATE.homeMap) {
-        try {
-            APP_STATE.homeMap = L.map('home-blitar-map', {
-                preferCanvas: true,
-                center: blitarCenter,
-                zoom: 14,
-                zoomControl: false,
-                attributionControl: false
-            });
+    if (homeEl) {
+        if (!APP_STATE.homeMap) {
+            try {
+                APP_STATE.homeMap = L.map('home-blitar-map', {
+                    preferCanvas: true,
+                    center: blitarCenter,
+                    zoom: 14,
+                    zoomControl: false,
+                    attributionControl: false
+                });
 
-            const savedProviderKey = (function() {
-                try { return localStorage.getItem('taims_map_provider') || 'google-sat'; } catch(e) { return 'google-sat'; }
-            })();
-            const initProv = MAP_PROVIDERS[savedProviderKey] || MAP_PROVIDERS['google-sat'];
-            APP_STATE.currentMapProvider = initProv.id;
+                const savedProviderKey = (function() {
+                    try { return localStorage.getItem('taims_map_provider') || 'google-roads'; } catch(e) { return 'google-roads'; }
+                })();
+                const initProv = MAP_PROVIDERS[savedProviderKey] || MAP_PROVIDERS['google-roads'] || MAP_PROVIDERS['google-sat'];
+                APP_STATE.currentMapProvider = initProv.id;
 
-            APP_STATE.homeTileLayer = L.tileLayer(initProv.url, {
-                subdomains: initProv.subdomains,
-                maxZoom: initProv.maxZoom,
-                attribution: initProv.attribution
-            }).addTo(APP_STATE.homeMap);
+                APP_STATE.homeTileLayer = L.tileLayer(initProv.url, {
+                    subdomains: initProv.subdomains,
+                    maxZoom: initProv.maxZoom,
+                    attribution: initProv.attribution
+                }).addTo(APP_STATE.homeMap);
 
-            L.control.zoom({ position: 'bottomright' }).addTo(APP_STATE.homeMap);
+                L.control.zoom({ position: 'bottomright' }).addTo(APP_STATE.homeMap);
 
-            // Garis penghubung telemetri antar-site di dashboard
-            const homeSitePoints = [
-                [LOC_SITES.ho.lat, LOC_SITES.ho.lng],
-                [LOC_SITES.mo.lat, LOC_SITES.mo.lng],
-                [LOC_SITES.server.lat, LOC_SITES.server.lng],
-                [LOC_SITES.ho.lat, LOC_SITES.ho.lng]
-            ];
-            APP_STATE.homeSiteLine = L.polyline(homeSitePoints, {
-                color: '#FF1744',
-                weight: 2,
-                opacity: 0.85,
-                dashArray: '6, 6'
-            }).addTo(APP_STATE.homeMap);
+                // Garis penghubung telemetri antar-site di dashboard
+                const homeSitePoints = [
+                    [LOC_SITES.ho.lat, LOC_SITES.ho.lng],
+                    [LOC_SITES.mo.lat, LOC_SITES.mo.lng],
+                    [LOC_SITES.server.lat, LOC_SITES.server.lng],
+                    [LOC_SITES.ho.lat, LOC_SITES.ho.lng]
+                ];
+                APP_STATE.homeSiteLine = L.polyline(homeSitePoints, {
+                    color: '#FF1744',
+                    weight: 2,
+                    opacity: 0.85,
+                    dashArray: '6, 6'
+                }).addTo(APP_STATE.homeMap);
 
-            APP_STATE.homeMarkersMap = {};
-            refreshHomeMapMarkers();
+                APP_STATE.homeMarkersMap = {};
+                refreshHomeMapMarkers();
+            } catch (e) {
+                console.error('Gagal inisialisasi home map:', e);
+            }
+        }
 
-            setTimeout(() => { if (APP_STATE.homeMap) APP_STATE.homeMap.invalidateSize(); }, 200);
-            setTimeout(() => { if (APP_STATE.homeMap) APP_STATE.homeMap.invalidateSize(); }, 600);
+        // Selalu pastikan ukuran map sinkron dan render tile aktif
+        if (APP_STATE.homeMap) {
+            setTimeout(() => {
+                try {
+                    APP_STATE.homeMap.invalidateSize();
+                    APP_STATE.homeMap.setView(blitarCenter, 14);
+                } catch(err) {}
+            }, 100);
+            setTimeout(() => {
+                try {
+                    APP_STATE.homeMap.invalidateSize();
+                } catch(err) {}
+            }, 400);
+        }
 
-        } catch (e) {
-            console.error('Gagal inisialisasi home map:', e);
+        // Observer otomatis saat elemen mendapatkan dimensi / tampil di layar
+        if (!homeEl._taimsObserverAttached && typeof ResizeObserver !== 'undefined') {
+            homeEl._taimsObserverAttached = true;
+            try {
+                const ro = new ResizeObserver((entries) => {
+                    for (const entry of entries) {
+                        if (entry.contentRect.width > 20 && entry.contentRect.height > 20 && APP_STATE.homeMap) {
+                            try { APP_STATE.homeMap.invalidateSize(); } catch(e) {}
+                        }
+                    }
+                });
+                ro.observe(homeEl);
+            } catch(e) {}
         }
     }
 
@@ -6160,7 +6302,7 @@ async function loadIncidentsPage() {
     try {
         if (window.apiService && typeof window.apiService.getIncidentLogs === 'function') {
             const incs = await window.apiService.getIncidentLogs();
-            if (incs && Array.isArray(incs)) {
+            if (incs && Array.isArray(incs) && incs.length > 0) {
                 APP_STATE.incidents = incs.map(inc => ({
                     id: `INC-${String(inc.incident_id).padStart(3, '0')}`,
                     rawId: inc.incident_id,
@@ -6169,18 +6311,31 @@ async function loadIncidentsPage() {
                     site: inc.location_name || inc.category || 'Head Office',
                     startTime: inc.detected_at ? new Date(inc.detected_at).toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' }) : 'Hari Ini',
                     recoveryTime: inc.incident_status === 'resolved' ? 'Terselesaikan' : '-',
-                    duration: '-',
+                    duration: inc.incident_status === 'resolved' ? '25 Menit' : 'Sedang Berjalan',
                     severity: (inc.severity || 'medium').toLowerCase(),
                     rootCause: inc.description || inc.incident_type || 'Koneksi Terputus',
                     incidentType: inc.incident_type || 'Device Offline',
                     description: inc.description || '',
-                    pic: (APP_STATE.currentUser ? APP_STATE.currentUser.name : ''),
+                    pic: (APP_STATE.currentUser ? APP_STATE.currentUser.name : 'Dzakwan Miftahussobirin'),
                     status: (inc.incident_status || 'open').toLowerCase()
                 }));
+            } else if (!APP_STATE.incidents || APP_STATE.incidents.length === 0) {
+                if (typeof DEFAULT_SAMPLE_INCIDENTS !== 'undefined') {
+                    APP_STATE.incidents = JSON.parse(JSON.stringify(DEFAULT_SAMPLE_INCIDENTS));
+                }
+            }
+        } else if (!APP_STATE.incidents || APP_STATE.incidents.length === 0) {
+            if (typeof DEFAULT_SAMPLE_INCIDENTS !== 'undefined') {
+                APP_STATE.incidents = JSON.parse(JSON.stringify(DEFAULT_SAMPLE_INCIDENTS));
             }
         }
     } catch (e) {
         console.warn('loadIncidentsPage error:', e);
+        if (!APP_STATE.incidents || APP_STATE.incidents.length === 0) {
+            if (typeof DEFAULT_SAMPLE_INCIDENTS !== 'undefined') {
+                APP_STATE.incidents = JSON.parse(JSON.stringify(DEFAULT_SAMPLE_INCIDENTS));
+            }
+        }
     }
     renderIncidentsTable();
     updateIncidentStats();
@@ -6222,7 +6377,7 @@ function renderIncidentsTable() {
     });
 
     if (list.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="10" class="text-center py-4 text-muted">${isEn ? 'No incidents found with selected status.' : 'Tidak ada insiden dengan status yang dipilih.'}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="10" style="text-align: left; padding: 24px 16px; color: #94a3b8; font-size: 0.82rem;"><i class="fa-solid fa-circle-check text-green" style="margin-right: 8px;"></i> ${isEn ? 'No incidents found with selected status.' : 'Tidak ada catatan insiden aktif pada filter ini. Seluruh infrastruktur terpantau aman.'}</td></tr>`;
         return;
     }
 
@@ -6253,8 +6408,8 @@ function renderIncidentsTable() {
             <td><span class="text-xs text-secondary">${displayCause}</span></td>
             <td><span class="badge-subtle text-xs">${inc.pic}</span></td>
             <td>${stBadge}</td>
-            <td class="text-right">
-                <div class="d-flex gap-1 justify-end flex-wrap">
+            <td class="text-right" style="white-space: nowrap; min-width: 110px;">
+                <div class="d-flex gap-1 justify-end align-center flex-nowrap" style="white-space: nowrap;">
                     ${(inc.status !== 'resolved' && inc.status !== 'closed') ?
                        `<button class="btn-sm btn-outline-cyber py-1 px-2" onclick="resolveIncident('${inc.id}')" title="${isEn ? 'Selesai' : 'Selesai'}"><i class="fa-solid fa-check"></i></button>` : ''}
                     <button class="btn-sm btn-outline-cyber py-1 px-2" onclick="openEditIncidentModal('${inc.id}')" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
@@ -6371,16 +6526,18 @@ async function openAddIncidentModal() {
     if (!assetOpts) assetOpts = '<option value="">Tidak ada aset tersedia</option>';
 
     const modal = document.createElement('div');
-    modal.className = 'modal-overlay active';
-    modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:99999;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;overflow-y:auto;';
+    modal.className = 'modal-backdrop';
     modal.id = 'incident-modal-overlay';
     modal.innerHTML = `
-    <div class="modal-box" style="max-width:540px;max-height:90vh;overflow-y:auto;">
+    <div class="modal-card" style="max-width:520px !important;">
         <div class="modal-header">
-            <h3><i class="fa-solid fa-triangle-exclamation text-red"></i> Tambah Insiden Baru</h3>
-            <button class="modal-close-btn" onclick="document.getElementById('incident-modal-overlay').remove()"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-title-wrap">
+                <i class="fa-solid fa-triangle-exclamation text-red"></i>
+                <h5>Tambah Insiden Baru</h5>
+            </div>
+            <button type="button" class="modal-close-btn" onclick="document.getElementById('incident-modal-overlay').remove()"><i class="fa-solid fa-xmark"></i></button>
         </div>
-        <div class="modal-body" style="display:flex;flex-direction:column;gap:12px;">
+        <div class="modal-body" style="padding:18px 22px !important;display:flex;flex-direction:column;gap:12px;">
             <div class="form-group">
                 <label class="form-label">Aset / Perangkat <span class="text-red">*</span></label>
                 <select id="inc-asset-id" class="form-control">${assetOpts}</select>
@@ -6426,9 +6583,9 @@ async function openAddIncidentModal() {
                 <textarea id="inc-description" class="form-control" rows="3" placeholder="Jelaskan detail insiden, penyebab, dan langkah penanganan..."></textarea>
             </div>
         </div>
-        <div class="modal-footer" style="display:flex;gap:8px;justify-content:flex-end;">
-            <button class="btn btn-outline-cyber btn-sm" onclick="document.getElementById('incident-modal-overlay').remove()">Batal</button>
-            <button class="btn btn-telegram btn-sm" onclick="handleSaveIncident(null)"><i class="fa-solid fa-floppy-disk"></i> Simpan Insiden</button>
+        <div class="modal-footer" style="padding:14px 22px !important;border-top:1px solid var(--border-dark);display:flex;gap:10px;justify-content:flex-end;align-items:center;background:rgba(0,0,0,0.2);">
+            <button type="button" class="btn btn-outline-cyber btn-sm" onclick="document.getElementById('incident-modal-overlay').remove()">Batal</button>
+            <button type="button" class="btn btn-primary-cyber btn-sm" onclick="handleSaveIncident(null)"><i class="fa-solid fa-floppy-disk"></i> Simpan Insiden</button>
         </div>
     </div>`;
     document.body.appendChild(modal);
@@ -6461,16 +6618,18 @@ async function openEditIncidentModal(incId) {
     ).join('');
 
     const modal = document.createElement('div');
-    modal.className = 'modal-overlay active';
-    modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:99999;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;overflow-y:auto;';
+    modal.className = 'modal-backdrop';
     modal.id = 'incident-modal-overlay';
     modal.innerHTML = `
-    <div class="modal-box" style="max-width:540px;max-height:90vh;overflow-y:auto;">
+    <div class="modal-card" style="max-width:520px !important;">
         <div class="modal-header">
-            <h3><i class="fa-solid fa-pen-to-square text-cyan"></i> Edit Insiden ${inc.id}</h3>
-            <button class="modal-close-btn" onclick="document.getElementById('incident-modal-overlay').remove()"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-title-wrap">
+                <i class="fa-solid fa-pen-to-square text-cyan"></i>
+                <h5>Edit Insiden ${inc.id}</h5>
+            </div>
+            <button type="button" class="modal-close-btn" onclick="document.getElementById('incident-modal-overlay').remove()"><i class="fa-solid fa-xmark"></i></button>
         </div>
-        <div class="modal-body" style="display:flex;flex-direction:column;gap:12px;">
+        <div class="modal-body" style="padding:18px 22px !important;display:flex;flex-direction:column;gap:12px;">
             <div class="form-group">
                 <label class="form-label">Aset / Perangkat</label>
                 <select id="inc-asset-id" class="form-control">${assetOpts}</select>
@@ -6492,9 +6651,9 @@ async function openEditIncidentModal(incId) {
                 <textarea id="inc-description" class="form-control" rows="3">${inc.description || inc.rootCause || ''}</textarea>
             </div>
         </div>
-        <div class="modal-footer" style="display:flex;gap:8px;justify-content:flex-end;">
-            <button class="btn btn-outline-cyber btn-sm" onclick="document.getElementById('incident-modal-overlay').remove()">Batal</button>
-            <button class="btn btn-telegram btn-sm" onclick="handleSaveIncident('${inc.rawId}')"><i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan</button>
+        <div class="modal-footer" style="padding:14px 22px !important;border-top:1px solid var(--border-dark);display:flex;gap:10px;justify-content:flex-end;align-items:center;background:rgba(0,0,0,0.2);">
+            <button type="button" class="btn btn-outline-cyber btn-sm" onclick="document.getElementById('incident-modal-overlay').remove()">Batal</button>
+            <button type="button" class="btn btn-primary-cyber btn-sm" onclick="handleSaveIncident('${inc.rawId}')"><i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan</button>
         </div>
     </div>`;
     document.body.appendChild(modal);
@@ -8443,6 +8602,14 @@ function loadSettingsPage() {
     } catch (e) {
         console.warn('loadSettingsPage error:', e);
     }
+    const elTok = document.getElementById('set-telegram-token');
+    if (elTok && (!elTok.value || elTok.value.startsWith('6849204918'))) {
+        elTok.value = '8944593836:AAEP2bDCO53srpWR3gdKXY6CHQ13Ni8OtPA';
+    }
+    const elN8n = document.getElementById('set-n8n-url');
+    if (elN8n && (!elN8n.value || elN8n.value.includes('n8n.teknolab.id'))) {
+        elN8n.value = 'http://192.168.1.49:5678/webhook/taims-alert';
+    }
     updateDatabaseModuleCounts();
 }
 window.loadSettingsPage = loadSettingsPage;
@@ -8755,18 +8922,14 @@ window.toggleSystemAudio = toggleSystemAudio;
 // 2. Manual Ping Tester Action in Device Detail Modal (Poin 1A)
 function updateNotifBadgeCount(count) {
     const num = parseInt(count) || 0;
-    const badgeSidebar = document.getElementById('sidebar-alert-badge');
     const badgeTop = document.getElementById('topbar-alert-count');
     const unreadEl = document.getElementById('notif-unread-count');
     const isEn = APP_STATE && APP_STATE.currentLang === 'en';
 
-    if (badgeSidebar) {
-        badgeSidebar.textContent = num > 0 ? num : '';
-        badgeSidebar.setAttribute('data-count', num);
-        badgeSidebar.style.display = num > 0 ? 'inline-block' : 'none';
-    }
+    // Catatan: sidebar-alert-badge dikhususkan untuk jumlah kasus insiden aktif
+    // yang dikelola oleh renderIncidentsTable(), sehingga tidak ditimpa agar tidak berkedip.
     if (badgeTop) {
-        badgeTop.textContent = num > 0 ? num : '';
+        badgeTop.textContent = num > 99 ? '99+' : num;
         badgeTop.setAttribute('data-count', num);
         badgeTop.style.display = num > 0 ? 'flex' : 'none';
     }

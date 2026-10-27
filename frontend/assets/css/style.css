@@ -56249,14 +56249,42 @@ html, body {
 
 #notif-dropdown:not(.hidden),
 .notif-dropdown:not(.hidden) {
-    display: block !important;
+    display: flex !important;
+    flex-direction: column !important;
     position: absolute !important;
     top: calc(100% + 10px) !important;
     right: 0 !important;
-    z-index: 99998 !important;
+    left: auto !important;
+    width: 340px !important;
+    min-width: 320px !important;
+    max-width: 360px !important;
+    background: #0f172a !important;
+    border: 1.5px solid rgba(0, 240, 255, 0.45) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.95), 0 0 20px rgba(0, 240, 255, 0.2) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    z-index: 999999 !important;
+    overflow: hidden !important;
     opacity: 1 !important;
     visibility: visible !important;
     pointer-events: auto !important;
+}
+
+@media (max-width: 768px) {
+    #notif-dropdown:not(.hidden),
+    .notif-dropdown:not(.hidden) {
+        position: fixed !important;
+        top: 60px !important;
+        left: 12px !important;
+        right: 12px !important;
+        width: calc(100vw - 24px) !important;
+        max-width: 380px !important;
+        min-width: 280px !important;
+        margin: 0 auto !important;
+        max-height: 75vh !important;
+        border-radius: 14px !important;
+    }
 }
 
 @media (max-width: 900px) {
@@ -59118,4 +59146,377 @@ body:has(#auth-screen:not(.hidden)) #main-dashboard {
 }
 #kpi-spark-uptime {
     background: #A855F7 !important;
+}
+
+/* ========================================================================== */
+/* v6.0.45 - QA REVISION BUNDLE (7 ITEMS RESOLUTION)                          */
+/* 1. Centered Site Buttons                                                   */
+/* 2, 3, 4. Non-Breaking Denah Blueprint Headings & Count Badges              */
+/* 5. Incidents Table Compact Layout (No Empty Space)                         */
+/* 6. Card Title & Icon Perfect Inline-Flex Centering                         */
+/* 7. Mobile Toast Popup Auto-Height & Constraints                            */
+/* 8. Solid Modal Card Background with 10px Backdrop Blur                     */
+/* 9. Leaflet Dashboard Mini-Map Container Reliability                        */
+/* ========================================================================== */
+
+/* 1. Centered Site Buttons */
+.bp-sites-bar .btn-bp-choice,
+.btn-bp-choice {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+}
+
+/* 2, 3, 4. Denah Blueprint Headings & Count Badges */
+.bp-site-meta h3 {
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
+    display: flex !important;
+    align-items: center !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+}
+.bp-count-badge {
+    display: inline-block !important;
+    white-space: nowrap !important;
+    font-size: 0.85em !important;
+    color: #94a3b8 !important;
+    font-weight: 500 !important;
+}
+@media (max-width: 768px) {
+    .bp-site-meta h3 {
+        font-size: 0.95rem !important;
+        line-height: 1.35 !important;
+        margin-top: 4px !important;
+    }
+    .bp-count-badge {
+        font-size: 0.82em !important;
+    }
+    .bp-sites-bar .btn-bp-choice {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
+    }
+}
+
+/* 5. Incidents Table Compact Spacing (No Dead Whitespace) */
+#page-alerts .table-responsive .mockup-table,
+#page-alerts .mockup-table {
+    min-width: 880px !important;
+    width: 100% !important;
+    table-layout: auto !important;
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+}
+#page-alerts .mockup-table th,
+#page-alerts .mockup-table td {
+    padding: 8px 10px !important;
+    white-space: nowrap !important;
+    font-size: 0.78rem !important;
+}
+#page-alerts .mockup-table th:nth-child(1), #page-alerts .mockup-table td:nth-child(1) { width: 90px !important; min-width: 80px !important; }
+#page-alerts .mockup-table th:nth-child(2), #page-alerts .mockup-table td:nth-child(2) { width: 140px !important; min-width: 130px !important; }
+#page-alerts .mockup-table th:nth-child(3), #page-alerts .mockup-table td:nth-child(3) { width: 120px !important; min-width: 110px !important; }
+#page-alerts .mockup-table th:nth-child(4), #page-alerts .mockup-table td:nth-child(4) { width: 120px !important; min-width: 110px !important; }
+#page-alerts .mockup-table th:nth-child(5), #page-alerts .mockup-table td:nth-child(5) { width: 75px !important; min-width: 70px !important; }
+#page-alerts .mockup-table th:nth-child(6), #page-alerts .mockup-table td:nth-child(6) { width: 85px !important; min-width: 80px !important; }
+#page-alerts .mockup-table th:nth-child(7), #page-alerts .mockup-table td:nth-child(7) { width: 120px !important; min-width: 110px !important; }
+#page-alerts .mockup-table th:nth-child(8), #page-alerts .mockup-table td:nth-child(8) { width: 95px !important; min-width: 90px !important; }
+#page-alerts .mockup-table th:nth-child(9), #page-alerts .mockup-table td:nth-child(9) { width: 95px !important; min-width: 90px !important; }
+#page-alerts .mockup-table th:nth-child(10), #page-alerts .mockup-table td:nth-child(10) { width: 80px !important; min-width: 75px !important; }
+
+/* 6. Card Title & Icon Perfect Alignment */
+.card-title-group {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+}
+.card-title-group > i {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    line-height: 1 !important;
+    flex-shrink: 0 !important;
+    vertical-align: middle !important;
+}
+.card-title-group > h4 {
+    display: inline-flex !important;
+    align-items: center !important;
+    margin: 0 !important;
+    line-height: 1.3 !important;
+    gap: 8px !important;
+}
+
+/* 7. Mobile Toast Popup Auto-Height & Constraints */
+@media (max-width: 768px) {
+    #toast-notification.toast-popup,
+    #toast-notification.toast-notification {
+        left: 16px !important;
+        right: 16px !important;
+        bottom: 16px !important;
+        top: auto !important;
+        width: calc(100% - 32px) !important;
+        max-width: 420px !important;
+        height: auto !important;
+        min-height: unset !important;
+        max-height: 120px !important;
+        margin: 0 auto !important;
+        padding: 10px 14px !important;
+        box-sizing: border-box !important;
+        border-radius: 10px !important;
+        display: flex !important;
+        align-items: center !important;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.85), 0 0 15px rgba(0, 240, 255, 0.25) !important;
+    }
+    #toast-notification.toast-popup.hidden {
+        display: none !important;
+    }
+    #toast-notification .toast-content {
+        flex: 1 1 auto !important;
+        overflow: hidden !important;
+    }
+    #toast-notification .toast-content h6 {
+        font-size: 0.82rem !important;
+        margin: 0 0 2px 0 !important;
+        white-space: nowrap !important;
+        text-overflow: ellipsis !important;
+        overflow: hidden !important;
+    }
+    #toast-notification .toast-content p {
+        font-size: 0.72rem !important;
+        margin: 0 !important;
+        line-height: 1.25 !important;
+        display: -webkit-box !important;
+        -webkit-line-clamp: 2 !important;
+        -webkit-box-orient: vertical !important;
+        overflow: hidden !important;
+    }
+}
+
+/* 8. Penyelarasan Backdrop Modal Edit Insiden dengan Kelola Lokasi (Sinkron 100%) */
+#incident-modal-overlay,
+#loc-manager-modal,
+.modal-backdrop,
+.modal-overlay {
+    position: fixed !important;
+    inset: 0 !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background: rgba(0, 0, 0, 0.75) !important;
+    backdrop-filter: blur(6px) !important;
+    -webkit-backdrop-filter: blur(6px) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    z-index: 99999 !important;
+    padding: 16px !important;
+    box-sizing: border-box !important;
+    overflow-y: auto !important;
+}
+
+#incident-modal-overlay .modal-card,
+#loc-manager-modal .modal-card,
+.modal-backdrop .modal-card,
+.modal-box {
+    background: var(--bg-card, #0B111E) !important;
+    border: 1px solid var(--border-cyan, rgba(0, 240, 255, 0.45)) !important;
+    border-radius: var(--radius-lg, 12px) !important;
+    box-shadow: var(--shadow-card, 0 16px 45px rgba(0, 0, 0, 0.92), 0 0 20px rgba(0, 240, 255, 0.2)) !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+}
+
+#incident-modal-overlay .modal-card {
+    max-width: 520px !important;
+    max-height: 90vh !important;
+}
+
+/* 9. Leaflet Dashboard Mini-Map Container Reliability */
+#home-blitar-map,
+.home-map-leaflet {
+    background: radial-gradient(circle at center, #111d35 0%, #060a14 100%) !important;
+    position: relative !important;
+    min-height: 220px !important;
+}
+
+/* ========================================================================== */
+/* v6.0.46 - PERBAIKAN TOTAL NOTIFIKASI DROPDOWN (ANTI-SLIVER / RESPONSIVE)   */
+/* Memperbaiki dropdown notifikasi agar tampil utuh, proporsional, & jelas    */
+/* ========================================================================== */
+
+/* State Sembunyi */
+#notif-dropdown.hidden,
+.notif-dropdown.hidden {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+
+/* State Tampil - Desktop (>= 769px) */
+#notif-dropdown:not(.hidden),
+.notif-dropdown:not(.hidden) {
+    display: flex !important;
+    flex-direction: column !important;
+    position: absolute !important;
+    top: calc(100% + 10px) !important;
+    right: 0 !important;
+    left: auto !important;
+    width: 340px !important;
+    min-width: 320px !important;
+    max-width: 360px !important;
+    height: auto !important;
+    max-height: 480px !important;
+    background: #0f172a !important;
+    border: 1.5px solid rgba(0, 240, 255, 0.45) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.95), 0 0 20px rgba(0, 240, 255, 0.2) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    z-index: 999999 !important;
+    overflow: hidden !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+}
+
+/* State Tampil - Mobile (<= 768px) */
+@media (max-width: 768px) {
+    #notif-dropdown:not(.hidden),
+    .notif-dropdown:not(.hidden) {
+        position: fixed !important;
+        top: 60px !important;
+        left: 12px !important;
+        right: 12px !important;
+        width: calc(100vw - 24px) !important;
+        max-width: 380px !important;
+        min-width: 280px !important;
+        margin: 0 auto !important;
+        height: auto !important;
+        max-height: 75vh !important;
+        border-radius: 14px !important;
+        border: 1.5px solid rgba(0, 240, 255, 0.55) !important;
+        box-shadow: 0 20px 55px rgba(0, 0, 0, 0.98), 0 0 25px rgba(0, 240, 255, 0.3) !important;
+    }
+}
+
+/* Interior Styling Dropdown Notifikasi */
+.notif-dropdown .notif-header {
+    padding: 12px 14px !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    background: #111c33 !important;
+    flex-shrink: 0 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+.notif-dropdown .notif-header h6 {
+    margin: 0 !important;
+    font-size: 0.88rem !important;
+    font-weight: 700 !important;
+    color: #ffffff !important;
+    white-space: nowrap !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+}
+
+.notif-dropdown .btn-mark-all-read {
+    background: rgba(0, 240, 255, 0.12) !important;
+    border: 1px solid rgba(0, 240, 255, 0.35) !important;
+    color: #38bdf8 !important;
+    border-radius: 6px !important;
+    padding: 5px 10px !important;
+    font-size: 0.72rem !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    white-space: nowrap !important;
+    transition: all 0.2s ease !important;
+}
+
+.notif-dropdown .btn-mark-all-read:hover {
+    background: rgba(0, 240, 255, 0.25) !important;
+    color: #ffffff !important;
+}
+
+.notif-dropdown .notif-list {
+    max-height: 320px !important;
+    overflow-y: auto !important;
+    padding: 4px 0 !important;
+    flex: 1 1 auto !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    background: #0f172a !important;
+}
+
+.notif-dropdown .notif-item {
+    padding: 10px 14px !important;
+    display: flex !important;
+    align-items: flex-start !important;
+    gap: 10px !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+    font-size: 0.78rem !important;
+    transition: background 0.2s ease !important;
+    cursor: pointer !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+.notif-dropdown .notif-item:hover {
+    background: rgba(0, 240, 255, 0.06) !important;
+}
+
+.notif-dropdown .notif-item .notif-text {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+}
+
+.notif-dropdown .notif-item .notif-text strong {
+    display: block !important;
+    color: #f1f5f9 !important;
+    font-size: 0.8rem !important;
+    font-weight: 600 !important;
+    line-height: 1.3 !important;
+    word-break: break-word !important;
+}
+
+.notif-dropdown .notif-item .notif-text span {
+    color: #94a3b8 !important;
+    font-size: 0.72rem !important;
+    line-height: 1.2 !important;
+    margin-top: 2px !important;
+    display: block !important;
+}
+
+.notif-dropdown .notif-footer {
+    padding: 10px 14px !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+    background: #0b1120 !important;
+    flex-shrink: 0 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+.notif-dropdown .notif-footer a {
+    color: #00F0FF !important;
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+    white-space: nowrap !important;
 }

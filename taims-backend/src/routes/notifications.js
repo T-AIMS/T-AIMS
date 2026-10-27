@@ -311,7 +311,12 @@ async function dispatchTelegramAlert(text, type = 'info', metadata = {}) {
     const results = { n8n: false, telegram_direct: false, simulation: true };
 
     // 1. Forward ke n8n webhook (Arik - Port 5678)
-    const n8nWebhook = process.env.N8N_ALERT_WEBHOOK || 'http://192.168.0.100:5678/webhook/alert';
+    // Otomatis memilih webhook sesuai tipe: Offline (taims-alert) vs Recovery (taims-recovery)
+    let n8nWebhook = process.env.N8N_ALERT_WEBHOOK || 'http://127.0.0.1:5678/webhook/taims-alert';
+    if (type === 'recovery' || type === 'online' || metadata.status === 'online') {
+        n8nWebhook = process.env.N8N_RECOVERY_WEBHOOK || process.env.N8N_ALERT_WEBHOOK || 'http://127.0.0.1:5678/webhook/taims-recovery';
+    }
+
     try {
         const controller = new AbortController();
         const timeout = setTimeout(() => controller.abort(), 4000);
@@ -366,20 +371,22 @@ async function dispatchTelegramAlert(text, type = 'info', metadata = {}) {
 // ============================================================
 router.get('/telegram/status', async (req, res) => {
     const hasTelegramToken = !!(process.env.TELEGRAM_BOT_TOKEN && process.env.TELEGRAM_CHAT_ID && process.env.TELEGRAM_BOT_TOKEN.length > 10);
-    const hasN8n = !!(process.env.N8N_ACTIVE === 'true');
+    const hasN8n = !!(process.env.N8N_ACTIVE === 'true' || process.env.N8N_ALERT_WEBHOOK);
     const hasSmtp = !!(process.env.SMTP_HOST && process.env.SMTP_USER);
 
     return res.status(200).json({
         success: true,
         data: {
-            bot_username: process.env.TELEGRAM_BOT_USERNAME || '@TeknolabAimsBot',
+            bot_username: process.env.TELEGRAM_BOT_USERNAME || '@taims_alert_arik_bot',
             platform: 'n8n Workflow Automation',
-            n8n_webhook: process.env.N8N_ALERT_WEBHOOK || 'http://192.168.0.100:5678/webhook/alert',
+            n8n_alert_webhook: process.env.N8N_ALERT_WEBHOOK || 'http://127.0.0.1:5678/webhook/taims-alert',
+            n8n_recovery_webhook: process.env.N8N_RECOVERY_WEBHOOK || 'http://127.0.0.1:5678/webhook/taims-recovery',
+            n8n_ai_webhook: process.env.N8N_AI_WEBHOOK || 'http://127.0.0.1:5678/webhook/ai-recommendation',
             cooldown_minutes: 10,
             direct_bot_configured: hasTelegramToken,
             telegram: {
                 connected: hasTelegramToken,
-                bot_username: process.env.TELEGRAM_BOT_USERNAME || '@TeknolabAimsBot',
+                bot_username: process.env.TELEGRAM_BOT_USERNAME || '@taims_alert_arik_bot',
                 status_text: hasTelegramToken ? 'Connected' : 'Standby'
             },
             n8n: {
