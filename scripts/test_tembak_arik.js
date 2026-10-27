@@ -185,9 +185,13 @@ async function detectTelegramChatId() {
       console.log('Pesan Terakhir       : ', msg.text || '(non-teks)');
       console.log('--------------------------------------------------');
 
-      // Tawarkan simpan otomatis ke .env
-      chatId = String(chat.id);
-      saveChatIdToEnv(chatId);
+      // Jika sudah ada Grup ID yang ditentukan, jangan ditimpa sembarangan
+      if (!chatId || !chatId.startsWith('-')) {
+        chatId = String(chat.id);
+        saveChatIdToEnv(chatId);
+      } else {
+        console.log(`ℹ️ Tetap menggunakan ID Grup Telegram Resmi: ${chatId}`);
+      }
       return chatId;
     }
   } catch (err) {
