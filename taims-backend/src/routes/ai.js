@@ -111,13 +111,15 @@ router.get('/recommendation', authenticate, async (req, res) => {
                 clearTimeout(timeoutId);
 
                 if (response.ok) {
-                    const aiResult = await response.json();
+                    let aiResult = await response.json();
+                    if (Array.isArray(aiResult)) aiResult = aiResult[0] || {};
+                    const recText = aiResult.ai_response || aiResult.recommendation || aiResult.message || 'Tidak ada rekomendasi.';
                     const finalData = {
                         status: aiResult.status || (offlineCount > 0 ? 'warning' : 'healthy'),
                         device: aiResult.device || (offlineAssets.length > 0 ? offlineAssets.map(a => a.asset_name).join(', ') : 'Semua device'),
                         troubled_devices: aiResult.device || (offlineAssets.length > 0 ? offlineAssets.map(a => a.asset_name).join(', ') : 'Tidak ada'),
                         status_network: offlineCount > 0 ? 'STABIL DENGAN PERINGATAN (WARNING)' : 'NORMAL & OPTIMAL (STABIL)',
-                        recommendation: aiResult.recommendation || 'Tidak ada rekomendasi.',
+                        recommendation: recText,
                         updated_at: new Date().toISOString(),
                         source: 'n8n_ai',
                         total_devices: totalCount,
