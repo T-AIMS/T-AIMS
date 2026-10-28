@@ -5805,43 +5805,94 @@
  <script src="assets/js/floorplan3d.js?v=20261028_1855"></script>
 
 
- <!-- Modal Pemulihan Kata Sandi (Cyberpunk Theme - Mas Dzakwan UX Fix) -->
- <div class="modal-backdrop hidden" id="forgot-password-modal" onclick="if(event.target===this)closeForgotPasswordModal()">
- <div class="modal-card modal-sm" style="max-width: 440px; border-color: rgba(0, 240, 255, 0.4);">
- <div class="modal-header">
- <div class="modal-title-wrap">
- <i class="fa-solid fa-key text-cyan"></i>
- <h5>Pemulihan Kata Sandi Akun</h5>
- </div>
- <button class="modal-close-btn" onclick="closeForgotPasswordModal()"><i class="fa-solid fa-xmark"></i></button>
- </div>
- <form onsubmit="submitForgotPasswordReset(event)">
- <div class="modal-body">
- <p class="text-secondary text-xs mb-3" style="line-height: 1.6;">
- Masukkan alamat surel atau nama pengguna akun Anda. Tautan instruksi pemulihan keamanan akan dikirimkan ke surel resmi yang terdaftar pada sistem T-AIMS PT Teknolab Caraka Internasional.
- </p>
- <div class="form-group mb-3">
- <label>Email atau Username Administrator *</label>
- <div class="input-container">
- <input type="text" id="forgot-pwd-email" placeholder="Misal: dzakwan atau dzakwan@taims.id" required style="width: 100%;">
- </div>
- </div>
- <div id="forgot-pwd-result-box" class="hidden" style="background: rgba(0, 240, 255, 0.06); border: 1px solid rgba(0, 240, 255, 0.35); border-radius: 8px; padding: 14px 16px; margin-bottom: 16px; box-sizing: border-box;">
- <div id="forgot-pwd-result" style="font-size: 0.76rem; line-height: 1.6; color: #E2E8F0;"></div>
- </div>
- </div>
- <div class="modal-footer d-flex justify-between">
- <button type="button" class="btn btn-outline-cyber btn-sm" onclick="closeForgotPasswordModal()">Tutup</button>
- <button type="submit" class="btn btn-primary-cyber btn-sm">
- <i class="fa-solid fa-rotate-left"></i> Setel Ulang Kata Sandi
- </button>
- </div>
- </form>
- </div>
- </div>
+ <!-- Modal Pemulihan Kata Sandi (2-Step Verification: OTP & Reset Password) -->
+  <div class="modal-backdrop hidden" id="forgot-password-modal" onclick="if(event.target===this)closeForgotPasswordModal()">
+    <div class="modal-card modal-sm" style="max-width: 480px; border-color: rgba(0, 240, 255, 0.45); box-shadow: 0 12px 40px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 240, 255, 0.15);">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <i class="fa-solid fa-shield-halved text-cyan"></i>
+          <h5 id="forgot-modal-title">Pemulihan Kata Sandi Akun</h5>
+        </div>
+        <button class="modal-close-btn" onclick="closeForgotPasswordModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
 
+      <!-- TAHAP 1: Request Kode OTP / Verifikasi Email -->
+      <form id="forgot-pwd-step1-form" onsubmit="submitForgotPasswordReset(event)">
+        <div class="modal-body">
+          <p class="text-secondary text-xs mb-3" style="line-height: 1.6;">
+            Masukkan alamat surel resmi atau nama pengguna Anda. Kode verifikasi keamanan OTP 6-digit (berlaku 15 menit) akan dibuat dan dikirimkan untuk verifikasi pemulihan akun T-AIMS.
+          </p>
 
- <!-- Modal Kelola & Pasang Titik Perangkat di Denah (Interactive Visual Pin Placer) -->
+          <div class="form-group mb-3">
+            <label style="font-size: 0.8rem; font-weight: 600; color: #E2E8F0; margin-bottom: 6px; display: block;">Email atau Username Akun *</label>
+            <div class="input-container">
+              <input type="text" id="forgot-pwd-email" placeholder="Contoh: dzakwan atau dzakwan@taims.id" required style="width: 100%; padding: 10px 14px; background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 6px; color: #fff; font-size: 0.85rem;">
+            </div>
+          </div>
+
+          <div id="forgot-pwd-result-box" class="hidden" style="background: rgba(0, 240, 255, 0.06); border: 1px solid rgba(0, 240, 255, 0.35); border-radius: 8px; padding: 14px 16px; margin-bottom: 14px; box-sizing: border-box;">
+            <div id="forgot-pwd-result" style="font-size: 0.78rem; line-height: 1.6; color: #E2E8F0;"></div>
+          </div>
+        </div>
+
+        <div class="modal-footer d-flex justify-between" id="forgot-pwd-step1-footer" style="padding: 14px 20px; border-top: 1px solid rgba(255, 255, 255, 0.08);">
+          <button type="button" class="btn btn-outline-cyber btn-sm" onclick="closeForgotPasswordModal()">Batal</button>
+          <button type="submit" id="btn-request-otp" class="btn btn-primary-cyber btn-sm">
+            <i class="fa-solid fa-paper-plane"></i> Kirim Kode Verifikasi
+          </button>
+        </div>
+      </form>
+
+      <!-- TAHAP 2: Masukkan OTP & Buat Kata Sandi Baru -->
+      <form id="forgot-pwd-step2-form" class="hidden" onsubmit="submitNewPasswordConfirm(event)">
+        <div class="modal-body">
+          <div style="background: rgba(0, 240, 255, 0.08); border-left: 3px solid #00F0FF; padding: 10px 14px; border-radius: 4px; margin-bottom: 14px;">
+            <div style="font-size: 0.78rem; color: #E2E8F0; line-height: 1.5;">
+              <i class="fa-solid fa-circle-check text-green" style="margin-right: 6px;"></i>
+              Kode OTP telah dibuat untuk <strong id="step2-target-email" class="text-cyan">akun Anda</strong>.
+              <span style="display: block; font-size: 0.72rem; color: #94A3B8; margin-top: 3px;">Masa berlaku: 15 menit sejak dikirim.</span>
+            </div>
+          </div>
+
+          <div class="form-group mb-3">
+            <label style="font-size: 0.8rem; font-weight: 600; color: #E2E8F0; margin-bottom: 6px; display: block;">Kode Verifikasi / OTP (6 Digit) *</label>
+            <div class="input-container">
+              <input type="text" id="forgot-pwd-token" placeholder="Misal: 849201" required maxlength="12" style="width: 100%; padding: 10px 14px; background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(0, 240, 255, 0.4); border-radius: 6px; color: #00F0FF; font-family: monospace; font-size: 1.15rem; letter-spacing: 4px; font-weight: bold; text-align: center;">
+            </div>
+          </div>
+
+          <div class="form-group mb-3">
+            <label style="font-size: 0.8rem; font-weight: 600; color: #E2E8F0; margin-bottom: 6px; display: block;">Kata Sandi Baru *</label>
+            <div class="input-container">
+              <input type="password" id="forgot-pwd-new" placeholder="Minimal 6 karakter" required minlength="6" style="width: 100%; padding: 10px 14px; background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 6px; color: #fff; font-size: 0.85rem;">
+            </div>
+          </div>
+
+          <div class="form-group mb-3">
+            <label style="font-size: 0.8rem; font-weight: 600; color: #E2E8F0; margin-bottom: 6px; display: block;">Konfirmasi Kata Sandi Baru *</label>
+            <div class="input-container">
+              <input type="password" id="forgot-pwd-confirm" placeholder="Ulangi kata sandi baru" required minlength="6" style="width: 100%; padding: 10px 14px; background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 6px; color: #fff; font-size: 0.85rem;">
+            </div>
+          </div>
+
+          <div id="step2-result-box" class="hidden" style="background: rgba(255, 23, 68, 0.08); border: 1px solid rgba(255, 23, 68, 0.3); border-radius: 6px; padding: 10px 12px; margin-bottom: 12px;">
+            <div id="step2-result-msg" style="font-size: 0.76rem; color: #FF8A80; line-height: 1.5;"></div>
+          </div>
+        </div>
+
+        <div class="modal-footer d-flex justify-between" style="padding: 14px 20px; border-top: 1px solid rgba(255, 255, 255, 0.08);">
+          <button type="button" class="btn btn-outline-cyber btn-sm" onclick="backToStep1ForgotPassword()">
+            <i class="fa-solid fa-arrow-left"></i> Ganti Email
+          </button>
+          <button type="submit" id="btn-submit-new-pwd" class="btn btn-primary-cyber btn-sm">
+            <i class="fa-solid fa-check-double"></i> Simpan Kata Sandi Baru
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Kelola & Pasang Titik Perangkat di Denah (Interactive Visual Pin Placer) -->
  <div class="modal-backdrop hidden" id="modal-floorplan-pin" style="z-index: 10050;" onclick="if(event.target===this)closeFloorplanPinModal()">
  <div class="modal-card modal-sm" style="max-width: 480px; border-color: rgba(0, 240, 255, 0.4);">
  <div class="modal-header">

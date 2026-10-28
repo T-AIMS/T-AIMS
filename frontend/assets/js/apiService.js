@@ -1074,6 +1074,43 @@ async function getMe() {
 /**
  * 25. Ubah Password (POST /api/auth/change-password)
  */
+
+/**
+ * 25B. Request Lupa Password (POST /api/auth/forgot-password)
+ */
+async function requestForgotPassword(email) {
+  try {
+    const res = await fetch(`${BASE_URL}/auth/forgot-password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.warn("Gagal request forgot-password:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+/**
+ * 25C. Reset Kata Sandi Baru dengan Token / OTP (POST /api/auth/reset-password)
+ */
+async function submitResetPassword(token, new_password, confirm_password) {
+  try {
+    const res = await fetch(`${BASE_URL}/auth/reset-password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token, new_password, confirm_password })
+    });
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.warn("Gagal submit reset-password:", error);
+    return { success: false, error: error.message };
+  }
+}
+
 async function changePassword(oldPassword, newPassword) {
   try {
     const res = await apiFetch('/auth/change-password', {
@@ -1466,6 +1503,8 @@ window.apiService = {
   ensureAuthToken,
   getMe,
   changePassword,
+  requestForgotPassword,
+  submitResetPassword,
   apiLogout,
   getDashboardStats,
   getDashboardUptime,
@@ -1590,5 +1629,7 @@ window.deleteMaintenance = deleteMaintenance;
 window.searchGlobal = searchGlobal;
 window.getMe = getMe;
 window.changePassword = changePassword;
+window.requestForgotPassword = requestForgotPassword;
+window.submitResetPassword = submitResetPassword;
 window.apiLogout = apiLogout;
 window.getAiRecommendation = getAiRecommendation;

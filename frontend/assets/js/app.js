@@ -10073,10 +10073,43 @@ window.handleForgotPassword = handleForgotPassword;
 function closeForgotPasswordModal() {
     const modal = document.getElementById('forgot-password-modal');
     if (modal) modal.classList.add('hidden');
+    backToStep1ForgotPassword();
 }
 window.closeForgotPasswordModal = closeForgotPasswordModal;
 
-function submitForgotPasswordReset(event) {
+function backToStep1ForgotPassword() {
+    const s1 = document.getElementById('forgot-pwd-step1-form');
+    const s2 = document.getElementById('forgot-pwd-step2-form');
+    const title = document.getElementById('forgot-modal-title');
+    if (s1) s1.classList.remove('hidden');
+    if (s2) s2.classList.add('hidden');
+    if (title) title.textContent = 'Pemulihan Kata Sandi Akun';
+    const resBox = document.getElementById('forgot-pwd-result-box');
+    if (resBox) resBox.classList.add('hidden');
+    const res2 = document.getElementById('step2-result-box');
+    if (res2) res2.classList.add('hidden');
+}
+window.backToStep1ForgotPassword = backToStep1ForgotPassword;
+
+function fillOtpAndGoStep2(otp, email) {
+    const s1 = document.getElementById('forgot-pwd-step1-form');
+    const s2 = document.getElementById('forgot-pwd-step2-form');
+    const title = document.getElementById('forgot-modal-title');
+    const tokenInput = document.getElementById('forgot-pwd-token');
+    const targetEmailEl = document.getElementById('step2-target-email');
+
+    if (s1) s1.classList.add('hidden');
+    if (s2) s2.classList.remove('hidden');
+    if (title) title.textContent = 'Verifikasi Kode & Sandi Baru';
+    if (tokenInput && otp) tokenInput.value = otp;
+    if (targetEmailEl) targetEmailEl.textContent = email || 'akun Anda';
+    setTimeout(() => {
+        document.getElementById('forgot-pwd-new')?.focus();
+    }, 150);
+}
+window.fillOtpAndGoStep2 = fillOtpAndGoStep2;
+
+async function submitForgotPasswordReset(event) {
     if (event) event.preventDefault();
     const inputVal = (document.getElementById('forgot-pwd-email')?.value || '').trim();
     if (!inputVal) {
@@ -10084,52 +10117,144 @@ function submitForgotPasswordReset(event) {
         return;
     }
 
+    const btn = document.getElementById('btn-request-otp');
     const resetMsg = document.getElementById('forgot-pwd-result');
     const resultBox = document.getElementById('forgot-pwd-result-box');
 
-    // Cari user yang cocok
-    const targetUser = (APP_STATE.usersList || []).find(u => 
-        (u.email && u.email.toLowerCase() === inputVal.toLowerCase()) || 
-        (u.username && u.username.toLowerCase() === inputVal.toLowerCase())
-    );
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memproses...';
+    }
 
-    // Masking email demi privasi (misal: dz*****@taims.id)
-    let maskedEmail = 'surel resmi terdaftar';
-    if (targetUser && targetUser.email) {
-        const parts = targetUser.email.split('@');
-        if (parts.length === 2) {
-            const namePart = parts[0];
-            const visible = namePart.slice(0, 2);
-            maskedEmail = `${visible}*****@${parts[1]}`;
+    try {
+        let res = null;
+        if (window.apiService && typeof window.apiService.requestForgotPassword === 'function') {
+            res = await window.apiService.requestForgotPassword(inputVal);
+        }
+
+        if (res && res.success) {
+            const targetEmail = res.email || inputVal;
+            const otp = res.dev_otp;
+
+            if (resultBox) resultBox.classList.remove('hidden');
+            if (resetMsg) {
+                resetMsg.innerHTML = `
+                    <div style="color: #00F0FF; font-weight: 700; margin-bottom: 6px; font-size: 0.85rem;">
+                        <i class="fa-solid fa-circle-check text-green"></i> Kode Verifikasi Telah Dibuat!
+                    </div>
+                    <div style="color: #CBD5E1; font-size: 0.76rem; line-height: 1.6;">
+                        ${res.message || 'Kode verifikasi telah dikirimkan ke surel resmi Anda.'}
+                        <br>
+                        <div style="margin-top: 10px; background: rgba(0, 240, 255, 0.1); border: 1px dashed #00F0FF; padding: 10px 14px; border-radius: 6px; text-align: center;">
+                            <span style="font-size: 0.74rem; color: #94A3B8; display: block; margin-bottom: 2px;">KODE OTP ANDA (BERLAKU 15 MENIT):</span>
+                            <span style="font-family: monospace; font-size: 1.35rem; font-weight: 800; letter-spacing: 5px; color: #00F0FF;">${otp || '------'}</span>
+                            <div style="margin-top: 8px;">
+                                <button type="button" class="btn btn-primary-cyber btn-xs" onclick="fillOtpAndGoStep2('${otp}', '${targetEmail}')" style="font-size: 0.72rem; padding: 4px 12px; cursor: pointer;">
+                                    <i class="fa-solid fa-arrow-right"></i> Gunakan Kode Ini & Atur Sandi Baru &rarr;
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            showToast('Kode OTP Siap', 'Kode verifikasi keamanan telah dibuat (15 menit).', 'info');
+
+            if (typeof addAuditTrailRecord === 'function') {
+                addAuditTrailRecord('Pemulihan Sandi', `Permintaan kode OTP diajukan untuk akun: "${inputVal}"`);
+            }
+        } else {
+            const errMsg = (res && res.error) ? res.error : 'Akun dengan email/username tersebut tidak ditemukan di sistem.';
+            if (resultBox) resultBox.classList.remove('hidden');
+            if (resetMsg) {
+                resetMsg.innerHTML = `
+                    <div style="color: #FF1744; font-weight: 700; margin-bottom: 4px;">
+                        <i class="fa-solid fa-triangle-exclamation"></i> Gagal Memproses
+                    </div>
+                    <div style="color: #FDA4AF; font-size: 0.76rem;">${errMsg}</div>
+                `;
+            }
+            showToast('Gagal', errMsg, 'error');
+        }
+    } catch (err) {
+        console.error('submitForgotPasswordReset error:', err);
+        showToast('Error', 'Terjadi gangguan jaringan saat meminta kode OTP.', 'error');
+    } finally {
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Kirim Kode Verifikasi';
         }
     }
-
-    if (resultBox) resultBox.classList.remove('hidden');
-    if (resetMsg) {
-        resetMsg.innerHTML = `
-            <div style="color: #00F0FF; font-weight: 700; margin-bottom: 6px;">
-                <i class="fa-solid fa-envelope-circle-check"></i> Instruksi Pemulihan Terkirim!
-            </div>
-            <div style="color: #94A3B8; font-size: 0.75rem; line-height: 1.6;">
-                Tautan verifikasi telah dikirimkan ke alamat surel: <strong style="color: #F8FAFC;">${maskedEmail}</strong>.
-                <br><br>
-                <span style="color: #F59E0B;"><i class="fa-solid fa-shield-halved"></i> <strong>Standar Keamanan Anti-Hijack:</strong></span> 
-                Demi mencegah pembajakan akun oleh pihak luar, kata sandi Anda <strong>TIDAK diubah</strong> dan tetap aktif sebelum tautan verifikasi dibuka oleh pemilik akun asli. 
-                <br><br>
-                Jika butuh reset darurat, silakan hubungi <strong>Superadmin</strong> melalui menu manajemen internal.
-            </div>
-        `;
-    }
-
-    // Catat insiden keamanan ke Audit Trail
-    if (typeof addAuditTrailRecord === 'function') {
-        addAuditTrailRecord('Pemulihan Sandi', `Permintaan instruksi reset kata sandi diajukan untuk akun: "${inputVal}" (Tautan dikirim ke surel)`);
-    }
-
-    showToast('Tautan Terkirim', 'Instruksi pemulihan telah dikirim ke surel terdaftar.', 'info');
 }
 window.submitForgotPasswordReset = submitForgotPasswordReset;
 
+async function submitNewPasswordConfirm(event) {
+    if (event) event.preventDefault();
+    const token = (document.getElementById('forgot-pwd-token')?.value || '').trim();
+    const newPwd = (document.getElementById('forgot-pwd-new')?.value || '').trim();
+    const confirmPwd = (document.getElementById('forgot-pwd-confirm')?.value || '').trim();
+    const resBox = document.getElementById('step2-result-box');
+    const resMsg = document.getElementById('step2-result-msg');
+    const btn = document.getElementById('btn-submit-new-pwd');
+
+    if (!token) {
+        if (resBox) resBox.classList.remove('hidden');
+        if (resMsg) resMsg.textContent = 'Kode OTP 6-digit wajib diisi.';
+        return;
+    }
+
+    if (newPwd.length < 6) {
+        if (resBox) resBox.classList.remove('hidden');
+        if (resMsg) resMsg.textContent = 'Kata sandi baru minimal harus 6 karakter.';
+        return;
+    }
+
+    if (newPwd !== confirmPwd) {
+        if (resBox) resBox.classList.remove('hidden');
+        if (resMsg) resMsg.textContent = 'Konfirmasi kata sandi tidak cocok dengan kata sandi baru.';
+        return;
+    }
+
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
+    }
+
+    try {
+        let res = null;
+        if (window.apiService && typeof window.apiService.submitResetPassword === 'function') {
+            res = await window.apiService.submitResetPassword(token, newPwd, confirmPwd);
+        }
+
+        if (res && res.success) {
+            showToast('Sandi Diperbarui', res.message || 'Kata sandi Anda berhasil diperbarui!', 'success');
+
+            const loginPwd = document.getElementById('login-password');
+            if (loginPwd) loginPwd.value = newPwd;
+
+            if (typeof addAuditTrailRecord === 'function') {
+                addAuditTrailRecord('Reset Sandi Sukses', `Kata sandi akun berhasil diatur ulang via kode verifikasi OTP.`);
+            }
+
+            closeForgotPasswordModal();
+        } else {
+            const err = (res && res.error) ? res.error : 'Kode verifikasi tidak valid atau telah kedaluwarsa.';
+            if (resBox) resBox.classList.remove('hidden');
+            if (resMsg) resMsg.textContent = err;
+            showToast('Gagal Reset', err, 'error');
+        }
+    } catch (e) {
+        console.error('submitNewPasswordConfirm error:', e);
+        if (resBox) resBox.classList.remove('hidden');
+        if (resMsg) resMsg.textContent = 'Gagal terhubung ke backend. Silakan coba lagi.';
+    } finally {
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-check-double"></i> Simpan Kata Sandi Baru';
+        }
+    }
+}
+window.submitNewPasswordConfirm = submitNewPasswordConfirm;
 
 // =============================================================================
 // MODUL INTERACTIVE VISUAL FLOORPLAN PIN PLACER (MAS DZAKWAN ENHANCEMENT)
