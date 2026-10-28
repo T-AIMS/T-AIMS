@@ -63075,3 +63075,73 @@ body:has(#auth-screen:not(.hidden)) #main-dashboard {
     margin: 0 !important;
     flex-shrink: 0 !important;
 }
+
+
+/* ==========================================================================
+   T-AIMS PRINT ENGINE: DEDICATED PRINT STYLES FOR QR LABELS & PDF REPORTS
+   ========================================================================== */
+#print-mount-area {
+    display: none;
+}
+
+@media print {
+    body.print-mode-active {
+        background: #ffffff !important;
+        color: #000000 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    body.print-mode-active > *:not(#print-mount-area) {
+        display: none !important;
+    }
+
+    body.print-mode-active #print-mount-area {
+        display: block !important;
+        width: 100% !important;
+        background: #ffffff !important;
+        color: #111827 !important;
+        padding: 10mm !important;
+        box-sizing: border-box !important;
+    }
+
+    .print-single-label-card {
+        border: 2px solid #111827 !important;
+        border-radius: 8px !important;
+        padding: 16px !important;
+        max-width: 320px !important;
+        margin: 30px auto !important;
+        text-align: center !important;
+        background: #ffffff !important;
+        page-break-inside: avoid !important;
+    }
+
+    .print-qr-grid {
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 12px !important;
+        width: 100% !important;
+    }
+
+    .print-qr-item {
+        border: 1.5px dashed #4b5563 !important;
+        border-radius: 6px !important;
+        padding: 10px !important;
+        text-align: center !important;
+        background: #ffffff !important;
+        box-sizing: border-box !important;
+        page-break-inside: avoid !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    .print-report-container {
+        width: 100% !important;
+        color: #111827 !important;
+        font-family: Arial, Helvetica, sans-serif !important;
+    }
+}

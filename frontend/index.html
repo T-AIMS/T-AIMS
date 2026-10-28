@@ -5544,20 +5544,19 @@
 
  <div class="qr-border-frame">
 
- <div class="qr-mock-code">
+ <div class="qr-label-corp-header" style="font-size: 10px; font-weight: 700; color: #00f0ff; letter-spacing: 1.5px; margin-bottom: 8px; text-transform: uppercase;">
+ <i class="fa-solid fa-microchip"></i> TEKNOLAB CARAKA &bull; T-AIMS
+ </div>
 
- <i class="fa-solid fa-qrcode"></i>
-
+ <div class="qr-code-wrapper" style="background: #ffffff; padding: 12px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; min-width: 140px; min-height: 140px; margin: 0 auto; box-shadow: 0 4px 12px rgba(0,0,0,0.4);">
+ <div id="qr-code-element"></div>
  </div>
 
  <div class="qr-info-meta mt-2">
-
  <strong id="qr-modal-code" class="text-cyan font-mono text-lg">AST-SRV-001</strong>
-
  <p id="qr-modal-name" class="text-white font-bold my-1">SRV-DC-01</p>
-
- <span id="qr-modal-loc" class="text-muted text-xs">Pusat Data - Kepanjenkidul, Blitar</span>
-
+ <div id="qr-modal-ip" class="text-muted text-xs font-mono mb-1">IP: -</div>
+ <span id="qr-modal-loc" class="text-muted text-xs">Wilayah: Head Office, Blitar</span>
  </div>
 
  </div>
@@ -5798,7 +5797,13 @@
  </div>
  </div>
 
- <script src="assets/js/apiService.js?v=20261029_0148"></script>
+ <script src="assets/js/qrcode.min.js"></script>
+<script>
+if (typeof QRCode === 'undefined') {
+    document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"><\/script>');
+}
+</script>
+<script src="assets/js/apiService.js?v=20261029_0148"></script>
 
  <script src="assets/js/app.js?v=20261029_0148"></script>
 
@@ -6135,6 +6140,8 @@
         </div>
     </div>
 
+    <!-- DEDICATED PRINT MOUNT AREA FOR QR TAGS & PDF REPORTS -->
+    <div id="print-mount-area" aria-hidden="true"></div>
 </body>
 
 </html>

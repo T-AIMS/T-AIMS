@@ -5113,7 +5113,7 @@ function renderAssetsTable(filteredList = null) {
             <td><strong>${dev.pic}</strong></td>
             <td class="text-right">
                 <div style="display: inline-flex; gap: 4px;">
-                    <button class="btn-sm btn-outline-cyber" onclick="openAssetQrModal('${dev.code}', '${dev.name}', '${dev.district}')" title="Cetak Label QR Tag">
+                    <button class="btn-sm btn-outline-cyber" onclick="openAssetQrModal('${dev.code}')" title="Cetak Label QR Tag">
                         <i class="fa-solid fa-qrcode text-cyan"></i> Label QR
                     </button>
                     <button class="btn-sm btn-outline-cyber" onclick="openDeviceDetail('${dev.id}')" title="Detail Spek">
@@ -5221,10 +5221,73 @@ function handleSaveAsset() {
     showToast('Aset Terdaftar!', `Aset ${name} (${code}) berhasil disimpan ke database backend.`, 'success');
 }
 
-function openAssetQrModal(code, name, loc) {
-    document.getElementById('qr-modal-code').textContent = code;
-    document.getElementById('qr-modal-name').textContent = name;
-    document.getElementById('qr-modal-loc').textContent = `Wilayah: ${loc}, Blitar`;
+let currentQrDevice = null;
+
+function openAssetQrModal(codeOrTarget, optName, optLoc) {
+    let dev = null;
+    const devs = APP_STATE.devices || [];
+    
+    if (typeof codeOrTarget === 'object' && codeOrTarget !== null) {
+        dev = codeOrTarget;
+    } else if (codeOrTarget) {
+        const query = String(codeOrTarget).trim().toLowerCase();
+        dev = devs.find(d => 
+            String(d.id).toLowerCase() === query ||
+            String(d.asset_id || '').toLowerCase() === query ||
+            String(d.code || '').toLowerCase() === query ||
+            String(d.name || '').toLowerCase() === query
+        );
+    }
+
+    const code = (dev && dev.code) || (typeof codeOrTarget === 'string' && codeOrTarget.startsWith('AST') ? codeOrTarget : 'AST-DEV-001');
+    const devName = (dev && dev.name) || optName || 'Perangkat IT Teknolab';
+    const location = (dev && (dev.location || dev.district)) || optLoc || 'Head Office';
+    const ip = (dev && dev.ip) || '-';
+    const category = (dev && dev.category) || 'Hardware';
+    const status = (dev && dev.status) || 'online';
+
+    currentQrDevice = {
+        code,
+        name: devName,
+        location,
+        ip,
+        category,
+        status
+    };
+
+    const codeEl = document.getElementById('qr-modal-code');
+    const nameEl = document.getElementById('qr-modal-name');
+    const ipEl = document.getElementById('qr-modal-ip');
+    const locEl = document.getElementById('qr-modal-loc');
+    const container = document.getElementById('qr-code-element');
+
+    if (codeEl) codeEl.textContent = code;
+    if (nameEl) nameEl.textContent = devName;
+    if (ipEl) ipEl.textContent = `IP: ${ip}`;
+    if (locEl) locEl.textContent = `Wilayah: ${location}, Blitar`;
+
+    if (container) {
+        container.innerHTML = '';
+        const qrPayload = `[T-AIMS ASSET TAG]\nKode: ${code}\nNama: ${devName}\nIP: ${ip}\nLokasi: ${location}, Blitar\nKategori: ${category}`;
+        if (typeof QRCode !== 'undefined') {
+            try {
+                new QRCode(container, {
+                    text: qrPayload,
+                    width: 140,
+                    height: 140,
+                    colorDark: "#111827",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.M
+                });
+            } catch (err) {
+                console.warn('Fallback QRCode render:', err);
+                container.innerHTML = `<i class="fa-solid fa-qrcode" style="font-size: 64px; color: #111827;"></i><br><small class="font-mono text-dark">${code}</small>`;
+            }
+        } else {
+            container.innerHTML = `<i class="fa-solid fa-qrcode" style="font-size: 64px; color: #111827;"></i><br><small class="font-mono text-dark">${code}</small>`;
+        }
+    }
+
     document.getElementById('asset-qr-modal')?.classList.remove('hidden');
 }
 
@@ -5233,14 +5296,72 @@ function closeAssetQrModal() {
 }
 
 function printAssetLabel() {
-    showToast('Cetak Label', 'Mengirim perintah cetak label barcode & QR Tag ke printer...', 'info');
+    if (!currentQrDevice) {
+        showToast('Cetak Label', 'Data aset untuk dicetak belum dipilih.', 'warning');
+        return;
+    }
+
+    const mount = document.getElementById('print-mount-area');
+    if (!mount) {
+        window.print();
+        return;
+    }
+
+    const qrMountId = 'print-single-qr-render';
+    mount.innerHTML = `
+        <div class="print-single-label-card" style="font-family: Arial, sans-serif; border: 2px solid #111827; border-radius: 8px; padding: 18px; max-width: 320px; margin: 40px auto; text-align: center; background: #ffffff;">
+            <div style="font-size: 11px; font-weight: bold; letter-spacing: 1.5px; color: #111827; border-bottom: 1.5px solid #111827; padding-bottom: 6px; margin-bottom: 10px; text-transform: uppercase;">
+                PT TEKNOLAB CARAKA INTERNASIONAL<br>
+                <span style="font-size: 9px; font-weight: normal; color: #4b5563;">T-AIMS ASSET &amp; INFRASTRUCTURE TAG</span>
+            </div>
+            <div id="${qrMountId}" style="display: flex; justify-content: center; align-items: center; margin: 10px auto; min-height: 140px;"></div>
+            <div style="margin-top: 10px;">
+                <div style="font-family: monospace; font-size: 16px; font-weight: bold; color: #111827; letter-spacing: 1px;">${currentQrDevice.code}</div>
+                <div style="font-size: 13px; font-weight: bold; color: #1f2937; margin: 3px 0;">${currentQrDevice.name}</div>
+                <div style="font-size: 10px; font-family: monospace; color: #4b5563;">IP: ${currentQrDevice.ip} &bull; ${currentQrDevice.category}</div>
+                <div style="font-size: 10px; color: #6b7280; margin-top: 3px;">Wilayah: ${currentQrDevice.location}, Blitar</div>
+                <div style="font-size: 8px; color: #9ca3af; margin-top: 8px; border-top: 1px dashed #d1d5db; padding-top: 4px;">
+                    Dicetak: ${new Date().toLocaleString('id-ID')} &bull; Sistem Monitoring T-AIMS
+                </div>
+            </div>
+        </div>
+    `;
+
+    const qrMount = document.getElementById(qrMountId);
+    if (qrMount && typeof QRCode !== 'undefined') {
+        const qrPayload = `[T-AIMS ASSET TAG]\nKode: ${currentQrDevice.code}\nNama: ${currentQrDevice.name}\nIP: ${currentQrDevice.ip}\nLokasi: ${currentQrDevice.location}, Blitar\nKategori: ${currentQrDevice.category}`;
+        new QRCode(qrMount, {
+            text: qrPayload,
+            width: 140,
+            height: 140,
+            colorDark: "#111827",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.M
+        });
+    }
+
+    document.body.classList.add('print-mode-active');
+    showToast('Cetak Label', `Membuka cetak label stiker ${currentQrDevice.code}...`, 'info');
+
+    const cleanUp = () => {
+        document.body.classList.remove('print-mode-active');
+        if (mount) mount.innerHTML = '';
+        window.removeEventListener('afterprint', cleanUp);
+    };
+    window.addEventListener('afterprint', cleanUp);
+
     setTimeout(() => {
         window.print();
+        setTimeout(cleanUp, 3000);
     }, 400);
 }
 
 function exportAssetsList() {
-    showToast('Ekspor Data Aset', 'Mengunduh rekapitulasi data inventaris aset IT (CSV/Excel)...', 'success');
+    if (typeof exportAssetsCsv === 'function') {
+        exportAssetsCsv();
+    } else {
+        showToast('Ekspor Data Aset', 'Mengunduh rekapitulasi data inventaris aset IT...', 'info');
+    }
 }
 
 // =============================================================================
@@ -6584,23 +6705,123 @@ function triggerManualDevicesRefresh() {
 window.triggerManualDevicesRefresh = triggerManualDevicesRefresh;
 
 function exportDeviceData(format) {
-    if (format === 'csv') {
-        let csv = 'No,Kode Aset,Nama Perangkat,Kategori,IP Address,MAC Address,Lokasi,PIC,Metode Monitor,Status,Last Seen\n';
-        APP_STATE.devices.forEach((d, i) => {
-            csv += `"${i+1}","${d.code || ''}","${d.name || ''}","${d.category || ''}","${d.ip || ''}","${d.mac || ''}","${d.location || ''}","${d.pic || ''}","${d.method || ''}","${d.status || ''}","${d.lastSeen || ''}"\n`;
-        });
-        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = `T-AIMS_Asset_Registry_${new Date().toISOString().slice(0,10)}.csv`;
-        link.click();
-        showToast('Export Berhasil', 'File CSV inventaris aset berhasil diunduh.', 'success');
+    if (String(format).toLowerCase() === 'pdf') {
+        exportDevicePdf();
+    } else {
+        if (typeof exportAssetsCsv === 'function') {
+            exportAssetsCsv();
+        } else {
+            let csv = 'No,Kode Aset,Nama Perangkat,Kategori,IP Address,MAC Address,Lokasi,PIC,Metode Monitor,Status,Last Seen\n';
+            (APP_STATE.devices || []).forEach((d, i) => {
+                csv += `"${i+1}","${d.code || ''}","${d.name || ''}","${d.category || ''}","${d.ip || ''}","${d.mac || ''}","${d.location || ''}","${d.pic || ''}","${d.method || ''}","${d.status || ''}","${d.lastSeen || ''}"\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `T-AIMS_Asset_Registry_${new Date().toISOString().slice(0,10)}.csv`;
+            link.click();
+            showToast('Export Berhasil', 'File CSV inventaris aset berhasil diunduh.', 'success');
+        }
     }
 }
 
 function printAllQrModal() {
-    showToast('Cetak QR Code', 'Mempersiapkan print sheet label QR seluruh aset...', 'info');
-    setTimeout(() => { window.print(); }, 600);
+    const devs = APP_STATE.devices || [];
+    if (devs.length === 0) {
+        showToast('Cetak QR Code', 'Tidak ada data aset untuk dicetak.', 'warning');
+        return;
+    }
+
+    const mount = document.getElementById('print-mount-area');
+    if (!mount) {
+        window.print();
+        return;
+    }
+
+    showToast('Cetak QR Code', `Mempersiapkan lembar stiker QR Code untuk ${devs.length} aset...`, 'info');
+
+    let sheetHtml = `
+        <div style="font-family: Arial, sans-serif; color: #111827; margin-bottom: 12px; border-bottom: 2px solid #111827; padding-bottom: 6px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                <div>
+                    <h3 style="margin: 0; font-size: 15px; font-weight: bold; text-transform: uppercase;">PT TEKNOLAB CARAKA INTERNASIONAL - LEMBAR STIKER QR TAG</h3>
+                    <p style="margin: 2px 0 0; font-size: 10px; color: #4b5563;">Inventaris Aset &amp; Infrastruktur Monitoring T-AIMS &bull; Total: ${devs.length} Label Aset</p>
+                </div>
+                <div style="font-size: 9px; color: #6b7280; text-align: right;">
+                    Tanggal Cetak: ${new Date().toLocaleString('id-ID')}<br>
+                    Format: Standar Grid Stiker Label IT
+                </div>
+            </div>
+        </div>
+        <div class="print-qr-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%;">
+    `;
+
+    devs.forEach((dev, idx) => {
+        const qrId = `qr-batch-mount-${idx}`;
+        const code = dev.code || `AST-${idx + 1}`;
+        const name = dev.name || 'Perangkat IT';
+        const ip = dev.ip || '-';
+        const loc = dev.location || dev.district || 'Head Office';
+        const cat = dev.category || 'Hardware';
+
+        sheetHtml += `
+            <div class="print-qr-item" style="border: 1.5px dashed #4b5563; border-radius: 6px; padding: 8px; text-align: center; background: #ffffff; page-break-inside: avoid; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                <div style="font-size: 8px; font-weight: bold; letter-spacing: 1px; color: #111827; margin-bottom: 4px; text-transform: uppercase; border-bottom: 1px solid #e5e7eb; width: 100%; padding-bottom: 2px;">
+                    TEKNOLAB &bull; T-AIMS TAG
+                </div>
+                <div id="${qrId}" style="width: 100px; height: 100px; margin: 4px auto; display: flex; align-items: center; justify-content: center;"></div>
+                <div style="margin-top: 4px; width: 100%;">
+                    <div style="font-family: monospace; font-size: 12px; font-weight: bold; color: #111827;">${code}</div>
+                    <div style="font-size: 10px; font-weight: bold; color: #1f2937; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px; margin: 0 auto;">${name}</div>
+                    <div style="font-size: 8px; font-family: monospace; color: #4b5563;">IP: ${ip} &bull; ${cat}</div>
+                    <div style="font-size: 8px; color: #6b7280;">Wilayah: ${loc}, Blitar</div>
+                </div>
+            </div>
+        `;
+    });
+
+    sheetHtml += `</div>`;
+    mount.innerHTML = sheetHtml;
+
+    if (typeof QRCode !== 'undefined') {
+        devs.forEach((dev, idx) => {
+            const el = document.getElementById(`qr-batch-mount-${idx}`);
+            if (el) {
+                const code = dev.code || `AST-${idx + 1}`;
+                const name = dev.name || 'Perangkat IT';
+                const ip = dev.ip || '-';
+                const loc = dev.location || dev.district || 'Head Office';
+                const cat = dev.category || 'Hardware';
+                const qrPayload = `[T-AIMS ASSET TAG]\nKode: ${code}\nNama: ${name}\nIP: ${ip}\nLokasi: ${loc}, Blitar\nKategori: ${cat}`;
+                try {
+                    new QRCode(el, {
+                        text: qrPayload,
+                        width: 95,
+                        height: 95,
+                        colorDark: "#111827",
+                        colorLight: "#ffffff",
+                        correctLevel: QRCode.CorrectLevel.M
+                    });
+                } catch(e) {
+                    el.innerHTML = `<i class="fa-solid fa-qrcode" style="font-size: 32px; color: #111827;"></i>`;
+                }
+            }
+        });
+    }
+
+    document.body.classList.add('print-mode-active');
+
+    const cleanUp = () => {
+        document.body.classList.remove('print-mode-active');
+        if (mount) mount.innerHTML = '';
+        window.removeEventListener('afterprint', cleanUp);
+    };
+    window.addEventListener('afterprint', cleanUp);
+
+    setTimeout(() => {
+        window.print();
+        setTimeout(cleanUp, 3000);
+    }, 400);
 }
 
 // -----------------------------------------------------------------------------
@@ -9568,8 +9789,111 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function exportDevicePdf() {
-    showToast('Export PDF', 'Mempersiapkan lembar cetak dokumen PDF inventaris aset...', 'info');
-    setTimeout(() => { window.print(); }, 500);
+    const devs = APP_STATE.devices || [];
+    const mount = document.getElementById('print-mount-area');
+    if (!mount) {
+        window.print();
+        return;
+    }
+
+    showToast('Export PDF', 'Mempersiapkan dokumen resmi PDF inventaris aset IT...', 'info');
+
+    const onlineCount = devs.filter(d => (d.status || '').toLowerCase() === 'online').length;
+    const warningCount = devs.filter(d => (d.status || '').toLowerCase() === 'warning').length;
+    const offlineCount = devs.filter(d => (d.status || '').toLowerCase() === 'offline').length;
+
+    let docHtml = `
+        <div class="print-report-container" style="font-family: Arial, Helvetica, sans-serif; color: #111827;">
+            <div class="print-report-header" style="border-bottom: 2.5px solid #111827; padding-bottom: 8px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: flex-end;">
+                <div>
+                    <h2 style="margin: 0; font-size: 17px; font-weight: bold; color: #111827; text-transform: uppercase;">PT TEKNOLAB CARAKA INTERNASIONAL</h2>
+                    <h4 style="margin: 3px 0 0; font-size: 13px; font-weight: bold; color: #374151;">DOKUMEN REKAPITULASI RESMI INVENTARIS ASET IT &amp; NOC</h4>
+                    <p style="margin: 2px 0 0; font-size: 9px; color: #6b7280;">Sistem Pemantauan Aset dan Infrastruktur Cerdas T-AIMS &bull; Wilayah Kerja Kota Blitar</p>
+                </div>
+                <div style="font-size: 9px; color: #374151; text-align: right; line-height: 1.4;">
+                    <strong>Tanggal Dokumen:</strong> ${new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}<br>
+                    <strong>Waktu Cetak:</strong> ${new Date().toLocaleTimeString('id-ID')} WIB<br>
+                    <strong>Otoritas:</strong> Superadmin Dzakwan Miftahussobirin
+                </div>
+            </div>
+
+            <!-- Ringkasan Statistik -->
+            <div style="display: flex; gap: 12px; margin-bottom: 12px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 6px; padding: 8px 12px;">
+                <div style="flex: 1; font-size: 10px;"><strong>Total Aset Terdaftar:</strong> ${devs.length} Perangkat</div>
+                <div style="flex: 1; font-size: 10px; color: #059669;"><strong>Status Online:</strong> ${onlineCount} Perangkat</div>
+                <div style="flex: 1; font-size: 10px; color: #d97706;"><strong>Peringatan / Degradasi:</strong> ${warningCount} Perangkat</div>
+                <div style="flex: 1; font-size: 10px; color: #dc2626;"><strong>Status Offline:</strong> ${offlineCount} Perangkat</div>
+            </div>
+
+            <!-- Tabel Aset Lengkap -->
+            <table class="print-report-table" style="width: 100%; border-collapse: collapse; font-size: 10px;">
+                <thead>
+                    <tr style="background-color: #f3f4f6;">
+                        <th style="border: 1px solid #d1d5db; padding: 6px 4px; text-align: center; width: 25px;">No</th>
+                        <th style="border: 1px solid #d1d5db; padding: 6px; text-align: left;">Kode Aset</th>
+                        <th style="border: 1px solid #d1d5db; padding: 6px; text-align: left;">Nama Perangkat</th>
+                        <th style="border: 1px solid #d1d5db; padding: 6px; text-align: left;">Kategori</th>
+                        <th style="border: 1px solid #d1d5db; padding: 6px; text-align: left;">IP Address</th>
+                        <th style="border: 1px solid #d1d5db; padding: 6px; text-align: left;">MAC Address</th>
+                        <th style="border: 1px solid #d1d5db; padding: 6px; text-align: left;">Lokasi Site</th>
+                        <th style="border: 1px solid #d1d5db; padding: 6px; text-align: left;">PIC</th>
+                        <th style="border: 1px solid #d1d5db; padding: 6px; text-align: center;">Status</th>
+                        <th style="border: 1px solid #d1d5db; padding: 6px; text-align: left;">Terakhir Aktif</th>
+                    </tr>
+                </thead>
+                <tbody>
+    `;
+
+    devs.forEach((d, i) => {
+        const st = (d.status || 'offline').toUpperCase();
+        const stColor = st === 'ONLINE' ? '#059669' : (st === 'WARNING' ? '#d97706' : '#dc2626');
+        docHtml += `
+            <tr style="background-color: ${i % 2 === 0 ? '#ffffff' : '#f9fafb'};">
+                <td style="border: 1px solid #d1d5db; padding: 4px; text-align: center;">${i + 1}</td>
+                <td style="border: 1px solid #d1d5db; padding: 4px 6px; font-family: monospace; font-weight: bold;">${d.code || '-'}</td>
+                <td style="border: 1px solid #d1d5db; padding: 4px 6px; font-weight: 500;">${d.name || '-'}</td>
+                <td style="border: 1px solid #d1d5db; padding: 4px 6px;">${d.category || '-'}</td>
+                <td style="border: 1px solid #d1d5db; padding: 4px 6px; font-family: monospace;">${d.ip || '-'}</td>
+                <td style="border: 1px solid #d1d5db; padding: 4px 6px; font-family: monospace; font-size: 9px;">${d.mac || '-'}</td>
+                <td style="border: 1px solid #d1d5db; padding: 4px 6px;">${d.location || d.district || '-'}</td>
+                <td style="border: 1px solid #d1d5db; padding: 4px 6px;">${d.pic || '-'}</td>
+                <td style="border: 1px solid #d1d5db; padding: 4px 6px; text-align: center; font-weight: bold; color: ${stColor};">${st}</td>
+                <td style="border: 1px solid #d1d5db; padding: 4px 6px; font-size: 9px;">${d.lastSeen || '-'}</td>
+            </tr>
+        `;
+    });
+
+    docHtml += `
+                </tbody>
+            </table>
+
+            <!-- Tanda Tangan & Pengesahan Dokumen -->
+            <div style="margin-top: 24px; display: flex; justify-content: flex-end; page-break-inside: avoid;">
+                <div style="text-align: center; width: 220px; font-size: 10px; color: #111827;">
+                    <div>Blitar, ${new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
+                    <div style="font-weight: bold; margin-top: 2px;">Penanggung Jawab Sistem (Lead NOC)</div>
+                    <div style="height: 50px;"></div>
+                    <div style="font-weight: bold; text-decoration: underline;">Dzakwan Miftahussobirin</div>
+                    <div style="font-size: 9px; color: #6b7280;">Superadmin &bull; PT Teknolab Caraka Internasional</div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    mount.innerHTML = docHtml;
+    document.body.classList.add('print-mode-active');
+
+    const cleanUp = () => {
+        document.body.classList.remove('print-mode-active');
+        if (mount) mount.innerHTML = '';
+        window.removeEventListener('afterprint', cleanUp);
+    };
+    window.addEventListener('afterprint', cleanUp);
+
+    setTimeout(() => {
+        window.print();
+        setTimeout(cleanUp, 3000);
+    }, 400);
 }
 
 
@@ -9869,14 +10193,93 @@ function exportAuditLogsCsv() {
 window.exportAuditLogsCsv = exportAuditLogsCsv;
 
 function downloadDatabaseSqlBackup() {
-    const dummySql = `-- T-AIMS Backup Generated: ${new Date().toISOString()}\n-- Database: taims_db\n\n`;
+    showToast('Snapshot SQL', 'Menyusun berkas cadangan SQL taims_db...', 'info');
+    
+    const devs = APP_STATE.devices || [];
+    const incs = APP_STATE.incidents || [];
+    const users = APP_STATE.usersList || [];
+
+    let sql = `-- =============================================================================\n`;
+    sql += `-- T-AIMS TEKNOLAB ASSET & INFRASTRUCTURE MONITORING SYSTEM\n`;
+    sql += `-- MASTER DATABASE SQL BACKUP DUMP (taims_db)\n`;
+    sql += `-- Host: localhost:3306 | Engine: MySQL / MariaDB\n`;
+    sql += `-- Generated on: ${new Date().toISOString()} (${new Date().toLocaleString('id-ID')})\n`;
+    sql += `-- Operator: Dzakwan Miftahussobirin (Superadmin)\n`;
+    sql += `-- =============================================================================\n\n`;
+    sql += `SET NAMES utf8mb4;\nSET FOREIGN_KEY_CHECKS = 0;\n\n`;
+
+    // 1. Table devices
+    sql += `-- Table structure for table \`devices\`\n`;
+    sql += `DROP TABLE IF EXISTS \`devices\`;\n`;
+    sql += `CREATE TABLE \`devices\` (\n`;
+    sql += `  \`id\` INT(11) NOT NULL AUTO_INCREMENT,\n`;
+    sql += `  \`code\` VARCHAR(50) NOT NULL UNIQUE,\n`;
+    sql += `  \`name\` VARCHAR(150) NOT NULL,\n`;
+    sql += `  \`category\` VARCHAR(100) DEFAULT 'Server',\n`;
+    sql += `  \`ip\` VARCHAR(45) DEFAULT NULL,\n`;
+    sql += `  \`mac\` VARCHAR(45) DEFAULT NULL,\n`;
+    sql += `  \`location\` VARCHAR(150) DEFAULT 'Head Office',\n`;
+    sql += `  \`status\` ENUM('online','warning','offline') DEFAULT 'offline',\n`;
+    sql += `  \`pic\` VARCHAR(100) DEFAULT 'Dzakwan M.',\n`;
+    sql += `  \`method\` VARCHAR(50) DEFAULT 'ICMP Ping',\n`;
+    sql += `  \`created_at\` DATETIME DEFAULT CURRENT_TIMESTAMP,\n`;
+    sql += `  PRIMARY KEY (\`id\`)\n`;
+    sql += `) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;\n\n`;
+
+    if (devs.length > 0) {
+        sql += `-- Dumping data for table \`devices\`\n`;
+        sql += `INSERT INTO \`devices\` (\`code\`, \`name\`, \`category\`, \`ip\`, \`mac\`, \`location\`, \`status\`, \`pic\`, \`method\`) VALUES\n`;
+        const devValues = devs.map(d => {
+            const code = (d.code || '').replace(/'/g, "''");
+            const name = (d.name || '').replace(/'/g, "''");
+            const cat = (d.category || 'Hardware').replace(/'/g, "''");
+            const ip = (d.ip || '').replace(/'/g, "''");
+            const mac = (d.mac || '').replace(/'/g, "''");
+            const loc = (d.location || d.district || 'Head Office').replace(/'/g, "''");
+            const st = (d.status || 'offline').toLowerCase();
+            const pic = (d.pic || 'Dzakwan M.').replace(/'/g, "''");
+            const method = (d.method || 'Ping').replace(/'/g, "''");
+            return `('${code}', '${name}', '${cat}', '${ip}', '${mac}', '${loc}', '${st}', '${pic}', '${method}')`;
+        });
+        sql += devValues.join(',\n') + ';\n\n';
+    }
+
+    // 2. Table users
+    sql += `-- Table structure for table \`users\`\n`;
+    sql += `DROP TABLE IF EXISTS \`users\`;\n`;
+    sql += `CREATE TABLE \`users\` (\n`;
+    sql += `  \`id\` INT(11) NOT NULL AUTO_INCREMENT,\n`;
+    sql += `  \`name\` VARCHAR(100) NOT NULL,\n`;
+    sql += `  \`username\` VARCHAR(50) NOT NULL UNIQUE,\n`;
+    sql += `  \`email\` VARCHAR(150) NOT NULL UNIQUE,\n`;
+    sql += `  \`role\` VARCHAR(50) DEFAULT 'technician',\n`;
+    sql += `  PRIMARY KEY (\`id\`)\n`;
+    sql += `) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;\n\n`;
+
+    // 3. Table password_resets
+    sql += `-- Table structure for table \`password_resets\`\n`;
+    sql += `CREATE TABLE IF NOT EXISTS \`password_resets\` (\n`;
+    sql += `  \`id\` INT(11) NOT NULL AUTO_INCREMENT,\n`;
+    sql += `  \`user_id\` INT(11) NOT NULL,\n`;
+    sql += `  \`otp_code\` VARCHAR(10) NOT NULL,\n`;
+    sql += `  \`expires_at\` DATETIME NOT NULL,\n`;
+    sql += `  \`used\` TINYINT(1) DEFAULT 0,\n`;
+    sql += `  \`created_at\` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n`;
+    sql += `  PRIMARY KEY (\`id\`)\n`;
+    sql += `) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;\n\n`;
+
+    sql += `SET FOREIGN_KEY_CHECKS = 1;\n-- END OF BACKUP\n`;
+
+    const blob = new Blob([sql], { type: 'application/sql;charset=utf-8;' });
     const link = document.createElement('a');
-    link.href = 'database/taims_db_final.sql';
-    link.download = `taims_db_backup_${new Date().toISOString().slice(0,10)}.sql`;
+    link.href = URL.createObjectURL(blob);
+    link.download = `T-AIMS_taims_db_dump_${new Date().toISOString().slice(0, 10)}.sql`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    showToast('Snapshot SQL Berhasil', 'Mengunduh salinan cadangan SQL database taims_db.', 'success');
+    URL.revokeObjectURL(link.href);
+
+    showToast('Dump SQL Berhasil', 'File cadangan SQL database taims_db berhasil diunduh.', 'success');
 }
 window.downloadDatabaseSqlBackup = downloadDatabaseSqlBackup;
 
