@@ -5239,19 +5239,32 @@ function openAssetQrModal(codeOrTarget, optName, optLoc) {
         );
     }
 
-    const code = (dev && dev.code) || (typeof codeOrTarget === 'string' && codeOrTarget.startsWith('AST') ? codeOrTarget : 'AST-DEV-001');
+    const code = (dev && (dev.code || dev.asset_code)) || (typeof codeOrTarget === 'string' && codeOrTarget.startsWith('AST') ? codeOrTarget : 'AST-DEV-001');
     const devName = (dev && dev.name) || optName || 'Perangkat IT Teknolab';
     const location = (dev && (dev.location || dev.district)) || optLoc || 'Head Office';
+    const floor = (dev && dev.floor) ? ` • Lantai ${dev.floor}` : '';
     const ip = (dev && dev.ip) || '-';
+    const mac = (dev && dev.mac) || '-';
     const category = (dev && dev.category) || 'Hardware';
+    const pic = (dev && dev.pic) || 'Tim Teknolab';
+    const method = (dev && dev.method) || 'Ping';
+    const priority = (dev && dev.priority) || 'Medium (P2)';
+    const installDate = (dev && (dev.installDate || dev.install_date)) || '2026-10-01';
+    const description = (dev && (dev.description || dev.desc)) || (dev && dev.name ? `Unit ${dev.name} pada ${location}` : '-');
     const status = (dev && dev.status) || 'online';
 
     currentQrDevice = {
         code,
         name: devName,
-        location,
+        location: location + floor,
         ip,
+        mac,
         category,
+        pic,
+        method,
+        priority,
+        installDate,
+        description,
         status
     };
 
@@ -5263,12 +5276,28 @@ function openAssetQrModal(codeOrTarget, optName, optLoc) {
 
     if (codeEl) codeEl.textContent = code;
     if (nameEl) nameEl.textContent = devName;
-    if (ipEl) ipEl.textContent = `IP: ${ip}`;
-    if (locEl) locEl.textContent = `Wilayah: ${location}, Blitar`;
+    if (ipEl) ipEl.textContent = `IP: ${ip} • MAC: ${mac}`;
+    if (locEl) locEl.textContent = `Wilayah: ${location}${floor}, Blitar`;
 
     if (container) {
         container.innerHTML = '';
-        const qrPayload = `[T-AIMS ASSET TAG]\nKode: ${code}\nNama: ${devName}\nIP: ${ip}\nLokasi: ${location}, Blitar\nKategori: ${category}`;
+        const qrPayload = [
+            `[T-AIMS ASSET SPECIFICATION]`,
+            `KODE ASET: ${code}`,
+            `NAMA PERANGKAT: ${devName}`,
+            `KATEGORI: ${category}`,
+            `IP ADDRESS: ${ip}`,
+            `MAC ADDRESS: ${mac}`,
+            `LOKASI: ${location}${floor}, Blitar`,
+            `PIC TEKNISI: ${pic}`,
+            `METODE MONITOR: ${method}`,
+            `PRIORITAS: ${priority}`,
+            `TGL PASANG: ${installDate}`,
+            `DESKRIPSI: ${description}`,
+            `STATUS: ${status.toUpperCase()}`,
+            `SISTEM: PT Teknolab Caraka Internasional`
+        ].join('\n');
+
         if (typeof QRCode !== 'undefined') {
             try {
                 new QRCode(container, {
@@ -6224,7 +6253,108 @@ window.loadAiRecommendation = loadAiRecommendation;
 // =============================================================================
 function exportReport(format) {
     if (String(format).toLowerCase() === 'pdf') {
-        window.print();
+        const mount = document.getElementById('print-mount-area');
+        if (!mount) {
+            window.print();
+            return;
+        }
+
+        showToast('Export Laporan', 'Mempersiapkan dokumen analitik SLA & laporan infrastruktur...', 'info');
+        const devs = APP_STATE.devices || [];
+        const onlineCount = devs.filter(d => (d.status||'').toLowerCase() === 'online').length;
+        const total = devs.length;
+        const availPct = total > 0 ? ((onlineCount / total) * 100).toFixed(1) : '100.0';
+
+        mount.innerHTML = `
+            <div class="print-report-container" style="font-family: Arial, Helvetica, sans-serif; color: #111827;">
+                <div class="print-report-header" style="border-bottom: 2.5px solid #111827; padding-bottom: 8px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: flex-end;">
+                    <div>
+                        <h2 style="margin: 0; font-size: 17px; font-weight: bold; color: #111827; text-transform: uppercase;">PT TEKNOLAB CARAKA INTERNASIONAL</h2>
+                        <h4 style="margin: 3px 0 0; font-size: 13px; font-weight: bold; color: #374151;">LAPORAN ANALITIK KINERJA INFRASTRUKTUR &amp; KETERSEDIAAN SLA</h4>
+                        <p style="margin: 2px 0 0; font-size: 9px; color: #6b7280;">Sistem Monitoring T-AIMS &bull; Divisi Network Operation Center (NOC)</p>
+                    </div>
+                    <div style="font-size: 9px; color: #374151; text-align: right; line-height: 1.4;">
+                        <strong>Tanggal Dokumen:</strong> ${new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}<br>
+                        <strong>Waktu Cetak:</strong> ${new Date().toLocaleTimeString('id-ID')} WIB<br>
+                        <strong>Otoritas:</strong> Superadmin Dzakwan Miftahussobirin
+                    </div>
+                </div>
+
+                <!-- KPI Box -->
+                <div style="display: flex; gap: 10px; margin-bottom: 14px;">
+                    <div style="flex: 1; border: 1px solid #d1d5db; border-radius: 6px; padding: 8px 12px; background: #f9fafb;">
+                        <div style="font-size: 9px; color: #6b7280; font-weight: bold; text-transform: uppercase;">Total Perangkat</div>
+                        <div style="font-size: 18px; font-weight: bold; color: #111827;">${total} Unit</div>
+                    </div>
+                    <div style="flex: 1; border: 1px solid #d1d5db; border-radius: 6px; padding: 8px 12px; background: #f9fafb;">
+                        <div style="font-size: 9px; color: #6b7280; font-weight: bold; text-transform: uppercase;">Status Online</div>
+                        <div style="font-size: 18px; font-weight: bold; color: #059669;">${onlineCount} Unit</div>
+                    </div>
+                    <div style="flex: 1; border: 1px solid #d1d5db; border-radius: 6px; padding: 8px 12px; background: #f9fafb;">
+                        <div style="font-size: 9px; color: #6b7280; font-weight: bold; text-transform: uppercase;">Ketersediaan SLA</div>
+                        <div style="font-size: 18px; font-weight: bold; color: #2563eb;">${availPct}%</div>
+                    </div>
+                </div>
+
+                <!-- Tabel Status Perangkat & Latensi -->
+                <table class="print-report-table" style="width: 100%; border-collapse: collapse; font-size: 10px;">
+                    <thead>
+                        <tr style="background-color: #f3f4f6;">
+                            <th style="border: 1px solid #d1d5db; padding: 6px 4px; text-align: center; width: 25px;">No</th>
+                            <th style="border: 1px solid #d1d5db; padding: 6px; text-align: left;">Kode</th>
+                            <th style="border: 1px solid #d1d5db; padding: 6px; text-align: left;">Nama Perangkat</th>
+                            <th style="border: 1px solid #d1d5db; padding: 6px; text-align: left;">Kategori</th>
+                            <th style="border: 1px solid #d1d5db; padding: 6px; text-align: left;">IP Address</th>
+                            <th style="border: 1px solid #d1d5db; padding: 6px; text-align: left;">Lokasi</th>
+                            <th style="border: 1px solid #d1d5db; padding: 6px; text-align: center;">Status</th>
+                            <th style="border: 1px solid #d1d5db; padding: 6px; text-align: center;">Latency</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${devs.map((d, idx) => {
+                            const st = (d.status || 'offline').toUpperCase();
+                            const stColor = st === 'ONLINE' ? '#059669' : (st === 'WARNING' ? '#d97706' : '#dc2626');
+                            return `
+                                <tr style="background-color: ${idx % 2 === 0 ? '#ffffff' : '#f9fafb'};">
+                                    <td style="border: 1px solid #d1d5db; padding: 4px; text-align: center;">${idx + 1}</td>
+                                    <td style="border: 1px solid #d1d5db; padding: 4px 6px; font-family: monospace; font-weight: bold;">${d.code || '-'}</td>
+                                    <td style="border: 1px solid #d1d5db; padding: 4px 6px;">${d.name || '-'}</td>
+                                    <td style="border: 1px solid #d1d5db; padding: 4px 6px;">${d.category || '-'}</td>
+                                    <td style="border: 1px solid #d1d5db; padding: 4px 6px; font-family: monospace;">${d.ip || '-'}</td>
+                                    <td style="border: 1px solid #d1d5db; padding: 4px 6px;">${d.location || '-'}</td>
+                                    <td style="border: 1px solid #d1d5db; padding: 4px 6px; text-align: center; font-weight: bold; color: ${stColor};">${st}</td>
+                                    <td style="border: 1px solid #d1d5db; padding: 4px 6px; text-align: center; font-family: monospace;">${d.ping || '-'}</td>
+                                </tr>
+                            `;
+                        }).join('')}
+                    </tbody>
+                </table>
+
+                <!-- Pengesahan -->
+                <div style="margin-top: 24px; display: flex; justify-content: flex-end; page-break-inside: avoid;">
+                    <div style="text-align: center; width: 220px; font-size: 10px; color: #111827;">
+                        <div>Blitar, ${new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
+                        <div style="font-weight: bold; margin-top: 2px;">Lead Network &amp; Infrastructure</div>
+                        <div style="height: 45px;"></div>
+                        <div style="font-weight: bold; text-decoration: underline;">Dzakwan Miftahussobirin</div>
+                        <div style="font-size: 9px; color: #6b7280;">Superadmin &bull; PT Teknolab Caraka Internasional</div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.body.classList.add('print-mode-active');
+        const cleanUp = () => {
+            document.body.classList.remove('print-mode-active');
+            if (mount) mount.innerHTML = '';
+            window.removeEventListener('afterprint', cleanUp);
+        };
+        window.addEventListener('afterprint', cleanUp);
+
+        setTimeout(() => {
+            window.print();
+            setTimeout(cleanUp, 3000);
+        }, 400);
         return;
     }
     
@@ -10149,25 +10279,37 @@ function exportAssetsCsv() {
 window.exportAssetsCsv = exportAssetsCsv;
 
 function exportIncidentsCsv() {
-    if (!APP_STATE.incidents || APP_STATE.incidents.length === 0) {
-        showToast('Export Insiden', 'Tidak ada data insiden aktif saat ini.', 'info');
-        return;
-    }
+    const incs = APP_STATE.incidents || [];
     const headers = ['No', 'ID Insiden', 'Perangkat', 'Lokasi Site', 'Waktu Deteksi', 'Tingkat Bahaya', 'Akar Masalah', 'PIC', 'Status'];
-    const rows = APP_STATE.incidents.map((inc, i) => [
-        i + 1,
-        `"${inc.id || ''}"`,
-        `"${inc.deviceName || ''}"`,
-        `"${inc.site || ''}"`,
-        `"${inc.startTime || ''}"`,
-        `"${(inc.severity || 'high').toUpperCase()}"`,
-        `"${inc.rootCause || ''}"`,
-        `"${inc.pic || ''}"`,
-        `"${(inc.status || 'open').toUpperCase()}"`
-    ]);
+    let rows = [];
+    if (incs.length === 0) {
+        rows.push([
+            1,
+            '"INC-NONE"',
+            '"Semua Perangkat"',
+            '"Head Office & Marketing Office"',
+            `"${new Date().toLocaleString('id-ID')}"`,
+            '"NORMAL"',
+            '"Tidak ada insiden aktif (Seluruh infrastruktur terpantau aman)"',
+            '"Dzakwan M."',
+            '"RESOLVED"'
+        ]);
+    } else {
+        rows = incs.map((inc, i) => [
+            i + 1,
+            `"${inc.id || ''}"`,
+            `"${inc.deviceName || ''}"`,
+            `"${inc.site || ''}"`,
+            `"${inc.startTime || ''}"`,
+            `"${(inc.severity || 'high').toUpperCase()}"`,
+            `"${inc.rootCause || ''}"`,
+            `"${inc.pic || ''}"`,
+            `"${(inc.status || 'open').toUpperCase()}"`
+        ]);
+    }
     const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\r\n');
     downloadCsvBlob(csv, `T-AIMS_Incident_Report_${new Date().toISOString().slice(0, 10)}.csv`);
-    showToast('Export Berhasil', `Laporan insiden berhasil diekspor ke CSV.`, 'success');
+    showToast('Export Berhasil', `File CSV rekaman insiden (${incs.length} kasus aktif) berhasil diunduh.`, 'success');
 }
 window.exportIncidentsCsv = exportIncidentsCsv;
 
