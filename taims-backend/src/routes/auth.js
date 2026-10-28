@@ -301,7 +301,7 @@ router.post('/change-password', authenticate, async (req, res) => {
 
 
 // ============================================================
-// SISTEM LUPA PASSWORD & RESET KATA SANDI RESMI (SMTP / NODEMAILER)
+// SISTEM LUPA PASSWORD & RESET KATA SANDI RESMI (SMTP / NODEMAILER & TELEGRAM)
 // ============================================================
 function getMailTransporter() {
     const host = process.env.SMTP_HOST || 'smtp.gmail.com';
@@ -321,6 +321,49 @@ function getMailTransporter() {
         auth: { user, pass },
         tls: { rejectUnauthorized: false }
     });
+}
+
+async function sendTelegramOtp(fullName, email, otpCode, expiresMinutes = 15) {
+    const botToken = process.env.TELEGRAM_BOT_TOKEN;
+    const chatId = process.env.TELEGRAM_CHAT_ID;
+    if (!botToken || !chatId) {
+        return false;
+    }
+
+    const expiresTime = new Date(Date.now() + expiresMinutes * 60 * 1000).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+
+    const messageHtml = '🔐 <b>[T-AIMS SECURITY ALERT]</b>\n' +
+        '━━━━━━━━━━━━━━━━━━━━\n' +
+        '📌 <b>Permintaan Reset Kata Sandi</b>\n' +
+        '👤 <b>Pengguna:</b> ' + fullName + '\n' +
+        '📧 <b>Email:</b> ' + email + '\n' +
+        '🔑 <b>KODE OTP RAHASIA:</b> <code>' + otpCode + '</code>\n' +
+        '⏳ <b>Masa Berlaku:</b> ' + expiresMinutes + ' Menit (Sampai ' + expiresTime + ' WIB)\n' +
+        '━━━━━━━━━━━━━━━━━━━━\n' +
+        '⚠️ <i>Demi keamanan akun T-AIMS Anda, jangan bagikan kode OTP ini kepada siapa pun.</i>';
+
+    try {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 6000);
+        const res = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                chat_id: chatId,
+                text: messageHtml,
+                parse_mode: 'HTML'
+            }),
+            signal: controller.signal
+        });
+        clearTimeout(timeout);
+        if (res.ok) {
+            console.log(`[AUTH-FORGOT] Berhasil mengirim kode OTP via Telegram Bot ke chat: ${chatId}`);
+            return true;
+        }
+    } catch (err) {
+        console.warn(`[AUTH-FORGOT] Telegram Bot kirim OTP gagal/timeout:`, err.message);
+    }
+    return false;
 }
 
 // POST /api/auth/forgot-password
@@ -357,7 +400,7 @@ router.post('/forgot-password', async (req, res) => {
 
         const user = users[0];
 
-        // Buat 6-digit OTP code
+        // Buat 6-digit OTP code rahasia
         const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
         const tokenToStore = otpCode;
 
@@ -379,9 +422,11 @@ router.post('/forgot-password', async (req, res) => {
 
         console.log(`[AUTH-FORGOT] Permintaan reset kata sandi: ${user.full_name} (${user.email}) | OTP: ${otpCode} | Berlaku 15 Menit`);
 
-        // Coba kirim email resmi via nodemailer jika SMTP dikonfigurasi
+        // 1. Kirim notifikasi rahasia via Telegram Bot
+        const telegramSent = await sendTelegramOtp(user.full_name, user.email, otpCode, 15);
+
+        // 2. Kirim email resmi via nodemailer jika SMTP dikonfigurasi
         let emailSent = false;
-        let emailError = null;
         const transporter = getMailTransporter();
 
         if (transporter) {
@@ -419,21 +464,17 @@ router.post('/forgot-password', async (req, res) => {
                 emailSent = true;
                 console.log(`[AUTH-FORGOT] Email berhasil dikirim ke: ${user.email}`);
             } catch (mErr) {
-                console.warn(`[AUTH-FORGOT] Gagal mengirim email via SMTP (${mErr.message}). Menggunakan mode simulasi / fallback.`);
-                emailError = mErr.message;
+                console.warn(`[AUTH-FORGOT] Gagal mengirim email via SMTP (${mErr.message}).`);
             }
-        } else {
-            console.log(`[AUTH-FORGOT] SMTP_PASS belum diset di .env. Kode OTP siap digunakan di layar simulasi / terminal: ${otpCode}`);
         }
 
+        // Response aman (TANPA mengekspos OTP ke publik)
         return res.status(200).json({
             success: true,
-            message: emailSent
-                ? `Kode verifikasi 6-digit telah dikirim ke ${user.email}. Silakan periksa kotak masuk atau spam.`
-                : `Kode verifikasi berhasil dibuat untuk ${user.email}. (Mode Pengujian Localhost Aktif)`,
+            message: 'Kode verifikasi keamanan 6-digit telah dibuat dan dikirimkan secara rahasia ke kontak & surel resmi akun Anda. Silakan periksa pesan masuk Anda.',
             email: user.email,
             email_sent: emailSent,
-            dev_otp: otpCode, // Menjamin Dzakwan & tim QA bisa langsung copy kode saat simulasi di laptop!
+            telegram_sent: telegramSent,
             expires_in_minutes: 15
         });
     } catch (err) {

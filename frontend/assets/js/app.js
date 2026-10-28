@@ -10091,7 +10091,7 @@ function backToStep1ForgotPassword() {
 }
 window.backToStep1ForgotPassword = backToStep1ForgotPassword;
 
-function fillOtpAndGoStep2(otp, email) {
+function goToStep2ResetPassword(email) {
     const s1 = document.getElementById('forgot-pwd-step1-form');
     const s2 = document.getElementById('forgot-pwd-step2-form');
     const title = document.getElementById('forgot-modal-title');
@@ -10101,13 +10101,17 @@ function fillOtpAndGoStep2(otp, email) {
     if (s1) s1.classList.add('hidden');
     if (s2) s2.classList.remove('hidden');
     if (title) title.textContent = 'Verifikasi Kode & Sandi Baru';
-    if (tokenInput && otp) tokenInput.value = otp;
+    if (tokenInput) {
+        tokenInput.value = '';
+        tokenInput.placeholder = 'Contoh: 849201';
+    }
     if (targetEmailEl) targetEmailEl.textContent = email || 'akun Anda';
     setTimeout(() => {
-        document.getElementById('forgot-pwd-new')?.focus();
+        document.getElementById('forgot-pwd-token')?.focus();
     }, 150);
 }
-window.fillOtpAndGoStep2 = fillOtpAndGoStep2;
+window.goToStep2ResetPassword = goToStep2ResetPassword;
+window.fillOtpAndGoStep2 = goToStep2ResetPassword;
 
 async function submitForgotPasswordReset(event) {
     if (event) event.preventDefault();
@@ -10134,31 +10138,36 @@ async function submitForgotPasswordReset(event) {
 
         if (res && res.success) {
             const targetEmail = res.email || inputVal;
-            const otp = res.dev_otp;
+            let masked = targetEmail;
+            const parts = targetEmail.split('@');
+            if (parts.length === 2) {
+                const namePart = parts[0];
+                const visible = namePart.slice(0, 2);
+                masked = `${visible}*****@${parts[1]}`;
+            }
 
             if (resultBox) resultBox.classList.remove('hidden');
             if (resetMsg) {
                 resetMsg.innerHTML = `
                     <div style="color: #00F0FF; font-weight: 700; margin-bottom: 6px; font-size: 0.85rem;">
-                        <i class="fa-solid fa-circle-check text-green"></i> Kode Verifikasi Telah Dibuat!
+                        <i class="fa-solid fa-envelope-circle-check"></i> Instruksi & Kode Verifikasi Terkirim!
                     </div>
                     <div style="color: #CBD5E1; font-size: 0.76rem; line-height: 1.6;">
-                        ${res.message || 'Kode verifikasi telah dikirimkan ke surel resmi Anda.'}
-                        <br>
-                        <div style="margin-top: 10px; background: rgba(0, 240, 255, 0.1); border: 1px dashed #00F0FF; padding: 10px 14px; border-radius: 6px; text-align: center;">
-                            <span style="font-size: 0.74rem; color: #94A3B8; display: block; margin-bottom: 2px;">KODE OTP ANDA (BERLAKU 15 MENIT):</span>
-                            <span style="font-family: monospace; font-size: 1.35rem; font-weight: 800; letter-spacing: 5px; color: #00F0FF;">${otp || '------'}</span>
-                            <div style="margin-top: 8px;">
-                                <button type="button" class="btn btn-primary-cyber btn-xs" onclick="fillOtpAndGoStep2('${otp}', '${targetEmail}')" style="font-size: 0.72rem; padding: 4px 12px; cursor: pointer;">
-                                    <i class="fa-solid fa-arrow-right"></i> Gunakan Kode Ini & Atur Sandi Baru &rarr;
-                                </button>
-                            </div>
+                        Kode verifikasi keamanan 6-digit telah dibuat dan dikirimkan secara rahasia ke alamat surel / kontak resmi Anda: <strong style="color: #00F0FF;">${masked}</strong>.
+                        <br><br>
+                        <span style="color: #F59E0B;"><i class="fa-solid fa-shield-halved"></i> <strong>Standar Keamanan Tertutup:</strong></span> 
+                        Demi mencegah pembajakan akun oleh pihak luar, kode verifikasi <strong>TIDAK ditampilkan di layar publik</strong>. Silakan periksa pesan masuk surel atau notifikasi Telegram resmi Anda.
+                        <br><br>
+                        <div style="text-align: center; margin-top: 10px;">
+                            <button type="button" class="btn btn-primary-cyber btn-sm" onclick="goToStep2ResetPassword('${targetEmail}')" style="font-size: 0.78rem; padding: 7px 18px; cursor: pointer;">
+                                <i class="fa-solid fa-key"></i> Masukkan Kode OTP & Atur Sandi Baru &rarr;
+                            </button>
                         </div>
                     </div>
                 `;
             }
 
-            showToast('Kode OTP Siap', 'Kode verifikasi keamanan telah dibuat (15 menit).', 'info');
+            showToast('Instruksi Terkirim', 'Kode verifikasi telah dikirimkan secara rahasia (aktif 15 menit).', 'info');
 
             if (typeof addAuditTrailRecord === 'function') {
                 addAuditTrailRecord('Pemulihan Sandi', `Permintaan kode OTP diajukan untuk akun: "${inputVal}"`);
