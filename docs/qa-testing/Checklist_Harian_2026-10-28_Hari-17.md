@@ -2,7 +2,7 @@
 **Nama**    : Reza Tri Wardana  
 **Tanggal** : Rabu, 28 Oktober 2026  
 **Shift**   : 2 (16:00 – 01:00 WIB)  
-**Tugas**   : Pengujian Fungsional Modul Detail Perangkat (Data Lengkap vs Fallback Offline), Verifikasi Diagram Donut & Legenda Sejajar Vertikal, Validasi Katalog Hardware Enterprise 181+ Model & Dialog Cyberpunk, dan Audit Kesiapan Live Deployment CloudPanel (`t-aims.teknolab.biz.id`)  
+**Tugas**   : Pengujian Fungsional Modul Detail Perangkat (Data Lengkap vs Fallback Offline), Verifikasi Diagram Donut & Legenda Sejajar Vertikal, Validasi Katalog Hardware Enterprise 181+ Model & Dialog Cyberpunk, Perbaikan Skema Database Tambah Perangkat, dan Audit Kesiapan Live Deployment CloudPanel (`t-aims.teknolab.biz.id`)  
 **Status**  : 100% LULUS (ZERO DEFECT & SIAP DEPLOY LIVE)  
 
 ---
@@ -47,13 +47,24 @@
 
 ---
 
-### [x] BAGIAN 5: AUDIT KESIAPAN SERVER PRODUKSI CLOUDPANEL (PRE-DEPLOYMENT)
-- [x] **5.1 Verifikasi Akses Host & Domain Resmi**
+### [x] BAGIAN 5: RESOLUSI DEFECT DATABASE & UJI TAMBAH PERANGKAT
+- [x] **5.1 Resolusi Missing Column `sub_category` (TC-H17-005 / BUG-H17-DB-001)**
+  - Investigasi error 500 saat submit tambah perangkat: `Unknown column 'sub_category' in 'field list'`.
+  - Eksekusi DDL alter: `ALTER TABLE assets ADD COLUMN sub_category VARCHAR(150) NULL AFTER category;`.
+  - Dump ulang database master ke `database/taims_db.sql`.
+  - Uji retest endpoint `POST /api/assets` -> Berhasil merespons `201 Created` (Asset ID 16).
+  - *Status*: LULUS & TUNTAS (Verified Fixed).
+
+---
+
+### [x] BAGIAN 6: AUDIT KESIAPAN SERVER PRODUKSI CLOUDPANEL (PRE-DEPLOYMENT)
+- [x] **6.1 Verifikasi Akses Host & Domain Resmi**
   - Akun CloudPanel Dzakwan Miftahussobirin (`dzakwanmifta` / `awangtgprofesional@gmail.com`) telah aktif.
   - Virtual Host aplikasi Generic telah didaftarkan dengan domain resmi: **`t-aims.teknolab.biz.id`** (SSH user: `taims-teknolab`).
-  - Paket rilis master `project T-AIMS.zip` (135 MB) telah diekstrak, diverifikasi lokal, dan siap di-upload ke server VPS CloudPanel.
+  - Kredensial server dan database lokal telah tervalidasi sesuai arahan guru pembimbing.
+  - Paket rilis master diverifikasi lokal dan siap di-upload ke server VPS CloudPanel.
 
 ---
 
 ### 🏁 KESIMPULAN AKHIR HARI-17
-Seluruh 4 skenario pengujian fungsional dan UI pada Hari ke-17 telah diselesaikan oleh Reza Tri Wardana dengan hasil **100% LULUS (PASS - ZERO DEFECT)**. Sistem T-AIMS telah siap secara mutlak untuk dipublikasikan secara live ke domain `t-aims.teknolab.biz.id`.
+Seluruh 5 skenario pengujian fungsional, antarmuka, dan integritas database pada Hari ke-17 telah diselesaikan oleh Reza Tri Wardana dengan hasil **100% LULUS (PASS - ZERO DEFECT)**. Sistem T-AIMS telah siap secara mutlak untuk dipublikasikan secara live ke domain `t-aims.teknolab.biz.id`.
