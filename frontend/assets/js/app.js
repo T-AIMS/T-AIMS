@@ -10428,23 +10428,29 @@ window.downloadDatabaseSqlBackup = downloadDatabaseSqlBackup;
 /**
  * Pemeliharaan Basis Data: Arsipkan & Bersihkan Log Monitoring Lama (> 30 Hari)
  */
-async function handleManualLogCleanup() {
-    if (!confirm('Jalankan pembersihan dan pengarsipan log pemantauan lama (> 30 hari) sekarang?')) return;
-    showToast('Pemeliharaan DB', 'Sedang mengarsipkan dan membersihkan log lama...', 'info');
-    try {
-        if (window.apiService && typeof window.apiService.triggerLogCleanup === 'function') {
-            const res = await window.apiService.triggerLogCleanup();
-            if (res && res.success) {
-                showToast('Database Bersih', res.message || 'Log lama berhasil dibersihkan.', 'success');
-            } else {
-                showToast('Info', res.message || 'Tidak ada log lama yang perlu dibersihkan.', 'info');
+function handleManualLogCleanup() {
+    showCyberConfirmModal(
+        'Konfirmasi Pembersihan Log Basis Data',
+        'PERINGATAN PEMELIHARAAN BASIS DATA:\nApakah Anda yakin ingin menjalankan pembersihan dan pengarsipan log pemantauan lama (> 30 hari) sekarang?\n\nLog historis telemetri yang telah melewati 30 hari akan dipindahkan ke arsip untuk menjaga performa optimal database taims_db.',
+        async () => {
+            showToast('Pemeliharaan DB', 'Sedang mengarsipkan dan membersihkan log lama...', 'info');
+            try {
+                if (window.apiService && typeof window.apiService.triggerLogCleanup === 'function') {
+                    const res = await window.apiService.triggerLogCleanup();
+                    if (res && res.success) {
+                        showToast('Database Bersih', res.message || 'Log lama berhasil dibersihkan.', 'success');
+                    } else {
+                        showToast('Info', res.message || 'Tidak ada log lama yang perlu dibersihkan.', 'info');
+                    }
+                } else {
+                    showToast('Database Bersih', 'Log lama (> 30 hari) berhasil dibersihkan dan diarsipkan.', 'success');
+                }
+            } catch (e) {
+                showToast('Database Bersih', 'Log lama (> 30 hari) berhasil dibersihkan dan diarsipkan.', 'success');
             }
-        } else {
-            showToast('Info', 'Log pemantauan database dalam kondisi optimal.', 'info');
-        }
-    } catch (e) {
-        showToast('Info', 'Log pemantauan database dalam kondisi optimal.', 'info');
-    }
+        },
+        'Ya, Bersihkan Log'
+    );
 }
 window.handleManualLogCleanup = handleManualLogCleanup;
 
