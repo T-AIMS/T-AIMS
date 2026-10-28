@@ -159,6 +159,3 @@ Hasil verifikasi integritas frontend wireframe terhadap temuan bug Shift 2 Lead 
 
 ---
 *Dokumen ini merupakan bagian sah dari Deliverable QA & Sistem Kontrol Kualitas Proyek T-AIMS PT Teknolab Caraka Internasional.*
-
-<!-- QA Standardization: 2026-10-22 | Lead QA: Reza Tri Wardana -->
-

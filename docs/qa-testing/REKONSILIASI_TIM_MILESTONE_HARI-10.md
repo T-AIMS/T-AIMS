@@ -62,6 +62,3 @@ Rekonsiliasi Hari ke-10 bertujuan untuk:
 
 ---
 *Dokumen ini merupakan Berita Acara Sah Pelaksanaan Milestone Hari ke-10 PKL T-AIMS PT Teknolab Caraka Internasional.*
-
-<!-- QA Standardization: 2026-10-22 | Lead QA: Reza Tri Wardana -->
-

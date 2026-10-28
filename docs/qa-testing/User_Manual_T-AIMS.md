@@ -221,5 +221,3 @@ Fitur AI memberikan:
 ---
 
 **Akhir Dokumen — User Manual T-AIMS v1.1**
-<!-- QA Standardization: 2026-10-22 | Lead QA: Reza Tri Wardana -->
-
