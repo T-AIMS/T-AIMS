@@ -1894,88 +1894,7 @@ const DEFAULT_USERS_LIST = [
     }
 ];
 
-const DEFAULT_SAMPLE_INCIDENTS = [
-    {
-        id: 'INC-001',
-        rawId: 1,
-        assetId: 1,
-        deviceName: 'CCTV-01 (CCTV Head Office)',
-        site: 'Head Office',
-        startTime: '26/10/26 21:15',
-        recoveryTime: 'Dalam Penanganan',
-        duration: '1j 25m',
-        severity: 'medium',
-        rootCause: 'RTSP Stream putus akibat reset switch PoE',
-        incidentType: 'Device Offline',
-        description: 'RTSP Stream putus akibat reset switch PoE',
-        pic: 'Dzakwan Miftahussobirin',
-        status: 'open'
-    },
-    {
-        id: 'INC-002',
-        rawId: 2,
-        assetId: 3,
-        deviceName: 'RTR-01 (Router Head Office)',
-        site: 'Head Office',
-        startTime: '26/10/26 19:40',
-        recoveryTime: 'Sedang Investigasi',
-        duration: '3j 00m',
-        severity: 'high',
-        rootCause: 'Lonjakan latensi radio link > 120ms',
-        incidentType: 'High Latency',
-        description: 'Lonjakan latensi radio link > 120ms',
-        pic: 'Dzakwan Miftahussobirin',
-        status: 'investigating'
-    },
-    {
-        id: 'INC-003',
-        rawId: 3,
-        assetId: 11,
-        deviceName: 'ESP-01 (ESP32 Head Office Node)',
-        site: 'Head Office',
-        startTime: '26/10/26 14:10',
-        recoveryTime: '26/10/26 14:35',
-        duration: '25 Menit',
-        severity: 'low',
-        rootCause: 'Telemetri ADC daya panel surya fluktuatif',
-        incidentType: 'Sensor Anomaly',
-        description: 'Telemetri ADC daya panel surya fluktuatif',
-        pic: 'Dzakwan Miftahussobirin',
-        status: 'resolved'
-    },
-    {
-        id: 'INC-004',
-        rawId: 4,
-        assetId: 12,
-        deviceName: 'RPI-01 (Raspberry Pi Head Office)',
-        site: 'Head Office',
-        startTime: '26/10/26 10:20',
-        recoveryTime: '26/10/26 11:05',
-        duration: '45 Menit',
-        severity: 'critical',
-        rootCause: 'Node gateway offline pergantian UPS cadangan',
-        incidentType: 'Link Down',
-        description: 'Node gateway offline pergantian UPS cadangan',
-        pic: 'Wafian Zaidan',
-        status: 'resolved'
-    },
-    {
-        id: 'INC-005',
-        rawId: 5,
-        assetId: 4,
-        deviceName: 'RTR-02 (Router 2 Marketing)',
-        site: 'Marketing Office',
-        startTime: '25/10/26 16:45',
-        recoveryTime: '25/10/26 17:15',
-        duration: '30 Menit',
-        severity: 'medium',
-        rootCause: 'Adapter router cabang sempat terlepas',
-        incidentType: 'Power Failure',
-        description: 'Adapter router cabang sempat terlepas',
-        pic: 'Dzakwan Miftahussobirin',
-        status: 'resolved'
-    }
-];
+const DEFAULT_SAMPLE_INCIDENTS = [];
 
 const APP_STATE = {
     currentUser: null,
@@ -1995,16 +1914,9 @@ const APP_STATE = {
 
     // Database Perangkat Berfokus pada Wilayah Kota & Kabupaten Blitar (Jawa Timur)
     devices: [],
-    // Riwayat Insiden, Alerts & Notifikasi (Clean Slate B2 - Sesuai Instruksi Wafian)
-    alerts: DEFAULT_SAMPLE_INCIDENTS.map(inc => ({
-        id: `ALT-${inc.rawId}`,
-        title: inc.rootCause,
-        location: inc.site,
-        time: inc.startTime.split(' ')[1] || '10:00',
-        level: inc.severity === 'critical' ? 'kritis' : 'peringatan',
-        read: inc.status === 'resolved'
-    })),
-    incidents: JSON.parse(JSON.stringify(DEFAULT_SAMPLE_INCIDENTS)),
+    // Riwayat Insiden, Alerts & Notifikasi (Clean Slate - Tanpa Dummy)
+    alerts: [],
+    incidents: [],
     maintenanceLogs: [],
 
     teamMembers: [],
@@ -7063,23 +6975,15 @@ async function loadIncidentsPage() {
                     pic: (APP_STATE.currentUser ? APP_STATE.currentUser.name : 'Dzakwan Miftahussobirin'),
                     status: (inc.incident_status || 'open').toLowerCase()
                 }));
-            } else if (!APP_STATE.incidents || APP_STATE.incidents.length === 0) {
-                if (typeof DEFAULT_SAMPLE_INCIDENTS !== 'undefined') {
-                    APP_STATE.incidents = JSON.parse(JSON.stringify(DEFAULT_SAMPLE_INCIDENTS));
-                }
+            } else {
+                APP_STATE.incidents = [];
             }
-        } else if (!APP_STATE.incidents || APP_STATE.incidents.length === 0) {
-            if (typeof DEFAULT_SAMPLE_INCIDENTS !== 'undefined') {
-                APP_STATE.incidents = JSON.parse(JSON.stringify(DEFAULT_SAMPLE_INCIDENTS));
-            }
+        } else {
+            APP_STATE.incidents = [];
         }
     } catch (e) {
         console.warn('loadIncidentsPage error:', e);
-        if (!APP_STATE.incidents || APP_STATE.incidents.length === 0) {
-            if (typeof DEFAULT_SAMPLE_INCIDENTS !== 'undefined') {
-                APP_STATE.incidents = JSON.parse(JSON.stringify(DEFAULT_SAMPLE_INCIDENTS));
-            }
-        }
+        APP_STATE.incidents = [];
     }
     renderIncidentsTable();
     updateIncidentStats();
