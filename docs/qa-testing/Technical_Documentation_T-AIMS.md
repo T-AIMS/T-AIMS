@@ -382,5 +382,3 @@ Deployment PIC: Wafian (DevOps)
 ---
 
 Akhir Dokumen - Technical Documentation T-AIMS v1.1
-<!-- QA Standardization: 2026-10-22 | Lead QA: Reza Tri Wardana -->
-

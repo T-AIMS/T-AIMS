@@ -53,6 +53,3 @@ Tanggal: 22/10/2026   Hari ke-: 11   Commit: feat(qa): live telemetry monitoring
 │ [x] ✅ Nama file bukti: YYYY-MM-DD_TC-XXX_status.png             │
 │ [x] ✅ Hyperlink Excel valid dan relatif terhadap root QA         │
 └──────────────────────────────────────────────────────────────────┘
-
-<!-- QA Standardization: 2026-10-22 | Lead QA: Reza Tri Wardana -->
-

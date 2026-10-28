@@ -81,6 +81,3 @@ Tanggal: 21/10/2026   Hari ke-: 10   Commit: docs(qa): finalize mvp bug list and
 └──────────────────────────────────────────────────────────────────┘
 
 Tanda tangan: Reza Tri Wardana (Lead QA & Documentation Engineer)
-
-<!-- QA Standardization: 2026-10-22 | Lead QA: Reza Tri Wardana -->
-

@@ -78,6 +78,3 @@ Tanggal: 20/10/2026   Hari ke-: 9   Commit: docs(qa): complete day 9 retest bug 
 └──────────────────────────────────────────────────────────────────┘
 
 Tanda tangan: Reza Tri Wardana (QA & Documentation Engineer)
-
-<!-- QA Standardization: 2026-10-22 | Lead QA: Reza Tri Wardana -->
-

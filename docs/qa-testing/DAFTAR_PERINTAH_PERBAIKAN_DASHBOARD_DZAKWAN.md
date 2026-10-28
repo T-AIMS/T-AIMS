@@ -178,6 +178,3 @@ Namun, untuk memastikan antarmuka siap dipresentasikan ke Mentor Teknolab dan ti
 
 ---
 *Dokumen ini merupakan bagian dari Prosedur Kontrol Kualitas QA T-AIMS PT Teknolab Caraka Internasional.*
-
-<!-- QA Standardization: 2026-10-22 | Lead QA: Reza Tri Wardana -->
-
