@@ -55089,12 +55089,56 @@ button[onclick*="copyAiReportToClipboard"] i {
     filter: drop-shadow(0 0 8px rgba(192, 132, 252, 0.9)) !important;
 }
 
-/* Paginasi Riwayat AI Base Desktop */
+/* Paginasi Riwayat AI Base Desktop (Sejajar Horisontal) */
+.ai-history-pagination {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 12px 6px 4px 6px !important;
+    margin-top: 10px !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    gap: 8px !important;
+}
+.ai-history-pagination .ai-page-btn {
+    padding: 6px 14px !important;
+    min-height: 34px !important;
+    height: 34px !important;
+    font-size: 0.76rem !important;
+    font-weight: 600 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    white-space: nowrap !important;
+    box-sizing: border-box !important;
+    border-radius: 6px !important;
+    flex-shrink: 0 !important;
+}
+.ai-history-pagination .ai-page-info {
+    font-size: 0.76rem !important;
+    color: #94A3B8 !important;
+    font-weight: 600 !important;
+    white-space: nowrap !important;
+    text-align: center !important;
+    flex-shrink: 0 !important;
+}
 .ai-history-pagination .page-text-desktop {
-    display: inline;
+    display: inline !important;
 }
 .ai-history-pagination .page-text-mobile {
-    display: none;
+    display: none !important;
+}
+
+/* Modal Pemulihan Kata Sandi Harus Selalu di Atas Halaman Login (#auth-screen) */
+#forgot-password-modal {
+    z-index: 100000000 !important;
+}
+#forgot-password-modal .modal-card {
+    z-index: 100000001 !important;
 }
 button[onclick*="runAiAnalysis"] i {
     color: #FFD600 !important;
