@@ -22,7 +22,7 @@ router.get('/', authenticate, async (req, res) => {
 
         let sql = `
             SELECT 
-                a.asset_id, a.asset_code, a.asset_name, a.category,
+                a.asset_id, a.asset_code, a.asset_name, a.category, a.sub_category,
                 a.ip_address, a.mac_address,
                 a.location_id, l.location_name,
                 a.pic_user_id, COALESCE(u.full_name, 'Tim Teknolab') AS pic_name,
@@ -190,7 +190,7 @@ router.post('/', authenticate, can('create'), async (req, res) => {
     try {
         console.log('[POST /api/assets] Incoming body:', req.body);
         const {
-            asset_code, asset_name, category,
+            asset_code, asset_name, category, sub_category,
             ip_address, mac_address, location_id, pic_user_id,
             monitoring_method, monitoring_config,
             priority = 2, installation_date, description,
@@ -240,13 +240,13 @@ router.post('/', authenticate, can('create'), async (req, res) => {
         // Insert
         const [result] = await db.query(
             `INSERT INTO assets 
-                (asset_code, asset_name, category, ip_address, mac_address,
+                (asset_code, asset_name, category, sub_category, ip_address, mac_address,
                  location_id, pic_user_id, monitoring_method, monitoring_config,
                  current_status, priority, installation_date, description,
                  check_interval_seconds, timeout_seconds, retry_count)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'unknown', ?, ?, ?, ?, ?, ?)`,
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'unknown', ?, ?, ?, ?, ?, ?)`,
             [
-                asset_code, asset_name, category,
+                asset_code, asset_name, category, sub_category || null,
                 ip_address || null, mac_address || null,
                 location_id || null, effectivePicUserId || null,
                 monitoring_method,

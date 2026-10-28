@@ -937,6 +937,8 @@ function mapBackendAssetToUI(a) {
         code: a.asset_code || a.code || `AST-${a.asset_id}`,
         name: a.asset_name || a.name || a.asset_code,
         category: normalizedCat,
+        sub_category: a.sub_category || a.subcategory || (a.config && a.config.sub_category) || '',
+        subcategory: a.sub_category || a.subcategory || (a.config && a.config.sub_category) || '',
         location: normalizedLoc,
         pic: a.pic_name || a.pic || "Tim Teknolab",
         ip: a.ip_address || a.ip || "-",
@@ -1357,6 +1359,7 @@ async function loadRealDataFromApi() {
                     status: (inc.incident_status || 'open').toLowerCase()
                 }));
                 if (typeof renderIncidentsTable === "function") renderIncidentsTable();
+                if (typeof updateIncidentStats === "function") updateIncidentStats();
             }
         }
 
@@ -1374,7 +1377,7 @@ async function loadRealDataFromApi() {
                         title: n.title,
                         location: n.asset_name ? `${n.asset_code} (${n.asset_name})` : (n.message || 'Sistem T-AIMS'),
                         level: (n.title.toLowerCase().includes('offline') || n.title.toLowerCase().includes('kritis')) ? 'kritis' : 'peringatan',
-                        read: Number(n.is_read) === 1
+                        read: (localStorage.getItem('taims_all_alerts_read') === 'true') || Number(n.is_read) === 1
                     }));
                     hasLoadedNotifs = true;
                 }
@@ -1392,7 +1395,7 @@ async function loadRealDataFromApi() {
                 title: `${inc.deviceName}: ${inc.rootCause}`,
                 location: inc.site,
                 level: inc.severity === 'high' || inc.severity === 'critical' ? 'kritis' : 'peringatan',
-                read: inc.status === 'resolved'
+                read: (localStorage.getItem('taims_all_alerts_read') === 'true') || inc.status === 'resolved'
             }));
         }
         if (typeof renderAlerts === "function") renderAlerts();
@@ -1508,11 +1511,20 @@ async function loadRealDataFromApi() {
             }
         }
 
-        // 7. Hitung unread notification count
-        if (window.apiService && typeof window.apiService.getUnreadNotificationCount === "function") {
-            const unread = await window.apiService.getUnreadNotificationCount();
+        // 7. Hitung unread notification count (Sinkron dengan daftar APP_STATE.alerts aktif)
+        if (localStorage.getItem('taims_all_alerts_read') === 'true') {
             if (typeof updateNotifBadgeCount === 'function') {
-                updateNotifBadgeCount(unread);
+                updateNotifBadgeCount(0);
+            }
+        } else {
+            const localUnread = (APP_STATE.alerts || []).filter(a => !a.read).length;
+            if (window.apiService && typeof window.apiService.getUnreadNotificationCount === "function") {
+                const unread = await window.apiService.getUnreadNotificationCount();
+                if (typeof updateNotifBadgeCount === 'function') {
+                    updateNotifBadgeCount(Math.max(Number(unread) || 0, localUnread));
+                }
+            } else if (typeof updateNotifBadgeCount === 'function') {
+                updateNotifBadgeCount(localUnread);
             }
         }
 
@@ -2239,7 +2251,11 @@ function enforceSuperadminOnlyElements() {
     document.querySelectorAll('.superadmin-only').forEach(el => {
         if (isSuper) {
             el.classList.remove('hidden');
-            el.style.display = '';
+            if (el.classList.contains('superadmin-actions-row') || el.classList.contains('superadmin-row')) {
+                el.style.display = 'flex';
+            } else {
+                el.style.display = '';
+            }
         } else {
             el.classList.add('hidden');
             el.style.display = 'none';
@@ -2782,6 +2798,61 @@ function formatMethodBadge(method) {
 window.formatMethodBadge = formatMethodBadge;
 
 // =============================================================================
+// HELPER BADGE KATEGORI PERANGKAT (BEBAS DARI WARNA BIRU MONOTON)
+// =============================================================================
+function formatCategoryBadge(catName) {
+    const s = String(catName || 'Device').toLowerCase().trim();
+    let bg = 'rgba(168, 85, 247, 0.12)';
+    let border = 'rgba(168, 85, 247, 0.35)';
+    let color = '#C084FC'; // Cyber Violet
+
+    if (s.includes('router')) {
+        bg = 'rgba(168, 85, 247, 0.14)';
+        border = 'rgba(168, 85, 247, 0.4)';
+        color = '#C084FC'; // Violet
+    } else if (s.includes('switch')) {
+        bg = 'rgba(16, 185, 129, 0.14)';
+        border = 'rgba(16, 185, 129, 0.4)';
+        color = '#34D399'; // Mint / Emerald
+    } else if (s.includes('server')) {
+        bg = 'rgba(245, 158, 11, 0.14)';
+        border = 'rgba(245, 158, 11, 0.4)';
+        color = '#FBBF24'; // Amber / Gold
+    } else if (s.includes('cctv')) {
+        bg = 'rgba(244, 63, 94, 0.14)';
+        border = 'rgba(244, 63, 94, 0.4)';
+        color = '#FB7185'; // Coral / Rose
+    } else if (s.includes('access point') || s === 'ap') {
+        bg = 'rgba(20, 184, 166, 0.14)';
+        border = 'rgba(20, 184, 166, 0.4)';
+        color = '#2DD4BF'; // Teal
+    } else if (s.includes('iot')) {
+        bg = 'rgba(217, 70, 239, 0.14)';
+        border = 'rgba(217, 70, 239, 0.4)';
+        color = '#E879F9'; // Fuchsia
+    } else if (s.includes('raspberry')) {
+        bg = 'rgba(236, 72, 153, 0.14)';
+        border = 'rgba(236, 72, 153, 0.4)';
+        color = '#F472B6'; // Raspberry Pink
+    } else if (s.includes('tv')) {
+        bg = 'rgba(249, 115, 22, 0.14)';
+        border = 'rgba(249, 115, 22, 0.4)';
+        color = '#FB923C'; // Orange
+    } else if (s.includes('pc') || s.includes('workstation') || s.includes('komputer')) {
+        bg = 'rgba(148, 163, 184, 0.14)';
+        border = 'rgba(148, 163, 184, 0.35)';
+        color = '#CBD5E1'; // Titanium Slate
+    } else if (s.includes('printer')) {
+        bg = 'rgba(234, 179, 8, 0.14)';
+        border = 'rgba(234, 179, 8, 0.4)';
+        color = '#FACC15'; // Warm Yellow Gold
+    }
+
+    return `<span class="badge-cat-tag" style="background: ${bg}; border: 1px solid ${border}; border-radius: 4px; padding: 1px 6px; color: ${color}; font-size: 0.68rem; font-weight: 600; letter-spacing: 0.3px; display: inline-block;">${escapeHtml(catName || 'Device')}</span>`;
+}
+window.formatCategoryBadge = formatCategoryBadge;
+
+// =============================================================================
 // TABEL MOCKUP DASHBOARD UTAMA (PERSIS SEPERTI GAMBAR REFERENSI)
 // =============================================================================
 function renderHomeDevicesTable() {
@@ -2865,7 +2936,7 @@ function openDeviceDetailModal(deviceId) {
 
     document.getElementById('detail-dev-name').textContent = dev.name;
     document.getElementById('detail-dev-code').textContent = `ASSET CODE: ${dev.code}`;
-    document.getElementById('detail-dev-category').textContent = dev.category;
+    document.getElementById('detail-dev-category').textContent = dev.sub_category ? `${dev.category} (${dev.sub_category})` : dev.category;
     document.getElementById('detail-dev-ip').textContent = dev.ip;
     document.getElementById('detail-dev-mac').textContent = dev.mac;
     document.getElementById('detail-dev-location').textContent = dev.location;
@@ -2962,26 +3033,532 @@ function setQuickStatus(newStatus) {
 // =============================================================================
 // MODAL TAMBAH & EDIT PERANGKAT (ADMIN & SUPERADMIN RBAC)
 // =============================================================================
-function handleDeviceCategoryChange() {
-    const editIdEl = document.getElementById('dev-edit-id');
-    if (editIdEl && editIdEl.value) return; // Mode Edit: jangan ubah otomatis kode unik
-    const cat = document.getElementById('dev-category')?.value || 'Router';
-    const codeInput = document.getElementById('dev-code');
-    if (!codeInput) return;
-    const currentCode = codeInput.value.trim().toUpperCase();
-    const num = String(APP_STATE.devices.length + 1).padStart(3, '0');
-    // Jika masih kosong atau default AST-xxx-xxx, update prefix otomatis
-    if (!currentCode || /^AST-[A-Z]{3}-\d+$/.test(currentCode)) {
-        codeInput.value = `AST-${cat.slice(0, 3).toUpperCase()}-${num}`;
+// MASTER DICTIONARY DEFAULT SUB-KATEGORI / JENIS & MERK PERANGKAT (ROUTER SAMPAI PRINTER)
+const DEFAULT_DEVICE_SUBCATEGORIES = {
+    'Router': [
+        'Mikrotik hAP lite (RB941-2nD / Seri RB941)',
+        'Mikrotik RB951Ui-2HnD / RB951G-2HnD (Seri RB950)',
+        'FiberHome GPON ONT / Optical Modem (MNC Play / IndiHome / Telkom)',
+        'TP-Link TL-WR840N / TL-WR841N 300Mbps Wireless Router',
+        'ZTE F609 / F670L GPON ONT Optical Network Terminal',
+        'Huawei EchoLife HG8245H5 / EG8145V5 GPON Terminal',
+        'Mikrotik RouterBOARD (RB750Gr3 / hEX Series)',
+        'Mikrotik hEX S (RB760iGS Gigabit SFP)',
+        'Mikrotik Cloud Core Router (CCR1009-7G-1C-1S+)',
+        'Mikrotik CCR2004-16G-2S+ Enterprise 10G',
+        'Mikrotik CCR2116-12G-4S+ Core Campus Gateway',
+        'Mikrotik RB4011iGS+RM Quad-Core 10G SFP+',
+        'Mikrotik RB5009UG+S+IN Heavy Duty Home/Lab',
+        'Cisco ISR 4331 / 4431 Integrated Services Router',
+        'Cisco Catalyst 8200 / 8300 Enterprise Edge',
+        'Cisco RV340 / RV345 Dual WAN Gigabit VPN',
+        'Ruijie Reyee RG-EG210G-E Smart Gateway Router',
+        'Ruijie Reyee RG-EG310G-P-E PoE Cloud Router',
+        'Ruijie RG-NBR6000 High-Performance Gateway',
+        'Ubiquiti UniFi Dream Machine Pro / SE (UDM-Pro)',
+        'Ubiquiti UniFi Security Gateway (USG / UXG-Pro)',
+        'TP-Link Omada ER605 / ER7206 Multi-WAN Gigabit',
+        'TP-Link SafeStream TL-ER7206 Enterprise VPN',
+        'Huawei NetEngine AR650 / AR6100 Series',
+        'Fortinet FortiGate 40F / 60F SD-WAN Router',
+        'D-Link DSR-1000AC Unified Services Router',
+        'DrayTek Vigor 2927 / 2962 Dual WAN Router',
+        'Teltonika RUTX09 / RUTX50 Industrial Cellular 5G'
+    ],
+    'Switch': [
+        'Switch Manageable / Smart Managed 24-Port Gigabit (Ruang Server)',
+        'Mikrotik Cloud Router Switch CRS326-24G-2S+RM',
+        'Mikrotik Cloud Smart Switch CSS326-24G-2S+RM',
+        'Mikrotik CRS328-24P-4S+RM (PoE+ 500W Enterprise)',
+        'Mikrotik CRS354-48P-4S+2Q+RM 48-Port PoE+',
+        'Cisco Catalyst 2960-X / 2960-Plus 24/48 Port PoE',
+        'Cisco Catalyst 3850 / 9200L Gigabit PoE+ Switch',
+        'Cisco Catalyst 9300 Series L3 Enterprise Switch',
+        'Cisco CBS350-24P-4G Managed PoE Switch',
+        'Ruijie Reyee RG-ES226GC-P Smart Cloud Managed PoE',
+        'Ruijie Reyee RG-NBS3100-24GT4SFP L2+ Gigabit',
+        'Ruijie RG-S2910XS-E L3 10G High-Density Switch',
+        'Ubiquiti UniFi Switch Pro 24 / 48 PoE (USW-Pro)',
+        'Ubiquiti UniFi Switch Enterprise 24 PoE 2.5G',
+        'Ubiquiti UniFi Switch 8 / 16 150W PoE',
+        'TP-Link JetStream TL-SG3428MP 24-Port PoE+ L2+',
+        'TP-Link Omada SG2210P 8-Port Smart Managed PoE',
+        'D-Link DGS-1210-28P Web Smart Managed PoE',
+        'D-Link DGS-1510-28X L3 Stackable 10G SFP+',
+        'Aruba Instant On 1930 / 1960 24G 4SFP+ PoE Switch',
+        'Huawei CloudEngine S5735-L Gigabit Managed Switch',
+        'Allied Telesis CentreCOM GS900 Series',
+        'Unmanaged Gigabit Desktop Switch (8/16/24 Port)'
+    ],
+    'Server': [
+        'Dell PowerEdge R750 Rack Server (Dual Xeon Gold)',
+        'Dell PowerEdge R640 / R650 1U High-Density Server',
+        'Dell PowerEdge R440 / R540 2U Storage Server',
+        'Dell PowerEdge T440 / T640 Tower Enterprise',
+        'HP ProLiant DL380 Gen10 / Gen11 2U Dual Xeon',
+        'HP ProLiant DL360 Gen10 1U Enterprise Server',
+        'HP ProLiant ML350 Gen10 Tower Server',
+        'HP ProLiant MicroServer Gen10 Plus Compact',
+        'Lenovo ThinkSystem SR650 V2 / V3 2U Rack Server',
+        'Lenovo ThinkSystem SR550 2U Enterprise Server',
+        'Lenovo ThinkSystem ST550 Tower Server',
+        'Supermicro SuperServer 2U TwinPro Architecture',
+        'Supermicro 1U Rackmount Dual Xeon Server',
+        'Mini PC Barebone Host (Proxmox VE Cluster Node)',
+        'Custom 2U/4U Rackmount Server (AMD EPYC / Threadripper)',
+        'Custom 4U GPU Deep Learning / AI Training Server',
+        'Virtual Machine Guest (Proxmox KVM / VMware ESXi)',
+        'Container Host (Docker / Kubernetes Worker Node)'
+    ],
+    'Access Point': [
+        'Ubiquiti UniFi 6 Pro (U6-Pro Wi-Fi 6 Ceiling)',
+        'Ubiquiti UniFi 6 Long-Range (U6-LR Wi-Fi 6)',
+        'Ubiquiti UniFi 6 Mesh / Lite Outdoor Compact',
+        'Ubiquiti UniFi 7 Pro / Enterprise (Wi-Fi 7)',
+        'Ruijie Reyee RG-RAP2260(G) Wi-Fi 6 Ceiling AP',
+        'Ruijie Reyee RG-RAP6260(H) High-Power Outdoor AP',
+        'Ruijie Reyee RG-RAP1200(F) In-Wall Hospitality AP',
+        'Aruba Instant On AP22 Wi-Fi 6 Indoor Access Point',
+        'Aruba Instant On AP25 Wi-Fi 6 4x4 High-Density',
+        'Aruba Instant On AP17 Outdoor Weatherproof AP',
+        'Mikrotik cAP ax Dual-Band Wi-Fi 6 Ceiling',
+        'Mikrotik wAP ac / wAP ax Weatherproof Outdoor',
+        'Mikrotik Groove / BaseBox Outdoor Long-Range',
+        'TP-Link Omada EAP670 / EAP660 HD Wi-Fi 6 AP',
+        'TP-Link Omada EAP610-Outdoor Long-Range AP',
+        'Cisco Catalyst 9115 / 9120 Wi-Fi 6 Enterprise AP',
+        'Cisco Aironet 2802I / 3802I Dual-Band AP',
+        'Huawei AirEngine 5761-11 Wi-Fi 6 Indoor AP',
+        'Ruckus R550 / R650 BeamFlex+ Wi-Fi 6 AP',
+        'Cambium Networks cnPilot e410 / e600 Enterprise'
+    ],
+    'CCTV': [
+        'Hikvision DS-2CD2143G2-I 4MP AcuSense Dome Camera',
+        'Hikvision DS-2CD2043G2-I 4MP AcuSense Bullet Camera',
+        'Hikvision ColorVu DS-2CD2047G2-LU 24/7 Color Night',
+        'Hikvision TandemVu DS-2SE7C124IW PTZ 4-Inch',
+        'Hikvision DarkFighter Ultra Low-Light IP Camera',
+        'Dahua IPC-HDBW2431E-S-S2 4MP IR Dome Starlight',
+        'Dahua IPC-HFW2431T-AS 4MP WizSense AI Bullet',
+        'Dahua TiOC Full-Color Active Deterrence PTZ',
+        'Uniview (UNV) IPC324LR3-VSPF28-D 4MP Dome',
+        'Uniview StarView LightHunter Series Camera',
+        'TP-Link VIGI C440 / C340 4MP Outdoor Night Color',
+        'TP-Link VIGI C540-W Outdoor PTZ 4MP Smart IP',
+        'Ezviz C6N / C3W Pro 360 Smart Security Camera',
+        'IMOU Cruiser / Bullet 2C Wi-Fi Security Camera',
+        'Hikvision Embedded NVR 7616NI-K2 16-Channel 4K',
+        'Dahua NVR4216-4KS2/L 16-Channel 4K NVR System',
+        'Synology Surveillance Station NVR Recording Node',
+        'Analog HD CCTV + DVR Hybrid Security Channel'
+    ],
+    'IoT Node': [
+        'ESP32-WROOM-32 DevKit V1 (Wi-Fi + BLE Microcontroller)',
+        'ESP32-CAM AI-Thinker (Video/Camera Stream Sensor)',
+        'ESP32-S3 Dual-Core Xtensa LX7 (AI & TinyML Node)',
+        'ESP32-C3 RISC-V Single-Core IoT Module',
+        'ESP8266 NodeMCU V3 Lolin / Amica (Wi-Fi SoC)',
+        'ESP8266 Wemos D1 Mini Compact IoT Board',
+        'Arduino Uno R4 WiFi (Renesas RA4M1 + ESP32)',
+        'Arduino Mega 2560 R3 + W5500 Ethernet Module',
+        'Arduino Nano 33 BLE Sense / RP2040 Connect',
+        'Raspberry Pi Pico W (RP2040 Dual ARM Cortex-M0+)',
+        'LoRa TTGO T-Beam ESP32 SX1276 GPS Gateway Node',
+        'Heltec WiFi LoRa 32 V3 OLED Microcontroller',
+        'STM32 Blue Pill STM32F103C8T6 ARM Cortex-M3',
+        'Industrial RS485 / Modbus RTU ESP32 Gateway Node',
+        'Seeed Studio Wio Terminal ATSAMD51 Cortex-M4F',
+        'Nordic nRF52840 BLE 5.0 Low-Energy Telemetry Node',
+        'Sensor Node Lingkungan DHT22 / BME280 Ruang Rack',
+        'Sensor Node Daya Listrik & Arus AC PZEM-004T'
+    ],
+    'Raspberry Pi': [
+        'Raspberry Pi 5 (8GB RAM - PCIe NVMe Base)',
+        'Raspberry Pi 5 (4GB RAM Single Board Computer)',
+        'Raspberry Pi 4 Model B (8GB RAM High-Capacity)',
+        'Raspberry Pi 4 Model B (4GB / 2GB RAM)',
+        'Raspberry Pi 3 Model B+ Gigabit Ethernet',
+        'Raspberry Pi 3 Model A+ Compact Board',
+        'Raspberry Pi Zero 2 W Quad-Core Headless',
+        'Raspberry Pi Zero W Single-Core Mini SBC',
+        'Raspberry Pi Compute Module 4 (CM4 eMMC IO Board)',
+        'Raspberry Pi Compute Module 3+ (CM3+)',
+        'Raspberry Pi 400 Keyboard Integrated Computer',
+        'Orange Pi 5 Plus (Rockchip RK3588 8-Core 16GB)',
+        'Orange Pi Zero 3 Allwinner H618 Compact SBC',
+        'Banana Pi BPI-M5 Amlogic S905X3 SBC'
+    ],
+    'PC': [
+        'Dell OptiPlex 7000 / 5000 Small Form Factor (Core i7)',
+        'Dell OptiPlex Micro MFF Mini Desktop PC',
+        'Dell Precision 3660 / 5820 Tower Workstation',
+        'HP EliteDesk 800 G8 / G9 SFF Business PC',
+        'HP ProDesk 400 / 600 Desktop Mini PC',
+        'HP Z2 / Z4 G4 High-Performance CAD Workstation',
+        'Lenovo ThinkCentre M70q / M90q Tiny Mini PC',
+        'Lenovo ThinkCentre Neo 50s Gen 4 SFF PC',
+        'Lenovo ThinkStation P360 / P520 Workstation',
+        'ASUS ExpertCenter D700 / D900 Tower Desktop',
+        'Intel NUC 12 / 13 Pro Mini PC Core i5 / i7',
+        'Custom Tower PC (Core i7 / i9 Liquid Cooling)',
+        'Custom Tower PC (AMD Ryzen 7 / Ryzen 9 32GB)',
+        'Apple Mac Mini M2 / M4 Pro Workstation',
+        'Apple iMac 24" 4.5K Retina Desktop',
+        'All-in-One PC (HP Pavilion / Lenovo IdeaCentre 24")',
+        'Thin Client NComputing / Wyse Virtual Desktop'
+    ],
+    'Smart TV': [
+        'Samsung Commercial Smart Signage Display 65" (QM65B)',
+        'Samsung Crystal 4K UHD Smart TV 55" / 65" (Tizen OS)',
+        'Samsung The Terrace / The Frame Commercial Display',
+        'LG UHD Commercial TV Signage 55" / 65" (webOS 6.0)',
+        'LG Ultra HD 4K Commercial Display (UR640S Series)',
+        'Xiaomi Mi TV 4A / 4S / P1 55" 4K Android TV',
+        'Xiaomi Google TV A Pro 43" / 55" 4K Dolby Audio',
+        'TCL P635 / C645 4K HDR Google Smart TV 55"',
+        'Coocaa Smart Google TV 50" / 55" 4K Series',
+        'Interactive Flat Panel (IFP) Touchscreen 65" / 75"',
+        'Hisense 4K UHD Smart Commercial Display',
+        'Android TV Box 4K Streaming Telemetry Player',
+        'Xiaomi Mi TV Stick / HDMI Telemetry Dongle',
+        'Apple TV 4K Monitoring Digital Dashboard Node'
+    ],
+    'Printer': [
+        'Epson EcoTank L3210 / L3250 Wi-Fi All-in-One Ink Tank',
+        'Epson EcoTank L14150 A3+ Wi-Fi Duplex All-in-One',
+        'Epson EcoTank L6270 / L6490 High-Speed Business Ink Tank',
+        'Epson WorkForce Pro WF-C5790 Enterprise Inkjet',
+        'HP LaserJet Pro M404dn / M404n High-Speed Duplex',
+        'HP Color LaserJet Pro MFP M479fdw Wireless All-in-One',
+        'HP LaserJet Enterprise M507dn High-Capacity',
+        'Canon imageRUNNER ADVANCE C3530i Office Photocopier',
+        'Canon imageRUNNER 2006N / 2625i A3 Network Copier',
+        'Canon PIXMA G3010 / G3020 Wireless MegaTank',
+        'Brother DCP-L2540DW / MFC-L2700DW Monochrome Laser',
+        'Brother HL-L2360DN Compact High-Speed Duplex Laser',
+        'Brother MFC-T920DW Wireless Ink Tank All-in-One',
+        'Zebra ZD220 / ZD230 Desktop Thermal Barcode Printer',
+        'Zebra ZT230 / ZT411 Industrial Heavy-Duty Label Printer',
+        'Xprinter XP-420B / XP-365B USB/LAN Thermal Barcode',
+        'Epson TM-T82X / TM-T88VI POS Thermal Receipt Printer 80mm',
+        'TSC TE200 High Performance Barcode Label Printer'
+    ]
+};
+
+// Catalog cache invalidation & initialization
+const CATALOG_VERSION = 'v20261028_full_v5';
+try {
+    if (localStorage.getItem('taims_catalog_ver') !== CATALOG_VERSION) {
+        localStorage.setItem('taims_catalog_ver', CATALOG_VERSION);
+        localStorage.removeItem('taims_device_subcategories');
+        localStorage.removeItem('taims_deleted_subcategories');
+    }
+} catch(e) {}
+
+// Global active subcategories (initialized from defaults + stored customizations)
+let DEVICE_SUBCATEGORIES = JSON.parse(JSON.stringify(DEFAULT_DEVICE_SUBCATEGORIES));
+try {
+    const saved = localStorage.getItem('taims_device_subcategories');
+    if (saved) {
+        const parsed = JSON.parse(saved);
+        for (const [k, v] of Object.entries(parsed)) {
+            if (Array.isArray(v) && v.length > 0) {
+                if (DEFAULT_DEVICE_SUBCATEGORIES[k]) {
+                    // Selalu satukan default lengkap dengan kustomisasi tambahan pengguna (hindari duplikat)
+                    DEVICE_SUBCATEGORIES[k] = Array.from(new Set([...DEFAULT_DEVICE_SUBCATEGORIES[k], ...v]));
+                } else {
+                    DEVICE_SUBCATEGORIES[k] = v;
+                }
+            }
+        }
+    }
+} catch(e) {}
+window.DEFAULT_DEVICE_SUBCATEGORIES = DEFAULT_DEVICE_SUBCATEGORIES;
+window.DEVICE_SUBCATEGORIES = DEVICE_SUBCATEGORIES;
+
+// Helper pemulihan otomatis jika kategori Router sebelumnya terhapus tidak sengaja
+function restoreRouterCategoryIfNeeded() {
+    try {
+        let deleted = JSON.parse(localStorage.getItem('taims_deleted_categories') || '[]');
+        if (deleted.includes('Router')) {
+            deleted = deleted.filter(c => c !== 'Router');
+            localStorage.setItem('taims_deleted_categories', JSON.stringify(deleted));
+        }
+    } catch(e) {}
+
+    if (!DEVICE_SUBCATEGORIES['Router'] || DEVICE_SUBCATEGORIES['Router'].length === 0) {
+        DEVICE_SUBCATEGORIES['Router'] = [...DEFAULT_DEVICE_SUBCATEGORIES['Router']];
+    }
+
+    const catSelect = document.getElementById('dev-category');
+    if (catSelect) {
+        let hasRouter = false;
+        for (let i = 0; i < catSelect.options.length; i++) {
+            if (catSelect.options[i].value === 'Router') {
+                hasRouter = true;
+                break;
+            }
+        }
+        if (!hasRouter) {
+            const opt = document.createElement('option');
+            opt.value = 'Router';
+            opt.textContent = 'Router';
+            catSelect.insertBefore(opt, catSelect.firstChild);
+        }
     }
 }
+window.restoreRouterCategoryIfNeeded = restoreRouterCategoryIfNeeded;
+
+// Jalankan auto-restore Router segera saat file dimuat
+try {
+    restoreRouterCategoryIfNeeded();
+} catch(e) {}
+
+// Pastikan subkategori Router langsung terisi saat dokumen siap
+try {
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+            restoreRouterCategoryIfNeeded();
+            populateSubcategories('Router');
+        });
+    } else {
+        restoreRouterCategoryIfNeeded();
+        populateSubcategories('Router');
+    }
+} catch(e) {}
+
+function populateSubcategories(cat, currentSubtype = '') {
+    const subSelect = document.getElementById('dev-subcategory');
+    const customWrap = document.getElementById('dev-custom-subcategory-wrap');
+    const customInput = document.getElementById('dev-custom-subcategory');
+    if (!subSelect) return;
+
+    subSelect.innerHTML = '';
+    const list = DEVICE_SUBCATEGORIES[cat] || [];
+
+    if (cat === '__custom__' || list.length === 0) {
+        const opt = document.createElement('option');
+        opt.value = '__custom_subtype__';
+        opt.textContent = '+ Ketik Jenis / Merk Spesifik Manual...';
+        subSelect.appendChild(opt);
+        subSelect.value = '__custom_subtype__';
+        if (customWrap) customWrap.style.display = 'block';
+        if (customInput) customInput.value = currentSubtype || '';
+        return;
+    }
+
+    let matchedInList = false;
+    list.forEach(item => {
+        const opt = document.createElement('option');
+        opt.value = item;
+        opt.textContent = item;
+        if (currentSubtype && currentSubtype === item) {
+            opt.selected = true;
+            matchedInList = true;
+        }
+        subSelect.appendChild(opt);
+    });
+
+    const customOpt = document.createElement('option');
+    customOpt.value = '__custom_subtype__';
+    customOpt.textContent = '+ Lainnya / Ketik Sendiri (Custom)...';
+    customOpt.style.color = '#10B981';
+    customOpt.style.fontWeight = '700';
+    subSelect.appendChild(customOpt);
+
+    if (currentSubtype && !matchedInList) {
+        subSelect.value = '__custom_subtype__';
+        if (customWrap) customWrap.style.display = 'block';
+        if (customInput) customInput.value = currentSubtype;
+    } else {
+        if (!currentSubtype && list.length > 0) {
+            subSelect.value = list[0];
+        }
+        if (customWrap) customWrap.style.display = (subSelect.value === '__custom_subtype__') ? 'block' : 'none';
+        if (customInput && subSelect.value !== '__custom_subtype__') customInput.value = '';
+    }
+}
+window.populateSubcategories = populateSubcategories;
+
+function handleDeviceCategoryChange() {
+    const catSelect = document.getElementById('dev-category');
+    const customCatWrap = document.getElementById('dev-custom-category-wrap');
+    const customCatInput = document.getElementById('dev-custom-category');
+    const catVal = catSelect ? catSelect.value : 'Router';
+
+    if (catVal === '__custom__') {
+        if (customCatWrap) customCatWrap.style.display = 'block';
+        if (customCatInput) customCatInput.focus();
+        populateSubcategories('__custom__');
+    } else {
+        if (customCatWrap) customCatWrap.style.display = 'none';
+        populateSubcategories(catVal);
+    }
+
+    const editIdEl = document.getElementById('dev-edit-id');
+    if (editIdEl && editIdEl.value) return; // Mode Edit: jangan ubah otomatis kode unik
+    const codeInput = document.getElementById('dev-code');
+    if (!codeInput) return;
+    const num = String(APP_STATE.devices.length + 1).padStart(3, '0');
+    const prefix = catVal === '__custom__' ? 'AST' : catVal.slice(0, 3).toUpperCase();
+    codeInput.placeholder = `Misal: AST-${prefix}-${num}`;
+}
 window.handleDeviceCategoryChange = handleDeviceCategoryChange;
+
+function handleDeviceSubcategoryChange() {
+    const subSelect = document.getElementById('dev-subcategory');
+    const customWrap = document.getElementById('dev-custom-subcategory-wrap');
+    const customInput = document.getElementById('dev-custom-subcategory');
+    if (!subSelect) return;
+
+    if (subSelect.value === '__custom_subtype__') {
+        if (customWrap) customWrap.style.display = 'block';
+        if (customInput) customInput.focus();
+    } else {
+        if (customWrap) customWrap.style.display = 'none';
+    }
+}
+window.handleDeviceSubcategoryChange = handleDeviceSubcategoryChange;
+
+function handleDeleteCurrentCategory() {
+    if (!isSuperAdmin()) {
+        showToast('Akses Ditolak', 'Hanya Superadmin yang berhak menghapus kategori perangkat.', 'error');
+        return;
+    }
+    const catSelect = document.getElementById('dev-category');
+    if (!catSelect) return;
+    const currentVal = catSelect.value;
+    if (currentVal === '__custom__') {
+        showToast('Info', 'Opsi tambah kategori manual tidak dapat dihapus.', 'info');
+        return;
+    }
+    
+    showCyberConfirmModal(
+        'Konfirmasi Penghapusan Kategori',
+        `PERINGATAN SUPERADMIN:\nApakah Anda yakin ingin menghapus kategori "${currentVal}" beserta seluruh jenis/merk di dalamnya dari sistem inventaris T-AIMS?\n\nTindakan ini akan menghapus kategori dari pilihan sistem secara permanen.`,
+        () => {
+            // Simpan ke daftar kategori terhapus di localStorage
+            let deletedCats = [];
+            try {
+                deletedCats = JSON.parse(localStorage.getItem('taims_deleted_categories') || '[]');
+            } catch(e) { deletedCats = []; }
+            if (!deletedCats.includes(currentVal)) {
+                deletedCats.push(currentVal);
+                localStorage.setItem('taims_deleted_categories', JSON.stringify(deletedCats));
+            }
+
+            // Hapus dari memori DEVICE_SUBCATEGORIES
+            if (typeof DEVICE_SUBCATEGORIES !== 'undefined' && DEVICE_SUBCATEGORIES[currentVal]) {
+                delete DEVICE_SUBCATEGORIES[currentVal];
+            }
+
+            // Hapus opsi dari dropdown dev-category
+            for (let i = 0; i < catSelect.options.length; i++) {
+                if (catSelect.options[i].value === currentVal) {
+                    catSelect.remove(i);
+                    break;
+                }
+            }
+
+            // Pilih opsi pertama yang tersedia
+            if (catSelect.options.length > 0) {
+                catSelect.selectedIndex = 0;
+                handleDeviceCategoryChange();
+            }
+
+            showToast('Kategori Dihapus', `Kategori [${currentVal}] berhasil dihapus. Tekan tombol [Reset Bawaan] jika ingin memulihkannya.`, 'info');
+        },
+        'Ya, Hapus Permanen'
+    );
+}
+window.handleDeleteCurrentCategory = handleDeleteCurrentCategory;
+
+function handleDeleteCurrentSubcategory() {
+    if (!isSuperAdmin()) {
+        showToast('Akses Ditolak', 'Hanya Superadmin yang berhak menghapus jenis perangkat.', 'error');
+        return;
+    }
+    const catSelect = document.getElementById('dev-category');
+    const subSelect = document.getElementById('dev-subcategory');
+    if (!catSelect || !subSelect) return;
+    const currentCat = catSelect.value;
+    const currentSub = subSelect.value;
+
+    if (currentSub === '__custom_subtype__') {
+        showToast('Info', 'Opsi ketik manual tidak dapat dihapus.', 'info');
+        return;
+    }
+
+    showCyberConfirmModal(
+        'Konfirmasi Penghapusan Jenis Perangkat',
+        `PERINGATAN SUPERADMIN:\nApakah Anda yakin ingin menghapus jenis/merk "${currentSub}" dari kategori "${currentCat}"?\n\nTindakan ini akan menghapus jenis dari daftar pilihan secara permanen.`,
+        () => {
+            // Hapus dari memori DEVICE_SUBCATEGORIES
+            if (typeof DEVICE_SUBCATEGORIES !== 'undefined' && DEVICE_SUBCATEGORIES[currentCat]) {
+                DEVICE_SUBCATEGORIES[currentCat] = DEVICE_SUBCATEGORIES[currentCat].filter(item => item !== currentSub);
+                try {
+                    localStorage.setItem('taims_device_subcategories', JSON.stringify(DEVICE_SUBCATEGORIES));
+                } catch(e) {}
+            }
+
+            // Re-populate subcategories
+            populateSubcategories(currentCat);
+            showToast('Jenis Dihapus', `Jenis [${currentSub}] berhasil dihapus oleh Superadmin.`, 'success');
+        },
+        'Ya, Hapus Permanen'
+    );
+}
+window.handleDeleteCurrentSubcategory = handleDeleteCurrentSubcategory;
+
+function resetCategoriesAndSubcategoriesToDefault() {
+    if (!isSuperAdmin()) {
+        showToast('Akses Ditolak', 'Hanya Superadmin yang berhak mereset kategori & jenis perangkat.', 'error');
+        return;
+    }
+
+    showCyberConfirmModal(
+        'Konfirmasi Reset Bawaan Sistem',
+        `PERINGATAN SUPERADMIN:\nApakah Anda yakin ingin memulihkan seluruh Kategori dan Jenis/Merk perangkat ke pengaturan awal bawaan (Router sampai Printer)?\n\nSemua perubahan dan kustomisasi akan diatur ulang ke standar T-AIMS.`,
+        () => {
+            try {
+                localStorage.removeItem('taims_deleted_categories');
+                localStorage.removeItem('taims_device_subcategories');
+            } catch(e) {}
+
+            DEVICE_SUBCATEGORIES = JSON.parse(JSON.stringify(DEFAULT_DEVICE_SUBCATEGORIES));
+            window.DEVICE_SUBCATEGORIES = DEVICE_SUBCATEGORIES;
+
+            const catSelect = document.getElementById('dev-category');
+            if (catSelect) {
+                catSelect.innerHTML = `
+                    <option value="Router" selected>Router</option>
+                    <option value="Switch">Switch</option>
+                    <option value="Server">Server</option>
+                    <option value="Access Point">Access Point (AP)</option>
+                    <option value="CCTV">CCTV</option>
+                    <option value="IoT Node">IoT Node (ESP32, Arduino, LoRa)</option>
+                    <option value="Raspberry Pi">Raspberry Pi</option>
+                    <option value="PC">PC / Workstation</option>
+                    <option value="Smart TV">Smart TV</option>
+                    <option value="Printer">Printer</option>
+                    <option value="__custom__" style="color: #10B981; font-weight: 700;">+ Tambah Kategori Baru (Ketik Manual)...</option>
+                `;
+                catSelect.value = 'Router';
+                handleDeviceCategoryChange();
+            }
+            showToast('Reset Berhasil', 'Kategori "Router" sampai "Printer" beserta seluruh model bawaan berhasil dipulihkan seperti semula.', 'success');
+        },
+        'Ya, Reset Bawaan'
+    );
+}
+window.resetCategoriesAndSubcategoriesToDefault = resetCategoriesAndSubcategoriesToDefault;
 
 function openEditDeviceModal(deviceId) {
     if (APP_STATE.currentUser && APP_STATE.currentUser.role === 'guest') {
         showToast('Akses Dibatasi', 'Mode Tamu tidak dapat mengubah data aset. Silakan login sebagai Admin.', 'error');
         return;
     }
+    restoreRouterCategoryIfNeeded();
     const dev = APP_STATE.devices.find(d => String(d.id) === String(deviceId) || String(d.asset_id) === String(deviceId) || String(d.code) === String(deviceId) || String(d.asset_code) === String(deviceId));
     if (!dev) return;
 
@@ -2991,7 +3568,7 @@ function openEditDeviceModal(deviceId) {
     const titleEl = document.getElementById('modal-device-title');
     if (titleEl) titleEl.textContent = `Edit Data Aset: ${dev.code || dev.name}`;
     const btnLabel = document.getElementById('btn-save-device-label');
-    if (btnLabel) btnLabel.textContent = 'Simpan Perubahan';
+    if (btnLabel) btnLabel.innerHTML = '<span class="text-desktop">Simpan Perubahan</span><span class="text-mobile">Simpan</span>';
 
     // Isi Kode Aset (Kode Unik) & Buka izin edit untuk Admin & Superadmin
     const codeInput = document.getElementById('dev-code');
@@ -3002,7 +3579,35 @@ function openEditDeviceModal(deviceId) {
     }
 
     document.getElementById('dev-name').value = dev.name || '';
-    document.getElementById('dev-category').value = dev.category || 'Server';
+    
+    // Set Kategori & Subkategori / Jenis & Merk
+    const catSelect = document.getElementById('dev-category');
+    const customCatWrap = document.getElementById('dev-custom-category-wrap');
+    const customCatInput = document.getElementById('dev-custom-category');
+    const devCat = dev.category || 'Router';
+    const devSub = dev.sub_category || dev.subcategory || '';
+
+    let catExists = false;
+    if (catSelect) {
+        for (let i = 0; i < catSelect.options.length; i++) {
+            if (catSelect.options[i].value === devCat) {
+                catExists = true;
+                break;
+            }
+        }
+        if (catExists) {
+            catSelect.value = devCat;
+            if (customCatWrap) customCatWrap.style.display = 'none';
+            if (customCatInput) customCatInput.value = '';
+            populateSubcategories(devCat, devSub);
+        } else {
+            catSelect.value = '__custom__';
+            if (customCatWrap) customCatWrap.style.display = 'block';
+            if (customCatInput) customCatInput.value = devCat;
+            populateSubcategories('__custom__', devSub);
+        }
+    }
+
     document.getElementById('dev-ip').value = dev.ip || '';
     document.getElementById('dev-location').value = dev.location || 'Head Office';
     document.getElementById('dev-method').value = dev.method || 'Ping';
@@ -3050,7 +3655,12 @@ function openEditDeviceModal(deviceId) {
     if (document.getElementById('dev-floor')) document.getElementById('dev-floor').value = dev.floor || '';
     if (document.getElementById('dev-is-active')) document.getElementById('dev-is-active').value = dev.isActive !== false ? '1' : '0';
 
-    document.getElementById('device-modal').classList.remove('hidden');
+    if (typeof enforceSuperadminOnlyElements === 'function') enforceSuperadminOnlyElements();
+    const modalEl = document.getElementById('device-modal');
+    modalEl.classList.remove('hidden');
+    modalEl.scrollTop = 0;
+    const modalBody = modalEl.querySelector('.modal-body');
+    if (modalBody) modalBody.scrollTop = 0;
 }
 
 function openAddDeviceModal() {
@@ -3058,21 +3668,32 @@ function openAddDeviceModal() {
         showToast('Akses Dibatasi', 'Mode User (Read-Only) tidak dapat menambah perangkat. Silakan login sebagai Admin.', 'error');
         return;
     }
+    restoreRouterCategoryIfNeeded();
     document.getElementById('device-form').reset();
     const editIdEl = document.getElementById('dev-edit-id');
     if (editIdEl) editIdEl.value = '';
     const titleEl = document.getElementById('modal-device-title');
     if (titleEl) titleEl.textContent = 'Tambah Perangkat Baru';
     const btnLabel = document.getElementById('btn-save-device-label');
-    if (btnLabel) btnLabel.textContent = 'Simpan Perangkat';
+    if (btnLabel) btnLabel.innerHTML = '<span class="text-desktop">Simpan Perangkat</span><span class="text-mobile">Simpan</span>';
 
-    // Kode Aset Otomatis yang dapat diedit oleh Admin & Superadmin
+    // Reset Kategori & Subkategori
+    const catSelect = document.getElementById('dev-category');
+    if (catSelect) catSelect.value = 'Router';
+    const customCatWrap = document.getElementById('dev-custom-category-wrap');
+    if (customCatWrap) customCatWrap.style.display = 'none';
+    const customCatInput = document.getElementById('dev-custom-category');
+    if (customCatInput) customCatInput.value = '';
+    populateSubcategories('Router');
+
+    // Kode Aset: Kosongkan saat pertama kali membuka modal Tambah Perangkat (bebas diketik manual oleh Admin / Superadmin)
     const num = String(APP_STATE.devices.length + 1).padStart(3, '0');
-    const cat = document.getElementById('dev-category')?.value || 'Router';
+    const cat = catSelect?.value || 'Router';
     const suggestedCode = `AST-${cat.slice(0, 3).toUpperCase()}-${num}`;
     const codeInput = document.getElementById('dev-code');
     if (codeInput) {
-        codeInput.value = suggestedCode;
+        codeInput.value = '';
+        codeInput.placeholder = `Misal: ${suggestedCode}`;
         codeInput.disabled = false;
         codeInput.readOnly = false;
     }
@@ -3108,7 +3729,12 @@ function openAddDeviceModal() {
     const btnDeleteModal = document.getElementById('btn-modal-delete-device');
     if (btnDeleteModal) btnDeleteModal.classList.add('hidden');
 
-    document.getElementById('device-modal').classList.remove('hidden');
+    if (typeof enforceSuperadminOnlyElements === 'function') enforceSuperadminOnlyElements();
+    const modalEl = document.getElementById('device-modal');
+    modalEl.classList.remove('hidden');
+    modalEl.scrollTop = 0;
+    const modalBody = modalEl.querySelector('.modal-body');
+    if (modalBody) modalBody.scrollTop = 0;
 }
 
 function closeDeviceModal() {
@@ -3120,7 +3746,33 @@ async function handleSaveDevice() {
     const editId = editIdEl ? editIdEl.value : '';
     const code = (document.getElementById('dev-code')?.value || '').trim().toUpperCase();
     const name = document.getElementById('dev-name').value.trim();
-    const category = document.getElementById('dev-category').value;
+    
+    // Resolusi Kategori: Standard vs Ketik Manual (Custom)
+    const catSelect = document.getElementById('dev-category');
+    let category = catSelect ? catSelect.value : 'Router';
+    if (category === '__custom__') {
+        const customCat = (document.getElementById('dev-custom-category')?.value || '').trim();
+        if (!customCat) {
+            showToast('Validasi Gagal', 'Silakan ketik nama Kategori Baru Anda.', 'error');
+            document.getElementById('dev-custom-category')?.focus();
+            return;
+        }
+        category = customCat;
+    }
+
+    // Resolusi Subkategori / Jenis & Merk: Predefined vs Ketik Manual (Custom)
+    const subSelect = document.getElementById('dev-subcategory');
+    let subCategory = subSelect ? subSelect.value : '';
+    if (subCategory === '__custom_subtype__') {
+        const customSub = (document.getElementById('dev-custom-subcategory')?.value || '').trim();
+        if (!customSub) {
+            showToast('Validasi Gagal', 'Silakan ketik jenis/merk & tipe spesifik perangkat.', 'error');
+            document.getElementById('dev-custom-subcategory')?.focus();
+            return;
+        }
+        subCategory = customSub;
+    }
+
     const ip = document.getElementById('dev-ip').value.trim();
     const location = document.getElementById('dev-location').value.trim();
     const method = document.getElementById('dev-method').value;
@@ -3160,7 +3812,7 @@ async function handleSaveDevice() {
     }
 
     // Validasi Format IP Address (IPv4 Standard)
-    const ipRegex = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+    const ipRegex = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?).){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
     if (!ip || !ipRegex.test(ip)) {
         showToast('Validasi Gagal', 'Format IP Address tidak valid. Masukkan IPv4 standar (contoh: 192.168.1.50)', 'error');
         return;
@@ -3207,6 +3859,7 @@ async function handleSaveDevice() {
                         asset_code: code,
                         asset_name: name,
                         category: category,
+                        sub_category: subCategory,
                         ip_address: ip,
                         mac_address: mac,
                         floor: floor,
@@ -3231,6 +3884,8 @@ async function handleSaveDevice() {
                 dev.asset_code = code;
                 dev.name = name;
                 dev.category = category;
+                dev.sub_category = subCategory;
+                dev.subcategory = subCategory;
                 dev.ip = ip;
                 dev.location = location;
                 dev.floor = floor;
@@ -3279,6 +3934,8 @@ async function handleSaveDevice() {
             asset_code: code,
             name,
             category,
+            sub_category: subCategory,
+            subcategory: subCategory,
             location,
             floor,
             isActive,
@@ -3314,6 +3971,7 @@ async function handleSaveDevice() {
                 asset_code: code,
                 asset_name: name,
                 category: category,
+                sub_category: subCategory,
                 location_name: location,
                 location_id: resolveLocationId(location),
                 floor: floor,
@@ -3369,6 +4027,10 @@ async function handleSaveDevice() {
         }
     }
 }
+window.handleSaveDevice = handleSaveDevice;
+window.openAddDeviceModal = openAddDeviceModal;
+window.openEditDeviceModal = openEditDeviceModal;
+window.closeDeviceModal = closeDeviceModal;
 
 function openQuickStatusModal(deviceId) {
     if (APP_STATE.currentUser && APP_STATE.currentUser.role === 'guest') {
@@ -3418,7 +4080,7 @@ function setQuickStatus(newStatus) {
 /**
  * Reusable Glassmorphism Cyber Confirmation Modal (QA Fix Bug #12)
  */
-function showCyberConfirmModal(title, message, onConfirm) {
+function showCyberConfirmModal(title, message, onConfirm, confirmBtnText = 'Ya, Hapus Permanen') {
     let modal = document.getElementById('cyber-confirm-modal');
     if (!modal) {
         modal = document.createElement('div');
@@ -3438,16 +4100,27 @@ function showCyberConfirmModal(title, message, onConfirm) {
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-cyber btn-sm" id="cyber-confirm-cancel" aria-label="Batalkan">Batalkan</button>
-                    <button type="button" class="btn btn-sm" id="cyber-confirm-ok" aria-label="Konfirmasi Hapus" style="background: linear-gradient(135deg, #EF4444, #B91C1C); color: #FFF; border: none; font-weight: 700; padding: 7px 16px; border-radius: 6px; cursor: pointer;">
-                        <i class="fa-solid fa-trash-can"></i> Ya, Hapus Permanen
+                    <button type="button" class="btn btn-sm" id="cyber-confirm-ok" aria-label="Konfirmasi Aksi" style="background: linear-gradient(135deg, #EF4444, #B91C1C); color: #FFF; border: none; font-weight: 700; padding: 7px 16px; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+                        <i class="fa-solid fa-trash-can" id="cyber-confirm-btn-icon"></i> <span id="cyber-confirm-btn-text">Ya, Hapus Permanen</span>
                     </button>
                 </div>
             </div>
         `;
         document.body.appendChild(modal);
     }
+    modal.style.zIndex = '100050';
     document.getElementById('cyber-confirm-title').textContent = title;
     document.getElementById('cyber-confirm-msg').textContent = message;
+    const btnTextEl = document.getElementById('cyber-confirm-btn-text');
+    if (btnTextEl) btnTextEl.textContent = confirmBtnText || 'Ya, Hapus Permanen';
+    const btnIconEl = document.getElementById('cyber-confirm-btn-icon');
+    if (btnIconEl) {
+        if (confirmBtnText && confirmBtnText.toLowerCase().includes('reset')) {
+            btnIconEl.className = 'fa-solid fa-rotate-left';
+        } else {
+            btnIconEl.className = 'fa-solid fa-trash-can';
+        }
+    }
     modal.classList.remove('hidden');
 
     const close = () => modal.classList.add('hidden');
@@ -3625,11 +4298,19 @@ function renderAlerts() {
 }
 
 async function markAllAlertsRead() {
+    localStorage.setItem('taims_all_alerts_read', 'true');
+    localStorage.setItem('taims_alerts_read_at', Date.now().toString());
     if (APP_STATE.alerts && Array.isArray(APP_STATE.alerts)) {
         APP_STATE.alerts.forEach(a => a.read = true);
     }
     if (typeof updateNotifBadgeCount === 'function') {
         updateNotifBadgeCount(0);
+    }
+    const sidebarBadge = document.getElementById('sidebar-alert-badge');
+    if (sidebarBadge) {
+        sidebarBadge.textContent = '0';
+        sidebarBadge.style.display = 'none';
+        sidebarBadge.dataset.count = '0';
     }
     if (window.apiService && typeof window.apiService.markAllNotificationsRead === 'function') {
         try {
@@ -3644,6 +4325,7 @@ async function markAllAlertsRead() {
 window.markAllAlertsRead = markAllAlertsRead;
 
 function addAlertLog(title, location, level) {
+    localStorage.removeItem('taims_all_alerts_read');
     const now = new Date();
     const time = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
     APP_STATE.alerts.unshift({
@@ -5559,6 +6241,7 @@ const origSwitchPage = switchPage;
 switchPage = function(pageId) {
     window.location.hash = pageId;
     origSwitchPage(pageId);
+    window.scrollTo({ top: 0, behavior: 'instant' });
 };
 
 // Auto-adjust leaflet map on window resize
@@ -5662,7 +6345,7 @@ function renderDevicesGridCards(devices) {
                     </div>
 
                     <div class="dcc-meta-row">
-                        <span class="badge-subtle"><i class="fa-solid fa-tags text-cyan"></i> ${safeCat}</span>
+                        ${formatCategoryBadge(safeCat)}
                         ${formatSiteLocationBadge(safeLoc)}
                     </div>
 
@@ -5879,7 +6562,10 @@ function renderFullDevicesTable() {
             <td>${prioHtml}<strong class="text-cyan font-mono">${safeCode}</strong></td>
             <td>
                 <strong>${safeName}</strong>
-                <div class="text-xs text-muted">${safeCat}</div>
+                <div class="text-xs text-muted" style="display: flex; align-items: center; gap: 4px; flex-wrap: wrap;">
+                    ${formatCategoryBadge(safeCat)}
+                    ${(dev.sub_category || dev.subcategory) ? `<span class="badge-subcat-tag" style="color: #94A3B8; font-size: 0.68rem; max-width: 170px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${escapeHtml(dev.sub_category || dev.subcategory)}">• ${escapeHtml(dev.sub_category || dev.subcategory)}</span>` : ''}
+                </div>
             </td>
             <td>
                 <span class="ip-mono">${safeIp}</span>
@@ -6088,15 +6774,24 @@ function initNocLatencyChart() {
             responsive: true,
             maintainAspectRatio: false,
             animation: { duration: 300 },
+            layout: {
+                padding: { right: window.innerWidth <= 576 ? 10 : 0, left: 0 }
+            },
             plugins: {
                 legend: {
-                    labels: { color: '#CBD5E1', font: { family: 'Plus Jakarta Sans', size: 11 } }
+                    labels: {
+                        color: '#CBD5E1',
+                        boxWidth: window.innerWidth <= 576 ? 10 : 36,
+                        boxHeight: window.innerWidth <= 576 ? 6 : 10,
+                        padding: window.innerWidth <= 576 ? 6 : 10,
+                        font: { family: 'Plus Jakarta Sans', size: window.innerWidth <= 576 ? 9 : 11 }
+                    }
                 }
             },
             scales: {
                 x: {
                     grid: { color: 'rgba(255, 255, 255, 0.05)' },
-                    ticks: { color: '#94A3B8', font: { size: 10 }, maxRotation: 0, autoSkip: true, maxTicksLimit: 8 }
+                    ticks: { color: '#94A3B8', font: { size: window.innerWidth <= 576 ? 9 : 10 }, maxRotation: 0, autoSkip: true, maxTicksLimit: window.innerWidth <= 576 ? 4 : 8 }
                 },
                 y: {
                     grid: { color: 'rgba(255, 255, 255, 0.05)' },
@@ -6355,10 +7050,16 @@ function updateIncidentStats() {
     // badge sidebar
     const sidebarBadge = document.getElementById('sidebar-alert-badge');
     if (sidebarBadge) {
-        const openCount = openCases + invCases;
-        sidebarBadge.textContent = openCount;
-        sidebarBadge.style.display = openCount > 0 ? 'inline-flex' : 'none';
-        sidebarBadge.dataset.count = openCount;
+        if (localStorage.getItem('taims_all_alerts_read') === 'true') {
+            sidebarBadge.textContent = '0';
+            sidebarBadge.style.display = 'none';
+            sidebarBadge.dataset.count = '0';
+        } else {
+            const openCount = openCases + invCases;
+            sidebarBadge.textContent = openCount;
+            sidebarBadge.style.display = openCount > 0 ? 'inline-flex' : 'none';
+            sidebarBadge.dataset.count = openCount;
+        }
     }
 }
 window.updateIncidentStats = updateIncidentStats;
@@ -6466,6 +7167,7 @@ async function handleRefreshAndCleanIncidents(clearResolved = false) {
 
     try {
         if (clearResolved) {
+            localStorage.setItem('taims_all_alerts_read', 'true');
             if (window.apiService && typeof window.apiService.clearResolvedIncidents === 'function') {
                 await window.apiService.clearResolvedIncidents();
             }
@@ -6601,7 +7303,7 @@ async function openEditIncidentModal(incId) {
     let assetOpts = assets.map(d => {
         const assetId = d.rawId || d.id;
         const selected = String(assetId) === String(inc.assetId) ? 'selected' : '';
-        return `<option value="${assetId}" ${selected}>${d.name || d.deviceName} (${d.assetCode || ''})</option>`;
+        return `<option value="${assetId}" ${selected}>${d.name || d.deviceName}${d.assetCode ? ` (${d.assetCode})` : ''}</option>`;
     }).join('');
     if (!assetOpts) assetOpts = `<option value="${inc.assetId}" selected>${inc.deviceName}</option>`;
 
@@ -6708,8 +7410,18 @@ async function handleDeleteIncident(incId) {
     }
     const inc = APP_STATE.incidents.find(i => i.id === incId);
     if (!inc) return;
-    if (!confirm(`Hapus insiden ${incId} (${inc.incidentType || inc.rootCause})?
-Tindakan ini tidak dapat dibatalkan.`)) return;
+    showCyberConfirmModal(
+        'Konfirmasi Hapus Insiden',
+        `PERINGATAN SUPERADMIN:\nApakah Anda yakin ingin menghapus data insiden #${incId} (${inc.incidentType || inc.rootCause || 'Insiden'})?\n\nTindakan ini akan menghapus log insiden secara permanen.`,
+        () => {
+            APP_STATE.incidents = APP_STATE.incidents.filter(i => String(i.id) !== String(incId) && String(i.incident_id) !== String(incId));
+            saveIncidents();
+            renderIncidentsPage();
+            showToast('Insiden Dihapus', `Insiden #${incId} berhasil dihapus.`, 'success');
+        },
+        'Ya, Hapus Insiden'
+    );
+    return;
 
     try {
         await window.apiService.deleteIncident(inc.rawId);
@@ -7334,7 +8046,37 @@ async function handleDeleteMaintenance(rawId, deviceLabel) {
         showToast('Tidak Bisa Hapus', 'Data ini belum tersinkron dari database. Refresh halaman dulu.', 'warning');
         return;
     }
-    if (!confirm('Hapus jadwal pemeliharaan untuk "' + deviceLabel + '"?\nData akan dihapus permanen dari database.')) return;
+// Superadmin confirm
+    showCyberConfirmModal(
+        'Konfirmasi Hapus Pemeliharaan',
+        'PERINGATAN SUPERADMIN:\nApakah Anda yakin ingin menghapus jadwal pemeliharaan untuk "' + deviceLabel + '"?\n\nData akan dihapus permanen dari database.',
+        async () => {
+            try {
+                const token = localStorage.getItem('taims_jwt_token') || sessionStorage.getItem('taims_jwt_token') || '';
+                const baseUrl = (window.apiService && window.apiService._baseUrl) ? window.apiService._baseUrl : 'http://localhost:3000/api';
+                const res = await fetch(baseUrl + '/maintenance/' + rawId, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    }
+                });
+                const json = await res.json().catch(() => ({}));
+                if (res.ok && json.success) {
+                    showToast('Dihapus', 'Jadwal pemeliharaan berhasil dihapus.', 'success');
+                    await loadMaintenanceSchedules();
+                    renderMaintenanceSchedule();
+                } else {
+                    showToast('Gagal', (json && json.message) || 'Gagal menghapus jadwal.', 'error');
+                }
+            } catch (err) {
+                console.error('[Maintenance] delete error:', err);
+                showToast('Koneksi Terputus', 'Gagal menghubungi server.', 'error');
+            }
+        },
+        'Ya, Hapus Pemeliharaan'
+    );
+    return;
     try {
         const token = localStorage.getItem('taims_jwt_token') || sessionStorage.getItem('taims_jwt_token') || '';
         const baseUrl = (window.apiService && window.apiService._baseUrl) ? window.apiService._baseUrl : 'http://localhost:3000/api';
@@ -7437,14 +8179,24 @@ window.loadMaintenance = loadMaintenance;
 // LOKASI TERHUBUNG DATABASE (tabel locations: nama, alamat, latitude, longitude)
 // =============================================================================
 const LOC_DB_KEY = { 'Head Office': 'ho', 'Marketing Office': 'mo', 'House Server': 'server' };
-APP_STATE.locationsDb = APP_STATE.locationsDb || [];
+function getDefaultLocationsDb() {
+    return [
+        { location_id: 2, location_name: 'Head Office', description: 'PT Teknolab Caraka Internasional', address: 'Jl. Cibodas, Kel. Tanggung, Kec. Kepanjenkidul, Kota Blitar', latitude: -8.07378, longitude: 112.17336, total_assets: 7 },
+        { location_id: 1, location_name: 'Marketing Office', description: 'Kantor Pemasaran & Operasional', address: 'Jl. Ciliwung, Kec. Sukorejo / Sananwetan, Kota Blitar', latitude: -8.06438, longitude: 112.17709, total_assets: 4 },
+        { location_id: 3, location_name: 'House of Server', description: 'Pusat Data & Infrastruktur Server Inti', address: 'Ruang Server T-AIMS, Pusat Rack Server & Backbone Switch, Kota Blitar', latitude: -8.07069, longitude: 112.16435, total_assets: 4 }
+    ];
+}
+APP_STATE.locationsDb = (APP_STATE.locationsDb && APP_STATE.locationsDb.length) ? APP_STATE.locationsDb : getDefaultLocationsDb();
 
 function locEsc(s) {
     return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
 
 async function locFetch(path, opts) {
-    const token = localStorage.getItem('taims_jwt_token') || sessionStorage.getItem('taims_jwt_token') || '';
+    let token = localStorage.getItem('taims_jwt_token') || sessionStorage.getItem('taims_jwt_token') || '';
+    if (!token && window.apiService && typeof window.apiService.ensureAuthToken === 'function') {
+        try { token = await window.apiService.ensureAuthToken(); } catch (e) {}
+    }
     if (!token) {
         return { success: false, data: [] };
     }
@@ -7563,7 +8315,7 @@ async function loadLocations() {
     try {
         const json = await locFetch('/locations');
         const rows = (json && json.data) ? json.data : null;
-        if (!Array.isArray(rows)) return;
+        if (!Array.isArray(rows) || !rows.length) return;
         APP_STATE.locationsDb = rows;
         rows.forEach(function (l) {
             const lat = parseFloat(l.latitude), lng = parseFloat(l.longitude);
@@ -7600,7 +8352,7 @@ function uiLocName(name) {
     return /server/i.test(String(name || '')) ? 'House of Server' : String(name || '');
 }
 function resolveLocationId(uiName) {
-    const rows = APP_STATE.locationsDb || [];
+    const rows = (APP_STATE.locationsDb && APP_STATE.locationsDb.length) ? APP_STATE.locationsDb : getDefaultLocationsDb();
     const want = String(uiName || '').toLowerCase().trim();
     const hit = rows.find(function (l) { return uiLocName(l.location_name).toLowerCase().trim() === want; });
     if (hit) return hit.location_id;
@@ -7610,7 +8362,7 @@ function resolveLocationId(uiName) {
     return null;
 }
 function syncLocationDropdowns() {
-    const rows = APP_STATE.locationsDb || [];
+    const rows = (APP_STATE.locationsDb && APP_STATE.locationsDb.length) ? APP_STATE.locationsDb : getDefaultLocationsDb();
     if (!rows.length) return;
     const sel = document.getElementById('dev-location');
     if (sel) {
@@ -7718,16 +8470,31 @@ function injectLocationManagerButton() {
     if (floor && floor.nextSibling) bar.insertBefore(b, floor.nextSibling); else bar.appendChild(b);
 }
 
+function closeLocationManager() {
+    const modal = document.getElementById('loc-manager-modal');
+    if (modal) {
+        modal.classList.add('hidden');
+        modal.style.display = 'none';
+    }
+}
+window.closeLocationManager = closeLocationManager;
+
 function openLocationManager() {
     let modal = document.getElementById('loc-manager-modal');
     if (!modal) {
         modal = document.createElement('div');
         modal.id = 'loc-manager-modal';
         modal.className = 'modal-backdrop hidden';
+        modal.addEventListener('click', function (ev) {
+            if (ev.target === modal) closeLocationManager();
+        });
         document.body.appendChild(modal);
     }
     modal.classList.remove('hidden');
+    modal.style.display = '';
+    if (!APP_STATE.locationsDb || !APP_STATE.locationsDb.length) APP_STATE.locationsDb = getDefaultLocationsDb();
     renderLocationManager();
+    if (typeof loadLocations === 'function') loadLocations();
 }
 window.openLocationManager = openLocationManager;
 
@@ -7764,8 +8531,8 @@ function renderLocationManager(editRow) {
         + '<div class="form-group"><label>Latitude *</label><input type="number" step="any" id="loc-form-lat" placeholder="-8.07378" required value="' + (e.latitude != null ? parseFloat(e.latitude) : '') + '"></div>'
         + '<div class="form-group"><label>Longitude *</label><input type="number" step="any" id="loc-form-lng" placeholder="112.17336" required value="' + (e.longitude != null ? parseFloat(e.longitude) : '') + '"></div>'
         + '</div>'
-        + '<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:14px;margin-bottom:0;padding-bottom:0;">'
-        + '<button type="button" class="btn btn-outline-cyber btn-sm" onclick="useMapCoordForLocation()"><i class="fa-solid fa-crosshairs"></i> Pakai Titik Peta Terakhir</button>'
+        + '<div class="loc-form-actions" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:14px;margin-bottom:0;padding-bottom:0;">'
+        + '<button type="button" class="btn btn-outline-cyber btn-sm" onclick="useMapCoordForLocation()"><i class="fa-solid fa-crosshairs"></i> <span class="text-desktop">Pakai Titik Peta Terakhir</span><span class="text-mobile">Titik Peta</span></button>'
         + (e.location_id ? '<button type="button" class="btn btn-outline-cyber btn-sm" onclick="renderLocationManager()">Batal Edit</button>' : '')
         + '<button type="submit" class="btn btn-primary-cyber btn-sm" style="margin-left:auto;"><i class="fa-solid fa-floppy-disk"></i> Simpan Lokasi</button>'
         + '</div>'
@@ -7774,7 +8541,7 @@ function renderLocationManager(editRow) {
 
     modal.innerHTML = '<div class="modal-card">'
         + '<div class="modal-header"><div class="modal-title-wrap"><i class="fa-solid fa-map-location-dot text-yellow"></i><h5>Kelola Lokasi Infrastruktur</h5></div>'
-        + '<button type="button" class="modal-close-btn" onclick="document.getElementById(\'loc-manager-modal\').classList.add(\'hidden\')"><i class="fa-solid fa-xmark"></i></button></div>'
+        + '<button type="button" class="modal-close-btn" onclick="closeLocationManager()" aria-label="Tutup"><i class="fa-solid fa-xmark"></i></button></div>'
         + '<div class="modal-body">'
         + '<div class="loc-table-wrap"><table class="data-table" style="width:100%;"><thead><tr><th>Nama</th><th>Alamat</th><th>Koordinat</th><th style="text-align:center;">Aset</th><th style="text-align:center;">Aksi</th></tr></thead><tbody>' + body + '</tbody></table></div>'
         + form
@@ -7817,7 +8584,7 @@ async function saveLocationForm() {
             showToast('Berhasil', id ? 'Lokasi diperbarui.' : 'Lokasi ditambahkan.', 'success');
             await loadLocations();
             const locModal = document.getElementById('loc-manager-modal');
-            if (locModal) locModal.classList.add('hidden');
+            closeLocationManager();
             if (typeof addAuditTrailRecord === 'function') addAuditTrailRecord(id ? 'Edit Lokasi' : 'Tambah Lokasi', payload.location_name);
         } else {
             showToast('Gagal', (json && (json.error || json.message)) || 'Gagal menyimpan lokasi.', 'error');
@@ -7833,7 +8600,29 @@ async function deleteLocationRow(id) {
     }
     const row = (APP_STATE.locationsDb || []).find(function (l) { return l.location_id === id; });
     if (!row) return;
-    if (!confirm('Hapus lokasi "' + row.location_name + '"?\nData akan dihapus permanen dari database.')) return;
+// Superadmin confirm
+    showCyberConfirmModal(
+        'Konfirmasi Hapus Lokasi',
+        'PERINGATAN SUPERADMIN:\nApakah Anda yakin ingin menghapus lokasi "' + row.location_name + '"?\n\nData lokasi akan dihapus permanen dari database.',
+        async () => {
+            try {
+                const json = await locFetch('/locations/' + id, { method: 'DELETE' });
+                if (json && json.success) {
+                    showToast('Dihapus', 'Lokasi ' + row.location_name + ' berhasil dihapus.', 'success');
+                    await loadLocations();
+                    renderLocationManager();
+                    if (typeof addAuditTrailRecord === 'function') addAuditTrailRecord('Hapus Lokasi', row.location_name);
+                } else {
+                    showToast('Gagal', (json && (json.error || json.message)) || 'Gagal menghapus lokasi.', 'error');
+                }
+            } catch (err) {
+                console.error('[Locations] delete error:', err);
+                showToast('Koneksi Terputus', 'Gagal menghubungi server.', 'error');
+            }
+        },
+        'Ya, Hapus Lokasi'
+    );
+    return;
     try {
         const json = await locFetch('/locations/' + id, { method: 'DELETE' });
         if (json && json.success) {
@@ -8489,23 +9278,28 @@ function handleDeleteUser(userId) {
         return;
     }
 
-    if (confirm(`Apakah Anda yakin ingin menghapus akun user "${user.name}" (${user.email})? Tindakan ini tidak dapat dibatalkan.`)) {
-        APP_STATE.usersList = APP_STATE.usersList.filter(u => u.id !== userId);
-        saveUsersListToStorage();
-        if (window.apiService && typeof window.apiService.deleteUser === 'function') {
-            const rawId = user.rawId || userId;
-            window.apiService.deleteUser(rawId).then((res) => {
-                if (res && res.success === false) {
-                    showToast('Gagal Hapus di Database', (res.error || 'Server tidak merespons') + ' - pastikan backend berjalan.', 'error');
-                }
-            }).catch((e) => {
-                showToast('Gagal Hapus di Database', (e && e.message) || 'Server tidak merespons', 'error');
-            });
-        }
-        renderUsersRbacTable();
-        showToast('User Dihapus', `User ${user.name} berhasil dihapus dari sistem.`, 'success');
-        addAuditTrailRecord('Penghapusan Akun', `Superadmin menghapus akun user: ${user.name} (${user.email})`);
-    }
+    showCyberConfirmModal(
+        'Konfirmasi Hapus Pengguna',
+        `PERINGATAN SUPERADMIN:\nApakah Anda yakin ingin menghapus akun user "${user.name}" (${user.email}) dari sistem T-AIMS?\n\nTindakan ini akan mencabut seluruh akses login dan data akun secara permanen.`,
+        () => {
+            APP_STATE.usersList = APP_STATE.usersList.filter(u => u.id !== userId);
+            saveUsersListToStorage();
+            if (window.apiService && typeof window.apiService.deleteUser === 'function') {
+                const rawId = user.rawId || userId;
+                window.apiService.deleteUser(rawId).then((res) => {
+                    if (res && res.success === false) {
+                        showToast('Gagal Hapus di Database', (res.error || 'Server tidak merespons') + ' - pastikan backend berjalan.', 'error');
+                    }
+                }).catch((e) => {
+                    showToast('Gagal Hapus di Database', (e && e.message) || 'Server tidak merespons', 'error');
+                });
+            }
+            renderUsersRbacTable();
+            showToast('User Dihapus', `User ${user.name} berhasil dihapus dari sistem.`, 'success');
+            addAuditTrailRecord('Penghapusan Akun', `Superadmin menghapus akun user: ${user.name} (${user.email})`);
+        },
+        'Ya, Hapus Pengguna'
+    );
 }
 
 function addAuditTrailRecord(action, detail) {
@@ -8922,26 +9716,32 @@ window.toggleSystemAudio = toggleSystemAudio;
 
 // 2. Manual Ping Tester Action in Device Detail Modal (Poin 1A)
 function updateNotifBadgeCount(count) {
-    const num = parseInt(count) || 0;
+    const isAllRead = localStorage.getItem('taims_all_alerts_read') === 'true';
+    const num = isAllRead ? 0 : (parseInt(count) || 0);
     const badgeTop = document.getElementById('topbar-alert-count');
+    const badgeBottom = document.getElementById('bottom-alerts-badge');
+    const sidebarBadge = document.getElementById('sidebar-alert-badge');
     const unreadEl = document.getElementById('notif-unread-count');
     const isEn = APP_STATE && APP_STATE.currentLang === 'en';
 
-    // Catatan: sidebar-alert-badge dikhususkan untuk jumlah kasus insiden aktif
-    // yang dikelola oleh renderIncidentsTable(), sehingga tidak ditimpa agar tidak berkedip.
     if (badgeTop) {
         badgeTop.textContent = num > 99 ? '99+' : num;
         badgeTop.setAttribute('data-count', num);
         badgeTop.style.display = num > 0 ? 'flex' : 'none';
     }
-    const badgeBottom = document.getElementById('bottom-alerts-badge');
     if (badgeBottom) {
         badgeBottom.textContent = num > 99 ? '99+' : num;
-        badgeBottom.style.display = num > 0 ? 'inline-block' : 'none';
+        badgeBottom.setAttribute('data-count', num);
+        badgeBottom.style.display = num > 0 ? 'inline-flex' : 'none';
+    }
+    if (sidebarBadge) {
+        sidebarBadge.textContent = num;
+        sidebarBadge.style.display = num > 0 ? 'inline-flex' : 'none';
+        sidebarBadge.dataset.count = num;
     }
     if (unreadEl) {
         unreadEl.textContent = isEn ? `${num} New` : `${num} Baru`;
-        unreadEl.style.display = num > 0 ? 'inline-block' : 'none';
+        unreadEl.style.display = num > 0 ? 'inline-flex' : 'none';
     }
 }
 window.updateNotifBadgeCount = updateNotifBadgeCount;
@@ -9199,7 +9999,8 @@ document.addEventListener('keydown', (e) => {
 
 
 document.addEventListener("DOMContentLoaded", () => {
-    if (typeof updateNotifBadgeCount === "function") updateNotifBadgeCount(0);
+    if (typeof renderAlerts === "function") renderAlerts();
+    if (typeof updateIncidentStats === "function") updateIncidentStats();
 });
 
 
@@ -9792,7 +10593,19 @@ function handleDeleteFloorplanPin() {
     const code = document.getElementById('fp-pin-original-code').value;
     if (!code) return;
 
-    if (!confirm(`Hapus titik perangkat ${code} dari denah gedung ini?`)) return;
+    showCyberConfirmModal(
+        'Konfirmasi Hapus Titik Denah',
+        `PERINGATAN SUPERADMIN:\nApakah Anda yakin ingin menghapus titik penempatan perangkat ${code} dari denah gedung ini?`,
+        () => {
+            let pins = getFloorplanPins();
+            delete pins[code];
+            saveFloorplanPins(pins);
+            renderFloorplanPins();
+            showToast('Titik Dihapus', `Titik perangkat ${code} berhasil dihapus dari denah.`, 'info');
+        },
+        'Ya, Hapus Titik'
+    );
+    return;
 
     let pins = getFloorplanPins();
     pins = pins.filter(p => !(p.site === site && p.code === code));

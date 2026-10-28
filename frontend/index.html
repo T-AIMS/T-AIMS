@@ -71,7 +71,7 @@
  }
  </script>
  <link rel="stylesheet" href="assets/css/floorplan3d.css">
- <link rel="stylesheet" href="assets/css/style.css?v=1792847000001">
+ <link rel="stylesheet" href="assets/css/style.css?v=20261028_2220">
 
 </head>
 
@@ -521,9 +521,9 @@
 
  <div class="notif-header">
 
- <div class="d-flex align-center gap-2">
+ <div class="d-flex align-center gap-2 notif-title-wrap" style="display: flex; align-items: center; gap: 8px; flex-shrink: 0; min-width: 0;">
  <h6>Notifikasi & Gangguan</h6>
- <span class="badge-count" id="notif-unread-count" style="display: none;">0 Baru</span>
+ <span class="badge-count" id="notif-unread-count" style="display: none; white-space: nowrap;">0 Baru</span>
  </div>
 
  <button class="btn-mark-all-read" onclick="markAllAlertsRead()" title="Tandai semua notifikasi telah dibaca">
@@ -1502,7 +1502,7 @@
 
  <div class="card-title-group">
 
- <i class="fa-solid fa-list-check text-cyan"></i>
+ <i class="fa-solid fa-list-check" style="color: #A855F7;"></i>
 
  <h4>Daftar Lengkap Aset & Status Telemetri Perangkat</h4>
 
@@ -3033,10 +3033,6 @@
                  <button type="button" class="btn-fp3d-action" id="btn-fp3d-rotate" onclick="toggleAutoRotate()" title="Putar Otomatis 360°">
                      <i class="fa-solid fa-rotate"></i> <span class="text-desktop">Auto-Rotate</span><span class="text-mobile">Rotasi</span>
                  </button>
-                 <div style="width: 1px; height: 18px; background: rgba(16, 185, 129, 0.35); margin: 0 2px;"></div>
-                 <button type="button" class="btn-fp3d-action btn-fp3d-add-pin" id="btn-fp3d-add-pin" onclick="openAdd3DPinModal()" title="Tambah Titik Perangkat Baru di Digital Twin 3D" style="background: rgba(16, 185, 129, 0.22); border: 1.5px solid #10B981; color: #A7F3D0; font-weight: 700; box-shadow: 0 0 12px rgba(16, 185, 129, 0.35);">
-                     <i class="fa-solid fa-plus-circle text-green" style="color: #34D399;"></i> <span class="text-desktop">+ Tambah Titik 3D</span><span class="text-mobile">+ Titik 3D</span>
-                 </button>
              </div>
          </div>
 
@@ -3285,7 +3281,7 @@
                     <!-- AI Infrastructure Assistant Hub (Fitur Unggulan Dokumen Hal. 17) -->
                     <div class="ai-assistant-hero-card mb-3">
                         <div class="ai-hero-header">
-                            <div class="ai-badge-group">
+                            <div class="ai-badge-group" style="display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important; align-items: center !important; gap: 12px !important; width: 100% !important;">
                                 <div class="ai-badge-pulse"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
                                 <div>
                                     <h3 class="ai-hero-title">ASISTEN INFRASTRUKTUR AI TEKNOLAB</h3>
@@ -4447,7 +4443,7 @@
  <button class="mb-nav-item" data-page="page-alerts" onclick="switchPage('page-alerts')">
  <i class="fa-solid fa-bell"></i>
  <span>Peringatan</span>
- <span class="bell-badge" id="bottom-alerts-badge" style="display: none; position: absolute; top: 4px; right: 20%; font-size: 9px; padding: 1px 5px; min-width: 16px; border-radius: 10px;">0</span>
+ <span class="bell-badge" id="bottom-alerts-badge" data-count="0" style="display: none;">0</span>
  </button>
 
  </nav>
@@ -4702,178 +4698,141 @@
 
 
  <div class="form-row-2">
-
  <div class="form-group">
-
- <label>Kategori Perangkat *</label>
-
+ <label style="margin-bottom: 6px;"><i class="fa-solid fa-layer-group text-crimson"></i> Kategori Perangkat *</label>
  <select id="dev-category" required onchange="handleDeviceCategoryChange()">
-
- <option value="Router">Router</option>
-
+ <option value="Router" selected>Router</option>
  <option value="Switch">Switch</option>
-
  <option value="Server">Server</option>
-
  <option value="Access Point">Access Point (AP)</option>
-
  <option value="CCTV">CCTV</option>
-
- <option value="IoT Node">IoT Node (ESP32)</option>
-
+ <option value="IoT Node">IoT Node (ESP32, Arduino, LoRa)</option>
  <option value="Raspberry Pi">Raspberry Pi</option>
-
  <option value="PC">PC / Workstation</option>
-
  <option value="Smart TV">Smart TV</option>
-
  <option value="Printer">Printer</option>
-
+ <option value="__custom__" style="color: #10B981; font-weight: 700;">+ Tambah Kategori Baru (Ketik Manual)...</option>
  </select>
-
+ <div id="dev-custom-category-wrap" style="display: none; margin-top: 6px;">
+ <input type="text" id="dev-custom-category" placeholder="Ketik nama kategori baru (misal: Fingerprint, UPS, PABX)..." style="width: 100%;">
+ </div>
+ <div class="superadmin-only superadmin-actions-row" style="display: flex; flex-direction: row; flex-wrap: nowrap; gap: 8px; align-items: center; margin-top: 6px;">
+ <button type="button" class="btn-delete-option" id="btn-delete-current-category" onclick="handleDeleteCurrentCategory()" title="Hapus Kategori Terpilih" style="background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.4); border-radius: 4px; color: #EF4444; font-size: 0.72rem; font-weight: 600; cursor: pointer; padding: 3px 8px; display: inline-flex; align-items: center; gap: 4px; transition: all 0.2s ease; white-space: nowrap;">
+ <i class="fa-solid fa-trash-can" style="font-size: 0.70rem;"></i> <span>Hapus Kategori</span>
+ </button>
+ <button type="button" class="btn-reset-option" id="btn-reset-categories" onclick="resetCategoriesAndSubcategoriesToDefault()" title="Kembalikan Seluruh Kategori &amp; Jenis Bawaan" style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 4px; color: #E2E8F0; font-size: 0.72rem; font-weight: 600; cursor: pointer; padding: 3px 8px; display: inline-flex; align-items: center; gap: 4px; transition: all 0.2s ease; white-space: nowrap;">
+ <i class="fa-solid fa-rotate-left" style="font-size: 0.70rem;"></i> <span>Reset Bawaan</span>
+ </button>
+ </div>
  </div>
 
- <div class="form-group">
+ <div class="form-group" id="dev-subcategory-group">
+ <label style="margin-bottom: 6px;"><i class="fa-solid fa-tags text-crimson"></i> Jenis / Merk &amp; Tipe *</label>
+ <select id="dev-subcategory" class="form-control" onchange="handleDeviceSubcategoryChange()">
+ <option value="Mikrotik hAP lite (RB941-2nD / Seri RB941)">Mikrotik hAP lite (RB941-2nD / Seri RB941)</option>
+ <option value="Mikrotik RB951Ui-2HnD / RB951G-2HnD (Seri RB950)">Mikrotik RB951Ui-2HnD / RB951G-2HnD (Seri RB950)</option>
+ <option value="FiberHome GPON ONT / Optical Modem (MNC Play / IndiHome / Telkom)">FiberHome GPON ONT / Optical Modem (MNC Play / IndiHome / Telkom)</option>
+ <option value="TP-Link TL-WR840N / TL-WR841N 300Mbps Wireless Router">TP-Link TL-WR840N / TL-WR841N 300Mbps Wireless Router</option>
+ <option value="ZTE F609 / F670L GPON ONT Optical Network Terminal">ZTE F609 / F670L GPON ONT Optical Network Terminal</option>
+ <option value="Huawei EchoLife HG8245H5 / EG8145V5 GPON Terminal">Huawei EchoLife HG8245H5 / EG8145V5 GPON Terminal</option>
+ <option value="Mikrotik RouterBOARD (RB750Gr3 / hEX Series)">Mikrotik RouterBOARD (RB750Gr3 / hEX Series)</option>
+ <option value="Mikrotik hEX S (RB760iGS Gigabit SFP)">Mikrotik hEX S (RB760iGS Gigabit SFP)</option>
+ <option value="Mikrotik Cloud Core Router (CCR1009-7G-1C-1S+)">Mikrotik Cloud Core Router (CCR1009-7G-1C-1S+)</option>
+ <option value="Mikrotik CCR2004-16G-2S+ Enterprise 10G">Mikrotik CCR2004-16G-2S+ Enterprise 10G</option>
+ <option value="Mikrotik CCR2116-12G-4S+ Core Campus Gateway">Mikrotik CCR2116-12G-4S+ Core Campus Gateway</option>
+ <option value="Mikrotik RB4011iGS+RM Quad-Core 10G SFP+">Mikrotik RB4011iGS+RM Quad-Core 10G SFP+</option>
+ <option value="Mikrotik RB5009UG+S+IN Heavy Duty Home/Lab">Mikrotik RB5009UG+S+IN Heavy Duty Home/Lab</option>
+ <option value="Cisco ISR 4331 / 4431 Integrated Services Router">Cisco ISR 4331 / 4431 Integrated Services Router</option>
+ <option value="Cisco Catalyst 8200 / 8300 Enterprise Edge">Cisco Catalyst 8200 / 8300 Enterprise Edge</option>
+ <option value="Ruijie Reyee RG-EG210G-E Smart Gateway Router">Ruijie Reyee RG-EG210G-E Smart Gateway Router</option>
+ <option value="Ubiquiti UniFi Dream Machine Pro / SE (UDM-Pro)">Ubiquiti UniFi Dream Machine Pro / SE (UDM-Pro)</option>
+ <option value="TP-Link Omada ER605 / ER7206 Multi-WAN Gigabit">TP-Link Omada ER605 / ER7206 Multi-WAN Gigabit</option>
+ <option value="__custom_subtype__" style="color: #10B981; font-weight: 700;">+ Lainnya / Ketik Sendiri (Custom)...</option>
+ </select>
+ <div id="dev-custom-subcategory-wrap" style="display: none; margin-top: 6px;">
+ <input type="text" id="dev-custom-subcategory" placeholder="Ketik jenis/merk/model spesifik (misal: Mikrotik RB4011, Cisco Catalyst 2960)..." style="width: 100%;">
+ </div>
+ <div class="superadmin-only superadmin-actions-row" style="display: flex; flex-direction: row; flex-wrap: nowrap; gap: 8px; align-items: center; margin-top: 6px;">
+ <button type="button" class="btn-delete-option" id="btn-delete-current-subcategory" onclick="handleDeleteCurrentSubcategory()" title="Hapus Jenis/Merk Terpilih" style="background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.4); border-radius: 4px; color: #EF4444; font-size: 0.72rem; font-weight: 600; cursor: pointer; padding: 3px 8px; display: inline-flex; align-items: center; gap: 4px; transition: all 0.2s ease; white-space: nowrap;">
+ <i class="fa-solid fa-trash-can" style="font-size: 0.70rem;"></i> <span>Hapus Jenis</span>
+ </button>
+ </div>
+ </div>
+ </div>
 
+ <div class="form-row-2">
+ <div class="form-group">
  <label>IP Address *</label>
-
- <input type="text" id="dev-ip" placeholder="192.168.1.50" pattern="^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$" title="Format IPv4 valid, contoh: 192.168.1.50" required>
-
+ <input type="text" id="dev-ip" placeholder="192.168.1.50" pattern="^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?).){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$" title="Format IPv4 valid, contoh: 192.168.1.50" required>
  </div>
-
- </div>
-
-
-
- <div class="form-row-2">
-
  <div class="form-group">
-
- <label>Lokasi / Site *</label>
-
- <select id="dev-location" required>
-
- <option value="Head Office">Head Office (HO)</option>
-
- <option value="Marketing Office">Marketing Office (MO)</option>
-
- <option value="House of Server">House of Server (Ruang Server)</option>
-
- </select>
-
- </div>
-
- <div class="form-group">
-
- <label>Lantai Penempatan (Floor) *</label>
-
- <select id="dev-floor">
-
- <option value="Lantai 1">Lantai 1</option>
-
- <option value="Lantai 2" selected>Lantai 2</option>
-
- <option value="Lantai 3">Lantai 3</option>
-
- <option value="Outdoor">Outdoor / Luar Ruangan</option>
-
- </select>
-
- </div>
-
- </div>
-
-
-
- <div class="form-row-2">
-
- <div class="form-group">
-
- <label>Metode Pemantauan *</label>
-
- <select id="dev-method">
-
- <option value="Ping">Ping (ICMP)</option>
-
- <option value="HTTP">HTTP / API</option>
-
- <option value="Heartbeat">Heartbeat (MQTT)</option>
-
- <option value="SNMP">SNMP v2/v3</option>
-
- </select>
-
- </div>
-
- <div class="form-group">
-
- <label>Tingkat Prioritas *</label>
-
- <select id="dev-priority">
-
- <option value="1">P1 - Kritis (Router / Server / Backbone)</option>
-
- <option value="2" selected>P2 - Normal (CCTV / PC / IoT)</option>
-
- <option value="3">P3 - Rendah (Cadangan / Pelengkap)</option>
-
- </select>
-
- </div>
-
- </div>
-
-
-
- <div class="form-row-2">
-
- <div class="form-group">
-
- <label>PIC / Teknisi Penanggung Jawab <span id="pic-admin-note" class="text-xs" style="margin-left: 5px;"></span></label>
-
- <input type="text" id="dev-pic" placeholder="Nama PIC (contoh: Damar Munajad)">
-
- </div>
-
- <div class="form-group">
-
  <label>MAC Address</label>
-
  <input type="text" id="dev-mac" placeholder="Misal: D4:CA:6D:11:22:01" pattern="^$|^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$" title="Format MAC Address valid, contoh: E0:AD:47:20:B6:6C">
-
  </div>
-
  </div>
-
-
 
  <div class="form-row-2">
-
  <div class="form-group">
-
- <label>Status Keaktifan Aset</label>
-
- <select id="dev-is-active">
-
- <option value="1" selected>Aktif (is_active = 1)</option>
-
- <option value="0">Nonaktif / Diarsipkan (Soft Delete)</option>
-
+ <label>Lokasi / Site *</label>
+ <select id="dev-location" required>
+ <option value="Head Office">Head Office (HO)</option>
+ <option value="Marketing Office">Marketing Office (MO)</option>
+ <option value="House of Server">House of Server (Ruang Server)</option>
  </select>
-
  </div>
-
  <div class="form-group">
+ <label>Lantai Penempatan (Floor) *</label>
+ <select id="dev-floor">
+ <option value="Lantai 1">Lantai 1</option>
+ <option value="Lantai 2" selected>Lantai 2</option>
+ <option value="Lantai 3">Lantai 3</option>
+ <option value="Outdoor">Outdoor / Luar Ruangan</option>
+ </select>
+ </div>
+ </div>
 
+ <div class="form-row-2">
+ <div class="form-group">
+ <label>Metode Pemantauan *</label>
+ <select id="dev-method">
+ <option value="Ping">Ping (ICMP)</option>
+ <option value="HTTP">HTTP / API</option>
+ <option value="Heartbeat">Heartbeat (MQTT)</option>
+ <option value="SNMP">SNMP v2/v3</option>
+ </select>
+ </div>
+ <div class="form-group">
+ <label>Tingkat Prioritas *</label>
+ <select id="dev-priority">
+ <option value="1">P1 - Kritis (Router / Server / Backbone)</option>
+ <option value="2" selected>P2 - Normal (CCTV / PC / IoT)</option>
+ <option value="3">P3 - Rendah (Cadangan / Pelengkap)</option>
+ </select>
+ </div>
+ </div>
+
+ <div class="form-row-2">
+ <div class="form-group">
+ <label>PIC / Teknisi Penanggung Jawab <span id="pic-admin-note" class="text-xs" style="margin-left: 5px;"></span></label>
+ <input type="text" id="dev-pic" placeholder="Nama PIC (contoh: Damar Munajad)">
+ </div>
+ <div class="form-group">
  <label>Tanggal Instalasi</label>
-
  <input type="date" id="dev-install-date">
-
+ </div>
  </div>
 
+ <div class="form-row-2">
+ <div class="form-group">
+ <label>Status Keaktifan Aset</label>
+ <select id="dev-is-active">
+ <option value="1" selected>Aktif (is_active = 1)</option>
+ <option value="0">Nonaktif / Diarsipkan (Soft Delete)</option>
+ </select>
  </div>
-
-
+ <div class="form-group" style="visibility: hidden;">
+ </div>
+ </div>
 
  <div class="form-group">
 
@@ -4897,10 +4856,8 @@
 
  <div>
 
- <button type="button" class="btn btn-sm btn-danger-cyber hidden" id="btn-modal-delete-device" onclick="handleDeleteCurrentModalDevice()" style="background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444; color: #ef4444; padding: 6px 14px; border-radius: var(--radius-md); font-weight: 600; cursor: pointer;">
-
- <i class="fa-solid fa-trash-can"></i> Hapus Perangkat
-
+ <button type="button" class="btn btn-sm btn-danger-cyber hidden" id="btn-modal-delete-device" onclick="handleDeleteCurrentModalDevice()" style="background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444; color: #ef4444; height: 38px; padding: 0 8px; border-radius: 6px; font-weight: 600; font-size: 0.78rem; flex: 1 1 0; min-width: 0; align-items: center; justify-content: center; gap: 6px; white-space: nowrap; box-sizing: border-box;">
+ <i class="fa-solid fa-trash-can"></i> <span class="text-desktop">Hapus Perangkat</span><span class="text-mobile">Hapus</span>
  </button>
 
  </div>
@@ -4997,33 +4954,31 @@
 
  <!-- Foto Profil Pengguna (Avatar Upload) -->
  <div class="form-group mb-3" id="user-avatar-form-group" style="background: rgba(0, 240, 255, 0.04); border: 1px dashed rgba(0, 240, 255, 0.3); border-radius: 8px; padding: 12px 14px; margin-bottom: 1rem;">
- <label style="margin-bottom: 8px; display: block; font-size: 0.85rem; font-weight: 600; color: #E2E8F0;">
- <i class="fa-solid fa-camera text-cyan"></i> Foto Profil Pengguna (Avatar)
- </label>
- <div class="d-flex align-center gap-3" style="display: flex; align-items: center; gap: 14px;">
- <div id="avatar-preview-container" style="width: 50px; height: 50px; border-radius: 50%; border: 2px solid #00F0FF; overflow: hidden; background: #0f172a; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);">
- <img id="user-avatar-preview-img" src="" alt="Preview Avatar" style="width: 100%; height: 100%; object-fit: cover; display: none;">
- <i class="fa-solid fa-user text-cyan" id="user-avatar-preview-icon" style="font-size: 1.4rem;"></i>
+     <label style="margin-bottom: 8px; display: block; font-size: 0.85rem; font-weight: 600; color: #E2E8F0;">
+         <i class="fa-solid fa-camera text-cyan"></i> Foto Profil Pengguna (Avatar)
+     </label>
+     <div style="display: flex; align-items: center; gap: 14px; width: 100%;">
+         <div id="avatar-preview-container" style="width: 48px; height: 48px; min-width: 48px; min-height: 48px; border-radius: 50%; border: 2px solid #00F0FF; overflow: hidden; background: #0f172a; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);">
+             <img id="user-avatar-preview-img" src="" alt="Preview Avatar" style="width: 100%; height: 100%; object-fit: cover; display: none;">
+             <i class="fa-solid fa-user text-cyan" id="user-avatar-preview-icon" style="font-size: 1.3rem;"></i>
+         </div>
+         <div style="flex: 1; min-width: 0;">
+             <input type="file" id="user-avatar-file-input" accept="image/*" style="display: none;" onchange="handleUserAvatarFileSelect(event)">
+             <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                 <button type="button" class="btn btn-outline-cyber btn-sm" onclick="document.getElementById('user-avatar-file-input').click()" style="padding: 6px 12px; font-size: 0.78rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; height: 34px; border-radius: 6px; white-space: nowrap;">
+                     <i class="fa-solid fa-cloud-arrow-up text-cyan"></i> <span>Pilih Foto<span class="text-desktop"> dari Komputer</span></span>
+                 </button>
+                 <button type="button" class="btn btn-outline-cyber btn-sm" id="btn-remove-avatar" onclick="handleRemoveAvatar()" style="display: none; padding: 6px 12px; font-size: 0.78rem; font-weight: 600; cursor: pointer; align-items: center; gap: 6px; height: 34px; border-radius: 6px; border-color: rgba(239,68,68,0.5); color: #EF4444; white-space: nowrap;" title="Hapus Foto Profil">
+                     <i class="fa-solid fa-trash"></i> <span>Hapus Foto</span>
+                 </button>
+             </div>
+             <input type="hidden" id="user-form-avatar" value="">
+             <span class="text-xs text-muted d-block mt-1" style="display: block; margin-top: 6px; font-size: 0.70rem; color: #94A3B8; line-height: 1.3;">
+                 Mendukung format PNG, JPG, WebP (Maks 2MB). Foto akan tampil melingkar di navbar atas.
+             </span>
+         </div>
+     </div>
  </div>
- <div style="flex: 1;">
- <input type="file" id="user-avatar-file-input" accept="image/*" style="display: none;" onchange="handleUserAvatarFileSelect(event)">
- <button type="button" class="btn btn-outline-cyber btn-sm" onclick="document.getElementById('user-avatar-file-input').click()" style="padding: 5px 12px; font-size: 0.8rem; cursor: pointer;">
- <i class="fa-solid fa-cloud-arrow-up text-cyan"></i> Pilih Foto dari Komputer
- </button>
- <button type="button" class="btn btn-outline-cyber btn-sm" id="btn-remove-avatar" onclick="handleRemoveAvatar()" style="display: none; margin-left: 6px; border-color: rgba(239,68,68,0.5); color: #EF4444;" title="Hapus Foto Profil">
- <i class="fa-solid fa-trash"></i> Hapus Foto
- </button>
- <input type="hidden" id="user-form-avatar" value="">
- <span class="text-xs text-muted d-block mt-1" style="display: block; margin-top: 4px; font-size: 0.72rem; color: #94A3B8;">
- Mendukung format PNG, JPG, WebP (Maks 2MB). Foto akan tampil melingkar di navbar atas.
- </span>
- </div>
- </div>
- </div>
-
-
-
-
 
  <div class="form-row-2">
 
@@ -5850,9 +5805,9 @@
 
  <script src="assets/js/apiService.js?v=2.6.3"></script>
 
- <script src="assets/js/app.js?v=1792840739878"></script>
+ <script src="assets/js/app.js?v=20261028_2215"></script>
 
- <script src="assets/js/floorplan3d.js"></script>
+ <script src="assets/js/floorplan3d.js?v=20261028_1855"></script>
 
 
  <!-- Modal Pemulihan Kata Sandi (Cyberpunk Theme - Mas Dzakwan UX Fix) -->
@@ -6092,16 +6047,16 @@
                  </div>
              </div>
 
-             <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 18px; border-top: 1px solid rgba(255,255,255,0.08); background: rgba(15, 23, 42, 0.6);">
-                 <button type="button" id="btn-fp3d-delete-pin" class="btn btn-outline-cyber btn-sm" onclick="handleDelete3DPin()" style="border-color: #FF1744; color: #FF1744; display: none; padding: 6px 12px;">
-                     <i class="fa-solid fa-trash"></i> Hapus dari 3D
+             <div class="modal-footer" id="modal-3d-pin-footer" style="display: flex; flex-direction: row; flex-wrap: nowrap; align-items: center; justify-content: space-between; gap: 8px; padding: 12px 16px; border-top: 1px solid rgba(255,255,255,0.08); background: rgba(15, 23, 42, 0.7); box-sizing: border-box; width: 100%;">
+                 <button type="button" id="btn-fp3d-delete-pin" class="btn btn-outline-cyber btn-sm" onclick="handleDelete3DPin()" style="border: 1.2px solid rgba(239, 68, 68, 0.6); color: #FCA5A5; background: rgba(239, 68, 68, 0.12); display: none; height: 40px; min-height: 40px; max-height: 40px; padding: 0 8px; font-size: 0.80rem; font-weight: 700; border-radius: 8px; flex: 1 1 0%; min-width: 0; width: 100%; align-items: center; justify-content: center; gap: 6px; white-space: nowrap; box-sizing: border-box; line-height: 1;">
+                     <i class="fa-solid fa-trash"></i> <span class="text-desktop">Hapus dari 3D</span><span class="text-mobile">Hapus</span>
                  </button>
-                 <div style="display: flex; gap: 8px; margin-left: auto;">
-                     <button type="button" class="btn btn-outline-cyber btn-sm" onclick="close3DPinModal()">Batal</button>
-                     <button type="submit" class="btn btn-primary-cyber btn-sm" style="background: #10B981; border-color: #10B981; color: #FFF; font-weight: 700; padding: 7px 16px; box-shadow: 0 0 12px rgba(16, 185, 129, 0.4);">
-                         <i class="fa-solid fa-floppy-disk"></i> Simpan Titik 3D
-                     </button>
-                 </div>
+                 <button type="button" id="btn-fp3d-cancel-pin" class="btn btn-outline-cyber btn-sm" onclick="close3DPinModal()" style="border: 1.2px solid rgba(255, 255, 255, 0.15); color: #E2E8F0; background: rgba(30, 41, 59, 0.7); height: 40px; min-height: 40px; max-height: 40px; padding: 0 8px; font-size: 0.80rem; font-weight: 700; border-radius: 8px; flex: 1 1 0%; min-width: 0; width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 6px; white-space: nowrap; box-sizing: border-box; line-height: 1;">
+                     <i class="fa-solid fa-xmark"></i> <span>Batal</span>
+                 </button>
+                 <button type="submit" id="btn-fp3d-save-pin" class="btn btn-primary-cyber btn-sm" style="height: 40px; min-height: 40px; max-height: 40px; padding: 0 8px; font-size: 0.80rem; font-weight: 700; border-radius: 8px; flex: 1 1 0%; min-width: 0; width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 6px; white-space: nowrap; box-sizing: border-box; line-height: 1;">
+                     <i class="fa-solid fa-floppy-disk"></i> <span class="text-desktop">Simpan Titik 3D</span><span class="text-mobile">Simpan</span>
+                 </button>
              </div>
          </form>
      </div>

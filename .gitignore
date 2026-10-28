@@ -17,6 +17,10 @@ backup/
 # OS
 .DS_Store
 Thumbs.db
+*.lnk
+backend/
+screenshots/
+server_5500.js
 
 # IDE
 .vscode/

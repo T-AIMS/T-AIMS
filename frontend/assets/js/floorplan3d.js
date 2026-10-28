@@ -3351,7 +3351,7 @@
             });
 
             if (btn) {
-                btn.innerHTML = '<i class="fa-solid fa-house"></i> Pasang Atap Normal';
+                btn.innerHTML = '<i class="fa-solid fa-house"></i> <span class="text-desktop">Pasang Atap Normal</span><span class="text-mobile">Pasang Atap</span>';
                 btn.classList.add('active-xray');
             }
             if (typeof window.showToast === 'function') {
@@ -3366,7 +3366,7 @@
             });
 
             if (btn) {
-                btn.innerHTML = '<i class="fa-solid fa-layer-group"></i> Lepas Atap';
+                btn.innerHTML = '<i class="fa-solid fa-layer-group"></i> <span class="text-desktop">Lepas Atap</span><span class="text-mobile">Lepas Atap</span>';
                 btn.classList.remove('active-xray');
             }
             if (typeof window.showToast === 'function') {
@@ -3621,7 +3621,7 @@
                     <div class="fp3d-dev-meta">
                         <span class="fp3d-dev-ip"><i class="fa-solid fa-network-wired"></i> ${devIp}</span>
                         <div class="d-flex gap-1">
-                            <button type="button" class="btn-fp3d-focus" onclick="openEdit3DPinModal('${dev.code}')" style="background:rgba(245,158,11,0.18); border:1px solid #F59E0B; color:#FDE68A; padding:3px 8px; border-radius:4px; font-size:0.70rem; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:4px;" title="Ubah Posisi Titik di 3D">
+                            <button type="button" class="btn-fp3d-focus" onclick="openEdit3DPinModal('${dev.code}')" style="background:rgba(225,29,72,0.15); border:1px solid #E11D48; color:#FDA4AF; padding:3px 8px; border-radius:4px; font-size:0.70rem; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:4px;" title="Ubah Posisi Titik di 3D">
                                 <i class="fa-solid fa-pen-to-square"></i> Ubah Titik 3D
                             </button>
                             <button type="button" class="btn-fp3d-focus" onclick="if(window.openDeviceDetailModal) window.openDeviceDetailModal('${dev.code}')" title="Buka Detail Aset">
