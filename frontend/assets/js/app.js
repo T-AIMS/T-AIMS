@@ -169,7 +169,7 @@ function renderAiHistoryList() {
     const pageItems = AI_HISTORY_CACHE.slice(startIdx, endIdx);
 
     if (countBadge) {
-        countBadge.innerHTML = `Menampilkan <strong style="color: #00F0FF;">${startIdx + 1}-${endIdx}</strong> dari <strong>${totalItems}</strong> catatan riwayat`;
+        countBadge.innerHTML = `Menampilkan <strong style="color: #00F0FF;">${startIdx + 1}-${endIdx}</strong> dari <strong>${totalItems}</strong> riwayat`;
     }
 
     let html = `
@@ -225,15 +225,15 @@ function renderAiHistoryList() {
 
     if (totalPages > 1) {
         html += `
-            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 2px 2px 2px; margin-top: 10px; border-top: 1px solid rgba(255, 255, 255, 0.08); gap: 6px;">
-                <button type="button" class="btn btn-secondary-cyber btn-sm" style="padding: 4px 10px; font-size: 0.72rem; white-space: nowrap;" onclick="changeAiHistoryPage(${AI_HISTORY_PAGE - 1})" ${AI_HISTORY_PAGE <= 1 ? 'disabled style="opacity: 0.45; cursor: not-allowed; padding: 4px 10px; font-size: 0.72rem;"' : ''}>
-                    <i class="fa-solid fa-chevron-left"></i> Sebelumnya
+            <div class="ai-history-pagination">
+                <button type="button" class="btn btn-secondary-cyber ai-page-btn" onclick="changeAiHistoryPage(${AI_HISTORY_PAGE - 1})" ${AI_HISTORY_PAGE <= 1 ? 'disabled style="opacity: 0.4; cursor: not-allowed;"' : ''}>
+                    <i class="fa-solid fa-chevron-left"></i> <span class="page-text-desktop">Sebelumnya</span><span class="page-text-mobile">Sblm</span>
                 </button>
-                <div style="font-size: 0.74rem; color: #94A3B8; font-weight: 600; white-space: nowrap;">
-                    Halaman <span style="color: #00F0FF; font-weight: 700;">${AI_HISTORY_PAGE}</span> / ${totalPages}
+                <div class="ai-page-info">
+                    Halaman <strong style="color: #00F0FF;">${AI_HISTORY_PAGE}</strong> / ${totalPages}
                 </div>
-                <button type="button" class="btn btn-secondary-cyber btn-sm" style="padding: 4px 10px; font-size: 0.72rem; white-space: nowrap;" onclick="changeAiHistoryPage(${AI_HISTORY_PAGE + 1})" ${AI_HISTORY_PAGE >= totalPages ? 'disabled style="opacity: 0.45; cursor: not-allowed; padding: 4px 10px; font-size: 0.72rem;"' : ''}>
-                    Selanjutnya <i class="fa-solid fa-chevron-right"></i>
+                <button type="button" class="btn btn-secondary-cyber ai-page-btn" onclick="changeAiHistoryPage(${AI_HISTORY_PAGE + 1})" ${AI_HISTORY_PAGE >= totalPages ? 'disabled style="opacity: 0.4; cursor: not-allowed;"' : ''}>
+                    <span class="page-text-desktop">Selanjutnya</span><span class="page-text-mobile">Lanjut</span> <i class="fa-solid fa-chevron-right"></i>
                 </button>
             </div>
         `;

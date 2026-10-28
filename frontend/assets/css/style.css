@@ -55088,6 +55088,14 @@ button[onclick*="copyAiReportToClipboard"] i {
     color: #C084FC !important;
     filter: drop-shadow(0 0 8px rgba(192, 132, 252, 0.9)) !important;
 }
+
+/* Paginasi Riwayat AI Base Desktop */
+.ai-history-pagination .page-text-desktop {
+    display: inline;
+}
+.ai-history-pagination .page-text-mobile {
+    display: none;
+}
 button[onclick*="runAiAnalysis"] i {
     color: #FFD600 !important;
     filter: drop-shadow(0 0 8px rgba(255, 214, 0, 0.95)) !important;
@@ -60574,8 +60582,74 @@ body:has(#auth-screen:not(.hidden)) #main-dashboard {
     }
     #ai-history-modal .modal-footer {
         padding: 10px 14px !important;
-        flex-wrap: wrap !important;
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        justify-content: space-between !important;
+        align-items: center !important;
         gap: 8px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+    #ai-history-modal .modal-footer #ai-history-count {
+        font-size: 0.72rem !important;
+        color: #94A3B8 !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        flex: 1 1 auto !important;
+    }
+    #ai-history-modal .modal-footer button {
+        padding: 5px 14px !important;
+        min-height: 32px !important;
+        height: 32px !important;
+        font-size: 0.74rem !important;
+        font-weight: 600 !important;
+        white-space: nowrap !important;
+        flex-shrink: 0 !important;
+    }
+
+    /* Paginasi Riwayat AI Anti-Terpotong di Layar HP */
+    .ai-history-pagination {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        padding: 10px 4px 2px 4px !important;
+        margin-top: 10px !important;
+        border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        gap: 6px !important;
+    }
+    .ai-history-pagination .ai-page-btn {
+        padding: 5px 10px !important;
+        min-height: 30px !important;
+        height: 30px !important;
+        max-height: 30px !important;
+        font-size: 0.70rem !important;
+        font-weight: 600 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 4px !important;
+        white-space: nowrap !important;
+        box-sizing: border-box !important;
+        border-radius: 6px !important;
+        flex-shrink: 0 !important;
+    }
+    .ai-history-pagination .ai-page-info {
+        font-size: 0.70rem !important;
+        color: #94A3B8 !important;
+        font-weight: 600 !important;
+        white-space: nowrap !important;
+        text-align: center !important;
+        flex-shrink: 0 !important;
+    }
+    .ai-history-pagination .page-text-desktop {
+        display: none !important;
+    }
+    .ai-history-pagination .page-text-mobile {
+        display: inline !important;
     }
 
     /* 2. Modal Tambah / Edit Perangkat (#device-modal): Tombol Footer Sama Besar & Utuh */
