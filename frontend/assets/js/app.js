@@ -10172,7 +10172,8 @@ async function triggerManualPingTest() {
         if (window.apiService && typeof window.apiService.triggerRealPing === 'function') {
             pingResult = await window.apiService.triggerRealPing(dev.rawId || dev.id, dev.ip);
         } else {
-            const res = await fetch('http://localhost:3000/api/monitoring/real-ping', {
+            const apiBase = (window.apiService && window.apiService.BASE_URL) || 'http://localhost:3000/api';
+            const res = await fetch(`${apiBase}/monitoring/real-ping`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ asset_id: dev.rawId || dev.id, ip: dev.ip })
@@ -10462,7 +10463,8 @@ async function checkArchitectureHealth() {
     const mqttPill = document.getElementById('arch-mqtt-status');
 
     try {
-        const res = await fetch('http://localhost:3000/api/health').then(r => r.json());
+        const apiBase = (window.apiService && window.apiService.BASE_URL) || 'http://localhost:3000/api';
+        const res = await fetch(`${apiBase}/health`).then(r => r.json());
         if (res && res.success) {
             if (apiPill) apiPill.innerHTML = '<span class="dot green"></span> REST API Express (Port 3000: Online)';
             if (dbPill) dbPill.innerHTML = '<span class="dot green"></span> MySQL taims_db (15 Aset Terhubung)';
