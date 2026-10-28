@@ -344,7 +344,7 @@ async function sendTelegramOtp(fullName, email, otpCode, expiresMinutes = 15) {
 
     try {
         const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 6000);
+        const timeout = setTimeout(() => controller.abort(), 15000);
         const res = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
