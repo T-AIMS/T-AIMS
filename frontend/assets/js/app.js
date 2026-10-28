@@ -109,12 +109,15 @@ window.copyAiReportToClipboard = copyAiReportToClipboard;
 // MODAL RIWAYAT ANALISIS ASISTEN AI
 // =============================================================================
 let AI_HISTORY_CACHE = [];
+let AI_HISTORY_PAGE = 1;
+const AI_HISTORY_PER_PAGE = 5;
 
 function openAiHistoryModal() {
     const modal = document.getElementById('ai-history-modal');
     if (modal) {
         modal.classList.remove('hidden');
         modal.style.display = 'flex';
+        AI_HISTORY_PAGE = 1;
         loadAiHistory();
     }
 }
@@ -129,9 +132,119 @@ function closeAiHistoryModal() {
 }
 window.closeAiHistoryModal = closeAiHistoryModal;
 
-async function loadAiHistory() {
+function changeAiHistoryPage(newPage) {
+    const totalPages = Math.ceil((AI_HISTORY_CACHE || []).length / AI_HISTORY_PER_PAGE) || 1;
+    if (newPage < 1 || newPage > totalPages) return;
+    AI_HISTORY_PAGE = newPage;
+    renderAiHistoryList();
+    const modalBody = document.querySelector('#ai-history-modal .modal-body');
+    if (modalBody) modalBody.scrollTop = 0;
+}
+window.changeAiHistoryPage = changeAiHistoryPage;
+
+function renderAiHistoryList() {
     const container = document.getElementById('ai-history-container');
     const countBadge = document.getElementById('ai-history-count');
+    if (!container) return;
+
+    if (!AI_HISTORY_CACHE || AI_HISTORY_CACHE.length === 0) {
+        container.innerHTML = `
+            <div class="p-4 text-center text-muted">
+                <i class="fa-solid fa-clock-rotate-left fa-2x mb-2 text-cyan"></i>
+                <p class="m-0">Belum ada riwayat analisis AI yang tersimpan di database.</p>
+                <span class="text-xs">Klik tombol "Jalankan Analisis AI Baru" di Dashboard untuk mencatat analisis perdana.</span>
+            </div>
+        `;
+        if (countBadge) countBadge.innerText = '0 riwayat tersimpan';
+        return;
+    }
+
+    const totalItems = AI_HISTORY_CACHE.length;
+    const totalPages = Math.ceil(totalItems / AI_HISTORY_PER_PAGE) || 1;
+    if (AI_HISTORY_PAGE > totalPages) AI_HISTORY_PAGE = totalPages;
+    if (AI_HISTORY_PAGE < 1) AI_HISTORY_PAGE = 1;
+
+    const startIdx = (AI_HISTORY_PAGE - 1) * AI_HISTORY_PER_PAGE;
+    const endIdx = Math.min(startIdx + AI_HISTORY_PER_PAGE, totalItems);
+    const pageItems = AI_HISTORY_CACHE.slice(startIdx, endIdx);
+
+    if (countBadge) {
+        countBadge.innerHTML = `Menampilkan <strong style="color: #00F0FF;">${startIdx + 1}-${endIdx}</strong> dari <strong>${totalItems}</strong> catatan riwayat`;
+    }
+
+    let html = `
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+    `;
+
+    pageItems.forEach((item, idx) => {
+        const isN8n = item.source === 'n8n_ai';
+        const sourceBadge = isN8n 
+            ? '<span class="ai-source-pill" style="font-size: 0.68rem;"><i class="fa-solid fa-bolt"></i> n8n AI Workflow (Arik)</span>'
+            : '<span class="ai-source-pill" style="font-size: 0.68rem; background: rgba(245, 158, 11, 0.15); border-color: rgba(245, 158, 11, 0.35); color: #FBBF24;"><i class="fa-solid fa-microchip"></i> Local Prescriptive</span>';
+
+        const formattedTime = item.created_at 
+            ? new Date(item.created_at).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' }) + ' WIB'
+            : '-';
+
+        const troubled = item.troubled_devices || '-';
+        const sla = item.availability_percent !== undefined ? Number(item.availability_percent).toFixed(1) + '%' : '0.0%';
+        const isOptimal = Number(item.availability_percent) >= 90;
+
+        html += `
+            <div style="background: rgba(255, 255, 255, 0.025); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px; padding: 12px 14px; transition: border-color 0.2s ease;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 6px;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.76rem; font-weight: 700; color: #00F0FF;">
+                            #${item.recommendation_id || (startIdx + idx + 1)}
+                        </span>
+                        <span style="font-size: 0.76rem; color: #E2E8F0; font-weight: 600;">
+                            <i class="fa-regular fa-calendar-days text-muted"></i> ${formattedTime}
+                        </span>
+                        ${sourceBadge}
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <span style="font-size: 0.72rem; padding: 2px 8px; border-radius: 4px; font-weight: 700; background: ${isOptimal ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)'}; color: ${isOptimal ? '#34D399' : '#F87171'}; border: 1px solid ${isOptimal ? 'rgba(16, 185, 129, 0.3)' : 'rgba(239, 68, 68, 0.3)'};">
+                            SLA: ${sla} (${item.online_devices || 0}/${item.total_devices || 0} Online)
+                        </span>
+                        <button type="button" class="btn-ai-action" style="padding: 3px 8px; font-size: 0.7rem;" onclick="copySingleHistoryItem(${item.recommendation_id})">
+                            <i class="fa-solid fa-copy"></i> Salin
+                        </button>
+                    </div>
+                </div>
+
+                <div style="font-size: 0.74rem; color: #94A3B8; margin-bottom: 6px;">
+                    <i class="fa-solid fa-triangle-exclamation text-yellow"></i> <strong>Perangkat Anomali:</strong> <span style="color: #F1F5F9;">${troubled}</span>
+                </div>
+
+                <div style="background: rgba(0, 0, 0, 0.35); border-left: 3px solid ${isOptimal ? '#10B981' : '#00F0FF'}; border-radius: 4px; padding: 8px 10px; font-size: 0.74rem; color: #CBD5E1; line-height: 1.5; white-space: pre-line;">${(item.recommendation || '').slice(0, 320)}${(item.recommendation || '').length > 320 ? '...' : ''}</div>
+            </div>
+        `;
+    });
+
+    html += `</div>`;
+
+    if (totalPages > 1) {
+        html += `
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 2px 2px 2px; margin-top: 10px; border-top: 1px solid rgba(255, 255, 255, 0.08); gap: 6px;">
+                <button type="button" class="btn btn-secondary-cyber btn-sm" style="padding: 4px 10px; font-size: 0.72rem; white-space: nowrap;" onclick="changeAiHistoryPage(${AI_HISTORY_PAGE - 1})" ${AI_HISTORY_PAGE <= 1 ? 'disabled style="opacity: 0.45; cursor: not-allowed; padding: 4px 10px; font-size: 0.72rem;"' : ''}>
+                    <i class="fa-solid fa-chevron-left"></i> Sebelumnya
+                </button>
+                <div style="font-size: 0.74rem; color: #94A3B8; font-weight: 600; white-space: nowrap;">
+                    Halaman <span style="color: #00F0FF; font-weight: 700;">${AI_HISTORY_PAGE}</span> / ${totalPages}
+                </div>
+                <button type="button" class="btn btn-secondary-cyber btn-sm" style="padding: 4px 10px; font-size: 0.72rem; white-space: nowrap;" onclick="changeAiHistoryPage(${AI_HISTORY_PAGE + 1})" ${AI_HISTORY_PAGE >= totalPages ? 'disabled style="opacity: 0.45; cursor: not-allowed; padding: 4px 10px; font-size: 0.72rem;"' : ''}>
+                    Selanjutnya <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </div>
+        `;
+    }
+
+    container.innerHTML = html;
+}
+window.renderAiHistoryList = renderAiHistoryList;
+
+async function loadAiHistory() {
+    const container = document.getElementById('ai-history-container');
     if (!container) return;
 
     container.innerHTML = `
@@ -147,72 +260,8 @@ async function loadAiHistory() {
         }
 
         AI_HISTORY_CACHE = historyData || [];
-
-        if (!historyData || historyData.length === 0) {
-            container.innerHTML = `
-                <div class="p-4 text-center text-muted">
-                    <i class="fa-solid fa-clock-rotate-left fa-2x mb-2 text-cyan"></i>
-                    <p class="m-0">Belum ada riwayat analisis AI yang tersimpan di database.</p>
-                    <span class="text-xs">Klik tombol "Jalankan Analisis AI Baru" di Dashboard untuk mencatat analisis perdana.</span>
-                </div>
-            `;
-            if (countBadge) countBadge.innerText = '0 riwayat tersimpan';
-            return;
-        }
-
-        if (countBadge) countBadge.innerText = `Menampilkan ${historyData.length} catatan riwayat analisis`;
-
-        let html = `
-            <div style="display: flex; flex-direction: column; gap: 10px;">
-        `;
-
-        historyData.forEach((item, idx) => {
-            const isN8n = item.source === 'n8n_ai';
-            const sourceBadge = isN8n 
-                ? '<span class="ai-source-pill" style="font-size: 0.68rem;"><i class="fa-solid fa-bolt"></i> n8n AI Workflow (Arik)</span>'
-                : '<span class="ai-source-pill" style="font-size: 0.68rem; background: rgba(245, 158, 11, 0.15); border-color: rgba(245, 158, 11, 0.35); color: #FBBF24;"><i class="fa-solid fa-microchip"></i> Local Prescriptive</span>';
-
-            const formattedTime = item.created_at 
-                ? new Date(item.created_at).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' }) + ' WIB'
-                : '-';
-
-            const troubled = item.troubled_devices || '-';
-            const sla = item.availability_percent !== undefined ? Number(item.availability_percent).toFixed(1) + '%' : '0.0%';
-            const isOptimal = Number(item.availability_percent) >= 90;
-
-            html += `
-                <div style="background: rgba(255, 255, 255, 0.025); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px; padding: 12px 14px; transition: border-color 0.2s ease;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 6px;">
-                        <div style="display: flex; align-items: center; gap: 8px;">
-                            <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.76rem; font-weight: 700; color: #00F0FF;">
-                                #${item.recommendation_id || (idx + 1)}
-                            </span>
-                            <span style="font-size: 0.76rem; color: #E2E8F0; font-weight: 600;">
-                                <i class="fa-regular fa-calendar-days text-muted"></i> ${formattedTime}
-                            </span>
-                            ${sourceBadge}
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 6px;">
-                            <span style="font-size: 0.72rem; padding: 2px 8px; border-radius: 4px; font-weight: 700; background: ${isOptimal ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)'}; color: ${isOptimal ? '#34D399' : '#F87171'}; border: 1px solid ${isOptimal ? 'rgba(16, 185, 129, 0.3)' : 'rgba(239, 68, 68, 0.3)'};">
-                                SLA: ${sla} (${item.online_devices || 0}/${item.total_devices || 0} Online)
-                            </span>
-                            <button type="button" class="btn-ai-action" style="padding: 3px 8px; font-size: 0.7rem;" onclick="copySingleHistoryItem(${item.recommendation_id})">
-                                <i class="fa-solid fa-copy"></i> Salin
-                            </button>
-                        </div>
-                    </div>
-
-                    <div style="font-size: 0.74rem; color: #94A3B8; margin-bottom: 6px;">
-                        <i class="fa-solid fa-triangle-exclamation text-yellow"></i> <strong>Perangkat Anomali:</strong> <span style="color: #F1F5F9;">${troubled}</span>
-                    </div>
-
-                    <div style="background: rgba(0, 0, 0, 0.35); border-left: 3px solid ${isOptimal ? '#10B981' : '#00F0FF'}; border-radius: 4px; padding: 8px 10px; font-size: 0.74rem; color: #CBD5E1; line-height: 1.5; white-space: pre-line;">${(item.recommendation || '').slice(0, 320)}${(item.recommendation || '').length > 320 ? '...' : ''}</div>
-                </div>
-            `;
-        });
-
-        html += `</div>`;
-        container.innerHTML = html;
+        AI_HISTORY_PAGE = 1;
+        renderAiHistoryList();
 
     } catch (err) {
         console.error('loadAiHistory error:', err);

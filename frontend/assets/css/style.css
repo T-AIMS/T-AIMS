@@ -60519,36 +60519,63 @@ body:has(#auth-screen:not(.hidden)) #main-dashboard {
     /* PERBAIKAN 5 KOMPONEN MOBILE SESUAI SCREENSHOT IPHONE SE (<= 576px)     */
     /* ====================================================================== */
 
-    /* 1. Modal AI Assistant (#ai-assistant-modal): 3 Tombol Footer Sama Besar & Sejajar */
+    /* 1. Modal AI Assistant (#ai-assistant-modal): Tombol Footer Rapi, Proporsional & Tidak Bertumpuk */
     #ai-assistant-modal .modal-footer {
         display: grid !important;
-        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-        gap: 6px !important;
-        padding: 10px 12px !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 8px !important;
+        padding: 12px 14px !important;
         width: 100% !important;
         box-sizing: border-box !important;
     }
-    #ai-assistant-modal .modal-footer > div {
-        display: contents !important;
-    }
-    #ai-assistant-modal .modal-footer button,
-    #ai-assistant-modal .modal-footer .btn {
+    #ai-assistant-modal .modal-footer > button,
+    #ai-assistant-modal .modal-footer > .btn {
         width: 100% !important;
         min-width: 0 !important;
-        height: 36px !important;
-        min-height: 36px !important;
-        max-height: 36px !important;
-        padding: 0 4px !important;
+        height: 38px !important;
+        min-height: 38px !important;
+        max-height: 42px !important;
+        padding: 6px 10px !important;
         margin: 0 !important;
-        font-size: 0.72rem !important;
+        font-size: 0.76rem !important;
+        font-weight: 600 !important;
         display: inline-flex !important;
         flex-direction: row !important;
         flex-wrap: nowrap !important;
         align-items: center !important;
         justify-content: center !important;
-        gap: 5px !important;
+        gap: 6px !important;
         white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
         box-sizing: border-box !important;
+        border-radius: 8px !important;
+    }
+    #ai-assistant-modal .modal-footer > button:nth-child(3),
+    #ai-assistant-modal .modal-footer > .btn:nth-child(3) {
+        grid-column: 1 / -1 !important;
+        width: 100% !important;
+        background: rgba(255, 255, 255, 0.08) !important;
+        border: 1px solid rgba(255, 255, 255, 0.16) !important;
+        color: #F8FAFC !important;
+        margin-left: 0 !important;
+    }
+
+    /* Modal Riwayat Analisis Asisten AI (#ai-history-modal): Responsif Mobile */
+    #ai-history-modal .modal-header {
+        padding: 12px 14px !important;
+    }
+    #ai-history-modal .modal-header h5 {
+        font-size: 0.92rem !important;
+    }
+    #ai-history-modal .modal-body {
+        padding: 10px 12px !important;
+        max-height: 60vh !important;
+    }
+    #ai-history-modal .modal-footer {
+        padding: 10px 14px !important;
+        flex-wrap: wrap !important;
+        gap: 8px !important;
     }
 
     /* 2. Modal Tambah / Edit Perangkat (#device-modal): Tombol Footer Sama Besar & Utuh */
