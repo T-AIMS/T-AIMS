@@ -8,8 +8,13 @@
  */
 
 const BASE_URL = (function() {
-  if (typeof window !== 'undefined' && window.location && window.location.hostname && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1' && window.location.protocol.startsWith('http')) {
-    return `${window.location.protocol}//${window.location.hostname}:3000/api`;
+  if (typeof window !== 'undefined' && window.location && window.location.hostname) {
+    if (window.location.protocol === 'https:' || !window.location.port || window.location.port === '80' || window.location.port === '443') {
+      return `${window.location.origin}/api`;
+    }
+    if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1' && window.location.protocol.startsWith('http')) {
+      return `${window.location.protocol}//${window.location.hostname}:3000/api`;
+    }
   }
   return 'http://localhost:3000/api';
 })();
