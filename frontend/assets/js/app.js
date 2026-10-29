@@ -3027,7 +3027,7 @@ function closeQuickStatusModal() {
 function setQuickStatus(newStatus) {
     if (!APP_STATE.selectedDeviceId) return;
 
-    const dev = APP_STATE.devices.find(d => d.id === APP_STATE.selectedDeviceId);
+    const dev = APP_STATE.devices.find(d => d.id == APP_STATE.selectedDeviceId || d.asset_id == APP_STATE.selectedDeviceId || d.code === APP_STATE.selectedDeviceId);
     if (dev) {
         dev.status = newStatus;
         const now = new Date();
@@ -3241,6 +3241,11 @@ const DEFAULT_DEVICE_SUBCATEGORIES = {
         'Xiaomi Mi TV Stick / HDMI Telemetry Dongle',
         'Apple TV 4K Monitoring Digital Dashboard Node'
     ],
+    'Cloud Panel': [
+        'CloudPanel VPS (Ubuntu / Debian + Nginx)',
+        'CloudPanel Self-Hosted (Proxmox / VM Lokal)',
+        'CLD'
+    ],
     'Printer': [
         'Epson EcoTank L3210 / L3250 Wi-Fi All-in-One Ink Tank',
         'Epson EcoTank L14150 A3+ Wi-Fi Duplex All-in-One',
@@ -3417,13 +3422,19 @@ function handleDeviceCategoryChange() {
     const methodSelect = document.getElementById('dev-method');
     const prioritySelect = document.getElementById('dev-priority');
     if (methodSelect) {
-        if (catVal === 'Raspberry Pi' || catVal === 'IoT Node') {
+        if (catVal === 'IoT Node') {
+            methodSelect.value = 'HTTP / MQTT Heartbeat';
+            if (prioritySelect) prioritySelect.value = '2';
+        } else if (catVal === 'PC') {
+            methodSelect.value = 'Ping + Agent';
+            if (prioritySelect) prioritySelect.value = '2';
+        } else if (catVal === 'Raspberry Pi') {
             methodSelect.value = 'Ping + Heartbeat';
             if (prioritySelect) prioritySelect.value = '2';
         } else if (catVal === 'Server') {
             methodSelect.value = 'Ping + TCP Port + HTTP';
             if (prioritySelect) prioritySelect.value = '1';
-        } else if (catVal === 'Router' || catVal === 'Switch') {
+        } else if (catVal === 'Router' || catVal === 'Switch' || catVal === 'Access Point') {
             methodSelect.value = 'Ping + SNMP';
             if (prioritySelect) prioritySelect.value = '1';
         } else if (catVal === 'Cloud Panel') {
@@ -4094,7 +4105,7 @@ function closeQuickStatusModal() {
 function setQuickStatus(newStatus) {
     if (!APP_STATE.selectedDeviceId) return;
 
-    const dev = APP_STATE.devices.find(d => d.id === APP_STATE.selectedDeviceId);
+    const dev = APP_STATE.devices.find(d => d.id == APP_STATE.selectedDeviceId || d.asset_id == APP_STATE.selectedDeviceId || d.code === APP_STATE.selectedDeviceId);
     if (dev) {
         dev.status = newStatus;
         const now = new Date();

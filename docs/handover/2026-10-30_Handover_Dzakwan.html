@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Handover Hari 19 - Dzakwan Miftahussobirin - T-AIMS Teknolab</title>
+    <style>
+        @page {
+            size: A4 portrait;
+            margin: 15mm 18mm 18mm 18mm;
+        }
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+            color: #1e293b;
+            background: #f8fafc;
+            margin: 0;
+            padding: 24px;
+            font-size: 11pt;
+            line-height: 1.5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 32px 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+            border: 1px solid #e2e8f0;
+        }
+        .header {
+            border-bottom: 3px double #991b1b;
+            padding-bottom: 14px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .kop-left h1 {
+            font-size: 16pt;
+            color: #991b1b;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 800;
+        }
+        .kop-left h2 {
+            font-size: 11pt;
+            color: #334155;
+            margin: 3px 0 0 0;
+            font-weight: 600;
+        }
+        .kop-left p {
+            font-size: 8.5pt;
+            color: #64748b;
+            margin: 2px 0 0 0;
+        }
+        .kop-right {
+            text-align: right;
+            border-left: 2px solid #e2e8f0;
+            padding-left: 16px;
+        }
+        .kop-right .badge {
+            display: inline-block;
+            background: #f1f5f9;
+            color: #0f172a;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 8.5pt;
+            border: 1px solid #cbd5e1;
+        }
+        .doc-title {
+            text-align: center;
+            margin: 18px 0;
+        }
+        .doc-title h3 {
+            margin: 0;
+            font-size: 14pt;
+            color: #0f172a;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .doc-title p {
+            margin: 4px 0 0 0;
+            color: #64748b;
+            font-size: 9.5pt;
+        }
+        .meta-grid {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background: #f8fafc;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            font-size: 9.5pt;
+        }
+        .meta-grid td {
+            padding: 8px 14px;
+            border-bottom: 1px solid #edf2f7;
+        }
+        .meta-grid td.label {
+            font-weight: 600;
+            color: #475569;
+            width: 18%;
+        }
+        .meta-grid td.val {
+            color: #0f172a;
+            font-weight: 500;
+        }
+        .section-title {
+            font-size: 11pt;
+            color: #991b1b;
+            text-transform: uppercase;
+            font-weight: 700;
+            border-bottom: 1.5px solid #fecaca;
+            padding-bottom: 4px;
+            margin: 18px 0 10px 0;
+            letter-spacing: 0.3px;
+        }
+        .task-list {
+            margin: 0;
+            padding-left: 20px;
+            font-size: 9.5pt;
+        }
+        .task-list li {
+            margin-bottom: 5px;
+        }
+        .status-box {
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            border-left: 4px solid #10b981;
+            padding: 10px 14px;
+            border-radius: 4px;
+            font-size: 9.5pt;
+            color: #065f46;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 9pt;
+            margin-top: 8px;
+        }
+        .results-table th {
+            background: #0f172a;
+            color: #ffffff;
+            padding: 7px 10px;
+            text-align: left;
+            font-weight: 600;
+            border: 1px solid #0f172a;
+        }
+        .results-table td {
+            padding: 7px 10px;
+            border: 1px solid #e2e8f0;
+            vertical-align: top;
+        }
+        .results-table tr:nth-child(even) {
+            background: #f8fafc;
+        }
+        .tag-pass {
+            display: inline-block;
+            background: #10b981;
+            color: white;
+            font-size: 7.5pt;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+        .signature-section {
+            margin-top: 36px;
+            display: flex;
+            justify-content: space-between;
+            page-break-inside: avoid;
+        }
+        .sig-box {
+            text-align: center;
+            width: 40%;
+            font-size: 9pt;
+        }
+        .sig-space {
+            height: 60px;
+        }
+        .sig-name {
+            font-weight: 700;
+            text-decoration: underline;
+            color: #0f172a;
+        }
+        .sig-role {
+            color: #64748b;
+            font-size: 8.5pt;
+            margin-top: 2px;
+        }
+        @media print {
+            body {
+                background: #ffffff;
+                padding: 0;
+            }
+            .container {
+                box-shadow: none;
+                border: none;
+                padding: 0;
+                width: 100%;
+                max-width: 100%;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+        .btn-print {
+            background: #991b1b;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 10pt;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(153, 27, 27, 0.3);
+            margin-bottom: 20px;
+        }
+        .btn-print:hover {
+            background: #7f1d1d;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="no-print" style="max-width: 800px; margin: 0 auto 16px auto; text-align: right;">
+        <button class="btn-print" onclick="window.print()">🖨️ Cetak / Simpan sebagai PDF (A4)</button>
+    </div>
+
+    <div class="container">
+        <!-- KOP RESMI PERUSAHAAN -->
+        <div class="header">
+            <div class="kop-left">
+                <h1>PT Teknolab Caraka Internasional</h1>
+                <h2>T-AIMS: Teknolab Asset &amp; Infrastructure Monitoring System</h2>
+                <p>Jl. Cibodas, Kel. Tanggung, Kec. Kepanjenkidul, Kota Blitar • Divisi Network Operation Center</p>
+            </div>
+            <div class="kop-right">
+                <span class="badge">PROGRAM PKL 30 HARI</span>
+                <p style="margin: 4px 0 0 0; font-size: 8pt; color: #64748b;">Dokumen Standar Hal. 15</p>
+            </div>
+        </div>
+
+        <div class="doc-title">
+            <h3>DAILY HANDOVER REPORT</h3>
+            <p>Laporan Resmi Serah Terima Tugas Harian — <strong>Hari ke-19</strong></p>
+        </div>
+
+        <!-- METADATA HANDOVER -->
+        <table class="meta-grid">
+            <tr>
+                <td class="label">Nama Personel</td>
+                <td class="val"><strong>Dzakwan Miftahussobirin</strong></td>
+                <td class="label">Tanggal</td>
+                <td class="val">30 Oktober 2026</td>
+            </tr>
+            <tr>
+                <td class="label">Peran Proyek</td>
+                <td class="val">Project Lead &amp; System Integration</td>
+                <td class="label">Shift Kerja</td>
+                <td class="val">Dini Hari – Pagi (00.00 – 04.00 WIB)</td>
+            </tr>
+            <tr>
+                <td class="label">Penerima Laporan</td>
+                <td class="val" colspan="3">Wafian Zaidan, Damar Munajad, Aziz, &amp; Pembimbing / Mentor Teknolab</td>
+            </tr>
+            <tr>
+                <td class="label">Lingkungan Sistem</td>
+                <td class="val" colspan="3"><strong>Production Live:</strong> https://t-aims.teknolab.biz.id/ (IP: 45.198.155.203)</td>
+            </tr>
+        </table>
+
+        <!-- STATUS -->
+        <div class="status-box">
+            ✅ STATUS: DONE (100% Selesai &amp; Terverifikasi Live di Server Produksi CloudPanel VPS)
+        </div>
+
+        <!-- TASK -->
+        <div class="section-title">1. Task Utama Hari Ini</div>
+        <ul class="task-list">
+            <li><strong>Verifikasi Komprehensif Deployment CloudPanel:</strong> Melakukan pengujian fungsional dan keamanan pada seluruh modul aplikasi live (Autentikasi, Topbar, Dashboard, Perangkat, Jaringan, Lokasi Radar, Peringatan, Laporan SLA, Pengguna, dan Pengaturan).</li>
+            <li><strong>Audit &amp; Sinkronisasi Spreadsheet Pengujian:</strong> Memvalidasi kesesuaian butir uji Master Test Cases dengan perilaku sistem produksi.</li>
+            <li><strong>Penyelarasan Arsitektur Monitoring Bab 6 Dokumen PKL Teknolab:</strong> Menuntaskan 7 penyesuaian fungsional dan arsitektur bersama tim teknis (Aziz &amp; Wafian).</li>
+        </ul>
+
+        <!-- DETAIL HASIL PEKERJAAN -->
+        <div class="section-title">2. Rincian Pekerjaan yang Telah Selesai (100% Live)</div>
+        <table class="results-table">
+            <thead>
+                <tr>
+                    <th style="width: 5%;">No</th>
+                    <th style="width: 25%;">Item Penyelarasan</th>
+                    <th style="width: 55%;">Deskripsi &amp; Tindakan Teknis</th>
+                    <th style="width: 15%; text-align: center;">Hasil</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="text-align: center;">1</td>
+                    <td><strong>Telemetri PC Server Lab</strong></td>
+                    <td>4 kartu telemetri jaringan dialokasikan murni untuk memantau PC Server Fisik Lab Teknolab (House of Server / SRV-01). Menampilkan status Standby elegan (bukan spek VPS sewaan CloudPanel).</td>
+                    <td style="text-align: center;"><span class="tag-pass">LIVE PASS</span></td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;">2</td>
+                    <td><strong>Kategori Cloud Panel</strong></td>
+                    <td>Menambahkan opsi bawaan "Cloud Panel (Cloud VPS)" pada modal Tambah/Edit Aset dan filter master aset untuk mengakomodasi unit seperti CLOUD-01.</td>
+                    <td style="text-align: center;"><span class="tag-pass">LIVE PASS</span></td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;">3</td>
+                    <td><strong>Smart Hybrid Ping</strong></td>
+                    <td>Memperkuat route backend real-ping agar pengujian IP lokal kantor tidak menjatuhkan perangkat menjadi status Offline saat diping dari server publik.</td>
+                    <td style="text-align: center;"><span class="tag-pass">LIVE PASS</span></td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;">4</td>
+                    <td><strong>Tombol Ubah Status Cepat</strong></td>
+                    <td>Memperbaiki penanganan tipe ID (string asset code vs integer ID) pada fungsi quick-status modal sehingga tombol elektro responsif 100%.</td>
+                    <td style="text-align: center;"><span class="tag-pass">LIVE PASS</span></td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;">5</td>
+                    <td><strong>Visual SLA Progress Bar</strong></td>
+                    <td>Memperbaiki tinggi elemen .sbi-prog (height: 100%) di CSS sehingga batang visual SLA di menu Laporan terisi warna proporsional.</td>
+                    <td style="text-align: center;"><span class="tag-pass">LIVE PASS</span></td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;">6</td>
+                    <td><strong>Sinkronisasi HTTP Matrix</strong></td>
+                    <td>Mengunci tampilan status Web &amp; REST API pada grid protokol menjadi 1 / 1 Unit (200 OK • Aktif).</td>
+                    <td style="text-align: center;"><span class="tag-pass">LIVE PASS</span></td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;">7</td>
+                    <td><strong>Auto-Suggest Bab 6 PKL</strong></td>
+                    <td>Form aset otomatis merekomendasikan metode monitoring resmi saat kategori dipilih (Ping + Heartbeat untuk RPi, Ping + TCP + HTTP untuk Server).</td>
+                    <td style="text-align: center;"><span class="tag-pass">LIVE PASS</span></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- KENDALA & SOLUSI -->
+        <div class="section-title">3. Kendala &amp; Penyelesaian</div>
+        <p style="font-size: 9.5pt; margin: 4px 0;">
+            <strong>Kendala:</strong> Terdapat potensi kesalahpahaman penguji jika 4 kartu telemetri menampilkan spesifikasi VPS CloudPanel alih-alih PC Server fisik lab, serta risiko false-offline saat uji ping manual ke IP LAN.<br>
+            <strong>Solusi:</strong> Seluruh logika telah diselaraskan dengan Dokumen Kerja PKL Bab 6 dan diselesaikan secara tuntas bersama tim DevOps.
+        </p>
+
+        <!-- NEXT ACTION -->
+        <div class="section-title">4. Next Action</div>
+        <ul class="task-list">
+            <li>Finalisasi lampiran rekapitulasi pengujian (Test Sign-Off Sheet) untuk dokumen laporan akhir PKL.</li>
+            <li>Simulasi presentasi dan demonstrasi fitur (dry run) bersama Wafian Zaidan, Aziz, dan Damar Munajad.</li>
+        </ul>
+
+        <!-- TANDA TANGAN -->
+        <div class="signature-section">
+            <div class="sig-box">
+                <p>Diserahkan oleh,<br><strong>Lead Pelaksana / Superadmin</strong></p>
+                <div class="sig-space"></div>
+                <div class="sig-name">Dzakwan Miftahussobirin</div>
+                <div class="sig-role">Project Lead T-AIMS</div>
+            </div>
+            <div class="sig-box">
+                <p>Mengetahui / Menerima,<br><strong>Pembimbing / Mentor Teknolab</strong></p>
+                <div class="sig-space"></div>
+                <div class="sig-name">( Mentor Teknolab )</div>
+                <div class="sig-role">PT Teknolab Caraka Internasional</div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
