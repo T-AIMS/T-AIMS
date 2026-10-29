@@ -1499,6 +1499,36 @@ async function testTelegramAlert(type = 'offline', asset_code = 'MKRT-02') {
 }
 window.testTelegramAlert = testTelegramAlert;
 
+/**
+ * 50. Konfigurasi Sistem Baseline Engine & Threshold (GET & POST /api/settings)
+ */
+async function getSystemSettings() {
+  try {
+    const res = await apiFetch('/settings');
+    if (res && res.success && res.data) {
+      return res.data;
+    }
+    return null;
+  } catch (error) {
+    console.warn('Gagal ambil pengaturan sistem dari backend:', error.message);
+    return null;
+  }
+}
+window.getSystemSettings = getSystemSettings;
+
+async function saveSystemSettingsApi(settings) {
+  try {
+    const res = await apiFetch('/settings', {
+      method: 'POST',
+      body: JSON.stringify(settings)
+    });
+    return res;
+  } catch (error) {
+    console.warn('Gagal simpan pengaturan sistem ke backend:', error.message);
+    return { success: false, error: error.message };
+  }
+}
+window.saveSystemSettingsApi = saveSystemSettingsApi;
 
 // Pasang ke window agar bisa diakses secara global di semua file html
 window.apiService = {
@@ -1563,6 +1593,8 @@ window.apiService = {
   getTelegramStatus,
   sendTelegramAiReport,
   testTelegramAlert,
+  getSystemSettings,
+  saveSystemSettingsApi,
   getLocalFallbackAssets,
   FALLBACK_ASSETS
 };

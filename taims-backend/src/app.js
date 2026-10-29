@@ -19,6 +19,7 @@ const { startMqttHandler } = require('./services/mqtt-handler');
 const searchRoutes = require('./routes/search');
 const { startOfflineChecker } = require('./services/offline-checker');
 const aiRoutes = require('./routes/ai');
+const settingsRoutes = require('./routes/settings');
 const { startLogCleaner } = require('./services/log-cleaner');
 
 const app = express();
@@ -128,6 +129,7 @@ app.use('/api/notifications', notificationsRoutes);
 app.use('/api/heartbeat', heartbeatRoutes);
 app.use('/api/search', searchRoutes);
 app.use('/api/ai', aiRoutes);
+app.use('/api/settings', settingsRoutes);
 
 app.use((req, res) => {
     res.status(404).json({ success: false, error: 'Endpoint tidak ditemukan' });
