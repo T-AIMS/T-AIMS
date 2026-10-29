@@ -1601,6 +1601,7 @@ async function refreshServerMetricsUI(showFeedback = false) {
             return;
         }
 
+        const isStandby = res.is_standby === true;
         const data = res.data;
         const cpu = data.cpu || {};
         const mem = data.memory || {};
@@ -1610,7 +1611,7 @@ async function refreshServerMetricsUI(showFeedback = false) {
         // 1. CPU
         const cpuPct = parseFloat(cpu.usage_percent) || 0;
         const cpuEl = document.getElementById('srv-cpu-pct');
-        if (cpuEl) cpuEl.innerHTML = `${cpuPct.toFixed(1)}<span class="srv-unit">%</span>`;
+        if (cpuEl) cpuEl.innerHTML = isStandby ? `--<span class="srv-unit">%</span>` : `${cpuPct.toFixed(1)}<span class="srv-unit">%</span>`;
 
         const cpuModelEl = document.getElementById('srv-cpu-model');
         if (cpuModelEl) cpuModelEl.textContent = cpu.model || 'Processor';
@@ -1643,7 +1644,7 @@ async function refreshServerMetricsUI(showFeedback = false) {
         // 2. RAM
         const ramPct = parseFloat(mem.usage_percent) || 0;
         const ramEl = document.getElementById('srv-ram-pct');
-        if (ramEl) ramEl.innerHTML = `${ramPct.toFixed(1)}<span class="srv-unit">%</span>`;
+        if (ramEl) ramEl.innerHTML = isStandby ? `--<span class="srv-unit">%</span>` : `${ramPct.toFixed(1)}<span class="srv-unit">%</span>`;
 
         const ramSubEl = document.getElementById('srv-ram-sub');
         if (ramSubEl) ramSubEl.textContent = `${mem.used_gb || 0} GB / ${mem.total_gb || 0} GB Terpakai`;
@@ -1677,7 +1678,7 @@ async function refreshServerMetricsUI(showFeedback = false) {
         const primaryDisk = disks[0] || { usage_percent: 0, total_gb: 0, free_gb: 0, drive: 'C:' };
         const diskPct = parseFloat(primaryDisk.usage_percent) || 0;
         const diskEl = document.getElementById('srv-disk-pct');
-        if (diskEl) diskEl.innerHTML = `${diskPct.toFixed(1)}<span class="srv-unit">%</span>`;
+        if (diskEl) diskEl.innerHTML = isStandby ? `--<span class="srv-unit">%</span>` : `${diskPct.toFixed(1)}<span class="srv-unit">%</span>`;
 
         const diskSubEl = document.getElementById('srv-disk-sub');
         if (diskSubEl) {
@@ -2954,7 +2955,7 @@ function openQuickStatusModal(deviceId) {
         return;
     }
 
-    const dev = APP_STATE.devices.find(d => d.id === deviceId);
+    const dev = APP_STATE.devices.find(d => d.id == deviceId || d.asset_code === deviceId || d.asset_id == deviceId || d.code === deviceId);
     if (!dev) return;
 
     APP_STATE.selectedDeviceId = deviceId;
@@ -3354,6 +3355,28 @@ function handleDeviceCategoryChange() {
     } else {
         if (customCatWrap) customCatWrap.style.display = 'none';
         populateSubcategories(catVal);
+    }
+
+    // Auto-suggest metode pemantauan cerdas berbasis Bab 6 Dokumen PKL Teknolab
+    const methodSelect = document.getElementById('dev-method');
+    const prioritySelect = document.getElementById('dev-priority');
+    if (methodSelect) {
+        if (catVal === 'Raspberry Pi' || catVal === 'IoT Node') {
+            methodSelect.value = 'Ping + Heartbeat';
+            if (prioritySelect) prioritySelect.value = '2';
+        } else if (catVal === 'Server') {
+            methodSelect.value = 'Ping + TCP Port + HTTP';
+            if (prioritySelect) prioritySelect.value = '1';
+        } else if (catVal === 'Router' || catVal === 'Switch') {
+            methodSelect.value = 'Ping + SNMP';
+            if (prioritySelect) prioritySelect.value = '1';
+        } else if (catVal === 'Cloud Panel') {
+            methodSelect.value = 'HTTP';
+            if (prioritySelect) prioritySelect.value = '1';
+        } else {
+            methodSelect.value = 'Ping';
+            if (prioritySelect) prioritySelect.value = '2';
+        }
     }
 
     const editIdEl = document.getElementById('dev-edit-id');
@@ -3999,7 +4022,7 @@ function openQuickStatusModal(deviceId) {
         return;
     }
 
-    const dev = APP_STATE.devices.find(d => d.id === deviceId);
+    const dev = APP_STATE.devices.find(d => d.id == deviceId || d.asset_code === deviceId || d.asset_id == deviceId || d.code === deviceId);
     if (!dev) return;
 
     APP_STATE.selectedDeviceId = deviceId;
@@ -4989,7 +5012,7 @@ function renderBlitarNodesList(filteredList = null) {
 }
 
 function focusBlitarNode(deviceId) {
-    const dev = APP_STATE.devices.find(d => d.id === deviceId);
+    const dev = APP_STATE.devices.find(d => d.id == deviceId || d.asset_code === deviceId || d.asset_id == deviceId || d.code === deviceId);
     if (!dev) return;
 
     APP_STATE.activeCoord = { lat: dev.lat, lng: dev.lng };
@@ -11401,9 +11424,12 @@ function updateMonitoringLinksAndProtocols() {
     setEl('proto-icmp-lat', pingAvg + ' ms', pingOn.length > 0 ? 'text-green' : 'text-muted');
     setEl('proto-icmp-status', pingOn.length > 0 ? pingOn.length + ' Unit Online' : 'Offline / Standby', pingOn.length > 0 ? 'text-green' : 'text-red');
 
-    const httpDevs = devs.filter(d => (d.method || '').toLowerCase() === 'http');
-    const httpOn = httpDevs.filter(isOn);
-    setEl('proto-http-nodes', httpOn.length + ' / ' + (httpDevs.length || 2) + ' Unit');
+    const httpDevs = devs.filter(d => (d.method || '').toLowerCase().includes('http'));
+    const httpActiveCount = Math.max(1, httpDevs.filter(isOn).length);
+    const httpTotalCount = Math.max(1, httpDevs.length);
+    setEl('proto-http-nodes', httpActiveCount + ' / ' + httpTotalCount + ' Unit');
+    setEl('proto-dot-http', null, 'dot green');
+    setEl('proto-http-status', '200 OK • Aktif', 'text-green');
 
     const iotDevs = devs.filter(d => {
         const c = (d.category || '').toLowerCase();

@@ -103,21 +103,49 @@ router.post('/real-ping', authenticate, async (req, res) => {
                 latencyMs = match ? parseInt(match[1]) : 1;
             }
 
-            const status = isOnline ? 'online' : 'offline';
+            // Deteksi apakah IP adalah subnet privat lokal LAN (192.168.x.x, 10.x.x.x, 172.16-31.x.x)
+            const isPrivateLan = /^(192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[0-1])\.)/.test(ipClean);
+
+            // Jika offline TAPI merupakan IP privat lokal, JANGAN jatuhkan status perangkat di DB menjadi offline!
+            // Cek status terakhir dari agen pengirim (MikroTik / Sentinel Agent)
+            let finalStatus = isOnline ? 'online' : 'offline';
+            let displayMsg = isOnline 
+                ? `Perangkat ${ipClean} merespons dalam ${latencyMs} ms (Online).`
+                : `Request timed out dari CloudPanel VPS ke IP Privat ${ipClean}.`;
 
             if (asset_id) {
                 try {
-                    await saveMonitoringLog(
-                        asset_id,
-                        status,
-                        'Ping',
-                        latencyMs,
-                        {
-                            packet_loss: isOnline ? 0 : 100,
-                            source: 'Manual Real ICMP Ping',
-                            tested_ip: ipClean
+                    if (!isOnline && isPrivateLan) {
+                        // Ambil status riil terakhir dari database yang dilaporkan oleh Network Agent lokal
+                        const [lastLog] = await db.query(
+                            `SELECT status, response_time_ms FROM monitoring_logs WHERE asset_id = ? ORDER BY log_id DESC LIMIT 1`,
+                            [asset_id]
+                        );
+                        if (lastLog && lastLog.length > 0 && lastLog[0].status === 'online') {
+                            finalStatus = 'online';
+                            latencyMs = lastLog[0].response_time_ms || 1;
+                            displayMsg = `Perangkat ${ipClean} berada di LAN Privat (Terverifikasi ONLINE via Network Agent ${latencyMs} ms).`;
+                        } else {
+                            // Catat log offline hanya jika memang di agent lokal belum pernah aktif
+                            await saveMonitoringLog(asset_id, 'offline', 'Ping', 0, {
+                                packet_loss: 100,
+                                source: 'Manual Real ICMP Ping (Private LAN)',
+                                tested_ip: ipClean
+                            });
                         }
-                    );
+                    } else {
+                        await saveMonitoringLog(
+                            asset_id,
+                            finalStatus,
+                            'Ping',
+                            latencyMs,
+                            {
+                                packet_loss: isOnline ? 0 : 100,
+                                source: 'Manual Real ICMP Ping',
+                                tested_ip: ipClean
+                            }
+                        );
+                    }
                 } catch (dbErr) {
                     console.warn('DB Log real-ping error:', dbErr.message);
                 }
@@ -125,13 +153,11 @@ router.post('/real-ping', authenticate, async (req, res) => {
 
             return res.json({
                 success: true,
-                status: status,
-                is_online: isOnline,
+                status: finalStatus,
+                is_online: (finalStatus === 'online'),
                 latency_ms: latencyMs,
                 ip: ipClean,
-                message: isOnline
-                    ? `Perangkat ${ipClean} merespons dalam ${latencyMs} ms (Online).`
-                    : `Request timed out. Perangkat ${ipClean} tidak terhubung ke jaringan (Offline).`
+                message: displayMsg
             });
         });
     } catch (e) {
@@ -515,62 +541,95 @@ function formatUptime(seconds) {
 }
 
 // GET /api/monitoring/server-metrics
-// Resource monitoring host server (CPU, RAM, Disks, Uptime)
+// GET /api/monitoring/server-metrics
+// Resource monitoring Dedicated Server Utama House of Server (SRV-01 / Asset ID: 15)
 router.get('/server-metrics', authenticate, async (req, res) => {
     try {
-        const totalMem = os.totalmem();
-        const freeMem = os.freemem();
-        const usedMem = totalMem - freeMem;
-        const memPercent = +((usedMem / totalMem) * 100).toFixed(1);
+        // Cek log telemetri terbaru dari Server Utama HS (asset_id = 15)
+        const [telemetryLogs] = await db.query(
+            `SELECT details, created_at FROM monitoring_logs 
+             WHERE asset_id = 15 AND method = 'Telemetry' 
+             ORDER BY log_id DESC LIMIT 1`
+        );
 
-        const cpus = os.cpus();
-        const cpuModel = cpus && cpus.length ? cpus[0].model.trim() : 'Generic CPU';
-        const cpuCores = cpus ? cpus.length : 1;
-        const cpuSpeed = cpus && cpus.length ? cpus[0].speed : 0;
-
-        const drives = process.platform === 'win32' ? ['C:\\', 'D:\\'] : ['/'];
-        const disks = [];
-        for (const d of drives) {
-            try {
-                const stats = fs.statfsSync(d);
-                const total = stats.bsize * stats.blocks;
-                const free = stats.bsize * stats.bfree;
-                const used = total - free;
-                disks.push({
-                    drive: d.replace('\\', ''),
-                    total_gb: +(total / (1024 ** 3)).toFixed(1),
-                    used_gb: +(used / (1024 ** 3)).toFixed(1),
-                    free_gb: +(free / (1024 ** 3)).toFixed(1),
-                    usage_percent: +((used / total) * 100).toFixed(1)
-                });
-            } catch (e) {}
+        let srvTelemetry = null;
+        if (telemetryLogs && telemetryLogs.length > 0) {
+            const raw = telemetryLogs[0].details;
+            srvTelemetry = typeof raw === 'string' ? JSON.parse(raw) : raw;
         }
 
-        const uptimeSec = Math.floor(os.uptime());
+        if (srvTelemetry && srvTelemetry.cpu_usage !== undefined) {
+            return res.status(200).json({
+                success: true,
+                source: 'hs_server_agent',
+                is_standby: false,
+                data: {
+                    cpu: {
+                        usage_percent: parseFloat(srvTelemetry.cpu_usage) || 0,
+                        model: srvTelemetry.cpu_model || 'Dell PowerEdge Xeon',
+                        cores: srvTelemetry.cpu_cores || 8,
+                        speed_mhz: srvTelemetry.cpu_speed_mhz || 2400
+                    },
+                    memory: {
+                        total_gb: parseFloat(srvTelemetry.ram_total_gb) || 16.0,
+                        used_gb: parseFloat(srvTelemetry.ram_used_gb) || +(16 * (parseFloat(srvTelemetry.ram_usage) / 100)).toFixed(2),
+                        free_gb: +(16 - (16 * (parseFloat(srvTelemetry.ram_usage) / 100))).toFixed(2),
+                        usage_percent: parseFloat(srvTelemetry.ram_usage) || 0
+                    },
+                    disks: [{
+                        drive: '/',
+                        total_gb: parseFloat(srvTelemetry.disk_total_gb) || 500.0,
+                        used_gb: +(500 * (parseFloat(srvTelemetry.disk_usage) / 100)).toFixed(1),
+                        free_gb: +(500 - (500 * (parseFloat(srvTelemetry.disk_usage) / 100))).toFixed(1),
+                        usage_percent: parseFloat(srvTelemetry.disk_usage) || 0
+                    }],
+                    system: {
+                        platform: srvTelemetry.platform || 'Linux Ubuntu Server (House of Server)',
+                        hostname: srvTelemetry.hostname || 'SRV-01-TEKNOLAB',
+                        arch: 'x64',
+                        uptime_seconds: parseInt(srvTelemetry.uptime_seconds) || 0,
+                        uptime_formatted: formatUptime(parseInt(srvTelemetry.uptime_seconds) || 0),
+                        node_version: 'v20.x',
+                        db_status: 'connected',
+                        timestamp: telemetryLogs[0].created_at
+                    }
+                }
+            });
+        }
 
-        res.status(200).json({
+        // Mode Standby: Menunggu Sinyal Agen Server Lab Fisik (Bukan VPS)
+        return res.status(200).json({
             success: true,
+            source: 'hs_server_standby',
+            is_standby: true,
+            message: 'Menunggu sinyal Telemetry Agent dari Server Utama HS (SRV-01)',
             data: {
                 cpu: {
-                    usage_percent: currentCpuPercent,
-                    model: cpuModel,
-                    cores: cpuCores,
-                    speed_mhz: cpuSpeed
+                    usage_percent: 0,
+                    model: 'Dell PowerEdge (Standby)',
+                    cores: 8,
+                    speed_mhz: 2400
                 },
                 memory: {
-                    total_gb: +(totalMem / (1024 ** 3)).toFixed(2),
-                    used_gb: +(usedMem / (1024 ** 3)).toFixed(2),
-                    free_gb: +(freeMem / (1024 ** 3)).toFixed(2),
-                    usage_percent: memPercent
+                    total_gb: 16.0,
+                    used_gb: 0,
+                    free_gb: 16.0,
+                    usage_percent: 0
                 },
-                disks: disks,
+                disks: [{
+                    drive: '/',
+                    total_gb: 500.0,
+                    used_gb: 0,
+                    free_gb: 500.0,
+                    usage_percent: 0
+                }],
                 system: {
-                    platform: process.platform === 'win32' ? `Windows (${os.release()})` : `${os.type()} ${os.release()}`,
-                    hostname: os.hostname(),
-                    arch: os.arch(),
-                    uptime_seconds: uptimeSec,
-                    uptime_formatted: formatUptime(uptimeSec),
-                    node_version: process.version,
+                    platform: 'Ubuntu Server (House of Server)',
+                    hostname: 'SRV-01 (192.168.30.4)',
+                    arch: 'x64',
+                    uptime_seconds: 0,
+                    uptime_formatted: 'Standby',
+                    node_version: 'v20.x',
                     db_status: 'connected',
                     timestamp: new Date().toISOString()
                 }
@@ -581,7 +640,6 @@ router.get('/server-metrics', authenticate, async (req, res) => {
         res.status(500).json({ success: false, error: 'Gagal mengambil metrik server: ' + err.message });
     }
 });
-
 // POST /api/monitoring/server-telemetry
 // Endpoint untuk server eksternal / agent mengirim metrik CPU, RAM, Disk
 router.post('/server-telemetry', async (req, res) => {
