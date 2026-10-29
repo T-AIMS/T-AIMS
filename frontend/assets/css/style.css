@@ -37524,6 +37524,7 @@ body {
 
 
 
+.sbi-prog { height: 100%; min-height: 8px; border-radius: 4px; transition: width 0.3s ease; }
 .sbi-prog.green { background: #10B981; }
 
 
