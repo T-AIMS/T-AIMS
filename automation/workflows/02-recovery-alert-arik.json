@@ -1,0 +1,199 @@
+{
+  "name": "NOTIFIKASI T-AIMS RECOVERY",
+  "nodes": [
+    {
+      "parameters": {
+        "fromEmail": "taims.automation@gmail.com",
+        "toEmail": "taims.automation@gmail.com",
+        "subject": "=[T-AIMS] Recovery: {{ $('Code in JavaScript').item.json.asset_name }}",
+        "emailFormat": "text",
+        "text": "={{ $json.candidates ? $json.candidates[0].content.parts[0].text : $('Code in JavaScript').item.json.message }}",
+        "options": {
+          "bccEmail": "damarmunajad7@gmail.com,rzafahmi351@gmail.com,faidatrismaamelia@gmail.com,ilfinamufarika4@gmail.com,awangtgprofesional@gmail.com,dikayogapratama18@gmail.com,ahzizsaputra@gmail.com,arickferdiansyah@gmail.com,wafianzaidan@gmail.com,rezatriwardana7@gmail.com"
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        704,
+        80
+      ],
+      "id": "4ff9e9dd-8d2c-4c05-8f0d-477503a4f948",
+      "name": "Send an Email",
+      "webhookId": "6d4c3989-42ca-471a-a632-618ec1eacc0b",
+      "credentials": {
+        "smtp": {
+          "id": "mAhG8aKnfX4tsLda",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. Ambil payload dari Webhook\nconst raw = $input.first().json;\nconst payload = raw.body || raw; \n\nconst assetCode = payload.asset_code || '-';\n\n// 2. Logika Cooldown 10 Menit (Anti-Spam)\n// (Kita tetap pakai cooldown agar jika perangkat flapping, tidak spam pesan)\nconst staticData = $getWorkflowStaticData('global');\nconst COOLDOWN_MS = 10 * 60 * 1000; \nconst now = Date.now();\nconst lastSent = staticData[`last_sent_rec_${assetCode}`] || 0; // Key dibedakan untuk recovery\nconst timeSinceLastSent = now - lastSent;\n\nif (timeSinceLastSent < COOLDOWN_MS) {\n  return []; // Mencegah spam\n}\n\nstaticData[`last_sent_rec_${assetCode}`] = now;\n\n// 3. Ubah format waktu (recovered_at)\nlet recoveredFormatted = payload.recovered_at || payload.timestamp || '-';\nif (recoveredFormatted !== '-') {\n  try {\n    recoveredFormatted = new Date(recoveredFormatted).toLocaleString('id-ID', {\n      timeZone: 'Asia/Jakarta',\n      dateStyle: 'medium',\n      timeStyle: 'short'\n    }) + ' WIB';\n  } catch (e) {}\n}\n\n// 4. Siapkan Teks Fallback & Prompt AI\nconst messageFallback = `🟢 RECOVERY ALERT — ${payload.asset_name || '-'}\\n\\n📊 Status: ONLINE\\n⏰ Waktu Pulih: ${recoveredFormatted}\\n\\nℹ️ Notifikasi Standar (AI Gemini sedang limit/down)`;\n\nconst promptAI = `Kamu adalah AI Network Analyst profesional untuk sistem T-AIMS.\nPerangkat berikut baru saja PULIH (ONLINE kembali):\n- Nama: ${payload.asset_name || '-'}\n- Kode: ${assetCode}\n- Kategori: ${payload.category || '-'}\n- Waktu Pulih: ${recoveredFormatted}\n\nTugasmu:\n1. Berikan ucapan singkat bahwa perangkat sudah normal kembali.\n2. Berikan 1 saran pencegahan agar perangkat tidak mati lagi (sesuaikan dengan kategori perangkat).\n\nFormat output (WAJIB teks biasa, jangan JSON):\n🟢 RECOVERY ALERT — ${payload.asset_name || '-'}\n\n📊 Status: ONLINE\n⏰ Waktu Pulih: ${recoveredFormatted}\n\n🤖 Analisis AI:\n[Ucapan dan saran pencegahan dari kamu]`;\n\n// 5. Return data\nreturn {\n  json: {\n    asset_code: assetCode,\n    asset_name: payload.asset_name || '-',\n    category: payload.category || '-',\n    recovered_at: recoveredFormatted, \n    message: messageFallback, \n    prompt_ai: promptAI       \n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        32,
+        16
+      ],
+      "id": "561a09e2-a71c-4806-8a6d-c2bc3f1d7674",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "chatId": "-5383419523",
+        "text": "={{ $json.candidates ? $json.candidates[0].content.parts[0].text : $('Code in JavaScript').item.json.message }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        704,
+        -96
+      ],
+      "id": "e67fce92-d4c8-4a46-bd84-c3eea847d813",
+      "name": "Send a text message",
+      "webhookId": "73c9d919-9c76-493f-8520-30d5b03f994b",
+      "credentials": {
+        "telegramApi": {
+          "id": "tI7uRQG2569tSNWn",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "taims-recovery",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.2,
+      "position": [
+        -208,
+        16
+      ],
+      "id": "fefaf8f6-fb16-42c9-af9d-21427fae77cb",
+      "name": "Webhook",
+      "webhookId": "76b49dd9-bf4a-404e-8b84-71d799711994"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=GEMINI_API_KEY_NOTIF_PLACEHOLDER\n",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "=contents",
+              "value": "={{ [ { parts: [ { text: $json.prompt_ai } ] } ] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        224,
+        16
+      ],
+      "id": "db8d702f-2939-44eb-bb88-d1bf685ffaab",
+      "name": "AI analisis",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "maxTries": 2,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        480,
+        0
+      ],
+      "id": "ad45f029-de7e-47f4-84e6-f4a84f71d9a7",
+      "name": "percabangan"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "AI analisis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message": {
+      "main": [
+        []
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI analisis": {
+      "main": [
+        [
+          {
+            "node": "percabangan",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "percabangan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "percabangan": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send an Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "8c886ec0-50f1-4101-ac18-f51fcd5bdf79",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "60113387f61802f17dc2fd3f15b35737541fe36f121c623ede03d8255443795e"
+  },
+  "nodeGroups": [],
+  "id": "Rmum2R2J1fw3K4Rn",
+  "tags": []
+}

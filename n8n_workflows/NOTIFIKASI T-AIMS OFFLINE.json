@@ -1,0 +1,199 @@
+{
+  "name": "NOTIFIKASI T-AIMS OFFLINE",
+  "nodes": [
+    {
+      "parameters": {
+        "chatId": "-5383419523",
+        "text": "={{ $json.candidates ? $json.candidates[0].content.parts[0].text : $('Code in JavaScript').item.json.message }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        800,
+        16
+      ],
+      "id": "232400a7-53a1-4e9f-b576-249e2e7f6e70",
+      "name": "Send a text message",
+      "webhookId": "73c9d919-9c76-493f-8520-30d5b03f994b",
+      "credentials": {
+        "telegramApi": {
+          "id": "tI7uRQG2569tSNWn",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. Ambil payload dari Webhook (BUKAN MQTT lagi)\nconst raw = $input.first().json;\n// Webhook mengirim data di dalam properti 'body'\nconst payload = raw.body || raw; \n\nconst assetCode = payload.asset_code || '-';\n\n// 2. Logika Cooldown 10 Menit (Anti-Spam)\nconst staticData = $getWorkflowStaticData('global');\nconst COOLDOWN_MS = 10 * 60 * 1000; \nconst now = Date.now();\nconst lastSent = staticData[`last_sent_${assetCode}`] || 0;\nconst timeSinceLastSent = now - lastSent;\n\n// Jika belum lewat 10 menit, HENTIKAN alur (jangan kirim notif)\nif (timeSinceLastSent < COOLDOWN_MS) {\n  return []; // Mencegah spam\n}\n\n// Jika lolos, catat waktu pengiriman\nstaticData[`last_sent_${assetCode}`] = now;\n\n// 3. Ubah format waktu (ISO ke format Indonesia)\nlet lastSeenFormatted = payload.last_seen || '-';\nif (lastSeenFormatted !== '-') {\n  try {\n    lastSeenFormatted = new Date(lastSeenFormatted).toLocaleString('id-ID', {\n      timeZone: 'Asia/Jakarta',\n      dateStyle: 'medium',\n      timeStyle: 'short'\n    }) + ' WIB';\n  } catch (e) {\n    // Jika format waktu error, biarkan pakai format asli\n  }\n}\n\n// 4. Siapkan Teks untuk Fallback & Prompt AI\nconst messageFallback = `🔴 OFFLINE ALERT — ${payload.asset_name || '-'}\\n\\n📊 Status: OFFLINE\\n⚠️ Severity: ${payload.severity || '-'}\\n⏰ Terakhir Terlihat: ${lastSeenFormatted}\\n\\nℹ️ Notifikasi Standar (AI Gemini sedang limit/down)`;\n\nconst promptAI = `Kamu adalah AI Network Analyst profesional untuk sistem T-AIMS.\nPerangkat berikut baru saja OFFLINE:\n- Nama: ${payload.asset_name || '-'}\n- Kode: ${assetCode}\n- Kategori: ${payload.category || '-'}\n- Severity: ${payload.severity || '-'}\n- Terakhir terlihat: ${lastSeenFormatted}\n\nTugasmu:\n1. Berikan analisis singkat (1-2 kalimat) kenapa perangkat ini bisa offline. Sesuaikan analisis dengan Kategori perangkat:\n   - Jika CCTV: curigai koneksi jaringan (kabel LAN/Wi-Fi) terputus.\n   - Jika Server: curigai service/database mati, atau overload CPU/RAM.\n   - Jika Router/Switch/AP: curigai kabel jaringan putus, port mati, atau gangguan ISP.\n   - Jika IoT: curigai baterai habis, modul Wi-Fi terputus, atau perangkat hang.\n2. Berikan 1 rekomendasi tindakan cepat (troubleshooting).\n\nFormat output (WAJIB teks biasa, jangan JSON):\n🔴 OFFLINE ALERT — ${payload.asset_name || '-'}\n\n📊 Status: OFFLINE\n⚠️ Severity: ${payload.severity || '-'}\n\n🤖 Analisis AI:\n[Analisis kamu di sini]\n\n🎯 Tindakan:\n[Rekomendasi kamu di sini]`;\n\n// 5. Return data (TANPA kurung siku array agar Email tidak error)\nreturn {\n  json: {\n    asset_code: assetCode,\n    asset_name: payload.asset_name || '-',\n    category: payload.category || '-',\n    last_seen: lastSeenFormatted, \n    severity: payload.severity || 'unknown',\n    message: messageFallback, \n    prompt_ai: promptAI       \n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        192,
+        96
+      ],
+      "id": "b1044d59-d6bb-404b-9227-44576e96c7e6",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "fromEmail": "taims.automation@gmail.com",
+        "toEmail": "taims.automation@gmail.com",
+        "subject": "=[T-AIMS] Offline: {{ $('Code in JavaScript').item.json.asset_name }}",
+        "emailFormat": "text",
+        "text": "={{ $json.candidates ? $json.candidates[0].content.parts[0].text : $('Code in JavaScript').item.json.message }}",
+        "options": {
+          "bccEmail": "damarmunajad7@gmail.com,rzafahmi351@gmail.com,faidatrismaamelia@gmail.com,ilfinamufarika4@gmail.com,awangtgprofesional@gmail.com,dikayogapratama18@gmail.com,ahzizsaputra@gmail.com,arickferdiansyah@gmail.com,wafianzaidan@gmail.com,rezatriwardana7@gmail.com"
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        800,
+        160
+      ],
+      "id": "caa3db59-56ad-4d1e-b7e0-5fe3c2a6e0fc",
+      "name": "Send an Email",
+      "webhookId": "0a095b43-e337-46f8-bb61-1d4ee4f77744",
+      "credentials": {
+        "smtp": {
+          "id": "mAhG8aKnfX4tsLda",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "   https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=GEMINI_API_KEY_NOTIF_PLACEHOLDER",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "=contents",
+              "value": "={{ [ { parts: [ { text: $json.prompt_ai } ] } ] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        416,
+        96
+      ],
+      "id": "c6acf242-9bcf-427d-8d6f-940357f584c8",
+      "name": "AI analisis",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "maxTries": 2,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "taims-alert",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.2,
+      "position": [
+        -48,
+        96
+      ],
+      "id": "ec6a79fa-ef00-41ee-a06f-b03ce9c7e177",
+      "name": "Webhook",
+      "webhookId": "77c87108-5040-4d36-b12d-5e30b7cd0209"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        608,
+        96
+      ],
+      "id": "1945ae69-120b-4e8e-af9c-22e560b1d1d9",
+      "name": "percabangan"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Send a text message": {
+      "main": [
+        []
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "AI analisis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI analisis": {
+      "main": [
+        [
+          {
+            "node": "percabangan",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "percabangan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "percabangan": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send an Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "d958cea3-7395-4823-bbf6-e4143b21f25d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "60113387f61802f17dc2fd3f15b35737541fe36f121c623ede03d8255443795e"
+  },
+  "nodeGroups": [],
+  "id": "am8SlJl3ukufuIhy",
+  "tags": []
+}

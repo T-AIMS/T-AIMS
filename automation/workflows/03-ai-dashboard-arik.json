@@ -1,0 +1,238 @@
+{
+  "name": "AI dasbord",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ai-recommendation",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.2,
+      "position": [
+        96,
+        -32
+      ],
+      "id": "52a2a44a-5d2e-4ce1-9147-b16b4904dc54",
+      "name": "Webhook",
+      "webhookId": "4038feb7-7caa-4b91-b508-2ef14d6d420a"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1328,
+        -48
+      ],
+      "id": "1fb287f4-affe-4677-aebd-1a985eac8c77",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. Ambil data dari node sebelumnya (Code JavaScript cache)\n// Kita ambil elemen pertama array-nya\nconst raw = $input.first().json;\n\n// 2. Ambil body (tempat data summary berada)\nconst payload = raw.body || raw;\n\n// 3. Ambil summary dengan pengaman\nconst summary = payload.summary || {};\nconst offlineAssets = payload.offline_assets || [];\n\n// 4. Susun prompt untuk AI\nconst promptAI = `Kamu adalah AI Infrastructure Assistant untuk sistem T-AIMS.\nData Jaringan:\n- Total Perangkat: ${summary.total_devices || 0}\n- Online: ${summary.online || 0}\n- Offline: ${summary.offline || 0}\n- Availability: ${summary.availability_percent || 0}%\n\nPerangkat Offline: \n${offlineAssets.length > 0 ? offlineAssets.map(a => a.asset_name).join(', ') : 'Tidak ada'}\n\nBerikan analisis singkat (maksimal 2 paragraf) dan rekomendasi tindakan untuk teknisi.`;\n\n// 5. Return data\nreturn {\n  json: {\n    prompt_ai: promptAI\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        640,
+        32
+      ],
+      "id": "53914c47-0fd8-4215-900d-3a1f2122b8a9",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "88270b57-6141-4faa-a107-3e8c3f1a6fcd",
+              "leftValue": "={{ $json.isCached }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        416,
+        -32
+      ],
+      "id": "9a1b789c-2e9d-4edd-84bc-ae638602a02d",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. Simpan waktu pemanggilan AI ke Cache\nconst staticData = $getWorkflowStaticData('global');\nstaticData.last_ai_call = Date.now();\n\n// 2. Ambil data dari AI (HTTP Request)\nconst inputData = $input.first().json;\nlet teksAI = \"Sistem AI (Gemini) sedang sibuk atau tidak merespons. Silakan periksa perangkat secara manual.\";\nlet statusAI = \"warning\";\n\n// 3. Cek apakah AI mengembalikan teks (format Google Gemini)\nif (inputData.candidates && inputData.candidates[0]?.content?.parts[0]?.text) {\n  teksAI = inputData.candidates[0].content.parts[0].text;\n  statusAI = \"critical\"; // Anda bisa sesuaikan (misal: critical jika ada offline)\n}\n\n// 4. Simpan hasil AI ke Cache\nstaticData.last_ai_result = teksAI;\n\n// 5. KEMBALIKAN FORMAT JSON WAJIB DZAKWAN\nreturn {\n  json: {\n    status: statusAI, \n    status_network: statusAI === \"critical\" ? \"KRITIS\" : \"PERINGATAN (WARNING)\",\n    device: \"Cek detail di dashboard\", \n    recommendation: teksAI\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1104,
+        32
+      ],
+      "id": "a4f60cbb-ea40-4582-8f2e-740971aece9c",
+      "name": "Code in JavaScript simpan cache"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=GEMINI_API_KEY_DASHBOARD_PLACEHOLDER",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "=contents",
+              "value": "={{ [ { parts: [ { text: $json.prompt_ai } ] } ] }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        864,
+        32
+      ],
+      "id": "cd76e186-2ab6-447a-b3f7-5986f7c639c6",
+      "name": "AI analisis",
+      "retryOnFail": false,
+      "waitBetweenTries": 1000,
+      "maxTries": 2,
+      "executeOnce": false,
+      "alwaysOutputData": false,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const staticData = $getWorkflowStaticData('global');\nconst COOLDOWN_MS = 5 * 60 * 1000;\nconst now = Date.now();\n\nconst lastCall = staticData.last_ai_call || 0;\nconst lastResult = staticData.last_ai_result;\n\n// Ambil data asli dari Webhook agar tidak hilang\nconst rawData = $input.first().json;\n\nif (now - lastCall < COOLDOWN_MS && lastResult) {\n  return [{ \n    json: { \n      isCached: \"true\", \n      ai_response: lastResult \n    } \n  }]; \n}\n\nreturn [{ \n  json: { \n    isCached: \"false\",\n    body: rawData.body // <--- INI KUNCINYA: Membawa data 15 ke node selanjutnya\n  } \n}]; "
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        272,
+        -32
+      ],
+      "id": "a5023230-bb21-479e-886e-bcd3d366e0ab",
+      "name": "Code JavaScript cache"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Code JavaScript cache",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "AI analisis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript simpan cache": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI analisis": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript simpan cache",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code in JavaScript simpan cache",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code JavaScript cache": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "89b86c62-285d-4949-b64d-95f4f696525a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "60113387f61802f17dc2fd3f15b35737541fe36f121c623ede03d8255443795e"
+  },
+  "nodeGroups": [],
+  "id": "xJFHgMGrwXTydPBQ",
+  "tags": []
+}
