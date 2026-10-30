@@ -1615,12 +1615,15 @@ window.getLatestHeartbeat = getLatestHeartbeat;
 
 async function triggerRealPing(assetId, ip) {
   try {
+    const token = localStorage.getItem('taims_jwt_token');
+    const headers = {
+      'Content-Type': 'application/json',
+      'X-API-Key': 'taims_dev_5bee447416b0fac135fcb60e4a6b84621ec75fdb132549f1'
+    };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
     const res = await fetch(`${BASE_URL}/monitoring/real-ping`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-API-Key': 'taims_dev_5bee447416b0fac135fcb60e4a6b84621ec75fdb132549f1'
-      },
+      headers,
       body: JSON.stringify({ asset_id: assetId, ip: ip })
     });
     return await res.json();
