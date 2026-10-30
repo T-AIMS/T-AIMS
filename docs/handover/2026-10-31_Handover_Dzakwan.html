@@ -105,7 +105,7 @@
         .meta-label {
             font-weight: 600;
             color: #475569;
-            width: 22%;
+            width: 24%;
         }
         .meta-val {
             color: #0f172a;
@@ -291,14 +291,14 @@
             </div>
             <div class="kop-right">
                 <span class="badge">HARI KE-20</span><br>
-                <span style="font-size: 8pt; color: #64748b; font-weight: 600;">Shift Dini Hari - Pagi</span>
+                <span style="font-size: 8pt; color: #64748b; font-weight: 600;">Shift 2 (16.00 – 01.00 WIB)</span>
             </div>
         </div>
 
         <!-- TITLE -->
         <div class="doc-title">
             <h3>DAILY HANDOVER (SERAH TERIMA HARIAN)</h3>
-            <p>Verifikasi & Pengujian Produksi Modul Kecerdasan Buatan (AI) & Otomasi n8n</p>
+            <p>Uji Coba & Integrasi Sistem AI Arik (n8n Workflow, Gemini 3.5 Flash Lite, & Telegram Alert)</p>
         </div>
 
         <!-- META GRID -->
@@ -306,76 +306,86 @@
             <tr>
                 <td class="meta-label">Nama Pengisi</td>
                 <td class="meta-val"><strong>Dzakwan Miftahussobirin</strong></td>
-                <td class="meta-label">Tanggal Pengujian</td>
+                <td class="meta-label">Tanggal Pelaporan</td>
                 <td class="meta-val">31 Oktober 2026</td>
             </tr>
             <tr>
-                <td class="meta-label">Peran Tim</td>
-                <td class="meta-val">Project Lead & System Integration Engineer</td>
-                <td class="meta-label">Status Milestone</td>
-                <td class="meta-val"><span class="status-pill">100% DONE & ZERO DEFECT</span></td>
+                <td class="meta-label">Peran Tim (Hal. 6 & 10)</td>
+                <td class="meta-val">Shift Lead & System Integration Engineer</td>
+                <td class="meta-label">Status Milestone (Hal. 15)</td>
+                <td class="meta-val"><span class="status-pill">DONE (100% Selesai & Teruji)</span></td>
             </tr>
             <tr>
-                <td class="meta-label">Penerima Laporan</td>
-                <td class="meta-val">Wafian Zaidan, Damar Munajad, Arik Ferdiansyah, & Mentor Teknolab</td>
-                <td class="meta-label">Domain Produksi</td>
-                <td class="meta-val"><code>https://t-aims.teknolab.biz.id/</code></td>
+                <td class="meta-label">Task Utama</td>
+                <td class="meta-val" colspan="3">Uji Coba & Integrasi Sistem AI Arik (Workflow n8n, Google Gemini 3.5 Flash Lite, & Telegram Alert) Pasca-Deploy di Server VPS CloudPanel Produksi</td>
+            </tr>
+            <tr>
+                <td class="meta-label">Penerima Handover</td>
+                <td class="meta-val" colspan="3">Wafian Zaidan, Damar Munajad, Arik Ferdiansyah, Ahmad Aziz, Reza Tri, Dika Yoga, & Mentor Teknolab</td>
             </tr>
         </table>
 
-        <!-- 1. TASK UTAMA HARI INI -->
+        <!-- YANG SUDAH SELESAI -->
         <div class="section-header">
             <span class="num">1</span>
-            <span>Task Utama Hari Ini</span>
+            <span>Yang Sudah Selesai (Sesuai Target Hal. 10, 11, & 17)</span>
         </div>
-        <ul class="task-list">
-            <li><strong>Pengujian Fungsional Live Modul AI Arik:</strong> Melakukan validasi inferensi preskriptif cerdas berbasis <em>Google Gemini 3.5 Flash Lite</em> pasca-deployment mandiri di VPS CloudPanel produksi.</li>
-            <li><strong>Verifikasi Pipeline Notifikasi Telegram Bot:</strong> Menguji keandalan transmisi sinyal alert insiden ke bot resmi <code>@taims_alert_arik_bot</code> (Chat ID <code>-5383419523</code>).</li>
-            <li><strong>Audit Kemandirian Layanan Cloud 24/7:</strong> Memastikan engine n8n beroperasi di background via PM2 di Port <code>5678</code> tanpa dependensi pada laptop lokal Arik.</li>
-        </ul>
 
-        <!-- 2. STATUS PEKERJAAN -->
+        <div class="item-card">
+            <h4>1. Deployment Mandiri n8n AI Engine di CloudPanel VPS (Hal. 11 & 17)</h4>
+            <p>Menjalankan daemon engine otomasi T-AIMS (<code>taims-n8n</code>) di server CloudPanel VPS produksi (<code>45.198.155.203</code>) via PM2 pada port <code>5678</code> (PID: <code>568161</code>). Layanan beroperasi mandiri 24/7 di cloud publik dengan efisiensi memori tinggi (~20MB RAM), terbebas penuh dari ketergantungan pada laptop lokal Arik.</p>
+        </div>
+
+        <div class="item-card">
+            <h4>2. Validasi 3 Berkas Workflow Resmi n8n Arik (Sesuai Target Output Hal. 11)</h4>
+            <p>
+                &bull; <strong>AI dasbord.json ➔ /webhook/ai-recommendation (Output: AI Analysis):</strong> Menerima telemetri agregasi 19 perangkat, mengevaluasi availability (88.9%), dan memicu inferensi preskriptif model <em>Google Gemini 3.5 Flash Lite</em> secara instan.<br>
+                &bull; <strong>NOTIFIKASI T-AIMS OFFLINE.json ➔ /webhook/taims-alert (Output: Offline Alert):</strong> Menganalisis penyebab kegagalan perangkat berdasarkan kategori (CCTV, Server, Router, IoT) dan memicu alert merah ke bot Telegram.<br>
+                &bull; <strong>NOTIFIKASI T-AIMS RECOVERY.json ➔ /webhook/taims-recovery (Output: Recovery Alert):</strong> Memproses deteksi perangkat kembali online dan memberikan rekomendasi pencegahan preventif.
+            </p>
+        </div>
+
+        <div class="item-card">
+            <h4>3. Pengujian Pipeline AI Automation Flow (Sesuai Diagram Alur Hal. 17)</h4>
+            <p>Memvalidasi alur lengkap: <code>Monitoring Database ➔ n8n Webhook (:5678) ➔ AI/LLM (Gemini) ➔ Infrastructure Analysis ➔ Telegram / Web Dashboard</code>. Diuji langsung melalui tombol <code>[ 🤖 Rekomendasi AI ]</code> di dashboard live <code>https://t-aims.teknolab.biz.id/</code>: modal AI sukses membedah status 19 perangkat (8 Online, 1 Offline PC-02, 10 Unknown) dengan status <code>PERINGATAN (WARNING)</code> dan petunjuk teknisi preskriptif. Format laporan AI preskriptif memenuhi contoh standar Dokumen PKL Hal. 17 (<em>Teknolab Infrastructure Report</em>).</p>
+        </div>
+
+        <div class="item-card">
+            <h4>4. Integrasi & Pengujian Bot Telegram Resmi (Output: Telegram Output Hal. 11)</h4>
+            <p>Bot <code>@taims_alert_arik_bot</code> (Chat ID <code>-5383419523</code>) terbukti sukses menerima pesan notifikasi berformat HTML dengan waktu respons cepat (&lt; 6 detik). Fitur proteksi anti-spam <em>Cooldown Buffer 10 Menit</em> aktif dan mencegah flooding pesan duplikat.</p>
+        </div>
+
+        <div class="item-card">
+            <h4>5. Sinkronisasi Backend & Penyesuaian Timeout LLM (Hal. 10 & 20)</h4>
+            <p>Backend <code>taims-backend/.env</code> disinkronkan ke port <code>5678</code> (<code>N8N_ACTIVE=true</code>). Menaikkan timeout fetch n8n di backend Express menjadi 35 detik (<code>commit 3c07cd6</code>) untuk menjamin stabilitas inferensi LLM saat trafik tinggi. Mengamankan seluruh kredensial API key dan bot token sesuai aturan kerahasiaan Dokumen PKL Hal. 20 (sanitasi commit Git publik).</p>
+        </div>
+
+        <!-- YANG BELUM SELESAI -->
         <div class="section-header">
             <span class="num">2</span>
-            <span>Status Milestone & Ketercapaian</span>
+            <span>Yang Belum Selesai</span>
         </div>
-        <div style="background: #f0fdf4; border: 1px solid #bbf7d0; padding: 10px 14px; border-radius: 6px; font-size: 9.5pt; color: #166534;">
-            <strong>STATUS: DONE (100% Selesai & Terverifikasi di Server Produksi)</strong><br>
-            Seluruh 3 webhook n8n resmi merespons <code>HTTP 200 OK</code>, integrasi model Gemini 3.5 Flash Lite menghasilkan analisis preskriptif akurat untuk 19 aset fisik, dan pesan alert Telegram berhasil masuk secara <em>real-time</em>.
-        </div>
+        <p style="font-size: 10pt; color: #166534; font-weight: 600; margin: 0 0 12px 0;">
+            Nihil (0) — Seluruh 5 target output Arik (Offline Alert, Recovery Alert, n8n Workflow, AI Analysis, Telegram Output) dan target integrasi Dzakwan telah selesai 100%.
+        </p>
 
-        <!-- 3. YANG SUDAH SELESAI -->
+        <!-- KENDALA & SOLUSI -->
         <div class="section-header">
             <span class="num">3</span>
-            <span>Rincian Hasil Pekerjaan yang Selesai</span>
+            <span>Kendala Teknis & Solusi</span>
+        </div>
+        <div style="font-size: 9.5pt; color: #334155; margin-bottom: 12px;">
+            1. <strong>Kendala:</strong> Kredensial rahasia (Gemini API Key & Telegram Token) berisiko terdeteksi oleh <em>GitHub Push Protection</em> jika di-commit mentah di repositori publik.<br>
+            &bull; <strong>Solusi:</strong> Melakukan sanitasi menyeluruh pada berkas repositori dengan placeholder dinamis dan menginjeksi kredensial asli langsung ke environment runtime VPS (<code>.env</code>).<br><br>
+            2. <strong>Kendala:</strong> Adanya jeda waktu inferensi LLM eksternal (Google Gemini) yang terkadang memakan waktu 5–8 detik pada jaringan sibuk.<br>
+            &bull; <strong>Solusi:</strong> Menaikkan batas toleransi timeout backend dari 15 detik ke 35 detik serta mengaktifkan caching lokal 5 menit untuk menghemat token dan mempercepat UX dashboard.
         </div>
 
-        <div class="item-card">
-            <h4>1. Aktivasi n8n AI Engine 24/7 di CloudPanel VPS (Port 5678)</h4>
-            <p>Engine otomasi resmi aktif sebagai service daemon di PM2 (PID: <code>568161</code>). Sistem kini terbebas dari dependensi laptop fisik Arik dan beroperasi penuh secara mandiri di cloud publik.</p>
-        </div>
-
-        <div class="item-card">
-            <h4>2. Integrasi 3 Webhook Resmi Arik & Google Gemini 3.5 Flash Lite</h4>
-            <p>Validasi endpoint <code>/webhook/ai-recommendation</code>, <code>/webhook/taims-alert</code>, dan <code>/webhook/taims-recovery</code>. AI sukses membaca metrik telemetri 19 perangkat (8 Online, 1 Offline PC-02, 10 Unknown) dan merespons dengan rekomendasi troubleshooting preskriptif.</p>
-        </div>
-
-        <div class="item-card">
-            <h4>3. Verifikasi Alert Notifikasi Telegram Bot (@taims_alert_arik_bot)</h4>
-            <p>Pengujian alert insiden perangkat menghasilkan notifikasi instan berformat HTML ke grup Telegram Teknolab dengan perlindungan <em>Anti-Spam Cooldown 10 Menit</em>.</p>
-        </div>
-
-        <div class="item-card">
-            <h4>4. Optimasi Buffer Timeout & Sanitasi Kredensial Repositori</h4>
-            <p>Timeout fetch inferensi LLM di backend Node.js dinaikkan menjadi 35 detik (<code>commit 3c07cd6</code>) guna menjamin stabilitas saat jaringan sibuk, serta kredensial rahasia diamankan di <code>.env</code> produksi.</p>
-        </div>
-
-        <!-- 4. REKOMENDASI BUKTI SCREENSHOT -->
+        <!-- REKOMENDASI BUKTI SCREENSHOT -->
         <div class="section-header">
             <span class="num">4</span>
-            <span>Rekomendasi Bukti Screenshot (Evidence Checklist)</span>
+            <span>Rekomendasi Bukti Screenshot (Evidence Checklist Hal. 10 & 19)</span>
         </div>
-        <p style="font-size: 9pt; color: #475569; margin: 0 0 8px 0;">Disarankan melampirkan 5 berkas screenshot berikut ke dalam folder laporan:</p>
 
         <table class="table-custom">
             <thead>
@@ -414,24 +424,14 @@
             </tbody>
         </table>
 
-        <!-- 5. KENDALA & SOLUSI -->
+        <!-- NEXT ACTION -->
         <div class="section-header">
             <span class="num">5</span>
-            <span>Kendala Teknis & Solusi yang Diterapkan</span>
-        </div>
-        <div style="font-size: 9.5pt; color: #334155;">
-            <strong>Kendala:</strong> Diperlukan arsitektur otomasi yang ringan di server VPS tanpa memakan memori RAM besar dan tidak menimbulkan false timeout pada inferensi LLM.<br>
-            <strong>Solusi:</strong> Menjalankan daemon engine berbasis PM2 di port 5678 (~20MB RAM) yang langsung mengeksekusi logika workflow Arik, menaikkan buffer timeout backend ke 35 detik, dan menerapkan caching rekomendasi 5 menit.
-        </div>
-
-        <!-- 6. NEXT ACTION -->
-        <div class="section-header">
-            <span class="num">6</span>
-            <span>Rencana Tindak Lanjut (Next Action)</span>
+            <span>Next Action</span>
         </div>
         <ul class="task-list">
-            <li>Menjalankan <em>final dry-run</em> simulasi pemantauan multi-site menjelang sidang evaluasi PKL bersama Damar Munajad dan Wafian Zaidan.</li>
-            <li>Mengintegrasikan seluruh berkas bukti screenshot dan laporan harian ke dalam draf Laporan Akhir PKL PT Teknolab Caraka Internasional.</li>
+            <li>Mengintegrasikan seluruh bukti pengujian screenshot (SS-AI-01 s/d SS-AI-05) ke dalam draf Laporan Akhir PKL 30 Hari Teknolab Bab 6.</li>
+            <li>Melaksanakan simulasi uji kegagalan (<em>Failure Simulation</em>) bersama seluruh anggota Shift 2 (Damar, Wafian, Arik, Aziz, Reza, Dika) menjelang presentasi final ke mentor.</li>
         </ul>
 
         <!-- TANDA TANGAN / PENGESAHAN -->
@@ -440,7 +440,7 @@
                 <span style="font-size: 8.5pt; color: #64748b;">Diserahkan oleh,</span>
                 <div class="sign-space"></div>
                 <span class="sign-name">Dzakwan Miftahussobirin</span><br>
-                <span class="sign-role">Project Lead & System Integration</span>
+                <span class="sign-role">Shift Lead & System Integration Engineer</span>
             </div>
             <div class="sign-box">
                 <span style="font-size: 8.5pt; color: #64748b;">Diterima & Diverifikasi,</span>
