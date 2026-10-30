@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Handover Hari 20 - Dzakwan Miftahussobirin - T-AIMS Teknolab</title>
+    <style>
+        @page {
+            size: A4 portrait;
+            margin: 15mm 18mm 18mm 18mm;
+        }
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+            color: #1e293b;
+            background: #f8fafc;
+            margin: 0;
+            padding: 24px;
+            font-size: 11pt;
+            line-height: 1.5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 32px 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+            border: 1px solid #e2e8f0;
+        }
+        .header {
+            border-bottom: 3px double #991b1b;
+            padding-bottom: 14px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .kop-left h1 {
+            font-size: 16pt;
+            color: #991b1b;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 800;
+        }
+        .kop-left h2 {
+            font-size: 11pt;
+            color: #334155;
+            margin: 3px 0 0 0;
+            font-weight: 600;
+        }
+        .kop-left p {
+            font-size: 8.5pt;
+            color: #64748b;
+            margin: 2px 0 0 0;
+        }
+        .kop-right {
+            text-align: right;
+            border-left: 2px solid #e2e8f0;
+            padding-left: 16px;
+        }
+        .kop-right .badge {
+            display: inline-block;
+            background: #f1f5f9;
+            color: #0f172a;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 8.5pt;
+            border: 1px solid #cbd5e1;
+        }
+        .doc-title {
+            text-align: center;
+            margin: 18px 0;
+        }
+        .doc-title h3 {
+            margin: 0;
+            font-size: 14pt;
+            color: #0f172a;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .doc-title p {
+            margin: 4px 0 0 0;
+            color: #64748b;
+            font-size: 9.5pt;
+        }
+        .meta-grid {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background: #f8fafc;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            font-size: 9.5pt;
+        }
+        .meta-grid td {
+            padding: 8px 14px;
+            border-bottom: 1px solid #edf2f7;
+        }
+        .meta-grid tr:last-child td {
+            border-bottom: none;
+        }
+        .meta-label {
+            font-weight: 600;
+            color: #475569;
+            width: 22%;
+        }
+        .meta-val {
+            color: #0f172a;
+            font-weight: 500;
+        }
+        .status-pill {
+            display: inline-block;
+            background: #dcfce7;
+            color: #166534;
+            padding: 2px 10px;
+            border-radius: 9999px;
+            font-size: 8.5pt;
+            font-weight: 700;
+            border: 1px solid #86efac;
+        }
+        .section-header {
+            font-size: 11pt;
+            font-weight: 700;
+            color: #0f172a;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 6px;
+            margin: 22px 0 12px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .section-header .num {
+            background: #991b1b;
+            color: white;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8.5pt;
+            font-weight: bold;
+        }
+        ul.task-list {
+            margin: 0;
+            padding-left: 20px;
+        }
+        ul.task-list li {
+            margin-bottom: 8px;
+            font-size: 10pt;
+            color: #334155;
+        }
+        ul.task-list li strong {
+            color: #0f172a;
+        }
+        .item-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid #991b1b;
+            padding: 12px 16px;
+            border-radius: 0 6px 6px 0;
+            margin-bottom: 12px;
+            font-size: 10pt;
+        }
+        .item-card h4 {
+            margin: 0 0 6px 0;
+            font-size: 10.5pt;
+            color: #0f172a;
+            font-weight: 700;
+        }
+        .item-card p {
+            margin: 0 0 4px 0;
+            color: #475569;
+            font-size: 9.5pt;
+        }
+        .table-custom {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0;
+            font-size: 9pt;
+        }
+        .table-custom th {
+            background: #f1f5f9;
+            color: #334155;
+            text-align: left;
+            padding: 8px 10px;
+            border: 1px solid #cbd5e1;
+            font-weight: 700;
+        }
+        .table-custom td {
+            padding: 7px 10px;
+            border: 1px solid #e2e8f0;
+            color: #334155;
+        }
+        .table-custom tr:nth-child(even) {
+            background: #f8fafc;
+        }
+        .badge-code {
+            background: #e2e8f0;
+            color: #0f172a;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 8.5pt;
+            font-weight: bold;
+        }
+        .footer-sign {
+            margin-top: 36px;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 18px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 9.5pt;
+        }
+        .sign-box {
+            text-align: center;
+            width: 40%;
+        }
+        .sign-space {
+            height: 55px;
+        }
+        .sign-name {
+            font-weight: 700;
+            color: #0f172a;
+            border-bottom: 1px solid #0f172a;
+            padding-bottom: 2px;
+            display: inline-block;
+        }
+        .sign-role {
+            color: #64748b;
+            font-size: 8.5pt;
+            margin-top: 3px;
+        }
+        .btn-print {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #991b1b;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 10pt;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(153, 27, 27, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 999;
+        }
+        .btn-print:hover {
+            background: #7f1d1d;
+        }
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .container {
+                box-shadow: none;
+                border: none;
+                padding: 0;
+                max-width: 100%;
+            }
+            .btn-print {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="btn-print" onclick="window.print()">
+        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+        Cetak PDF Handover
+    </button>
+
+    <div class="container">
+        <!-- HEADER KOP SURAT TEKNOLAB -->
+        <div class="header">
+            <div class="kop-left">
+                <h1>PT TEKNOLAB CARAKA INTERNASIONAL</h1>
+                <h2>T-AIMS: Teknolab Asset & Infrastructure Monitoring System</h2>
+                <p>Dokumen Kerja PKL 30 Hari &bull; Standar Pelaporan Daily Handover (Hal. 15 Template Resmi)</p>
+            </div>
+            <div class="kop-right">
+                <span class="badge">HARI KE-20</span><br>
+                <span style="font-size: 8pt; color: #64748b; font-weight: 600;">Shift Dini Hari - Pagi</span>
+            </div>
+        </div>
+
+        <!-- TITLE -->
+        <div class="doc-title">
+            <h3>DAILY HANDOVER (SERAH TERIMA HARIAN)</h3>
+            <p>Verifikasi & Pengujian Produksi Modul Kecerdasan Buatan (AI) & Otomasi n8n</p>
+        </div>
+
+        <!-- META GRID -->
+        <table class="meta-grid">
+            <tr>
+                <td class="meta-label">Nama Pengisi</td>
+                <td class="meta-val"><strong>Dzakwan Miftahussobirin</strong></td>
+                <td class="meta-label">Tanggal Pengujian</td>
+                <td class="meta-val">31 Oktober 2026</td>
+            </tr>
+            <tr>
+                <td class="meta-label">Peran Tim</td>
+                <td class="meta-val">Project Lead & System Integration Engineer</td>
+                <td class="meta-label">Status Milestone</td>
+                <td class="meta-val"><span class="status-pill">100% DONE & ZERO DEFECT</span></td>
+            </tr>
+            <tr>
+                <td class="meta-label">Penerima Laporan</td>
+                <td class="meta-val">Wafian Zaidan, Damar Munajad, Arik Ferdiansyah, & Mentor Teknolab</td>
+                <td class="meta-label">Domain Produksi</td>
+                <td class="meta-val"><code>https://t-aims.teknolab.biz.id/</code></td>
+            </tr>
+        </table>
+
+        <!-- 1. TASK UTAMA HARI INI -->
+        <div class="section-header">
+            <span class="num">1</span>
+            <span>Task Utama Hari Ini</span>
+        </div>
+        <ul class="task-list">
+            <li><strong>Pengujian Fungsional Live Modul AI Arik:</strong> Melakukan validasi inferensi preskriptif cerdas berbasis <em>Google Gemini 3.5 Flash Lite</em> pasca-deployment mandiri di VPS CloudPanel produksi.</li>
+            <li><strong>Verifikasi Pipeline Notifikasi Telegram Bot:</strong> Menguji keandalan transmisi sinyal alert insiden ke bot resmi <code>@taims_alert_arik_bot</code> (Chat ID <code>-5383419523</code>).</li>
+            <li><strong>Audit Kemandirian Layanan Cloud 24/7:</strong> Memastikan engine n8n beroperasi di background via PM2 di Port <code>5678</code> tanpa dependensi pada laptop lokal Arik.</li>
+        </ul>
+
+        <!-- 2. STATUS PEKERJAAN -->
+        <div class="section-header">
+            <span class="num">2</span>
+            <span>Status Milestone & Ketercapaian</span>
+        </div>
+        <div style="background: #f0fdf4; border: 1px solid #bbf7d0; padding: 10px 14px; border-radius: 6px; font-size: 9.5pt; color: #166534;">
+            <strong>STATUS: DONE (100% Selesai & Terverifikasi di Server Produksi)</strong><br>
+            Seluruh 3 webhook n8n resmi merespons <code>HTTP 200 OK</code>, integrasi model Gemini 3.5 Flash Lite menghasilkan analisis preskriptif akurat untuk 19 aset fisik, dan pesan alert Telegram berhasil masuk secara <em>real-time</em>.
+        </div>
+
+        <!-- 3. YANG SUDAH SELESAI -->
+        <div class="section-header">
+            <span class="num">3</span>
+            <span>Rincian Hasil Pekerjaan yang Selesai</span>
+        </div>
+
+        <div class="item-card">
+            <h4>1. Aktivasi n8n AI Engine 24/7 di CloudPanel VPS (Port 5678)</h4>
+            <p>Engine otomasi resmi aktif sebagai service daemon di PM2 (PID: <code>568161</code>). Sistem kini terbebas dari dependensi laptop fisik Arik dan beroperasi penuh secara mandiri di cloud publik.</p>
+        </div>
+
+        <div class="item-card">
+            <h4>2. Integrasi 3 Webhook Resmi Arik & Google Gemini 3.5 Flash Lite</h4>
+            <p>Validasi endpoint <code>/webhook/ai-recommendation</code>, <code>/webhook/taims-alert</code>, dan <code>/webhook/taims-recovery</code>. AI sukses membaca metrik telemetri 19 perangkat (8 Online, 1 Offline PC-02, 10 Unknown) dan merespons dengan rekomendasi troubleshooting preskriptif.</p>
+        </div>
+
+        <div class="item-card">
+            <h4>3. Verifikasi Alert Notifikasi Telegram Bot (@taims_alert_arik_bot)</h4>
+            <p>Pengujian alert insiden perangkat menghasilkan notifikasi instan berformat HTML ke grup Telegram Teknolab dengan perlindungan <em>Anti-Spam Cooldown 10 Menit</em>.</p>
+        </div>
+
+        <div class="item-card">
+            <h4>4. Optimasi Buffer Timeout & Sanitasi Kredensial Repositori</h4>
+            <p>Timeout fetch inferensi LLM di backend Node.js dinaikkan menjadi 35 detik (<code>commit 3c07cd6</code>) guna menjamin stabilitas saat jaringan sibuk, serta kredensial rahasia diamankan di <code>.env</code> produksi.</p>
+        </div>
+
+        <!-- 4. REKOMENDASI BUKTI SCREENSHOT -->
+        <div class="section-header">
+            <span class="num">4</span>
+            <span>Rekomendasi Bukti Screenshot (Evidence Checklist)</span>
+        </div>
+        <p style="font-size: 9pt; color: #475569; margin: 0 0 8px 0;">Disarankan melampirkan 5 berkas screenshot berikut ke dalam folder laporan:</p>
+
+        <table class="table-custom">
+            <thead>
+                <tr>
+                    <th style="width: 15%;">Kode Bukti</th>
+                    <th style="width: 35%;">Deskripsi Screenshot</th>
+                    <th style="width: 50%;">Elemen / Bukti Otentik yang Ditampilkan</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="badge-code">SS-AI-01</span></td>
+                    <td><strong>Modal AI Recommendation Live</strong></td>
+                    <td>Pop-up di web <code>https://t-aims.teknolab.biz.id/</code> menampilkan analisis Gemini: SLA 88.9%, deteksi PC-02 offline, dan petunjuk troubleshooting teknisi.</td>
+                </tr>
+                <tr>
+                    <td><span class="badge-code">SS-AI-02</span></td>
+                    <td><strong>Pesan Masuk Telegram Bot</strong></td>
+                    <td>Notifikasi <code>🔴 OFFLINE ALERT</code> dari bot <code>@taims_alert_arik_bot</code> di aplikasi Telegram lengkap dengan analisis AI.</td>
+                </tr>
+                <tr>
+                    <td><span class="badge-code">SS-AI-03</span></td>
+                    <td><strong>Status Daemon PM2 VPS</strong></td>
+                    <td>Terminal SSH CloudPanel menjalankan <code>pm2 list</code> dengan service <code>taims-backend</code> dan <code>taims-n8n</code> (PID 568161) status online.</td>
+                </tr>
+                <tr>
+                    <td><span class="badge-code">SS-AI-04</span></td>
+                    <td><strong>Konfigurasi Backend .env</strong></td>
+                    <td>Pengaturan variabel <code>N8N_ACTIVE=true</code>, webhook Port 5678, dan API Key Gemini yang aktif di server VPS.</td>
+                </tr>
+                <tr>
+                    <td><span class="badge-code">SS-AI-05</span></td>
+                    <td><strong>Panel Simulasi Alert Web</strong></td>
+                    <td>Status <em>Simulation Dispatch Success</em> pada menu Settings/Notifikasi dengan buffer cooldown 10 menit aktif.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- 5. KENDALA & SOLUSI -->
+        <div class="section-header">
+            <span class="num">5</span>
+            <span>Kendala Teknis & Solusi yang Diterapkan</span>
+        </div>
+        <div style="font-size: 9.5pt; color: #334155;">
+            <strong>Kendala:</strong> Diperlukan arsitektur otomasi yang ringan di server VPS tanpa memakan memori RAM besar dan tidak menimbulkan false timeout pada inferensi LLM.<br>
+            <strong>Solusi:</strong> Menjalankan daemon engine berbasis PM2 di port 5678 (~20MB RAM) yang langsung mengeksekusi logika workflow Arik, menaikkan buffer timeout backend ke 35 detik, dan menerapkan caching rekomendasi 5 menit.
+        </div>
+
+        <!-- 6. NEXT ACTION -->
+        <div class="section-header">
+            <span class="num">6</span>
+            <span>Rencana Tindak Lanjut (Next Action)</span>
+        </div>
+        <ul class="task-list">
+            <li>Menjalankan <em>final dry-run</em> simulasi pemantauan multi-site menjelang sidang evaluasi PKL bersama Damar Munajad dan Wafian Zaidan.</li>
+            <li>Mengintegrasikan seluruh berkas bukti screenshot dan laporan harian ke dalam draf Laporan Akhir PKL PT Teknolab Caraka Internasional.</li>
+        </ul>
+
+        <!-- TANDA TANGAN / PENGESAHAN -->
+        <div class="footer-sign">
+            <div class="sign-box">
+                <span style="font-size: 8.5pt; color: #64748b;">Diserahkan oleh,</span>
+                <div class="sign-space"></div>
+                <span class="sign-name">Dzakwan Miftahussobirin</span><br>
+                <span class="sign-role">Project Lead & System Integration</span>
+            </div>
+            <div class="sign-box">
+                <span style="font-size: 8.5pt; color: #64748b;">Diterima & Diverifikasi,</span>
+                <div class="sign-space"></div>
+                <span class="sign-name">Wafian Zaidan / Mentor Teknolab</span><br>
+                <span class="sign-role">DevOps & Pembimbing Lapangan</span>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
