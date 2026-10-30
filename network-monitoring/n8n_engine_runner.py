@@ -19,11 +19,23 @@ import time
 
 PORT = 5678
 
-# Kredensial Resmi dari Workflow Arik
-GEMINI_KEY_DASHBOARD = "GEMINI_API_KEY_DASHBOARD_PLACEHOLDER"
-GEMINI_KEY_NOTIF     = "GEMINI_API_KEY_NOTIF_PLACEHOLDER"
-TELEGRAM_BOT_TOKEN   = "8944593836:AAEP2bDCO53srpWR3gdKXY6CHQ13Ni8OtPA"
-TELEGRAM_CHAT_ID     = "-5383419523"
+import os
+
+# Kredensial Resmi dari Workflow Arik (dibaca dinamis dari .env)
+env_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'taims-backend', '.env')
+env_vars = {}
+if os.path.exists(env_path):
+    with open(env_path, 'r', encoding='utf-8', errors='ignore') as fp:
+        for line in fp:
+            line = line.strip()
+            if line and not line.startswith('#') and '=' in line:
+                parts = line.split('=', 1)
+                env_vars[parts[0].strip()] = parts[1].strip().strip('"').strip("'")
+
+GEMINI_KEY_DASHBOARD = env_vars.get("GEMINI_KEY_DASHBOARD", os.environ.get("GEMINI_KEY_DASHBOARD", ""))
+GEMINI_KEY_NOTIF     = env_vars.get("GEMINI_KEY_NOTIF", os.environ.get("GEMINI_KEY_NOTIF", ""))
+TELEGRAM_BOT_TOKEN   = env_vars.get("TELEGRAM_BOT_TOKEN", "8944593836:AAEP2bDCO53srpWR3gdKXY6CHQ13Ni8OtPA")
+TELEGRAM_CHAT_ID     = env_vars.get("TELEGRAM_CHAT_ID", "-5383419523")
 
 # Cache & Cooldown in-memory
 cache_ai = {
