@@ -52,6 +52,24 @@ async function saveMonitoringLog(assetId, status, method, responseTimeMs, detail
             [assetId]
         );
     } else if (finalStatus === 'offline') {
+        // STANDBY PROTECTION & FLAPPING PREVENTION (Arsitektur House of Server & Lab Belum Fisik):
+        // 1. Jika aset berstatus 'unknown' atau belum pernah terkoneksi fisik (last_seen is null),
+        //    jangan paksa menjadi offline. Pertahankan status unknown agar metrik akurat.
+        // 2. Anti-Flapping: Jika aset sedang 'online' dan baru saja terhubung (< 45 detik),
+        //    jangan langsung dibalikkan menjadi offline oleh 1 paket timeout agar status stabil.
+        const [curr] = await db.query(
+            'SELECT current_status, last_seen, TIMESTAMPDIFF(SECOND, last_seen, NOW()) AS sec_since_seen FROM assets WHERE asset_id = ?',
+            [assetId]
+        );
+        if (curr.length > 0) {
+            if (curr[0].current_status === 'unknown' || curr[0].last_seen === null) {
+                return result.insertId;
+            }
+            if (curr[0].current_status === 'online' && curr[0].sec_since_seen !== null && curr[0].sec_since_seen < 45) {
+                return result.insertId;
+            }
+        }
+
         await db.query(
             `UPDATE assets 
              SET current_status = 'offline', offline_since = COALESCE(offline_since, NOW()), updated_at = NOW()
