@@ -67,8 +67,7 @@ Selesai 100% (DONE - Zero Defect & Zero Blocker)
   * `taims-backend/src/app.js`
   * `taims-backend/src/routes/assets.js`
   * `frontend/assets/js/apiService.js`
-- **Bukti Screenshot Otentik (Folder `docs/qa-testing/evidence/screenshots/Hari-17/`):**
-  * `2026-10-28_Hari-17_TC-H17-001_donut-chart-legend-alignment.png`
-  * `2026-10-28_Hari-17_TC-H17-002_add-device-category-selection.png`
-  * `2026-10-28_Hari-17_TC-H17-003_add-device-hardware-presets.png`
-  * `2026-10-28_Hari-17_TC-H17-004_device-detail-modal-telemetry.png`
+- **Bukti Screenshot Otentik DevOps (Folder `docs/evidence-wafian/hari-17/`):**
+  * `01-db-schema-migration-subcategory.png`: *Verifikasi struktur tabel assets kolom sub_category VARCHAR(150) & password_resets pada skema database master.*
+  * `02-cors-whitelist-cloudpanel-backend.png`: *Konfigurasi whitelist domain resmi https://t-aims.teknolab.biz.id pada middleware CORS Express.js di taims-backend/src/app.js.*
+  * `03-git-commit-devops-wafian.png`: *Catatan log commit resmi Git Wafian (45fecac, 248563f, 9e3d708, 1c4fed1) di terminal lokal.*

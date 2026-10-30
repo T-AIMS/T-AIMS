@@ -64,11 +64,9 @@ Selesai 100% (DONE - Zero Defect & Zero Blocker)
   * `frontend/assets/css/style.css` (Resolusi `.sbi-prog` height)
   * `taims-backend/.env` (Produksi CloudPanel)
   * `frontend/assets/js/app.js`
-- **Bukti Screenshot Otentik (Folder `docs/qa-testing/evidence/screenshots/Hari-18/`):**
-  * `2026-10-29_Hari-18_TC-H18-001_monitoring-history-status-transitions.png`
-  * `2026-10-29_Hari-18_TC-H18-002_qr-code-vector-svg-scan-test.png`
-  * `2026-10-29_Hari-18_TC-H18-003_print-mount-isolated-qr-and-pdf-export.png`
-  * `2026-10-29_Hari-18_TC-H18-004_cloudpanel-production-live-verification.png`
-  * `2026-10-29_Hari-18_TC-H18-004b_ssl-certificate-valid-security.png`
-  * `2026-10-29_Hari-18_TC-H18-005_system-availability-and-sla-summary-30-days.png`
+- **Bukti Screenshot Otentik DevOps (Folder `docs/evidence-wafian/hari-18/`):**
+  * `01-cloudpanel-ssh-pm2-status.png`: *Terminal SSH VPS CloudPanel (port 2222) — Status daemon taims-backend online di PM2 dan lolos healthcheck curl 200 OK.*
+  * `02-ssl-certificate-letsencrypt-valid.png`: *Sertifikat SSL Let's Encrypt resmi aktif (Status: Connection is secure & Certificate valid) di https://t-aims.teknolab.biz.id/.*
+  * `03-live-dashboard-cloudpanel-production.png`: *Dashboard live produksi beroperasi mulus menampilkan telemetri 18 perangkat aktif melintasi 3 lokasi.*
+  * `04-sla-availability-30days-resolved.png`: *Verifikasi visual penyelesaian bug height SLA Bar 30 hari .sbi-prog ter-render penuh di web live.*
 - **Domain Live Produksi Terverifikasi:** `https://t-aims.teknolab.biz.id`
