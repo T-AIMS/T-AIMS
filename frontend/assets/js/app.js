@@ -367,10 +367,10 @@ ${res.formatted_message.replace(/<[^>]*>/g, '')}`;
 }
 window.sendAiReportToTelegram = sendAiReportToTelegram;
 
-async function triggerTelegramTest(type = 'offline') {
+async function triggerTelegramTest(type = 'offline', targetCode = null) {
     const preview = document.getElementById('telegram-live-preview');
     const logStatus = document.getElementById('tg-log-status');
-    const code = 'MKRT-02';
+    const code = targetCode || (type === 'warning' ? 'SWM-01' : 'MKRT-02');
 
     if (logStatus) logStatus.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-cyan"></i> Memicu simulasi alert ${type}...`;
     if (preview) preview.innerHTML = `Memicu webhook alert ${type.toUpperCase()} untuk perangkat ${code} (Cooldown 10 Menit Aktif)...`;
@@ -380,7 +380,7 @@ async function triggerTelegramTest(type = 'offline') {
     try {
         let res = null;
         if (typeof testTelegramAlert === 'function') {
-            res = await testTelegramAlert(type, code);
+            res = await testTelegramAlert(type, code, type === 'warning' ? 'warning' : null);
         }
         if (res && res.success) {
             if (logStatus) logStatus.innerHTML = `<span class="text-green"><i class="fa-solid fa-circle-check"></i> Alert ${type.toUpperCase()} Sukses</span>`;
@@ -9941,7 +9941,10 @@ function simulateFailure(scenario) {
             dev.lastSeen = 'Offline (Catu Daya Mati)';
         }
         addAlertLog('SIMULASI KEGAGALAN: ESP-01 (ESP32 Head Office) terputus dayanya! Status berubah Offline dan heartbeat berhenti.', 'Head Office (Titik 4)', 'kritis');
-        showToast('Simulasi Berjalan', 'ESP-01 (ESP32 Head Office) berhasil dimatikan (Status Offline).', 'error');
+        showToast('Simulasi Berjalan', 'ESP-01 (ESP32 Head Office) berhasil dimatikan (Status Offline). Menembak n8n...', 'error');
+        if (window.apiService && typeof window.apiService.testTelegramAlert === 'function') {
+            window.apiService.testTelegramAlert('offline', 'ESP-01', 'critical');
+        }
     } else if (scenario === 'lan') {
         const dev = APP_STATE.devices.find(d => d.code === 'SWM-01' || d.name.toUpperCase().includes('SWITCH'));
         if (dev) {
@@ -9949,7 +9952,10 @@ function simulateFailure(scenario) {
             dev.ping = '142 ms';
         }
         addAlertLog('SIMULASI GANGGUAN: Kabel LAN SWM-01 (Switch Manageable) loss paket > 80%. Link terdegradasi.', 'House of Server', 'peringatan');
-        showToast('Simulasi Berjalan', 'Kabel LAN SWM-01 dicabut (Status Warning / Latensi Naik).', 'warning');
+        showToast('Simulasi Berjalan', 'Kabel LAN SWM-01 dicabut (Status Warning / Latensi Naik). Menembak n8n Warning Alert...', 'warning');
+        if (window.apiService && typeof window.apiService.testTelegramAlert === 'function') {
+            window.apiService.testTelegramAlert('warning', 'SWM-01', 'warning');
+        }
     } else if (scenario === 'mqtt') {
         addAlertLog('SIMULASI SERVICE: MQTT Broker Port 1883 dihentikan. Telemetri IoT beralih ke local queue.', 'MQTT Broker (Port 1883)', 'peringatan');
         showToast('Simulasi Berjalan', 'Service MQTT Broker dihentikan sementara.', 'warning');
@@ -9960,7 +9966,10 @@ function simulateFailure(scenario) {
             dev.ping = 'Unreachable';
         }
         addAlertLog('SIMULASI KEGAGALAN: Raspberry Pi (RPI-02) mati! HTTP & Heartbeat tidak merespons.', 'House of Server', 'kritis');
-        showToast('Simulasi Berjalan', 'Node Raspberry Pi terdeteksi Offline.', 'error');
+        showToast('Simulasi Berjalan', 'Node Raspberry Pi terdeteksi Offline. Menembak n8n...', 'error');
+        if (window.apiService && typeof window.apiService.testTelegramAlert === 'function') {
+            window.apiService.testTelegramAlert('offline', 'RPI-02', 'critical');
+        }
     } else if (scenario === 'api') {
         addAlertLog('SIMULASI SERVICE: Endpoint /api/health mengembalikan HTTP 500 Connection Refused.', 'Backend REST API (Port 3000)', 'peringatan');
         showToast('Simulasi Berjalan', 'HTTP Health Check gagal (Status Code 500).', 'warning');
@@ -9986,7 +9995,10 @@ function simulateRecovery() {
     });
 
     addAlertLog('SISTEM PULIH: Seluruh perangkat dan service kembali normal. Notifikasi pemulihan dikirim.', 'Recovery Center T-AIMS', 'peringatan');
-    showToast('Pemulihan Sukses', 'Seluruh perangkat pulih normal (Status Online). Notifikasi recovery dikirim!', 'success');
+    showToast('Pemulihan Sukses', 'Seluruh perangkat pulih normal (Status Online). Menembak n8n Recovery Alert...', 'success');
+    if (window.apiService && typeof window.apiService.testTelegramAlert === 'function') {
+        window.apiService.testTelegramAlert('recovery', 'ESP-01', 'info');
+    }
 
     renderFullDevicesTable();
     if (typeof renderHomeDevicesTable === 'function') renderHomeDevicesTable();

@@ -319,17 +319,31 @@ async function dispatchTelegramAlert(text, type = 'info', metadata = {}) {
 
     try {
         const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 4000);
+        const timeout = setTimeout(() => controller.abort(), 6000);
+        const payloadData = {
+            event_type: type === 'recovery' ? 'DEVICE_RECOVERY' : (type === 'warning' ? 'PREDICTIVE_WARNING' : 'DEVICE_OFFLINE'),
+            severity: metadata.severity || (type === 'warning' ? 'warning' : (type === 'recovery' ? 'info' : 'critical')),
+            asset_code: metadata.asset_code || 'RPI-01',
+            asset_name: metadata.asset_name || 'Raspberry Pi Head Office',
+            category: metadata.category || 'Infrastruktur',
+            ip_address: metadata.ip_address || '192.168.1.45',
+            location: metadata.location || 'Head Office',
+            message: text,
+            type: type,
+            bot: '@taims_alert_arik_bot',
+            symptoms: metadata.symptoms || {
+                ping_latency: type === 'warning' ? '185 ms' : (type === 'recovery' ? '12 ms' : 'Timeout'),
+                packet_loss: type === 'warning' ? '25%' : (type === 'recovery' ? '0%' : '100%')
+            },
+            trigger_source: metadata.trigger_source || (metadata.test ? 'Manual Chaos Test Drill' : 'Autonomous Background Daemon'),
+            timestamp: new Date().toISOString(),
+            ...metadata
+        };
+
         const res = await fetch(n8nWebhook, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                message: text,
-                type: type,
-                bot: '@taims_alert_arik_bot',
-                timestamp: new Date().toISOString(),
-                ...metadata
-            }),
+            body: JSON.stringify(payloadData),
             signal: controller.signal
         });
         clearTimeout(timeout);
@@ -459,47 +473,101 @@ router.post('/telegram/send', authenticate, async (req, res) => {
 // ============================================================
 router.post('/telegram/test-alert', authenticate, async (req, res) => {
     try {
-        const { type = 'offline', asset_code = 'RPI-01' } = req.body;
+        const { type = 'offline', asset_code = 'MKRT-02', severity } = req.body;
         const nowStr = new Date().toLocaleString('id-ID') + ' WIB';
+
+        // Query dinamis aset dari basis data MySQL (menghindari hardcode RPI-01)
+        let dev = null;
+        try {
+            const [rows] = await db.query(`
+                SELECT a.asset_code, a.asset_name, a.category, a.ip_address, a.current_status,
+                       COALESCE(l.location_name, 'Head Office') AS location_name,
+                       COALESCE(u.full_name, 'Ananda Dwi Susanti') AS pic_name
+                FROM assets a
+                LEFT JOIN locations l ON a.location_id = l.location_id
+                LEFT JOIN users u ON a.pic_user_id = u.user_id
+                WHERE a.asset_code = ? LIMIT 1
+            `, [asset_code]);
+            if (rows && rows.length > 0) dev = rows[0];
+        } catch (e) {
+            console.warn('Query dynamic asset failed, using fallback:', e.message);
+        }
+
+        if (!dev) {
+            dev = {
+                asset_code: asset_code,
+                asset_name: `${asset_code} Device`,
+                category: asset_code.startsWith('CAM') ? 'CCTV' : (asset_code.startsWith('SRV') ? 'Server' : (asset_code.startsWith('ESP') ? 'IoT Node' : (asset_code.startsWith('SWM') ? 'Switch' : 'Infrastruktur'))),
+                ip_address: '192.168.1.50',
+                location_name: 'Head Office',
+                pic_name: 'Ananda Dwi Susanti'
+            };
+        }
+
+        const effectiveSeverity = severity || (type === 'warning' ? 'warning' : (type === 'recovery' ? 'info' : 'critical'));
 
         let text = '';
         if (type === 'recovery') {
             text = 
 `<b>✅ [T-AIMS RECOVERY] PERANGKAT NORMAL KEMBALI!</b>
 ====================================
-<b>Perangkat :</b> ${asset_code} (Raspberry Pi Head Office)
-<b>Kategori  :</b> Raspberry Pi
-<b>IP Address:</b> 192.168.1.45
-<b>Lokasi    :</b> Head Office
+<b>Perangkat :</b> ${dev.asset_code} (${dev.asset_name})
+<b>Kategori  :</b> ${dev.category}
+<b>IP Address:</b> ${dev.ip_address}
+<b>Lokasi    :</b> ${dev.location_name}
 <b>Waktu Pulih:</b> ${nowStr}
 <b>Status    :</b> <b>RESOLVED</b> (Sinyal heartbeat normal)
 ====================================
-<b>PIC       :</b> Ananda Dwi Susanti
+<b>PIC       :</b> ${dev.pic_name}
 <b>Bot Engine:</b> @taims_alert_arik_bot (Teknolab T-AIMS)`;
+        } else if (type === 'warning') {
+            text = 
+`<b>🟡 [T-AIMS WARNING] POTENSI GANGGUAN / ANOMALI JARINGAN!</b>
+====================================
+<b>Perangkat :</b> ${dev.asset_code} (${dev.asset_name})
+<b>Kategori  :</b> ${dev.category}
+<b>IP Address:</b> ${dev.ip_address}
+<b>Lokasi    :</b> ${dev.location_name}
+<b>Waktu     :</b> ${nowStr}
+<b>Status    :</b> <b>WARNING</b> (Latensi spike / Packet loss terdeteksi)
+====================================
+<b>PIC       :</b> ${dev.pic_name}
+<b>Bot Engine:</b> @taims_alert_arik_bot • Early Warning System`;
         } else {
             text = 
 `<b>🚨 [T-AIMS ALERT] PERANGKAT OFFLINE!</b>
 ====================================
-<b>Perangkat :</b> ${asset_code} (Raspberry Pi Head Office)
-<b>Kategori  :</b> Raspberry Pi
-<b>IP Address:</b> 192.168.1.45
-<b>Lokasi    :</b> Head Office
+<b>Perangkat :</b> ${dev.asset_code} (${dev.asset_name})
+<b>Kategori  :</b> ${dev.category}
+<b>IP Address:</b> ${dev.ip_address}
+<b>Lokasi    :</b> ${dev.location_name}
 <b>Waktu Mati :</b> ${nowStr}
 <b>Status    :</b> <b>CRITICAL</b> (Tidak merespons ping / heartbeat)
 ====================================
-<b>PIC       :</b> Ananda Dwi Susanti
+<b>PIC       :</b> ${dev.pic_name}
 <b>Bot Engine:</b> @taims_alert_arik_bot (Teknolab T-AIMS)`;
         }
 
-        const dispatchResult = await dispatchTelegramAlert(text, type, { asset_code, test: true });
+        const dispatchResult = await dispatchTelegramAlert(text, type, {
+            asset_code: dev.asset_code,
+            asset_name: dev.asset_name,
+            category: dev.category,
+            ip_address: dev.ip_address,
+            location: dev.location_name,
+            severity: effectiveSeverity,
+            test: true,
+            trigger_source: 'Manual Chaos Test Drill'
+        });
 
         return res.status(200).json({
             success: true,
             type: type,
-            asset_code: asset_code,
+            asset_code: dev.asset_code,
+            asset_name: dev.asset_name,
+            severity: effectiveSeverity,
             formatted_message: text,
             delivery: dispatchResult,
-            message: `Simulasi alert ${type.toUpperCase()} untuk ${asset_code} berhasil digenerate dan dikirim.`
+            message: `Simulasi alert ${type.toUpperCase()} untuk ${dev.asset_code} (${dev.asset_name}) berhasil digenerate dan dikirim.`
         });
     } catch (err) {
         console.error('POST /api/notifications/telegram/test-alert error:', err);
@@ -559,3 +627,4 @@ ${(ai.recommendation || '').slice(0, 450)}...
 });
 
 module.exports = router;
+module.exports.dispatchTelegramAlert = dispatchTelegramAlert;

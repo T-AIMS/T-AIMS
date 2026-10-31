@@ -1485,11 +1485,13 @@ window.sendTelegramAiReport = sendTelegramAiReport;
 /**
  * 49. Kirim Uji Simulasi Alert Offline / Recovery ke Telegram (Dokumen PKL Hal. 11)
  */
-async function testTelegramAlert(type = 'offline', asset_code = 'MKRT-02') {
+async function testTelegramAlert(type = 'offline', asset_code = 'MKRT-02', severity = null) {
   try {
+    const payload = { type, asset_code };
+    if (severity) payload.severity = severity;
     const res = await apiFetch('/notifications/telegram/test-alert', {
       method: 'POST',
-      body: JSON.stringify({ type, asset_code })
+      body: JSON.stringify(payload)
     });
     return res;
   } catch (error) {
