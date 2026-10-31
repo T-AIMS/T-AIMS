@@ -3,6 +3,7 @@ const router = express.Router();
 const db = require('../config/db');
 const { authenticate } = require('../middleware/auth');
 const { apiKeyAuth } = require('../middleware/apiKeyAuth');
+const { triggerTelegramAlert } = require('../services/offline-checker');
 
 // ============================================================
 // Helper: Simpan hasil monitoring
@@ -58,15 +59,35 @@ async function saveMonitoringLog(assetId, status, method, responseTimeMs, detail
         // 2. Anti-Flapping: Jika aset sedang 'online' dan baru saja terhubung (< 45 detik),
         //    jangan langsung dibalikkan menjadi offline oleh 1 paket timeout agar status stabil.
         const [curr] = await db.query(
-            'SELECT current_status, last_seen, TIMESTAMPDIFF(SECOND, last_seen, NOW()) AS sec_since_seen FROM assets WHERE asset_id = ?',
+            `SELECT a.asset_id, a.asset_code, a.asset_name, a.category, a.priority, a.ip_address,
+                    a.current_status, a.last_seen, a.pic_user_id,
+                    COALESCE(l.location_name, 'Head Office') AS location_name,
+                    TIMESTAMPDIFF(SECOND, a.last_seen, NOW()) AS sec_since_seen
+             FROM assets a
+             LEFT JOIN locations l ON a.location_id = l.location_id
+             WHERE a.asset_id = ?`,
             [assetId]
         );
         if (curr.length > 0) {
-            if (curr[0].current_status === 'unknown' || curr[0].last_seen === null) {
+            const dev = curr[0];
+            if (dev.current_status === 'unknown' || dev.last_seen === null) {
                 return result.insertId;
             }
-            if (curr[0].current_status === 'online' && curr[0].sec_since_seen !== null && curr[0].sec_since_seen < 45) {
+            if (dev.current_status === 'online' && dev.sec_since_seen !== null && dev.sec_since_seen < 45) {
                 return result.insertId;
+            }
+
+            // AUTO TRIGGER AI TELEGRAM ALERT PADA PERUBAHAN STATUS NYATA
+            // Hanya kirimkan alert jika sebelumnya statusnya ONLINE atau WARNING (bukan sudah offline lama)
+            const previousStatus = dev.current_status;
+            if (previousStatus === 'online' || previousStatus === 'warning') {
+                try {
+                    if (typeof triggerTelegramAlert === 'function') {
+                        triggerTelegramAlert('offline', dev).catch(e => console.warn('[ICMP Alert Error]:', e.message));
+                    }
+                } catch (tgErr) {
+                    console.warn('[ICMP Alert Dispatch Failed]:', tgErr.message);
+                }
             }
         }
 
