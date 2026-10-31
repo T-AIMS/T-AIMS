@@ -60,6 +60,7 @@ Selesai 100% (DONE - Zero Defect & Zero Blocker)
   * `c6dfc3b`: *feat(ai-ops): implement autonomous alerting, 3-tier lifecycle, dynamic multi-asset MySQL queries, and double guardrail*
   * `30110b1`: *feat(n8n): sync updated 3-tier warning, recovery, and knowledge base workflows from Arik*
   * `3501ba6`: *fix(monitoring): dispatch autonomous Telegram AI alert on real-time ping offline transition*
+  * `995496a`: *docs(devops): add Hari-20 daily handover and authentic evidence screenshots for Wafian Zaidan*
 - **File Teknis yang Dideploy:**
   * `taims-backend/src/services/offline-checker.js` (Autonomous Daemon & Double Guardrail)
   * `taims-backend/src/routes/notifications.js` (Dynamic MySQL Telemetry Dispatcher)
@@ -68,6 +69,8 @@ Selesai 100% (DONE - Zero Defect & Zero Blocker)
   * `n8n_workflows/NOTIFIKASI T-AIMS OFFLINE.json` (Knowledge Base 19 Aset)
   * `n8n_workflows/NOTIFIKASI T-AIMS RECOVERY.json` (Recovery SOP Database)
 - **Bukti Screenshot Otentik DevOps (Folder `docs/evidence-wafian/hari-20/`):**
-  * `01-device-offline-detection-realtime.png`: *Verifikasi Deteksi Anomali Perangkat Fisik Real-Time: Aset PC-01 (192.168.1.2) di Head Office terdeteksi terputus/down secara presisi oleh engine ICMP.*
-  * `02-device-recovery-telemetry-online.png`: *Verifikasi Pemulihan Sinyal Telemetri Real-Time: Aset CCTV-01 (192.168.1.5) dan RTR-01 (192.168.1.1) berhasil pulih ke status Online (1ms).*
+  * `01-cloudpanel-pm2-aiops-status.png`: *Terminal SSH VPS CloudPanel (port 2222) — Status daemon taims-backend & taims-n8n aktif online di PM2 dan lolos healthcheck curl 200 OK.*
+  * `02-git-diff-patch-realtime-monitoring.png`: *Verifikasi Patch Kode Jalur Notifikasi Real-Time: Injeksi pemanggilan triggerTelegramAlert('offline', dev) pada src/routes/monitoring.js.*
+  * `03-device-offline-detection-realtime.png`: *Verifikasi Deteksi Anomali Perangkat Fisik Real-Time: Aset PC-01 (192.168.1.2) di Head Office terdeteksi terputus/down secara presisi oleh engine ICMP.*
+  * `04-device-recovery-telemetry-online.png`: *Verifikasi Pemulihan Sinyal Telemetri Real-Time: Aset CCTV-01 (192.168.1.5) dan RTR-01 (192.168.1.1) berhasil pulih ke status Online (1ms).*
 - **Domain Live Produksi Terverifikasi:** `https://t-aims.teknolab.biz.id`

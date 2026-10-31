@@ -9,8 +9,10 @@
 
 | No | File Bukti | Keterangan & Komponen Teknis | Status |
 |:--:|:---|:---|:---:|
-| 1 | `01-device-offline-detection-realtime.png` | Verifikasi Deteksi Anomali Perangkat Fisik Real-Time: Aset `PC-01` (192.168.1.2) di Head Office terdeteksi terputus/down secara presisi oleh engine ICMP dan tercatat di dashboard monitoring dengan status `Offline`. | ✅ PASS |
-| 2 | `02-device-recovery-telemetry-online.png` | Verifikasi Pemulihan Sinyal Telemetri Real-Time: Aset `CCTV-01` (192.168.1.5) dan `RTR-01` (192.168.1.1) berhasil pulih ke status `Online` (latensi 1ms) pasca-restart backend dan memicu verifikasi recovery. | ✅ PASS |
+| 1 | `01-cloudpanel-pm2-aiops-status.png` | Verifikasi Terminal SSH VPS CloudPanel (`45.198.155.203:2222`): Status daemon `taims-backend` (port 3000) dan `taims-n8n` (port 5678) aktif online di PM2, lolos healthcheck curl `/api/health` 200 OK, dan log dispatch n8n alert ke bot Telegram `@taims_alert_arik_bot` jam 22:05:17 WIB. | ✅ PASS |
+| 2 | `02-git-diff-patch-realtime-monitoring.png` | Verifikasi Patch Kode Jalur Notifikasi Real-Time: Injeksi pemanggilan `triggerTelegramAlert('offline', dev)` pada file `src/routes/monitoring.js` saat terjadi transisi status online ➔ offline secara riil. | ✅ PASS |
+| 3 | `03-device-offline-detection-realtime.png` | Verifikasi Deteksi Anomali Perangkat Fisik Real-Time: Aset `PC-01` (192.168.1.2) di Head Office terdeteksi terputus/down secara presisi oleh engine ICMP dan tercatat di dashboard monitoring dengan status `Offline`. | ✅ PASS |
+| 4 | `04-device-recovery-telemetry-online.png` | Verifikasi Pemulihan Sinyal Telemetri Real-Time: Aset `CCTV-01` (192.168.1.5) dan `RTR-01` (192.168.1.1) berhasil pulih ke status `Online` (latensi 1ms) pasca-restart backend dan memicu verifikasi recovery. | ✅ PASS |
 
 ---
 
