@@ -55,11 +55,13 @@
 
 ## 3. STATUS BUKTI PENGUJIAN (EVIDENCE ARTIFACTS)
 
-Semua bukti screenshot otentik telah disimpan rapi di folder bukti:
-- `evidence/screenshots/Hari-19/2026-10-30_Hari-19_TC-H19-001_system-availability-and-sla-summary-30-days.png`
-- `evidence/screenshots/Hari-19/2026-10-30_Hari-19_TC-H19-002_master-inventory-19-devices-cloudpanel.png`
-
----
+Semua bukti screenshot otentik telah diverifikasi dan disimpan rapi di folder bukti:
+- `evidence/screenshots/Hari-19/2026-10-30_Hari-19_TC-H19-001_system-availability-and-sla-summary-30-days.png` (Ringkasan SLA 30 Hari & visual bar normal)
+- `evidence/screenshots/Hari-19/2026-10-30_Hari-19_TC-H19-002_master-inventory-19-devices-cloudpanel.png` (Tabel Master 19 Perangkat dengan node Cloud Panel House Server)
+- `evidence/screenshots/Hari-19/2026-10-30_Hari-19_TC-H19-002b_dropdown-kategori-cloudpanel.png` (Dropdown Filter Kategori dengan opsi Cloud Panel aktif)
+- `evidence/screenshots/Hari-19/2026-10-30_Hari-19_TC-H19-003_real-ping-401-unauthorized-inspection.png` (DevTools Network Headers 401 Unauthorized saat Uji Ping)
+- `evidence/screenshots/Hari-19/2026-10-30_Hari-19_TC-H19-003b_real-ping-error-toast-offline.png` (Toast Uji Ping Gagal & Error network entry)
+- `evidence/screenshots/Hari-19/2026-10-30_Hari-19_TC-H19-004_quick-status-override-modal.png` (Modal Ubah Status Perangkat CCTV Head Office)
 
 ## 4. YANG PERLU DILANJUTKAN SHIFT BERIKUTNYA (HARI-20)
 
