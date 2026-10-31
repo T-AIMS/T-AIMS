@@ -18,11 +18,14 @@
      - `CLOUD-01` (*Cloud Panel House Server* - `192.168.30.250`)
      - `RTR-04` (*Router House Server* - `192.168.30.252`)
      - `CAS-01` (*casaOS-nas* - `192.168.30.248`)
-   - Memvalidasi opsi kategori baru **"Cloud Panel (Cloud VPS)"** pada dropdown Tambah/Edit Aset dan filter tabel.
-2. **Pengujian Smart Hybrid Ping Fallback (`TC-H19-003`)**:
-   - Memvalidasi endpoint `/api/monitoring/real-ping` di mana IP privat lokal (`192.168.x.x` / `10.x.x.x`) memiliki perlindungan filter agar tidak drop ke status offline palsu saat di-ping dari VPS CloudPanel publik.
+   - Memvalidasi opsi kategori baru **"Cloud Panel (Cloud VPS)"** pada dropdown filter kategori dan form penambahan aset.
+2. **Pengujian Smart Hybrid Ping Fallback & Audit Auth Endpoint Live (`TC-H19-003`)**:
+   - Memvalidasi pemanggilan endpoint `/api/monitoring/real-ping` saat tombol `[ ⚡ Uji Ping Sekarang ]` dieksekusi.
+   - Mengaudit inspeksi network devtools yang mengidentifikasi respons HTTP 401 Unauthorized akibat ketiadaan JWT Bearer token pada request ping (dicatat sebagai temuan QA dan diverifikasi perbaikannya).
+   - Memastikan perangkat subnet privat lokal (`192.168.x.x`) tetap terisolasi aman dari status false-offline.
 3. **Uji Fungsional Tombol `[ ⏻ Ubah Status Alat ]` (`TC-H19-004`)**:
-   - Memvalidasi pemulihan bug silent failure modal status akibat ID mismatch string/number. Superadmin kini dapat melakukan status override secara real-time.
+   - Memvalidasi modal pop-up *Quick Status Override* (`openQuickStatusModal`) yang kini dapat terbuka mulus tanpa kendala type mismatch ID string/number.
+   - Mengonfirmasi tersedianya 3 pilihan status operasional: ONLINE, PERINGATAN, dan OFFLINE.
 4. **Validasi Agregasi SLA 30 Hari & Resolusi Defect Visual CSS (`TC-H19-001`)**:
    - Menguji keakuratan persentase ketersediaan SLA 30 Hari per site (Head Office, Marketing Office, House of Server).
    - Memastikan batang diagram ketersediaan SLA tampil solid berwarna (hijau/kuning/merah) pasca-injeksi `height: 100%` pada CSS `.sbi-prog` (`BUG-H18-UI-001: CLOSED`).
@@ -55,7 +58,7 @@
 
 ## 3. STATUS BUKTI PENGUJIAN (EVIDENCE ARTIFACTS)
 
-Semua bukti screenshot otentik telah diverifikasi dan disimpan rapi di folder bukti:
+Semua bukti screenshot otentik telah diverifikasi dan disimpan rapi di folder bukti `evidence/screenshots/Hari-19/`:
 - `evidence/screenshots/Hari-19/2026-10-30_Hari-19_TC-H19-001_system-availability-and-sla-summary-30-days.png` (Ringkasan SLA 30 Hari & visual bar normal)
 - `evidence/screenshots/Hari-19/2026-10-30_Hari-19_TC-H19-002_master-inventory-19-devices-cloudpanel.png` (Tabel Master 19 Perangkat dengan node Cloud Panel House Server)
 - `evidence/screenshots/Hari-19/2026-10-30_Hari-19_TC-H19-002b_dropdown-kategori-cloudpanel.png` (Dropdown Filter Kategori dengan opsi Cloud Panel aktif)
@@ -63,8 +66,11 @@ Semua bukti screenshot otentik telah diverifikasi dan disimpan rapi di folder bu
 - `evidence/screenshots/Hari-19/2026-10-30_Hari-19_TC-H19-003b_real-ping-error-toast-offline.png` (Toast Uji Ping Gagal & Error network entry)
 - `evidence/screenshots/Hari-19/2026-10-30_Hari-19_TC-H19-004_quick-status-override-modal.png` (Modal Ubah Status Perangkat CCTV Head Office)
 
+---
+
 ## 4. YANG PERLU DILANJUTKAN SHIFT BERIKUTNYA (HARI-20)
 
-1. Melakukan pengujian beban koneksi (load testing) pada polling status perangkat 19 unit.
-2. Penyelarasan format laporan pengujian mingguan QA untuk lampiran laporan akhir PKL.
-3. Koordinasi bersama Dzakwan & Wafian untuk skenario dry-run evaluasi teknis.
+1. Melakukan User Acceptance Testing (UAT) / Acceptance Test MVP pada domain live `https://t-aims.teknolab.biz.id/` dengan 19 perangkat aktif.
+2. Pengujian ketahanan sesi (session resilience) dan stress test ringan polling telemetri realtime pada seluruh node.
+3. Penyelarasan format laporan pengujian mingguan QA untuk lampiran laporan akhir PKL.
+4. Koordinasi bersama Dzakwan & Wafian untuk evaluasi teknis akhir pekan.
