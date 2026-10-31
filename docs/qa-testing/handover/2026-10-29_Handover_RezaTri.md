@@ -25,7 +25,7 @@
    - Terverifikasi koneksi aman dengan sertifikat SSL resmi Let's Encrypt aktif (*Connection is secure* & *Certificate is valid*).
    - Seluruh komponen dashboard live beroperasi mulus (Status 200 OK): 18 unit terdaftar, grafik tren live update 5 detik, donut chart kategori vertikal, tabel status, dan peta GIS 3 titik wilayah Blitar.
 5. **Audit Modul Analitik SLA 30 Hari & Resolusi Bug CSS Progress Bar (`TC-H18-005`)**:
-   - Menemukan dan menuntaskan anomali visual pada modul *System Availability & SLA Summary â€¢ 30 Days*: batang grafik progress bar per site (Head Office, Marketing Office, House of Server) sebelumnya tidak muncul karena ketiadaan properti `height: 100%` pada class `.sbi-prog` di CSS.
+   - Menemukan dan menuntaskan anomali visual pada modul *System Availability & SLA Summary • 30 Days*: batang grafik progress bar per site (Head Office, Marketing Office, House of Server) sebelumnya tidak muncul karena ketiadaan properti `height: 100%` pada class `.sbi-prog` di CSS.
    - Dilakukan perbaikan langsung pada `frontend/assets/css/style.css`, sehingga bar progress berwarna (merah/kuning/hijau) kini tampil proporsional sesuai nilai uptime masing-masing site.
 
 ---
