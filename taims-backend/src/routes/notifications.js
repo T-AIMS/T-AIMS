@@ -343,7 +343,10 @@ async function dispatchTelegramAlert(text, type = 'info', metadata = {}) {
 
         const res = await fetch(n8nWebhook, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'X-TAIMS-WEBHOOK-SECRET': process.env.N8N_WEBHOOK_SECRET || 'taims_sec_n8n_8f92c10a4b3e6d5e7a1b'
+            },
             body: JSON.stringify(payloadData),
             signal: controller.signal
         });

@@ -41,6 +41,7 @@ GEMINI_KEY_DASHBOARD = env_vars.get("GEMINI_KEY_DASHBOARD", os.environ.get("GEMI
 GEMINI_KEY_NOTIF     = env_vars.get("GEMINI_KEY_NOTIF", os.environ.get("GEMINI_KEY_NOTIF", ""))
 TELEGRAM_BOT_TOKEN   = env_vars.get("TELEGRAM_BOT_TOKEN", "8944593836:AAEP2bDCO53srpWR3gdKXY6CHQ13Ni8OtPA")
 TELEGRAM_CHAT_ID     = env_vars.get("TELEGRAM_CHAT_ID", "-5383419523")
+WEBHOOK_SECRET_KEY   = env_vars.get("N8N_WEBHOOK_SECRET", os.environ.get("N8N_WEBHOOK_SECRET", "taims_sec_n8n_8f92c10a4b3e6d5e7a1b"))
 
 # Cache & Cooldown in-memory
 cache_ai = {
@@ -105,7 +106,28 @@ def send_telegram(text):
         return False
 
 class ArikWorkflowHandler(BaseHTTPRequestHandler):
+    def _is_authorized(self):
+        # 1. IP Whitelisting: Izinkan hanya traffic lokal (Loopback / Private Subnet)
+        client_ip = self.client_address[0]
+        allowed_ips = ['127.0.0.1', 'localhost', '::1']
+        
+        # 2. Secret Token Authentication Header (Defense-in-Depth)
+        req_secret = self.headers.get('X-TAIMS-WEBHOOK-SECRET', '')
+        bearer_token = self.headers.get('Authorization', '').replace('Bearer ', '').strip()
+        has_valid_secret = (req_secret == WEBHOOK_SECRET_KEY or bearer_token == WEBHOOK_SECRET_KEY)
+        
+        # Izinkan jika berasal dari internal localhost ATAU memiliki Secret Token yang valid
+        if client_ip in allowed_ips or has_valid_secret:
+            return True
+            
+        print(f"[!] [SECURITY ALERT] Unauthorized Webhook Access Blocked! IP: {client_ip}, Path: {self.path}")
+        return False
+
     def do_POST(self):
+        if not self._is_authorized():
+            self._send_json(401, {"success": False, "error": "Unauthorized: Invalid or missing X-TAIMS-WEBHOOK-SECRET"})
+            return
+
         content_length = int(self.headers.get('Content-Length', 0))
         post_data = self.rfile.read(content_length)
         try:
@@ -349,13 +371,16 @@ class ArikWorkflowHandler(BaseHTTPRequestHandler):
         return
 
 if __name__ == '__main__':
-    # ThreadingHTTPServer menyediakan pemrosesan multi-threaded concurrent non-blocking
-    server = ThreadingHTTPServer(('0.0.0.0', PORT), ArikWorkflowHandler)
+    # Binding ke 127.0.0.1 (Local Loopback Only) untuk mencegah exposure langsung ke internet publik
+    BIND_HOST = os.environ.get("N8N_BIND_HOST", "127.0.0.1")
+    server = ThreadingHTTPServer((BIND_HOST, PORT), ArikWorkflowHandler)
     print("=" * 70)
     print(f"[*] T-AIMS ARIK n8n AI WORKFLOW ENGINE (PORT {PORT}) MULTI-THREADED RUNNING...")
-    print(f"    - Webhook AI Dashboard : http://0.0.0.0:{PORT}/webhook/ai-recommendation")
-    print(f"    - Webhook Alert 3-Tier : http://0.0.0.0:{PORT}/webhook/taims-alert (Warning 🟡 & Critical 🔴)")
-    print(f"    - Webhook Recovery     : http://0.0.0.0:{PORT}/webhook/taims-recovery (Recovery 🟢)")
+    print(f"    - Security Hardening   : ACTIVE (Local IP Whitelist & X-TAIMS-WEBHOOK-SECRET)")
+    print(f"    - Bind Address         : http://{BIND_HOST}:{PORT} (Protected Loopback)")
+    print(f"    - Webhook AI Dashboard : http://{BIND_HOST}:{PORT}/webhook/ai-recommendation")
+    print(f"    - Webhook Alert 3-Tier : http://{BIND_HOST}:{PORT}/webhook/taims-alert (Warning 🟡 & Critical 🔴)")
+    print(f"    - Webhook Recovery     : http://{BIND_HOST}:{PORT}/webhook/taims-recovery (Recovery 🟢)")
     print("=" * 70)
     try:
         server.serve_forever()
