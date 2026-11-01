@@ -1,6 +1,6 @@
 **[LAPORAN DATA FLOW DIAGRAM]{.mark}**
 
-**[T-AIMS: Teknolab Asset & Infrastructure Monitoring System]{.mark}**
+**[T-AIMS:Teknolab Asset & Infrastructure Monitoring System]{.mark}**
 
   ----------------------------------- -----------------------------------
   **[Keterangan]{.mark}**             **[Detail]{.mark}**
