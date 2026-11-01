@@ -32,17 +32,22 @@
 
 ## 2. DETAIL TEMUAN DEFECT HARI INI
 
-* **DEF-H21-001 (Ketiadaan Client-Side Debounce pada Tombol Uji Telegram)**:
+* **DEF-H21-001 (False-Positive Offline & Ketiadaan Anti-Spam Debounce pada Tombol Uji Ping Sekarang)**:
   - *Severity*: Medium
-  - *Deskripsi*: Tombol `[ Uji Kirim Telegram ]` pada frontend menu Peringatan belum memiliki status `disabled` (lockout) saat ditekan berulang kali secara cepat, meskipun backend telah memiliki proteksi cooldown buffer.
-  - *Rekomendasi QA*: Tambahkan atribut `disabled` dan animasi loading/countdown timer 5–10 detik pada elemen tombol segera setelah klik pertama dieksekusi.
+  - *Status*: **RESOLVED & HARDENED** (Perbaikan tuntas diimplementasikan pada frontend dan backend oleh Lead QA Reza Tri & Eza)
+  - *Deskripsi*: Penekanan tombol `[ Uji Ping Sekarang ]` pada Modal Detail Perangkat sempat menyebabkan status perangkat online mendadak berubah menjadi OFFLINE akibat timeout ICMP dari Cloud VPS ke IP privat LAN lokal, memicu notifikasi peringatan palsu ke Telegram, dan tombol dapat di-spam tanpa cooldown.
+  - *Resolusi Terpasang*:
+    1. Client-Side Countdown: Tombol otomatis terkunci dengan hitung mundur 5 detik (`Jeda Anti-Spam (5s)`).
+    2. Server-Side Rate Limiter: API `/real-ping` dilengkapi cache anti-spam 3 detik.
+    3. Proteksi Status Master: Pengujian manual dibatasi agar tidak mengubah status aset menjadi offline di database dan dicegah mengirim notifikasi darurat palsu ke grup Telegram.
+    4. Smart Hybrid Fallback: Status Online perangkat LAN privat dipertahankan dengan aman.
 
 ---
 
 ## 3. YANG PERLU DILANJUTKAN BESOK (HARI-22 - SENIN, 2 NOVEMBER 2026)
 
 1. **Shift 1 (Pagi - Mas Damar & Tim 1)**:
-   - Evaluasi implementasi *client-side debounce* pada tombol trigger alert sesuai laporan `DEF-H21-001`.
+   - Review hasil pengujian perbaikan proteksi anti-spam & false-positive manual ping (`DEF-H21-001` - RESOLVED).
    - Lanjutkan verifikasi telemetri sensor PLTS ESP32 dan Raspberry Pi di ruang server.
 2. **Shift 2 (Sore - Reza Tri & Tim 2)**:
    - Pengujian integrasi modul pelaporan performa mingguan dan pemantauan SLA multi-site.

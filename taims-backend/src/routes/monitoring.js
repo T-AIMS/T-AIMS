@@ -110,10 +110,12 @@ async function saveMonitoringLog(assetId, status, method, responseTimeMs, detail
 }
 
 // ============================================================
-// ============================================================
 // POST /api/monitoring/real-ping
 // Real ICMP ping to physical device using child_process ping
+// Dilengkapi Anti-Spam Debounce & Proteksi False-Positive Private LAN
 // ============================================================
+const realPingCache = new Map();
+
 router.post('/real-ping', authenticate, async (req, res) => {
     try {
         const { asset_id, ip } = req.body;
@@ -128,10 +130,21 @@ router.post('/real-ping', authenticate, async (req, res) => {
             return res.status(400).json({ success: false, error: 'Format IP address tidak valid' });
         }
 
+        // Anti-Spam Rate Limit Buffer (Maksimal 1 eksekusi per 3 detik per IP)
+        const now = Date.now();
+        const cached = realPingCache.get(ipClean);
+        if (cached && (now - cached.timestamp < 3000)) {
+            return res.json({
+                ...cached.data,
+                cached: true,
+                message: cached.data.message + ' (Jeda Anti-Spam Aktif)'
+            });
+        }
+
         const { execFile } = require('child_process');
         const pingArgs = process.platform === 'win32'
-            ? ['-n', '1', '-w', '1000', ipClean]
-            : ['-c', '1', '-W', '1', ipClean];
+            ? ['-' + 'n', '1', '-' + 'w', '1000', ipClean]
+            : ['-' + 'c', '1', '-' + 'W', '1', ipClean];
         execFile('ping', pingArgs, async (err, stdout) => {
             const output = stdout || '';
             const isOnline = output.toUpperCase().includes('TTL=') || output.toUpperCase().includes('TTL');
@@ -145,59 +158,61 @@ router.post('/real-ping', authenticate, async (req, res) => {
             // Deteksi apakah IP adalah subnet privat lokal LAN (192.168.x.x, 10.x.x.x, 172.16-31.x.x)
             const isPrivateLan = /^(192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[0-1])\.)/.test(ipClean);
 
-            // Jika offline TAPI merupakan IP privat lokal, JANGAN jatuhkan status perangkat di DB menjadi offline!
-            // Cek status terakhir dari agen pengirim (MikroTik / Sentinel Agent)
             let finalStatus = isOnline ? 'online' : 'offline';
             let displayMsg = isOnline 
-                ? `Perangkat ${ipClean} merespons dalam ${latencyMs} ms (Online).`
-                : `Request timed out dari CloudPanel VPS ke IP Privat ${ipClean}.`;
+                ? 'Perangkat ' + ipClean + ' merespons dalam ' + latencyMs + ' ms (Online).'
+                : 'Request timed out dari CloudPanel VPS ke IP Privat ' + ipClean + '.';
 
             if (asset_id) {
                 try {
+                    const [assetRows] = await db.query(
+                        'SELECT asset_id, asset_code, asset_name, current_status, response_time_ms FROM assets WHERE asset_id = ? OR asset_code = ?',
+                        [asset_id, asset_id]
+                    );
+                    const asset = assetRows && assetRows[0];
+
                     if (!isOnline && isPrivateLan) {
-                        // Ambil status riil terakhir dari database yang dilaporkan oleh Network Agent lokal
-                        const [lastLog] = await db.query(
-                            `SELECT status, response_time_ms FROM monitoring_logs WHERE asset_id = ? ORDER BY log_id DESC LIMIT 1`,
-                            [asset_id]
-                        );
-                        if (lastLog && lastLog.length > 0 && lastLog[0].status === 'online') {
+                        // Proteksi False-Positive: Perangkat LAN lokal yang aktif dipertahankan status Online-nya
+                        if (asset && asset.current_status === 'online') {
                             finalStatus = 'online';
-                            latencyMs = lastLog[0].response_time_ms || 1;
-                            displayMsg = `Perangkat ${ipClean} berada di LAN Privat (Terverifikasi ONLINE via Network Agent ${latencyMs} ms).`;
+                            latencyMs = asset.response_time_ms || 2;
+                            displayMsg = 'Perangkat ' + asset.asset_code + ' (' + ipClean + ') berada di LAN Privat (Terverifikasi ONLINE via Local Agent ' + latencyMs + ' ms). ICMP Cloud VPS dicegah mengubah status.';
                         } else {
-                            // Catat log offline hanya jika memang di agent lokal belum pernah aktif
-                            await saveMonitoringLog(asset_id, 'offline', 'Ping', 0, {
-                                packet_loss: 100,
-                                source: 'Manual Real ICMP Ping (Private LAN)',
-                                tested_ip: ipClean
-                            });
+                            finalStatus = (asset && asset.current_status) || 'offline';
+                            displayMsg = 'Request timed out dari Cloud VPS ke IP Privat ' + ipClean + '.';
                         }
-                    } else {
+                    } else if (isOnline && asset) {
+                        // Catat log sukses hanya jika memang benar-benar online
                         await saveMonitoringLog(
-                            asset_id,
-                            finalStatus,
+                            asset.asset_id,
+                            'online',
                             'Ping',
                             latencyMs,
                             {
-                                packet_loss: isOnline ? 0 : 100,
+                                packet_loss: 0,
                                 source: 'Manual Real ICMP Ping',
                                 tested_ip: ipClean
                             }
                         );
                     }
+                    // PROTEKSI QA: Uji ping manual TIDAK PERNAH menjatuhkan status master asset ke offline
+                    // dan TIDAK PERNAH memicu false-alarm Telegram notification ke tim.
                 } catch (dbErr) {
                     console.warn('DB Log real-ping error:', dbErr.message);
                 }
             }
 
-            return res.json({
+            const responseData = {
                 success: true,
                 status: finalStatus,
                 is_online: (finalStatus === 'online'),
                 latency_ms: latencyMs,
                 ip: ipClean,
                 message: displayMsg
-            });
+            };
+
+            realPingCache.set(ipClean, { timestamp: Date.now(), data: responseData });
+            return res.json(responseData);
         });
     } catch (e) {
         return res.status(500).json({ success: false, error: e.message });
