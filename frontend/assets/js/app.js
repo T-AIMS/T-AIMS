@@ -558,7 +558,7 @@ function loadDevicesFromStorage() {
         const raw = localStorage.getItem('taims_devices_v4');
         if (raw) {
             const parsed = JSON.parse(raw);
-            if (Array.isArray(parsed) && parsed.length >= 15) {
+            if (Array.isArray(parsed) && parsed.length >= 19) {
                 // Deduplikasi HANYA berdasarkan kode aset unik (bukan IP karena subnet lokal 192.168.1.x sah dipakai antar-site HO & MO)
                 const seenCodes = new Set();
                 const sanitized = [];
@@ -1323,10 +1323,20 @@ document.addEventListener('visibilitychange', () => {
  * Memuat data riil terintegrasi dari Backend API Express (Port 3000)
  */
 async function loadRealDataFromApi() {
-    const token = localStorage.getItem('taims_jwt_token');
+    let token = localStorage.getItem('taims_jwt_token');
     if (!token) {
-        // Belum login atau token tidak ada, jangan panggil API backend untuk mencegah spam/rate limit
-        return;
+        try {
+            const base = (window.apiService && window.apiService.BASE_URL) || 'http://localhost:3000/api';
+            const guestRes = await fetch(`${base}/auth/guest`, { method: 'POST', headers: { 'Content-Type': 'application/json' } });
+            const guestData = await guestRes.json();
+            if (guestData && guestData.success && guestData.data && guestData.data.token) {
+                token = guestData.data.token;
+                localStorage.setItem('taims_jwt_token', token);
+                localStorage.setItem('taims_user_role', 'guest');
+            }
+        } catch (e) {
+            return;
+        }
     }
     if (typeof refreshAlertGatewaysStatus === "function") refreshAlertGatewaysStatus();
     try {
@@ -1361,7 +1371,7 @@ async function loadRealDataFromApi() {
                     saveDevicesToStorage(APP_STATE.devices);
                 } else {
                     const localSaved = loadDevicesFromStorage();
-                    if (localSaved && localSaved.length >= 15) {
+                    if (localSaved && localSaved.length >= 19) {
                         APP_STATE.devices = localSaved;
                     } else if (typeof FALLBACK_ASSETS !== "undefined" && Array.isArray(FALLBACK_ASSETS)) {
                         APP_STATE.devices = FALLBACK_ASSETS.map(mapBackendAssetToUI);
@@ -1931,7 +1941,7 @@ const APP_STATE = {
 };
 
 // Inisialisasi awal penyimpanan perangkat lokal bila belum tersimpan
-if (typeof loadDevicesFromStorage === 'function' && (!loadDevicesFromStorage() || loadDevicesFromStorage().length < 15)) {
+if (typeof loadDevicesFromStorage === 'function' && (!loadDevicesFromStorage() || loadDevicesFromStorage().length < 19)) {
     saveDevicesToStorage(APP_STATE.devices);
 }
 
@@ -2546,7 +2556,7 @@ async function enterAsGuest() {
     // 1. Pastikan data perangkat terisi seketika (fallback lokal 15 perangkat jika belum ada di browser)
     if (!APP_STATE.devices || !Array.isArray(APP_STATE.devices) || APP_STATE.devices.length === 0) {
         const localSaved = typeof loadDevicesFromStorage === 'function' ? loadDevicesFromStorage() : null;
-        if (localSaved && localSaved.length >= 15) {
+        if (localSaved && localSaved.length >= 19) {
             APP_STATE.devices = localSaved;
         } else if (typeof FALLBACK_ASSETS !== 'undefined' && Array.isArray(FALLBACK_ASSETS)) {
             APP_STATE.devices = FALLBACK_ASSETS.map(mapBackendAssetToUI);
@@ -2643,7 +2653,7 @@ function loginSuccess(user, isAutoRestore = false) {
     // Jaminan data selalu terisi seketika saat pertama kali masuk
     if (!APP_STATE.devices || !Array.isArray(APP_STATE.devices) || APP_STATE.devices.length === 0) {
         const localSaved = typeof loadDevicesFromStorage === 'function' ? loadDevicesFromStorage() : null;
-        if (localSaved && localSaved.length >= 15) {
+        if (localSaved && localSaved.length >= 19) {
             APP_STATE.devices = localSaved;
         } else if (typeof FALLBACK_ASSETS !== 'undefined' && Array.isArray(FALLBACK_ASSETS)) {
             APP_STATE.devices = FALLBACK_ASSETS.map(mapBackendAssetToUI);

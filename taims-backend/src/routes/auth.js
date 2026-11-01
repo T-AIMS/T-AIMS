@@ -2,7 +2,12 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const nodemailer = require('nodemailer');
+let nodemailer;
+try {
+    nodemailer = require('nodemailer');
+} catch (e) {
+    nodemailer = null;
+}
 const crypto = require('crypto');
 const db = require('../config/db');
 const { authenticate } = require('../middleware/auth');
