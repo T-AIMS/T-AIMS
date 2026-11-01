@@ -87,7 +87,7 @@ Jaringan)**
 
 - **Deskripsi Fungsi:** Bertanggung jawab atas akuisisi data status dan
   kesehatan perangkat di jaringan. Lapisan ini mengeksekusi inspeksi
-  berkala (*polling*), menerima sinyal keberadaan perangkat
+  berkala (*Polling*), menerima sinyal keberadaan perangkat
   (*heartbeat/last seen*), serta memproses lalu lintas data telemetri
   berbasis protokol ringan *MQTT* sebelum diteruskan ke lapisan
   penyimpanan data.
