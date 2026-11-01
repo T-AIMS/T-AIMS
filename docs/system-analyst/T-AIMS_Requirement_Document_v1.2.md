@@ -28,7 +28,7 @@
   **Klasifikasi     Internal --- Tim PKL & Mentor Operasional Teknolab
   Akses**           
 
-  **Tanggal         12 Oktober 2026
+  **Tanggal         13 Oktober 2026
   Terbit**          
   -----------------------------------------------------------------------
 
