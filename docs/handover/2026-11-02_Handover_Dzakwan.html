@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Handover Hari 22 - Dzakwan Miftahussobirin - T-AIMS Teknolab</title>
+    <style>
+        @page {
+            size: A4 portrait;
+            margin: 12mm 15mm 15mm 15mm;
+        }
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+            color: #1e293b;
+            background: #f8fafc;
+            margin: 0;
+            padding: 24px;
+            font-size: 10.5pt;
+            line-height: 1.5;
+        }
+        .container {
+            max-width: 820px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 30px 38px;
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+            border: 1px solid #e2e8f0;
+        }
+        .header {
+            border-bottom: 3px double #991b1b;
+            padding-bottom: 12px;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .kop-left h1 {
+            font-size: 15pt;
+            color: #991b1b;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 800;
+        }
+        .kop-left h2 {
+            font-size: 10.5pt;
+            color: #334155;
+            margin: 2px 0 0 0;
+            font-weight: 600;
+        }
+        .kop-left p {
+            font-size: 8pt;
+            color: #64748b;
+            margin: 2px 0 0 0;
+        }
+        .kop-right {
+            text-align: right;
+            border-left: 2px solid #e2e8f0;
+            padding-left: 14px;
+        }
+        .kop-right .badge {
+            display: inline-block;
+            background: #f1f5f9;
+            color: #0f172a;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 8pt;
+            border: 1px solid #cbd5e1;
+        }
+        .doc-title {
+            text-align: center;
+            margin: 14px 0 16px 0;
+        }
+        .doc-title h3 {
+            margin: 0;
+            font-size: 13.5pt;
+            color: #0f172a;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            font-weight: 800;
+        }
+        .doc-title p {
+            margin: 3px 0 0 0;
+            color: #64748b;
+            font-size: 9pt;
+        }
+        .meta-grid {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 18px;
+            background: #f8fafc;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            font-size: 9.5pt;
+        }
+        .meta-grid td {
+            padding: 7px 12px;
+            border-bottom: 1px solid #edf2f7;
+        }
+        .meta-grid tr:last-child td {
+            border-bottom: none;
+        }
+        .meta-label {
+            font-weight: 600;
+            color: #475569;
+            width: 22%;
+        }
+        .meta-val {
+            color: #0f172a;
+            font-weight: 500;
+        }
+        .status-pill {
+            display: inline-block;
+            background: #dcfce7;
+            color: #166534;
+            padding: 2px 8px;
+            border-radius: 9999px;
+            font-size: 8pt;
+            font-weight: 700;
+            border: 1px solid #86efac;
+        }
+        .timeline-box {
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            padding: 10px 14px;
+            margin-bottom: 18px;
+            font-size: 9pt;
+        }
+        .timeline-title {
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            font-size: 8.5pt;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .timeline-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 4px 16px;
+        }
+        .timeline-item {
+            color: #334155;
+        }
+        .timeline-item strong {
+            color: #0f172a;
+            font-family: 'Consolas', monospace;
+        }
+        .section-header {
+            font-size: 10.5pt;
+            font-weight: 700;
+            color: #0f172a;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 5px;
+            margin: 18px 0 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .section-header .num {
+            background: #991b1b;
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8pt;
+            font-weight: bold;
+        }
+        ul.task-list {
+            margin: 0 0 12px 0;
+            padding-left: 18px;
+        }
+        ul.task-list li {
+            margin-bottom: 6px;
+            font-size: 9.5pt;
+            color: #334155;
+        }
+        ul.task-list li strong {
+            color: #0f172a;
+        }
+        .item-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid #991b1b;
+            padding: 10px 14px;
+            border-radius: 0 6px 6px 0;
+            margin-bottom: 10px;
+            font-size: 9.5pt;
+        }
+        .item-card h4 {
+            margin: 0 0 4px 0;
+            font-size: 10pt;
+            color: #0f172a;
+            font-weight: 700;
+        }
+        .item-card p {
+            margin: 0 0 4px 0;
+            color: #475569;
+            font-size: 9pt;
+        }
+        .table-custom {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 8.5pt;
+            margin-top: 8px;
+            margin-bottom: 16px;
+        }
+        .table-custom th {
+            background: #0f172a;
+            color: #ffffff;
+            padding: 7px 10px;
+            text-align: left;
+            font-weight: 600;
+        }
+        .table-custom td {
+            padding: 7px 10px;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: top;
+        }
+        .table-custom tr:nth-child(even) td {
+            background: #f8fafc;
+        }
+        .badge-code {
+            font-family: 'Consolas', monospace;
+            background: #e2e8f0;
+            color: #0f172a;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 8pt;
+        }
+        .footer-sign {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 24px;
+            padding-top: 14px;
+            border-top: 1px solid #e2e8f0;
+            page-break-inside: avoid;
+        }
+        .sign-box {
+            text-align: center;
+            width: 44%;
+        }
+        .sign-space {
+            height: 52px;
+        }
+        .sign-name {
+            font-weight: 700;
+            color: #0f172a;
+            text-decoration: underline;
+            font-size: 9.5pt;
+        }
+        .sign-role {
+            font-size: 8pt;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- KOP SURAT TEKNOLAB -->
+        <div class="header">
+            <div class="kop-left">
+                <h1>PT Teknolab Caraka Internasional</h1>
+                <h2>T-AIMS • Teknolab Asset & Infrastructure Monitoring System</h2>
+                <p>Dokumen Kerja Praktik Kerja Lapangan (PKL) 30 Hari • Template Handover Standar Hal. 15</p>
+            </div>
+            <div class="kop-right">
+                <span class="badge">HARI KE-22</span><br>
+                <span style="font-size: 8pt; color: #64748b; font-weight: 600;">Shift 2 (Malam)</span>
+            </div>
+        </div>
+
+        <!-- JUDUL DOKUMEN -->
+        <div class="doc-title">
+            <h3>Daily Handover Shift Lead & Full-Stack</h3>
+            <p>Laporan Serah Terima Pekerjaan Harian — Senin, 2 November 2026</p>
+        </div>
+
+        <!-- METADATA GRID -->
+        <table class="meta-grid">
+            <tr>
+                <td class="meta-label">Nama Personel</td>
+                <td class="meta-val"><strong>Dzakwan Miftahussobirin</strong></td>
+                <td class="meta-label">Shift Kerja</td>
+                <td class="meta-val">Shift 2 (16.00 – 01.00 WIB)</td>
+            </tr>
+            <tr>
+                <td class="meta-label">Jabatan / Role</td>
+                <td class="meta-val">Shift 2 Lead & Full-Stack Developer (Project Lead)</td>
+                <td class="meta-label">Tanggal Laporan</td>
+                <td class="meta-val">Senin, 2 November 2026</td>
+            </tr>
+            <tr>
+                <td class="meta-label">Lingkungan Sistem</td>
+                <td class="meta-val">Production CloudPanel VPS (<code>https://t-aims.teknolab.biz.id/</code>)</td>
+                <td class="meta-label">Status Pekerjaan</td>
+                <td class="meta-val"><span class="status-pill">DONE (100% Bebas Defect)</span></td>
+            </tr>
+            <tr>
+                <td class="meta-label">Fokus Tugas Utama</td>
+                <td class="meta-val" colspan="3">
+                    <strong>1. Implementasi Gateway Alert Email via SMTP</strong> (Checklist 5.5 & Dokumen PKL Hal. 11)<br>
+                    <strong>2. Resolusi & Perbaikan Bug Web Produksi</strong> (Proteksi RBAC UI User, Cache-Busting, Anti-Spam n8n, & Buffer Flapping 60s)
+                </td>
+            </tr>
+        </table>
+
+        <!-- TIMELINE LOG HARIAN -->
+        <div class="timeline-box">
+            <div class="timeline-title">
+                <span>⏱️ Timeline Log Aktivitas Harian (Presensi & Eksekusi Shift 2)</span>
+            </div>
+            <div class="timeline-grid">
+                <div class="timeline-item"><strong>04:00</strong> : Bangun Tidur ✅</div>
+                <div class="timeline-item"><strong>04:50</strong> : Sholat Subuh Berjamaah ✅</div>
+                <div class="timeline-item"><strong>11:45</strong> : Sholat Dzuhur ✅</div>
+                <div class="timeline-item"><strong>15:15</strong> : Sholat Ashar ✅</div>
+                <div class="timeline-item"><strong>16:00</strong> : Check-In Presensi Kantor Shift 2 ✅</div>
+                <div class="timeline-item"><strong>16:05</strong> : Bersih-bersih Ruang Kerja & Lab Teknolab ✅</div>
+                <div class="timeline-item"><strong>16:10</strong> : Briefing Sore Shift 2 bersama Tim Teknolab ✅</div>
+                <div class="timeline-item"><strong>16:30</strong> : <strong>Tugas 1: Gateway Alert Email via SMTP</strong> ✅</div>
+                <div class="timeline-item"><strong>18:00</strong> : Sholat Maghrib ✅</div>
+                <div class="timeline-item"><strong>19:15</strong> : Sholat Isya ✅</div>
+                <div class="timeline-item"><strong>21:00</strong> : <strong>Tugas 2: Memperbaiki Bug yang Muncul di Web</strong> ✅</div>
+                <div class="timeline-item"><strong>22:30</strong> : Briefing Malam & Evaluasi Deploy Live ✅</div>
+                <div class="timeline-item"><strong>00:45</strong> : Bersih-bersih Ruang Kerja & Lab Teknolab ✅</div>
+                <div class="timeline-item"><strong>01:00</strong> : Check Out Presensi Kantor Shift 2 Selesai ✅</div>
+            </div>
+        </div>
+
+        <!-- BAGIAN 1: YANG SUDAH SELESAI -->
+        <div class="section-header">
+            <span class="num">1</span>
+            <span>Uraian Teknis Tugas yang Selesai Dikerjakan</span>
+        </div>
+
+        <div class="item-card">
+            <h4>A. Implementasi Gateway Alert Email via SMTP (Checklist 5.5 & Dokumen PKL Hal. 11)</h4>
+            <p><strong>1. Pembangunan Service Modul Nodemailer (<code>email-service.js</code>):</strong> Mengembangkan modul perantara pengiriman surel darurat pada backend Express.js berbasis protokol SMTP terenkripsi (Port 465 SSL atau Port 587 STARTTLS) dengan konfigurasi dinamis via <code>.env</code>.</p>
+            <p><strong>2. Desain Template Kartu Email Insiden (HTML Enterprise Template):</strong> Merancang template email responsif berstandar NOC modern: header dinamis bergradien merah untuk status <em>CRITICAL OFFLINE</em>, kuning/oranye untuk <em>ANOMALY WARNING</em>, dan hijau untuk <em>RECOVERY RESOLVED</em>. Kartu email merangkum atribut krusial: Kode Aset, Nama Perangkat, IP Address, Kategori, Lokasi Ruangan, Waktu Insiden (WIB), PIC Teknis, dan tombol CTA <code>[ Buka Dashboard T-AIMS Live ]</code>.</p>
+            <p><strong>3. Integrasi Non-Blocking Pipeline Notifikasi:</strong> Menghubungkan fungsi <code>sendIncidentAlertEmail</code> ke dalam <code>dispatchTelegramAlert</code> di <code>notifications.js</code>. Pemanggilan dieksekusi secara <em>asynchronous non-blocking</em> dengan safety-timeout 10 detik agar kegagalan jaringan SMTP pihak ketiga tidak mengganggu latensi bot Telegram n8n.</p>
+        </div>
+
+        <div class="item-card">
+            <h4>B. Resolusi & Perbaikan Bug Web Produksi (Web & System Bug Fixing)</h4>
+            <p><strong>1. Proteksi RBAC UI — Sembunyikan Tombol Aksi untuk Role User:</strong> Mengatasi kerentanan otorisasi antarmuka di mana akun ber-role biasa (<code>user</code>/<code>guest</code>) masih sempat melihat tombol aksi <em>Edit</em> dan <em>Hapus</em> pada tabel perangkat. Diberlakukan filter ketat pada <code>renderFullDevicesTable</code> di <code>app.js</code>: jika bukan admin/superadmin, tombol edit dan hapus sama sekali tidak dimasukkan ke dalam DOM, tombol <code>+ Tambah Aset</code> disembunyikan, dan fungsi <code>openQuickStatusModal</code> dikunci.</p>
+            <p><strong>2. Eliminasi Stale Caching Browser (Cache-Busting Integration):</strong> Mengatasi isu browser klien yang mempertahankan cache skrip lama dengan memperbarui query parameter berkas di <code>index.html</code> menjadi <code>app.js?v=20261101_H21</code> serta menginjeksi response header <code>Cache-Control: no-cache, no-store, must-revalidate</code> pada backend Express.</p>
+            <p><strong>3. Resolusi Notifikasi Dobel / Spam Pesan Kembar di Telegram:</strong> Menghilangkan duplikasi pengiriman pesan notifikasi yang sebelumnya menembak ke webhook n8n sekaligus Direct Telegram API. Alur pengiriman kini dipusatkan 100% 1 PINTU murni melalui n8n AI Engine Runner port 5678.</p>
+            <p><strong>4. Startup Grace Period 60 Detik (Anti-Restart Flapping Buffer):</strong> Menambahkan buffer jeda selama 60 detik pada <code>offline-checker.js</code> saat backend baru menyala, mencegah timbulnya false alarm untuk CCTV-01 & RTR-01 akibat pemeriksaan offline instan sebelum paket ping ICMP pertama terkirim.</p>
+            <p><strong>5. Aktivasi Rekomendasi Dinamis Google Gemini 3.5 Flash Lite:</strong> Mengatasi pesan fallback template darurat dengan memvalidasi API Key resmi Arik (100% lolos HTTP 200 OK) dan menginjeksi variabel <code>GEMINI_KEY_NOTIF</code> & <code>GEMINI_KEY_DASHBOARD</code> ke environment runtime server VPS CloudPanel.</p>
+        </div>
+
+        <!-- BAGIAN 2: YANG BELUM SELESAI -->
+        <div class="section-header">
+            <span class="num">2</span>
+            <span>Pekerjaan yang Belum Selesai</span>
+        </div>
+        <ul class="task-list">
+            <li><strong>Nihil (0 Blocker / 0 Defect):</strong> Seluruh target pekerjaan pada shift ini telah diselesaikan 100% dan terverifikasi live di lingkungan produksi CloudPanel VPS.</li>
+        </ul>
+
+        <!-- BAGIAN 3: KENDALA DAN SOLUSI -->
+        <div class="section-header">
+            <span class="num">3</span>
+            <span>Kendala dan Solusi Teknis</span>
+        </div>
+        <div class="item-card" style="border-left-color: #d97706;">
+            <strong>1. Kendala Sinkronisasi Berkas Frontend di CloudPanel:</strong><br>
+            &bull; <em>Gejala:</em> Pasca <code>git pull</code> di VPS, web live sempat masih menyajikan berkas frontend versi 30 Oktober (<code>v=20261030_0430</code>) karena web root situs terisolasi di <code>/home/taims-teknolab/htdocs/t-aims.teknolab.biz.id/</code>.<br>
+            &bull; <em>Solusi:</em> Menyinkronkan berkas <code>frontend/*</code> hasil rilis master ke dalam direktori <code>htdocs</code> dan merestart backend. Inspeksi live membuktikan versi <code>v=20261101_H21</code> telah aktif 100%.
+        </div>
+        <div class="item-card" style="border-left-color: #d97706;">
+            <strong>2. Kendala Potensi Latensi pada Multi-Channel Alerting (Telegram + SMTP):</strong><br>
+            &bull; <em>Gejala:</em> Proses jabat tangan SMTP (handshake) ke mail server eksternal berpotensi memperlambat respon API incident alert.<br>
+            &bull; <em>Solusi:</em> Menerapkan pola eksekusi <em>fire-and-forget asynchronous non-blocking</em> dengan timeout limit 10 detik, menjamin bot Telegram tetap menerima notifikasi dalam hitungan milidetik.
+        </div>
+
+        <!-- BAGIAN 4: REKOMENDASI BUKTI SCREENSHOT -->
+        <div class="section-header">
+            <span class="num">4</span>
+            <span>Rekomendasi Bukti Screenshot Lengkap (Evidence Portfolio)</span>
+        </div>
+        <p style="font-size: 8.5pt; color: #64748b; margin: 0 0 6px 0;">Gunakan 6 tangkapan layar otentik berikut untuk lampiran PDF PKL dan repositori dokumentasi:</p>
+
+        <table class="table-custom">
+            <thead>
+                <tr>
+                    <th style="width: 14%;">Kode</th>
+                    <th style="width: 32%;">Judul Bukti Tangkapan Layar</th>
+                    <th style="width: 54%;">Komponen & Bukti Otentik yang Ditampilkan</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="badge-code">SS-H22-01</span></td>
+                    <td><strong>Modul SMTP Email Service</strong></td>
+                    <td>Editor kode pada berkas <code>email-service.js</code> memperlihatkan Nodemailer transport SMTP dan struktur kartu email HTML insiden IT.</td>
+                </tr>
+                <tr>
+                    <td><span class="badge-code">SS-H22-02</span></td>
+                    <td><strong>Integrasi Route Notifikasi</strong></td>
+                    <td>Editor kode pada <code>notifications.js</code> memperlihatkan fungsi <code>dispatchTelegramAlert</code> yang memanggil <code>sendIncidentAlertEmail</code> secara paralel.</td>
+                </tr>
+                <tr>
+                    <td><span class="badge-code">SS-H22-03</span></td>
+                    <td><strong>Proteksi RBAC UI (User vs Admin)</strong></td>
+                    <td>Tangkapan layar tabel aset di browser saat login sebagai <code>user</code> (kolom aksi bersih dari tombol Edit/Hapus & tombol Tambah Aset tersembunyi total) dibandingkan dengan akun <code>dzakwan</code>.</td>
+                </tr>
+                <tr>
+                    <td><span class="badge-code">SS-H22-04</span></td>
+                    <td><strong>Cache-Busting & Header Network</strong></td>
+                    <td>DevTools Network (F12) pada domain live menampilkan pemanggilan <code>app.js?v=20261101_H21</code> dengan status 200 OK dan header <code>Cache-Control: no-cache</code>.</td>
+                </tr>
+                <tr>
+                    <td><span class="badge-code">SS-H22-05</span></td>
+                    <td><strong>Notifikasi 1-Pintu & Preskriptif Gemini</strong></td>
+                    <td>Tangkapan layar bot Telegram <code>@taims_alert_arik_bot</code>: pesan masuk tunggal (anti-spam lolos) disertai rekomendasi akar masalah dinamis Google Gemini 3.5 Flash Lite.</td>
+                </tr>
+                <tr>
+                    <td><span class="badge-code">SS-H22-06</span></td>
+                    <td><strong>Daemon PM2 & Healthcheck VPS</strong></td>
+                    <td>Terminal SSH CloudPanel: output <code>pm2 status</code> menunjukkan <code>taims-backend</code> dan <code>taims-n8n</code> online, serta curl <code>/api/health</code> mengembalikan status <code>healthy</code>.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- BAGIAN 5: NEXT ACTION -->
+        <div class="section-header">
+            <span class="num">5</span>
+            <span>Rencana Tindak Lanjut (Next Action)</span>
+        </div>
+        <ul class="task-list">
+            <li>Menjalankan pengujian simulasi gangguan (<em>Chaos Test Drill</em>) bersama seluruh anggota Shift 2 (Damar, Wafian, Arik, Aziz, Reza, Dika) untuk merekam skenario pemulihan perangkat IoT, CCTV, dan Server.</li>
+            <li>Menyusun dokumentasi pengujian multi-channel notification dan rekapitulasi bukti screenshot Hari Ke-22 ke dalam Bab 5 & Bab 6 draf Laporan Akhir PKL 30 Hari Teknolab.</li>
+        </ul>
+
+        <!-- TANDA TANGAN / PENGESAHAN -->
+        <div class="footer-sign">
+            <div class="sign-box">
+                <span style="font-size: 8pt; color: #64748b;">Diserahkan oleh,</span>
+                <div class="sign-space"></div>
+                <span class="sign-name">Dzakwan Miftahussobirin</span><br>
+                <span class="sign-role">Shift 2 Lead & Full-Stack Developer</span>
+            </div>
+            <div class="sign-box">
+                <span style="font-size: 8pt; color: #64748b;">Diterima & Diverifikasi oleh,</span>
+                <div class="sign-space"></div>
+                <span class="sign-name">Wafian Zaidan / Pembimbing Teknolab</span><br>
+                <span class="sign-role">DevOps Engineer & Mentor Lapangan</span>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
