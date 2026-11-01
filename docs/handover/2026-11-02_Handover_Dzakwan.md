@@ -1,122 +1,45 @@
-# T-AIMS | Dokumen Kerja PKL Teknolab
-**PT Teknolab Caraka Internasional • T-AIMS Project • PKL 30 Hari**  
-*Format Daily Handover Standar PDF Teknolab (Halaman 15 - Template Resmi)*
+DAILY HANDOVER
 
----
+Nama: Dzakwan Miftahussobirin
+Tanggal: Senin, 2 November 2026
+Shift: Shift 2 (16.00 – 01.00 WIB)
 
-# DAILY HANDOVER (HARI KE-22)
+Task:
+1. Implementasi Gateway Alert Email via SMTP (Multi-channel Notification Checklist 5.5 & Dokumen PKL Hal. 11)
+2. Memperbaiki bug yang muncul di web (Proteksi RBAC UI Role User, Eliminasi Stale Caching, Anti-Spam Telegram 1-Pintu n8n, & Grace Period 60 Detik)
 
-**Nama:** Dzakwan Miftahussobirin  
-**Tanggal:** Senin, 2 November 2026  
-**Shift:** Shift 2 (16.00 – 01.00 WIB)  
-**Role:** Shift 2 Lead & Full-Stack Developer (Project Lead)  
-**Task:**  
-1. Implementasi Gateway Alert Email via SMTP (Multi-Channel Notification Gateway - Dokumen PKL Hal. 11 & Target 5.5)  
-2. Perbaikan & Resolusi Bug Web Produksi (Proteksi RBAC UI Role User, Eliminasi Stale Caching, Anti-Spam 1 Pintu Telegram, & Startup Grace Period 60 Detik)  
-**Status:** DONE  
-*(Definition of Done Hal. 15 & 18: Code/Configuration + Testing + Live CloudPanel Verification 100% Selesai & Bebas Defect)*  
+Status: DONE
 
----
+Yang sudah selesai:
+1. Implementasi Gateway Alert Email via SMTP:
+   - Membangun service gateway email di `taims-backend/src/services/email-service.js` menggunakan transport Nodemailer SMTP terenkripsi.
+   - Merancang template kartu email insiden responsif berstandar NOC (warna merah untuk Critical, kuning untuk Warning, hijau untuk Recovery) yang merangkum Kode Aset, Nama Perangkat, IP Address, Kategori, Lokasi, Waktu Insiden (WIB), PIC Teknis, dan tombol tautan langsung ke dashboard.
+   - Mengintegrasikan fungsi `sendIncidentAlertEmail` ke dalam pipeline `dispatchTelegramAlert` pada `taims-backend/src/routes/notifications.js` secara asynchronous non-blocking agar tidak membebani kecepatan notifikasi bot Telegram.
+2. Memperbaiki bug yang muncul di web:
+   - Menyembunyikan tombol aksi sensitif (Edit & Hapus) pada tabel perangkat dan tombol "+ Tambah Aset" untuk role User/Guest di `frontend/assets/js/app.js` menggunakan pengecekan `isAdminUser()`.
+   - Mengatasi stale browser caching dengan menerapkan cache-busting `app.js?v=20261101_H21` di `frontend/index.html` dan response header `Cache-Control: no-cache, no-store, must-revalidate` di `taims-backend/src/app.js`.
+   - Menghilangkan bug pesan dobel (spam alert kembar di Telegram) dengan mematikan direct Telegram API di `notifications.js` sehingga pengiriman 1 PINTU murni lewat n8n runner port 5678.
+   - Menambahkan Startup Grace Period 60 detik di `offline-checker.js` untuk mencegah false alert CCTV-01 & RTR-01 saat server/PM2 me-restart.
+   - Mengaktifkan analisis preskriptif dinamis Google Gemini 3.5 Flash Lite milik Arik dengan menginjeksi API Key ke `.env` VPS CloudPanel (mengatasi teks fallback template).
 
-### Timeline Aktivitas Harian (Senin, 2 November 2026):
-* **04:00** : Bangun Tidur ✅
-* **04:50** : Sholat Subuh Berjamaah ✅
-* **11:45** : Sholat Dzuhur ✅
-* **15:15** : Sholat Ashar ✅
-* **16:00** : Check-In Presensi Kantor Shift 2 ✅
-* **16:05** : Bersih-bersih Ruang Kerja & Lab Teknolab ✅
-* **16:10** : Briefing Sore Shift 2 bersama Tim Teknolab (Penyelarasan Target Hari-22) ✅
-* **16:30** : **Tugas 1: Implementasi Gateway Alert Email via SMTP** (Nodemailer Transport, HTML Alert Template, & Integrasi Pipeline Notifikasi) ✅
-* **18:00** : Sholat Maghrib ✅
-* **19:15** : Sholat Isya ✅
-* **21:00** : **Tugas 2: Memperbaiki Bug yang Muncul di Web** (Sembunyikan Aksi RBAC User, Cache-Busting, Anti-Spam n8n 1 Pintu, & Grace Period 60s) ✅
-* **22:30** : Briefing Malam & Review Progres Pengujian Sistem Live bersama Tim ✅
-* **00:45** : Bersih-bersih Ruang Kerja & Lab Teknolab ✅
-* **01:00** : Check Out Kantor Shift 2 Selesai ✅
+Yang belum selesai:
+1. Nihil (0 Blocker / Seluruh implementasi email gateway dan perbaikan bug web telah selesai 100% dan terverifikasi live di https://t-aims.teknolab.biz.id/).
 
----
+Kendala:
+1. Berkas frontend di web live sempat terlambat terbarui pasca git pull karena direktori web root CloudPanel berada terpisah di `/home/taims-teknolab/htdocs/t-aims.teknolab.biz.id/`. Kendala diselesaikan tuntas dengan menyinkronkan berkas frontend ke direktori htdocs dan me-restart layanan.
 
-### Yang sudah selesai:
+Next Action:
+1. Melakukan pengujian simulasi gangguan (Chaos Test Drill) bersama seluruh tim Shift 2 untuk mendokumentasikan skenario pemulihan perangkat IoT, CCTV, dan Server.
+2. Mengintegrasikan seluruh bukti pengujian screenshot Hari Ke-22 ke dalam Bab 5 & Bab 6 draf Laporan Akhir PKL 30 Hari Teknolab.
 
-#### 1. Implementasi Gateway Alert Email via SMTP (Checklist 5.5 & Dokumen PKL Hal. 11):
-* **Modul Layanan Email (`taims-backend/src/services/email-service.js`):**
-  - Membangun modul pengiriman email insiden berbasis Nodemailer dengan transport SMTP terenkripsi (mendukung port 465 SSL/TLS dan port 587 STARTTLS).
-  - Mengonfigurasi parameter dinamis melalui `.env` server (`SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM`, `ALERT_EMAIL_RECIPIENT`).
-* **Desain Template Kartu Email Insiden (HTML Enterprise Template):**
-  - Merancang template email responsif berstandar NOC modern: banner status darurat (Merah untuk *Critical Offline*, Kuning/Oranye untuk *Anomaly Warning*, dan Hijau untuk *Recovery Resolved*).
-  - Menyajikan rincian lengkap insiden: Kode Perangkat, Nama Aset, Alamat IP, Kategori, Lokasi Fisik, Waktu Insiden (WIB), serta PIC Teknis.
-  - Menyertakan tombol navigasi cepat (*Call to Action*): `[ 🔗 Buka Dashboard T-AIMS Live ]`.
-* **Integrasi Saluran Ganda (Multi-Channel Dispatcher):**
-  - Mengaitkan `sendIncidentAlertEmail` ke dalam fungsi `dispatchTelegramAlert` pada `taims-backend/src/routes/notifications.js`.
-  - Pengiriman email berjalan secara *asynchronous non-blocking* sehingga tidak memperlambat latensi pengiriman webhook n8n ke Telegram.
-
-#### 2. Resolusi & Perbaikan Bug Web Produksi (Web & System Bug Fixing):
-* **Bug 1: Penyembunyian Tombol Aksi Sensitif untuk Role User (Proteksi RBAC UI):**
-  - **Isu:** Pengguna dengan role `user`/`guest` sebelumnya masih dapat melihat tombol *Edit* (pensil kuning) dan *Hapus* (tempat sampah merah) pada tabel aset, serta tombol *+ Tambah Aset*.
-  - **Solusi:** Memperbarui fungsi `renderFullDevicesTable` di `frontend/assets/js/app.js` dengan guard `isAdminUser()`. Pada role user, tombol edit dan hapus sama sekali tidak dimasukkan ke dalam DOM HTML. Fungsi `openQuickStatusModal` dan tombol tambah aset diproteksi ketat hanya untuk admin.
-* **Bug 2: Masalah Cache Usang Browser Klien (Stale Browser Cache Invalidation):**
-  - **Isu:** Klien browser kerap kali menyimpan cache file JavaScript lama sehingga pembaruan UI tidak langsung terlihat tanpa hard-refresh manual.
-  - **Solusi:** Mengimplementasikan teknik *Cache-Busting* di `frontend/index.html` dengan parameter versi terbaru `app.js?v=20261101_H21`. Pada sisi backend (`taims-backend/src/app.js`), ditambahkan HTTP Header `Cache-Control: no-cache, no-store, must-revalidate`.
-* **Bug 3: Eliminasi Notifikasi Dobel / Spam Pesan Telegram (Anti-Duplicate 1-Pintu):**
-  - **Isu:** Setiap kali terjadi insiden perangkat, bot Telegram mengirimkan 2 pesan kembar secara serentak karena backend menembak ke webhook n8n sekaligus Direct Telegram API.
-  - **Solusi:** Menonaktifkan Direct Telegram dispatch di `taims-backend/src/routes/notifications.js` dan memusatkan alur pengiriman 100% murni melalui n8n AI Engine Runner port 5678.
-* **Bug 4: False Alert CCTV & Router saat Backend Me-Restart (Restart Flapping Buffer):**
-  - **Isu:** Ketika daemon PM2 backend me-restart di VPS CloudPanel, `checkOfflineDevices()` langsung dijalankan pada detik ke-0 sebelum ping engine mengirim paket ICMP pertama, memicu lonjakan alarm palsu untuk `CCTV-01` dan `RTR-01`.
-  - **Solusi:** Menambahkan *Startup Grace Period* selama 60 detik (`setTimeout(..., 60000)`) pada `taims-backend/src/services/offline-checker.js` sebelum siklus pemantauan berkala dimulai.
-* **Bug 5: Analisis AI Mengembalikan Fallback Template Darurat:**
-  - **Isu:** Notifikasi Telegram menampilkan pesan fallback statis karena file `.env` di VPS belum terinjeksi API Key Gemini milik Arik.
-  - **Solusi:** Memverifikasi kedua API Key resmi Google Gemini Arik (`GEMINI_KEY_NOTIF` dan `GEMINI_KEY_DASHBOARD`) menggunakan script Python (100% lolos HTTP 200 OK untuk model `gemini-3.5-flash-lite`), menginjeksi key ke environment VPS, dan memastikan analisis preskriptif berjalan dinamis.
-
----
-
-### Yang belum selesai:
-1. **Nihil (0 Blocker / 0 Defect):** Seluruh implementasi SMTP Email Alert, perbaikan RBAC UI, eliminasi spam n8n, buffer restart flapping, dan aktivasi AI Gemini telah selesai dan teruji live di domain produksi.
-
----
-
-### Kendala & Solusi Teknis:
-1. **Kendala Sinkronisasi Frontend pada Web Root CloudPanel:**
-   * **Masalah:** Pasca `git pull` di VPS, berkas web live sempat masih menyajikan versi lama (`v=20261030_0430`) karena folder `frontend/` repositori belum tersalin ke direktori publik `/home/taims-teknolab/htdocs/t-aims.teknolab.biz.id/`.
-   * **Solusi:** Melakukan sinkronisasi langsung berkas frontend ke direktori `htdocs` situs web dan me-restart layanan. Hasil inspeksi live mengonfirmasi versi `v=20261101_H21` aktif 100%.
-2. **Kendala Pengiriman Ganda Multi-Channel (Telegram & Email):**
-   * **Masalah:** Pemanggilan fungsi asynchronous SMTP di backend berpotensi memperlambat response time API alert jika mail server eksternal mengalami latensi tinggi.
-   * **Solusi:** Mengisolasi pemanggilan `sendIncidentAlertEmail` dengan pendekatan *fire-and-forget (non-blocking catch)* dengan timeout controller 10 detik, sehingga kegagalan SMTP tidak akan mengganggu pengiriman notifikasi utama Telegram n8n.
-
----
-
-### Next Action (Rencana Shift Berikutnya):
-1. Melakukan pengujian simulasi gangguan (*Chaos Test Drill*) bersama seluruh personel Shift 2 (Damar, Wafian, Arik, Dzakwan, Aziz, Reza, Dika) untuk mendokumentasikan skenario pemulihan perangkat IoT (ESP32), CCTV, dan Server.
-2. Memasukkan seluruh log bukti pengujian Hari Ke-22 ke dalam Bab 5 & Bab 6 draf Laporan Akhir PKL 30 Hari Teknolab.
-
----
-
-### File / Commit / Evidence:
-
-* **File Backend & Gateway:**
-  - `taims-backend/src/services/email-service.js` (Modul SMTP Nodemailer Gateway)
-  - `taims-backend/src/routes/notifications.js` (Multi-Channel Dispatcher & Anti-Spam 1-Pintu)
-  - `taims-backend/src/services/offline-checker.js` (Startup Grace Period 60s Buffer)
-  - `taims-backend/src/app.js` (Cache-Control No-Cache Headers)
-* **File Frontend & Proteksi RBAC:**
-  - `frontend/assets/js/app.js` (RBAC UI Filter: `renderFullDevicesTable`, `isAdminUser`, `enforceRbacUI`)
-  - `frontend/index.html` (Cache-Busting Asset Version `?v=20261101_H21`)
-* **Commit Git Terkait (Branch main):**
-  - `edabce5` — *feat(security-ai): enforce RBAC UI hiding for user role, enable cache-busting v20261101, integrate SMTP email alert service, and implement RCA topology correlation*
-  - `0080dde` — *feat(security): implement n8n webhook secret token auth and local loopback bind hardening*
-  - `071c675` — *fix(alert): disable direct telegram duplicate dispatch and add 60s startup grace period*
-  - `bfc9ed4` — *docs(devops): update Hari-21 handover with anti-duplicate alert fix and authentic evidence*
-
----
-
-### 📸 Rekomendasi Bukti Screenshot Lengkap (Evidence Portfolio):
-
-Berikut 6 rekomendasi tangkapan layar otentik untuk melengkapi berkas handover dan lampiran PDF PKL:
-
-| Kode Bukti | Judul Tangkapan Layar | Bagian / Komponen yang Harus Masuk di Screenshot |
-|:---:|:---|:---|
-| **SS-H22-01** | **Implementasi Modul SMTP Email Service** | Buka VS Code pada berkas [`taims-backend/src/services/email-service.js`](file:///d:/project%20T-AIMS/taims-backend/src/services/email-service.js). Sorot konfigurasi `nodemailer.createTransport`, fungsi `sendIncidentAlertEmail`, dan template HTML kartu alert insiden IT berwarna merah/kuning. |
-| **SS-H22-02** | **Bukti Integrasi Email Alert di Route Notifikasi** | Buka berkas [`taims-backend/src/routes/notifications.js`](file:///d:/project%20T-AIMS/taims-backend/src/routes/notifications.js) pada fungsi `dispatchTelegramAlert` yang memperlihatkan pemanggilan `sendIncidentAlertEmail` secara terintegrasi setelah n8n webhook. |
-| **SS-H22-03** | **Perbandingan UI RBAC: Role User vs Role Admin** | Buka browser di `https://t-aims.teknolab.biz.id/`:\n1. Tampilan saat login sebagai `user`: Kolom Aksi tabel aset bersih tanpa tombol Edit/Hapus, dan tombol `+ Tambah Aset` tersembunyi.\n2. Tampilan saat login sebagai `dzakwan`: Tombol Edit, Hapus, dan Tambah Aset muncul lengkap. |
-| **SS-H22-04** | **Verifikasi Cache-Busting & Header di Inspect Element** | Buka DevTools (F12) -> tab **Network** pada domain live `https://t-aims.teknolab.biz.id/`. Sorot request `app.js?v=20261101_H21` dengan status HTTP 200 OK dan Response Headers `Cache-Control: no-cache, no-store, must-revalidate`. |
-| **SS-H22-05** | **Uji Tembak Notifikasi Telegram 1-Pintu & Preskriptif Gemini AI** | Buka aplikasi Telegram pada bot `@taims_alert_arik_bot`. Tangkap layar pesan notifikasi insiden yang membuktikan: pesan masuk tunggal (anti-spam lolos) dan di bagian bawah memuat rekomendasi preskriptif dinamis dari Google Gemini 3.5 Flash Lite. |
-| **SS-H22-06** | **Healthcheck & Status Service PM2 di VPS CloudPanel** | Buka terminal SSH VPS CloudPanel (`45.198.155.203`): jalankan `pm2 status` yang memperlihatkan `taims-backend` dan `taims-n8n` berstatus `online`, serta hasil curl `https://t-aims.teknolab.biz.id/api/health` mengembalikan `status: healthy`. |
+File / Commit / Evidence:
+- File Backend : taims-backend/src/services/email-service.js, taims-backend/src/routes/notifications.js, taims-backend/src/services/offline-checker.js, taims-backend/src/app.js
+- File Frontend: frontend/assets/js/app.js, frontend/index.html
+- Git Commit   : edabce5, 071c675, bfc9ed4, a9eb990 (Branch: main)
+- Bukti SS     :
+  * SS-H22-01: Kode Modul SMTP Email Service (email-service.js) & Template Kartu HTML
+  * SS-H22-02: Integrasi sendIncidentAlertEmail di notifications.js
+  * SS-H22-03: UI RBAC Role User (Tombol Edit/Hapus & Tambah Aset tersembunyi total) vs Role Admin
+  * SS-H22-04: Network DevTools Inspect Element (app.js?v=20261101_H21 status 200 OK & Header No-Cache)
+  * SS-H22-05: Notifikasi Telegram Bot 1-Pintu & Rekomendasi Preskriptif Dinamis Gemini 3.5 Flash Lite
+  * SS-H22-06: Terminal SSH VPS CloudPanel (Status PM2 taims-backend & taims-n8n Online, Healthcheck API Healthy)
