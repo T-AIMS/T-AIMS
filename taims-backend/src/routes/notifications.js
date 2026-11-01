@@ -356,29 +356,9 @@ async function dispatchTelegramAlert(text, type = 'info', metadata = {}) {
         // n8n standby / off
     }
 
-    // 2. Direct Telegram Bot API jika token diset di .env
-    const botToken = process.env.TELEGRAM_BOT_TOKEN;
-    const chatId = process.env.TELEGRAM_CHAT_ID;
-    if (botToken && chatId) {
-        try {
-            const controller = new AbortController();
-            const timeout = setTimeout(() => controller.abort(), 6000);
-            const tgRes = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    chat_id: chatId,
-                    text: text,
-                    parse_mode: 'HTML'
-                }),
-                signal: controller.signal
-            });
-            clearTimeout(timeout);
-            if (tgRes.ok) results.telegram_direct = true;
-        } catch (e) {
-            // direct telegram timeout
-        }
-    }
+    // 2. Direct Telegram Bot API (DINONAKTIFKAN SESUAI INSTRUKSI WAFIAN & ARIK)
+    // Seluruh pengiriman notifikasi sekarang 1 PINTU murni lewat n8n AI Engine Runner (Port 5678)
+    // untuk mencegah spam pesan dobel (duplicate alerts) di grup Telegram.
 
     // 3. Dispatch Email Alert (SMTP Integration - Dokumen PKL Hal. 11 & Checklist 5.5)
     sendIncidentAlertEmail({

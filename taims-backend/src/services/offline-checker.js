@@ -300,15 +300,22 @@ async function checkRecoveredDevices() {
 // Start checker
 // ============================================================
 function startOfflineChecker() {
-    console.log(`⏰ Offline checker started (interval: 30s, threshold: ${OFFLINE_THRESHOLD_SECONDS}s, anti-spam: 10m)`);
+    console.log(`⏰ Offline checker started (interval: 30s, threshold: ${OFFLINE_THRESHOLD_SECONDS}s, anti-spam: 10m, startup grace: 60s)`);
 
-    checkOfflineDevices();
-    checkRecoveredDevices();
-
-    setInterval(async () => {
+    // STARTUP GRACE PERIOD (Usulan Wafian & Arik - Anti Restart Flapping):
+    // Berikan jeda 60 detik saat backend baru startup sebelum pengecekan pertama dilakukan.
+    // Hal ini memberi waktu bagi ICMP ping engine & MQTT broker untuk mengirim paket pertama,
+    // sehingga tidak terjadi False Alert / lonjakan notifikasi palsu saat server me-restart!
+    setTimeout(async () => {
+        console.log(`🚀 [Grace Period Selesai] Memulai siklus aktif monitoring offline & recovery...`);
         await checkOfflineDevices();
         await checkRecoveredDevices();
-    }, CHECK_INTERVAL_MS);
+
+        setInterval(async () => {
+            await checkOfflineDevices();
+            await checkRecoveredDevices();
+        }, CHECK_INTERVAL_MS);
+    }, 60000);
 }
 
 module.exports = { startOfflineChecker, checkOfflineDevices, checkRecoveredDevices, triggerTelegramAlert };
