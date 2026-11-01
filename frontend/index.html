@@ -71,7 +71,7 @@
  }
  </script>
  <link rel="stylesheet" href="assets/css/floorplan3d.css">
- <link rel="stylesheet" href="assets/css/style.css?v=20261030_0430">
+ <link rel="stylesheet" href="assets/css/style.css?v=20261101_H21">
 
 </head>
 
@@ -2491,7 +2491,7 @@
                 <i class="fa-solid fa-cube text-white"></i> 3D Digital Twin
             </button>
         </div>
-        <button type="button" class="btn-bp-choice btn-bp-pin-manager" id="btn-bp-edit-pins" onclick="toggleFloorplanEditMode()" style="background: linear-gradient(180deg, rgba(245, 158, 11, 0.22) 0%, rgba(180, 83, 9, 0.35) 100%); border: 1px solid rgba(245, 158, 11, 0.6); color: #FDE68A; font-weight: 600; box-shadow: 0 2px 6px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.12);">
+        <button type="button" class="btn-bp-choice btn-bp-pin-manager admin-only" id="btn-bp-edit-pins" onclick="toggleFloorplanEditMode()" style="background: linear-gradient(180deg, rgba(245, 158, 11, 0.22) 0%, rgba(180, 83, 9, 0.35) 100%); border: 1px solid rgba(245, 158, 11, 0.6); color: #FDE68A; font-weight: 600; box-shadow: 0 2px 6px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.12);">
             <i class="fa-solid fa-location-crosshairs"></i> Mode Kelola Titik
         </button>
     </div>
@@ -3380,7 +3380,7 @@
                                 <i class="fa-solid fa-screwdriver-wrench text-yellow"></i>
                                 <h4>Buku Catatan Pemeliharaan Perangkat</h4>
                             </div>
-                            <button class="btn btn-primary-cyber btn-sm btn-rounded-custom" onclick="openAddMaintenanceModal()">
+                            <button class="btn btn-primary-cyber btn-sm btn-rounded-custom admin-only" onclick="openAddMaintenanceModal()">
                                 <i class="fa-solid fa-plus"></i> Jadwalkan Servis Baru
                             </button>
                         </div>
@@ -5816,11 +5816,11 @@ if (typeof QRCode === 'undefined') {
     document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"><\/script>');
 }
 </script>
-<script src="assets/js/apiService.js?v=20261030_2045"></script>
+<script src="assets/js/apiService.js?v=20261101_H21"></script>
 
- <script src="assets/js/app.js?v=20261030_2045"></script>
+ <script src="assets/js/app.js?v=20261101_H21"></script>
 
- <script src="assets/js/floorplan3d.js?v=20261028_1855"></script>
+ <script src="assets/js/floorplan3d.js?v=20261101_H21"></script>
 
 
  <!-- Modal Pemulihan Kata Sandi (2-Step Verification: OTP & Reset Password) -->

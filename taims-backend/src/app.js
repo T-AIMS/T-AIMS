@@ -74,7 +74,7 @@ const loginLimiter = rateLimit({
     message: { success: false, error: 'Terlalu banyak percobaan login gagal. Coba lagi nanti.' }
 });
 
-// Enterprise Security Headers Middleware (WCAG & OWASP Top 10 Hardening)
+// Enterprise Security Headers Middleware (WCAG & OWASP Top 10 Hardening & Zero-Stale-Cache)
 app.use((req, res, next) => {
     res.setHeader('X-Content-Type-Options', 'nosniff');
     res.setHeader('X-Frame-Options', 'SAMEORIGIN');
@@ -82,6 +82,9 @@ app.use((req, res, next) => {
     res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
     res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
     res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
     next();
 });
 

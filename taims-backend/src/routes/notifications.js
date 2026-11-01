@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../config/db');
 const { authenticate, can } = require('../middleware/auth');
+const { sendIncidentAlertEmail } = require('../services/email-service');
 
 // ============================================================
 // GET /api/notifications
@@ -375,6 +376,18 @@ async function dispatchTelegramAlert(text, type = 'info', metadata = {}) {
             // direct telegram timeout
         }
     }
+
+    // 3. Dispatch Email Alert (SMTP Integration - Dokumen PKL Hal. 11 & Checklist 5.5)
+    sendIncidentAlertEmail({
+        asset_code: metadata.asset_code || 'RPI-01',
+        asset_name: metadata.asset_name || 'Raspberry Pi Head Office',
+        category: metadata.category || 'Infrastruktur',
+        location: metadata.location || 'Head Office',
+        ip_address: metadata.ip_address || '192.168.1.45',
+        severity: metadata.severity || (type === 'warning' ? 'warning' : (type === 'recovery' ? 'info' : 'critical')),
+        message: text,
+        type: type
+    }).catch(err => console.warn('[SMTP] Email dispatch error:', err.message));
 
     return results;
 }

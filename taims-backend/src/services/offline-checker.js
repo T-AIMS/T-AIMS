@@ -71,7 +71,7 @@ async function triggerTelegramAlert(type, device) {
 <b>IP Address:</b> ${ipAddr}
 <b>Lokasi    :</b> ${locationName}
 <b>Waktu Mati :</b> ${nowStr}
-<b>Status    :</b> <b>CRITICAL</b> (Tidak merespons heartbeat > ${OFFLINE_THRESHOLD_SECONDS} dtk)
+<b>Status    :</b> <b>CRITICAL</b> (Tidak merespons heartbeat > ${OFFLINE_THRESHOLD_SECONDS} dtk)${device.is_cascade ? '\n<b>⚠️ ROOT CAUSE:</b> Dampak turunan (Cascade Downstream) dari Switch Utama.' : ''}
 ====================================
 <b>Bot Engine:</b> @taims_alert_arik_bot • n8n Early Warning Engine`;
     }
@@ -187,6 +187,18 @@ async function checkOfflineDevices() {
 
             console.log(`📤 Alert published: taims/alert/offline/${device.asset_code}`);
             
+            // Logika Korelasi Topologi Ringan (Root Cause Analysis - RCA):
+            // Deteksi apakah Switch / Router induk juga sedang bermasalah di sesi ini
+            const isParentSwitchDown = staleDevices.some(d => 
+                (d.category === 'Switch' || d.category === 'Router' || d.asset_code === 'SWM-01' || d.asset_code === 'MKRT-02') && 
+                d.asset_code !== device.asset_code
+            );
+            if (isParentSwitchDown && device.category !== 'Switch' && device.category !== 'Router') {
+                device.is_cascade = true;
+                device.parent_device = 'SWM-01 (Switch Backbone)';
+                console.log(`[RCA Topologi] Perangkat ${device.asset_code} terindikasi sebagai cascade downstream dari Switch Utama.`);
+            }
+
             // Pemicu otomatis ke pipeline n8n & Telegram Bot Arik
             await triggerTelegramAlert('offline', device);
         }

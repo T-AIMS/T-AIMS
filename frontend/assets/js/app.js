@@ -2228,6 +2228,48 @@ window.isSuperAdmin = isSuperAdmin;
 window.isAdminUser = isAdminUser;
 window.enforceSuperadminOnlyElements = enforceSuperadminOnlyElements;
 
+function enforceRbacUI() {
+    const isAdmin = typeof isAdminUser === 'function' ? isAdminUser() : false;
+    const isSuper = typeof isSuperAdmin === 'function' ? isSuperAdmin() : false;
+
+    // Sembunyikan total seluruh tombol Tambah/Edit/Hapus bertanda .admin-only jika mode User (Read-Only)
+    document.querySelectorAll('.admin-only').forEach(el => {
+        if (isAdmin) {
+            el.classList.remove('hidden');
+            el.style.display = '';
+        } else {
+            el.classList.add('hidden');
+            el.style.display = 'none';
+        }
+    });
+
+    // Sembunyikan elemen .superadmin-only jika bukan Superadmin
+    document.querySelectorAll('.superadmin-only').forEach(el => {
+        if (isSuper) {
+            el.classList.remove('hidden');
+            el.style.display = el.classList.contains('superadmin-actions-row') ? 'flex' : '';
+        } else {
+            el.classList.add('hidden');
+            el.style.display = 'none';
+        }
+    });
+
+    // Sembunyikan tombol header/action secara eksplisit
+    const btnAddDev = document.querySelector('button[onclick="openAddDeviceModal()"]');
+    if (btnAddDev) btnAddDev.style.display = isAdmin ? '' : 'none';
+
+    const btnAddUser = document.querySelector('button[onclick="openAddUserModal()"]');
+    if (btnAddUser) btnAddUser.style.display = isAdmin ? '' : 'none';
+
+    const btnAddMnt = document.querySelector('button[onclick="openAddMaintenanceModal()"]');
+    if (btnAddMnt) btnAddMnt.style.display = isAdmin ? '' : 'none';
+
+    const btnEditPins = document.getElementById('btn-bp-edit-pins');
+    if (btnEditPins) btnEditPins.style.display = isAdmin ? '' : 'none';
+}
+window.enforceRbacUI = enforceRbacUI;
+
+
 // =============================================================================
 // AUTENTIKASI: LOGIN ADMIN VS TAMU & BRUTE-FORCE PROGRESSIVE LOCKOUT
 // =============================================================================
@@ -2853,7 +2895,9 @@ function renderHomeDevicesTable() {
             <td>${badge}</td>
             <td style="white-space: nowrap;" title="${safeLastSeen}"><span class="text-muted text-sm">${safeLastSeen}</span></td>
             <td class="text-right">
-                <i class="fa-solid fa-ellipsis text-muted" onclick="event.stopPropagation(); openQuickStatusModal('${dev.id}')" title="Ubah status"></i>
+                ${(typeof isAdminUser === 'function' && isAdminUser()) 
+                    ? `<i class="fa-solid fa-ellipsis text-muted admin-only" onclick="event.stopPropagation(); openQuickStatusModal('${dev.id}')" title="Ubah status"></i>` 
+                    : `<i class="fa-solid fa-eye text-muted" onclick="event.stopPropagation(); openDeviceDetailModal('${dev.id}')" title="Lihat detail"></i>`}
             </td>
         `;
         tbody.appendChild(tr);
@@ -2937,6 +2981,7 @@ function openDeviceDetailModal(deviceId) {
     }
 
     document.getElementById('device-detail-modal').classList.remove('hidden');
+    if (typeof enforceRbacUI === 'function') enforceRbacUI();
 }
 
 async function updateDeviceDetailHistory(dev) {
@@ -3006,7 +3051,7 @@ function openQuickStatusFromDetail() {
 // MODAL GANTI STATUS ELEKTRO CEPAT (ON / OFF / WARNING)
 // =============================================================================
 function openQuickStatusModal(deviceId) {
-    if (APP_STATE.currentUser && APP_STATE.currentUser.role === 'guest') {
+    if (typeof isAdminUser === 'function' && !isAdminUser()) {
         showToast('Akses Terkunci (Mode User)', 'Harap login sebagai Administrator untuk mengubah status alat elektro.', 'error');
         return;
     }
@@ -3623,7 +3668,7 @@ function resetCategoriesAndSubcategoriesToDefault() {
 window.resetCategoriesAndSubcategoriesToDefault = resetCategoriesAndSubcategoriesToDefault;
 
 function openEditDeviceModal(deviceId) {
-    if (APP_STATE.currentUser && APP_STATE.currentUser.role === 'guest') {
+    if (typeof isAdminUser === 'function' && !isAdminUser()) {
         showToast('Akses Dibatasi', 'Mode Tamu tidak dapat mengubah data aset. Silakan login sebagai Admin.', 'error');
         return;
     }
@@ -4102,7 +4147,7 @@ window.openEditDeviceModal = openEditDeviceModal;
 window.closeDeviceModal = closeDeviceModal;
 
 function openQuickStatusModal(deviceId) {
-    if (APP_STATE.currentUser && APP_STATE.currentUser.role === 'guest') {
+    if (typeof isAdminUser === 'function' && !isAdminUser()) {
         showToast('Akses Terkunci (Mode User)', 'Harap login sebagai Administrator untuk mengubah status alat elektro.', 'error');
         return;
     }
@@ -6648,7 +6693,9 @@ function renderDevicesGridCards(devices) {
         else statusBadge = `<span class="status-pill offline"><span class="dot red"></span> Offline</span>`;
 
         const catIcon = getDeviceCategoryIcon(dev.category);
-        const deleteBtnHtml = isSuperadmin ? `<button class="btn-sm btn-outline-cyber py-1 px-2 text-red admin-only" onclick="event.stopPropagation(); handleDeleteDevice('${dev.id}')" title="Hapus Aset"><i class="fa-solid fa-trash-can"></i></button>` : '';
+        const isAdmin = typeof isAdminUser === 'function' ? isAdminUser() : false;
+        const deleteBtnHtml = (isSuperadmin && isAdmin) ? `<button class="btn-sm btn-outline-cyber py-1 px-2 text-red admin-only" onclick="event.stopPropagation(); handleDeleteDevice('${dev.id}')" title="Hapus Aset"><i class="fa-solid fa-trash-can"></i></button>` : '';
+        const editBtnHtml = isAdmin ? `<button class="btn-sm btn-outline-cyber py-1 px-2 admin-only" onclick="openEditDeviceModal('${dev.id}')" title="Edit Data Aset"><i class="fa-solid fa-pen-to-square"></i></button>` : '';
 
         const safeName = escapeHtml(dev.name);
         const safeCode = escapeHtml(dev.code || 'AST-' + dev.id);
@@ -6666,7 +6713,7 @@ function renderDevicesGridCards(devices) {
                     </div>
                     <div class="dcc-actions" onclick="event.stopPropagation()">
                         <button class="btn-sm btn-outline-cyber py-1 px-2" onclick="openDeviceDetailModal('${dev.id}')" title="Detail Perangkat"><i class="fa-solid fa-eye"></i></button>
-                        <button class="btn-sm btn-outline-cyber py-1 px-2 admin-only" onclick="openEditDeviceModal('${dev.id}')" title="Edit Data Aset"><i class="fa-solid fa-pen-to-square"></i></button>
+                        ${editBtnHtml}
                         ${deleteBtnHtml}
                     </div>
                 </div>
@@ -6881,8 +6928,10 @@ function renderFullDevicesTable() {
         else if (dev.status === 'unknown') badge = `<span class="status-pill unknown"><span class="dot gray"></span> Unknown</span>`;
         else badge = `<span class="status-pill offline"><span class="dot red"></span> Offline</span>`;
 
+        const isAdmin = typeof isAdminUser === 'function' ? isAdminUser() : false;
         const isSuperadmin = APP_STATE.currentUser && (APP_STATE.currentUser.role === 'superadmin' || APP_STATE.currentUser.role === 'super_admin');
-        const deleteBtnHtml = isSuperadmin ? `<button class="btn-sm btn-outline-cyber py-1 px-2 text-red admin-only" onclick="handleDeleteDevice('${dev.id}')" title="Hapus Aset (Khusus Superadmin)"><i class="fa-solid fa-trash-can"></i></button>` : '';
+        const deleteBtnHtml = (isSuperadmin && isAdmin) ? `<button class="btn-sm btn-outline-cyber py-1 px-2 text-red admin-only" onclick="handleDeleteDevice('${dev.id}')" title="Hapus Aset (Khusus Superadmin)"><i class="fa-solid fa-trash-can"></i></button>` : '';
+        const editBtnHtml = isAdmin ? `<button class="btn-sm btn-outline-cyber py-1 px-2 admin-only" onclick="openEditDeviceModal('${dev.id}')" title="Edit Data Aset"><i class="fa-solid fa-pen-to-square"></i></button>` : '';
 
         const safeCode = escapeHtml(dev.code || 'AST-' + dev.id);
         const safeName = escapeHtml(dev.name);
@@ -6918,13 +6967,14 @@ function renderFullDevicesTable() {
             <td class="text-center">
                 <div class="d-flex gap-1 justify-center">
                     <button class="btn-sm btn-outline-cyber py-1 px-2" onclick="openDeviceDetailModal('${dev.id}')" title="Detail Perangkat"><i class="fa-solid fa-eye"></i></button>
-                    <button class="btn-sm btn-outline-cyber py-1 px-2 admin-only" onclick="openEditDeviceModal('${dev.id}')" title="Edit Data Aset"><i class="fa-solid fa-pen-to-square"></i></button>
+                    ${editBtnHtml}
                     ${deleteBtnHtml}
                 </div>
             </td>
         `;
         tbody.appendChild(tr);
     });
+    if (typeof enforceRbacUI === "function") enforceRbacUI();
 }
 
 function resetDeviceFilters() {
