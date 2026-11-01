@@ -1,6 +1,6 @@
 **LAPORAN PERANCANGAN BLOCK DIAGRAM SISTEM\**
 \
-**Sistem Pemantauan Aset dan Infrastruktur (T-AIMS)\
+**Sistem Pemantauan Aset Dan Infrastruktur (T-AIMS)\
 Disusun Oleh: Damar Munajad** (Project Coordinator & System Analyst )\
 \
 BAB 1: DOKUMENTASI BLOCK DIAGRAM SISTEM T-AIMS
