@@ -437,7 +437,7 @@ router.post('/forgot-password', async (req, res) => {
         if (transporter) {
             try {
                 const mailOptions = {
-                    from: process.env.EMAIL_FROM || '"T-AIMS Security" <noreply@t-aims.teknolab.biz.id>',
+                    from: process.env.EMAIL_FROM || `"T-AIMS Security" <${process.env.SMTP_USER || 'noreply@t-aims.teknolab.biz.id'}>`,
                     to: user.email,
                     subject: '[T-AIMS Security] Kode Verifikasi Reset Kata Sandi Anda',
                     html: `
