@@ -361,12 +361,16 @@ async function dispatchTelegramAlert(text, type = 'info', metadata = {}) {
     // untuk mencegah spam pesan dobel (duplicate alerts) di grup Telegram.
 
     // 3. Dispatch Email Alert (SMTP Integration - Dokumen PKL Hal. 11 & Checklist 5.5)
+    // Otomatis terkirim ke multi-recipient (rekan tim di .env + PIC aset + custom email)
     sendIncidentAlertEmail({
         asset_code: metadata.asset_code || 'RPI-01',
         asset_name: metadata.asset_name || 'Raspberry Pi Head Office',
         category: metadata.category || 'Infrastruktur',
         location: metadata.location || 'Head Office',
         ip_address: metadata.ip_address || '192.168.1.45',
+        pic_name: metadata.pic_name || null,
+        pic_email: metadata.pic_email || null,
+        recipient_email: metadata.recipient_email || null,
         severity: metadata.severity || (type === 'warning' ? 'warning' : (type === 'recovery' ? 'info' : 'critical')),
         message: text,
         type: type
@@ -478,7 +482,8 @@ router.post('/telegram/test-alert', authenticate, async (req, res) => {
             const [rows] = await db.query(`
                 SELECT a.asset_code, a.asset_name, a.category, a.ip_address, a.current_status,
                        COALESCE(l.location_name, 'Head Office') AS location_name,
-                       COALESCE(u.full_name, 'Ananda Dwi Susanti') AS pic_name
+                       COALESCE(u.full_name, 'Ananda Dwi Susanti') AS pic_name,
+                       u.email AS pic_email
                 FROM assets a
                 LEFT JOIN locations l ON a.location_id = l.location_id
                 LEFT JOIN users u ON a.pic_user_id = u.user_id
@@ -550,6 +555,9 @@ router.post('/telegram/test-alert', authenticate, async (req, res) => {
             category: dev.category,
             ip_address: dev.ip_address,
             location: dev.location_name,
+            pic_name: dev.pic_name,
+            pic_email: dev.pic_email || null,
+            recipient_email: req.body.recipient_email || req.body.target_email || null,
             severity: effectiveSeverity,
             test: true,
             trigger_source: 'Manual Chaos Test Drill'

@@ -26,9 +26,30 @@ function createTransporter() {
 
 /**
  * Kirim Email Notifikasi Insiden / Warning / Recovery Resmi T-AIMS
+ * Mendukung Multi-Recipient (Banyak Email Rekan Tim & PIC Sekaligus)
  */
-async function sendIncidentAlertEmail({ asset_code, asset_name, category, location, ip_address, severity, message, type }) {
-    const alertTarget = process.env.ALERT_EMAIL || 'noc-alerts@teknolab.id';
+async function sendIncidentAlertEmail({ asset_code, asset_name, category, location, ip_address, severity, message, type, recipient_email, pic_email, pic_name }) {
+    // 1. Ekstraksi seluruh target penerima (Multi-Email dipisah koma/titik koma dari .env)
+    const envRaw = process.env.ALERT_EMAIL || 'noc-alerts@teknolab.id';
+    const envTargets = envRaw.split(/[,;]+/).map(e => e.trim()).filter(e => e && e.includes('@'));
+
+    const recipientsSet = new Set(envTargets);
+
+    // Tambahkan custom recipient jika ada yang di-input manual saat testing / dashboard
+    if (recipient_email) {
+        recipient_email.split(/[,;]+/).map(e => e.trim()).filter(e => e && e.includes('@')).forEach(e => recipientsSet.add(e));
+    }
+
+    // Tambahkan email PIC perangkat dari basis data MySQL (agar penanggung jawab langsung tahu)
+    if (pic_email && pic_email.includes('@')) {
+        recipientsSet.add(pic_email.trim());
+    }
+
+    if (recipientsSet.size === 0) {
+        recipientsSet.add('noc-alerts@teknolab.id');
+    }
+
+    const alertTarget = Array.from(recipientsSet).join(', ');
     const sender = process.env.EMAIL_FROM || `T-AIMS Alert System <${process.env.SMTP_USER || 'no-reply@teknolab.id'}>`;
 
     const transporter = createTransporter();
@@ -75,14 +96,16 @@ async function sendIncidentAlertEmail({ asset_code, asset_name, category, locati
                 <tr><td style="padding: 6px 0; font-weight: bold; color: #94A3B8;">Kategori:</td><td>${category}</td></tr>
                 <tr><td style="padding: 6px 0; font-weight: bold; color: #94A3B8;">IP Address:</td><td style="font-family: monospace;">${ip_address}</td></tr>
                 <tr><td style="padding: 6px 0; font-weight: bold; color: #94A3B8;">Lokasi:</td><td>${location}</td></tr>
+                ${pic_name ? `<tr><td style="padding: 6px 0; font-weight: bold; color: #94A3B8;">PIC Terkait:</td><td>${pic_name} ${pic_email ? '(' + pic_email + ')' : ''}</td></tr>` : ''}
                 <tr><td style="padding: 6px 0; font-weight: bold; color: #94A3B8;">Waktu Kejadian:</td><td>${nowStr}</td></tr>
+                <tr><td style="padding: 6px 0; font-weight: bold; color: #94A3B8;">Tembusan Alert:</td><td style="font-size: 11px; color: #38BDF8;">${alertTarget}</td></tr>
             </table>
             <div style="background: #1E293B; border-left: 4px solid #38BDF8; padding: 12px 14px; border-radius: 4px; font-size: 12.5px; line-height: 1.5; color: #E2E8F0; margin-bottom: 20px;">
                 <strong>Ringkasan Insiden:</strong><br>
                 ${(message || '').replace(/<[^>]*>/g, '')}
             </div>
             <div style="text-align: center; margin-top: 25px; padding-top: 15px; border-top: 1px solid #334155; font-size: 11px; color: #64748B;">
-                Email otomatis dari T-AIMS Alert Engine (Arik & Dzakwan) • Jangan membalas email ini.<br>
+                Email otomatis dari T-AIMS Alert Engine (Arik & Dzakwan) • Multi-Channel NOC Notification.<br>
                 Akses Dashboard: <a href="https://t-aims.teknolab.biz.id" style="color: #38BDF8; text-decoration: none;">https://t-aims.teknolab.biz.id</a>
             </div>
         </div>
@@ -96,11 +119,11 @@ async function sendIncidentAlertEmail({ asset_code, asset_name, category, locati
             subject: subject,
             html: htmlContent
         });
-        console.log(`[SMTP Alert] Email terkirim ke ${alertTarget} (MessageId: ${info.messageId})`);
+        console.log(`[SMTP Alert] Email terkirim ke [${alertTarget}] (MessageId: ${info.messageId})`);
         return { success: true, messageId: info.messageId, target: alertTarget };
     } catch (err) {
-        console.warn('[SMTP Alert] Gagal kirim email via SMTP:', err.message);
-        return { success: false, error: err.message };
+        console.warn(`[SMTP Alert] Gagal kirim email via SMTP ke [${alertTarget}]:`, err.message);
+        return { success: false, error: err.message, target: alertTarget };
     }
 }
 

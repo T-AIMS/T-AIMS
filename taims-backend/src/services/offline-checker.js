@@ -84,6 +84,8 @@ async function triggerTelegramAlert(type, device) {
                 category: device.category,
                 ip_address: ipAddr,
                 location: locationName,
+                pic_name: device.pic_name || null,
+                pic_email: device.pic_email || null,
                 severity: type === 'warning' ? 'warning' : (type === 'recovery' ? 'info' : 'critical'),
                 trigger_source: 'Autonomous Background Daemon'
             });
@@ -107,9 +109,11 @@ async function checkOfflineDevices() {
                 a.asset_id, a.asset_code, a.asset_name, a.category,
                 a.last_seen, a.current_status, a.priority, a.pic_user_id,
                 a.ip_address, COALESCE(l.location_name, 'Head Office') AS location_name,
-                a.check_interval_seconds
+                a.check_interval_seconds,
+                u.email AS pic_email, u.full_name AS pic_name
             FROM assets a
             LEFT JOIN locations l ON a.location_id = l.location_id
+            LEFT JOIN users u ON a.pic_user_id = u.user_id
             WHERE a.current_status IN ('online', 'warning')
               AND a.current_status NOT IN ('unknown', 'maintenance')
               AND a.last_seen IS NOT NULL
