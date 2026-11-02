@@ -427,10 +427,7 @@ router.post('/forgot-password', async (req, res) => {
 
         console.log(`[AUTH-FORGOT] Permintaan reset kata sandi: ${user.full_name} (${user.email}) | OTP: ${otpCode} | Berlaku 15 Menit`);
 
-        // 1. Kirim notifikasi rahasia via Telegram Bot
-        const telegramSent = await sendTelegramOtp(user.full_name, user.email, otpCode, 15);
-
-        // 2. Kirim email resmi via nodemailer jika SMTP dikonfigurasi
+        // Privasi Akun: Kode OTP HANYA dikirim ke email pribadi pengguna (TIDAK disiarkan ke grup Telegram tim)
         let emailSent = false;
         const transporter = getMailTransporter();
 
@@ -479,7 +476,7 @@ router.post('/forgot-password', async (req, res) => {
             message: 'Kode verifikasi keamanan 6-digit telah dibuat dan dikirimkan secara rahasia ke kontak & surel resmi akun Anda. Silakan periksa pesan masuk Anda.',
             email: user.email,
             email_sent: emailSent,
-            telegram_sent: telegramSent,
+            telegram_sent: false,
             expires_in_minutes: 15
         });
     } catch (err) {

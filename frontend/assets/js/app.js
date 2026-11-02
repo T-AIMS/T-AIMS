@@ -10988,7 +10988,7 @@ async function submitForgotPasswordReset(event) {
                         Kode verifikasi keamanan 6-digit telah dibuat dan dikirimkan secara rahasia ke alamat surel / kontak resmi Anda: <strong style="color: #00F0FF;">${masked}</strong>.
                         <br><br>
                         <span style="color: #F59E0B;"><i class="fa-solid fa-shield-halved"></i> <strong>Standar Keamanan Tertutup:</strong></span> 
-                        Demi mencegah pembajakan akun oleh pihak luar, kode verifikasi <strong>TIDAK ditampilkan di layar publik</strong>. Silakan periksa pesan masuk surel atau notifikasi Telegram resmi Anda.
+                        Demi mencegah pembajakan akun oleh pihak luar, kode verifikasi <strong>TIDAK ditampilkan di layar publik</strong>. Silakan periksa kotak masuk (inbox/spam) surel resmi akun Google Anda.
                         <br><br>
                         <div style="text-align: center; margin-top: 10px;">
                             <button type="button" class="btn btn-primary-cyber btn-sm" onclick="goToStep2ResetPassword('${targetEmail}')" style="font-size: 0.78rem; padding: 7px 18px; cursor: pointer;">
