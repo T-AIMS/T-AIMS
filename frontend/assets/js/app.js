@@ -10905,6 +10905,15 @@ function backToStep1ForgotPassword() {
     if (resBox) resBox.classList.add('hidden');
     const res2 = document.getElementById('step2-result-box');
     if (res2) res2.classList.add('hidden');
+
+    // Kembalikan tombol kirim kode ke kondisi semula
+    const btn = document.getElementById('btn-request-otp');
+    if (btn) {
+        btn.classList.remove('hidden');
+        btn.style.display = '';
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Kirim Kode Verifikasi';
+    }
 }
 window.backToStep1ForgotPassword = backToStep1ForgotPassword;
 
@@ -10941,6 +10950,7 @@ async function submitForgotPasswordReset(event) {
     const btn = document.getElementById('btn-request-otp');
     const resetMsg = document.getElementById('forgot-pwd-result');
     const resultBox = document.getElementById('forgot-pwd-result-box');
+    let requestSucceeded = false;
 
     if (btn) {
         btn.disabled = true;
@@ -10954,7 +10964,12 @@ async function submitForgotPasswordReset(event) {
         }
 
         if (res && res.success) {
+            requestSucceeded = true;
             const targetEmail = res.email || inputVal;
+            if (btn) {
+                btn.classList.add('hidden');
+                btn.style.display = 'none';
+            }
             let masked = targetEmail;
             const parts = targetEmail.split('@');
             if (parts.length === 2) {
@@ -11008,7 +11023,12 @@ async function submitForgotPasswordReset(event) {
     } finally {
         if (btn) {
             btn.disabled = false;
-            btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Kirim Kode Verifikasi';
+            if (requestSucceeded) {
+                btn.classList.add('hidden');
+                btn.style.display = 'none';
+            } else {
+                btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Kirim Kode Verifikasi';
+            }
         }
     }
 }
