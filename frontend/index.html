@@ -3158,13 +3158,13 @@
                         </div>
                         <div class="card-body">
                             <div class="notif-gateways-row">
-                                <div class="gateway-chip" id="gc-n8n">
+                                <div class="gateway-chip active" id="gc-n8n">
                                     <div class="gc-icon text-coral" style="background: rgba(255, 109, 90, 0.18); border: 1.5px solid #FF6D5A; color: #FF6D5A; border-radius: 8px; box-shadow: 0 0 10px rgba(255, 109, 90, 0.35);"><i class="fa-solid fa-robot"></i></div>
                                     <div class="gc-info">
                                         <strong>n8n Automation Webhook</strong>
-                                        <span>Workflow ID: <code>wf_taims_alert_01</code> &bull; <span class="text-yellow" id="gc-n8n-status">Standby</span></span>
+                                        <span>Workflow ID: <code>wf_taims_alert_01</code> &bull; <span class="text-green" id="gc-n8n-status">Active</span></span>
                                     </div>
-                                    <span class="status-pill warning" id="gc-n8n-pill"><span class="dot yellow"></span> Standby</span>
+                                    <span class="status-pill online" id="gc-n8n-pill"><span class="dot green"></span> Active</span>
                                 </div>
 
                                 <div class="gateway-chip active" id="gc-smtp">
@@ -3176,13 +3176,13 @@
                                     <span class="status-pill online" id="gc-smtp-pill"><span class="dot green"></span> Active</span>
                                 </div>
 
-                                <div class="gateway-chip" id="gc-telegram">
+                                <div class="gateway-chip active" id="gc-telegram">
                                     <div class="gc-icon text-telegram" style="background: rgba(34, 158, 217, 0.22); border: 1.5px solid #229ED9; color: #229ED9; border-radius: 8px; box-shadow: 0 0 14px rgba(34, 158, 217, 0.45);"><i class="fa-brands fa-telegram"></i></div>
                                     <div class="gc-info">
                                         <strong>Telegram Alert Gateway</strong>
-                                        <span>@TeknolabAimsBot &bull; Status: <span class="text-yellow" id="gc-telegram-status">Standby</span></span>
+                                        <span>@taims_alert_arik_bot &bull; Status: <span class="text-green" id="gc-telegram-status">Connected</span></span>
                                     </div>
-                                    <span class="status-pill warning" id="gc-telegram-pill"><span class="dot yellow"></span> Standby</span>
+                                    <span class="status-pill online" id="gc-telegram-pill"><span class="dot green"></span> Active</span>
                                 </div>
                             </div>
                         </div>
@@ -5818,7 +5818,7 @@ if (typeof QRCode === 'undefined') {
 </script>
 <script src="assets/js/apiService.js?v=20261102_01"></script>
 
- <script src="assets/js/app.js?v=20261102_EMAIL_ONLY"></script>
+ <script src="assets/js/app.js?v=20261102_3ACTIVE"></script>
 
  <script src="assets/js/floorplan3d.js?v=20261102_01"></script>
 

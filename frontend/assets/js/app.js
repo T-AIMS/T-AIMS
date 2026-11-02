@@ -11725,7 +11725,7 @@ window.updateMonitoringLinksAndProtocols = updateMonitoringLinksAndProtocols;
 // =============================================================================
 async function refreshAlertGatewaysStatus() {
     try {
-        const token = localStorage.getItem('token') || localStorage.getItem('taims_token');
+        const token = localStorage.getItem('taims_jwt_token') || localStorage.getItem('token') || localStorage.getItem('taims_token');
         const baseUrl = (window.apiService && window.apiService.BASE_URL) || 'http://localhost:3000/api';
         const res = await fetch(baseUrl + '/notifications/telegram/status', {
             headers: token ? { 'Authorization': 'Bearer ' + token } : {}
@@ -11753,10 +11753,12 @@ async function refreshAlertGatewaysStatus() {
         // 2. n8n Gateway
         const n8nChip = document.getElementById('gc-n8n');
         const n8nPill = document.getElementById('gc-n8n-pill');
-        const isN8nActive = !!(data.n8n && data.n8n.connected);
+        const n8nStatus = document.getElementById('gc-n8n-status');
+        const isN8nActive = !!(data.n8n && (data.n8n.connected || data.n8n.status_text === 'Connected'));
         if (isN8nActive) {
             if (n8nChip) n8nChip.classList.add('active');
             if (n8nPill) { n8nPill.className = 'status-pill online'; n8nPill.innerHTML = '<span class="dot green"></span> Active'; }
+            if (n8nStatus) { n8nStatus.textContent = 'Active'; n8nStatus.className = 'text-green'; }
         } else {
             if (n8nChip) n8nChip.classList.remove('active');
             if (n8nPill) { n8nPill.className = 'status-pill warning'; n8nPill.innerHTML = '<span class="dot yellow"></span> Standby'; }

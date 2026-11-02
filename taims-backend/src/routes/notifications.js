@@ -383,7 +383,7 @@ async function dispatchTelegramAlert(text, type = 'info', metadata = {}) {
 // GET /api/notifications/telegram/status
 // Cek status kesiapan integrasi Telegram & n8n
 // ============================================================
-router.get('/telegram/status', authenticate, async (req, res) => {
+router.get('/telegram/status', async (req, res) => {
     const hasTelegramToken = !!(process.env.TELEGRAM_BOT_TOKEN && process.env.TELEGRAM_CHAT_ID && process.env.TELEGRAM_BOT_TOKEN.length > 10);
     const hasN8n = !!(process.env.N8N_ACTIVE === 'true' || process.env.N8N_ALERT_WEBHOOK);
     // SMTP Gateway Aktif jika daftar penerima ALERT_EMAIL (11 anggota tim) sudah terkonfigurasi atau host terpasang
