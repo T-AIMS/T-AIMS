@@ -3,6 +3,10 @@
  * dengan email resmi Google (Gmail) 11 anggota tim Teknolab.
  * Berguna agar fitur Lupa Sandi (OTP) dan notifikasi email dapat terkirim ke Gmail asli.
  */
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
+require('dotenv').config();
 const db = require('../config/db');
 
 const teamEmailMappings = [
