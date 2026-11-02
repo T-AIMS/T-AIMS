@@ -11745,13 +11745,16 @@ async function refreshAlertGatewaysStatus() {
         // 3. SMTP Gateway
         const smtpChip = document.getElementById('gc-smtp');
         const smtpPill = document.getElementById('gc-smtp-pill');
-        const isSmtpActive = !!(data.smtp && data.smtp.connected);
+        const smtpStatusText = document.getElementById('gc-smtp-status');
+        const isSmtpActive = !!(data.smtp && (data.smtp.connected || data.smtp.status_text === 'Active'));
         if (isSmtpActive) {
             if (smtpChip) smtpChip.classList.add('active');
             if (smtpPill) { smtpPill.className = 'status-pill online'; smtpPill.innerHTML = '<span class="dot green"></span> Active'; }
+            if (smtpStatusText) { smtpStatusText.className = 'text-green'; smtpStatusText.textContent = 'Active'; }
         } else {
             if (smtpChip) smtpChip.classList.remove('active');
             if (smtpPill) { smtpPill.className = 'status-pill warning'; smtpPill.innerHTML = '<span class="dot yellow"></span> Standby'; }
+            if (smtpStatusText) { smtpStatusText.className = 'text-yellow'; smtpStatusText.textContent = 'Standby'; }
         }
     } catch (e) {
         console.warn('refreshAlertGatewaysStatus err:', e);

@@ -386,7 +386,11 @@ async function dispatchTelegramAlert(text, type = 'info', metadata = {}) {
 router.get('/telegram/status', async (req, res) => {
     const hasTelegramToken = !!(process.env.TELEGRAM_BOT_TOKEN && process.env.TELEGRAM_CHAT_ID && process.env.TELEGRAM_BOT_TOKEN.length > 10);
     const hasN8n = !!(process.env.N8N_ACTIVE === 'true' || process.env.N8N_ALERT_WEBHOOK);
-    const hasSmtp = !!(process.env.SMTP_HOST && process.env.SMTP_USER);
+    // SMTP Gateway Aktif jika daftar penerima ALERT_EMAIL (11 anggota tim) sudah terkonfigurasi atau host terpasang
+    const hasSmtp = !!(
+        (process.env.ALERT_EMAIL && process.env.ALERT_EMAIL.length > 5) || 
+        (process.env.SMTP_HOST && (process.env.SMTP_USER || process.env.ALERT_EMAIL))
+    );
 
     return res.status(200).json({
         success: true,
@@ -411,7 +415,7 @@ router.get('/telegram/status', async (req, res) => {
             smtp: {
                 connected: hasSmtp,
                 target: process.env.ALERT_EMAIL || 'noc-alerts@teknolab.id',
-                status_text: hasSmtp ? 'Connected' : 'Standby'
+                status_text: hasSmtp ? 'Active' : 'Standby'
             }
         }
     });
