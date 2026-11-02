@@ -29,7 +29,8 @@ File / Commit / Evidence:
 - Berkas Teknis: taims-backend/src/routes/notifications.js, taims-backend/src/routes/settings.js, taims-backend/src/routes/monitoring.js, taims-backend/src/app.js, frontend/index.html, frontend/assets/js/app.js
 - Domain Live Server Produksi: https://t-aims.teknolab.biz.id (CloudPanel VPS 45.198.155.203)
 - Bukti Screenshot Otentik DevOps (Folder docs/evidence-wafian/hari-22/):
-  1. 01-multi-recipient-smtp-vps-deployment.png: Terminal SSH VPS CloudPanel — Deploy frontend dan konfirmasi kartu target 11 Anggota Tim Teknolab.
-  2. 02-lead-audit-confirmation-clear-clean.png: Audit Resmi Ketua Tim (Dzakwan) — Verifikasi 100% CLEAR & CLEAN pada pipeline backend dan live web.
-  3. 03-lead-task-instruction-frontend-smtp.png: Instruksi Kerja Lead Tim terkait pembaruan frontend dasbor dan modul SMTP Standby.
-  4. 04-owasp-vulnerability-penetration-testing-proof.png: Bukti Pengujian Penetrasi Langsung Server Produksi — Verifikasi blokir HTTP 401 & HTTP 403 pada 5 celah OWASP.
+  1. 01-multi-recipient-smtp-env-vps-status.png: Terminal SSH VPS CloudPanel — Konfigurasi 12 email tim, status PM2 online, dan healthcheck 200 OK.
+  2. 02-cloudpanel-frontend-sync-smtp-gateway-active.png: Terminal CloudPanel — Sinkronisasi frontend dasbor dan konfirmasi audit Lead 100% CLEAR & CLEAN.
+  3. 03-git-commit-security-patch-diff.png: Terminal Git Lokal — Diff commit 2ccf970 remediasi 5 celah keamanan OWASP.
+  4. 04-owasp-live-penetration-testing-blocked-proof.png: Terminal Pengujian Penetrasi — Bukti blokir HTTP 401 & 403 pada 5 celah OWASP di server produksi.
+  5. 05-cloudpanel-pm2-security-hotfix-deployment.png: Terminal SSH VPS CloudPanel — Eksekusi git pull hotfix 2ccf970 dan restart PM2 --update-env status online.
