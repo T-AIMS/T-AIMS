@@ -1,6 +1,30 @@
 const nodemailer = require('nodemailer');
 
 /**
+ * Daftar Resmi 11 Email Anggota Tim Pra-PKL Teknolab (Menu Informasi Proyek)
+ * Sesuai Struktur Tim Shift 1 (Pagi) & Shift 2 (Malam)
+ */
+const DEFAULT_TEAM_ALERT_EMAILS = [
+    // Shift 2 • Malam (16.00 - 01.00 WIB)
+    'awangtgprofesional@gmail.com',     // Dzakwan Miftahussobirin (Ketua Tim & Integrasi Sistem)
+    'wafianzaidan@gmail.com',           // Wafian (Infrastruktur Peladen, Jaringan & DevOps)
+    'arickferdiansyah@gmail.com',       // Arick Ferdiansyah (Perekayasa Otomasi & Notifikasi)
+    'dikayogapratama18@gmail.com',      // Dika Yoga Pratama (Pengembang Antarmuka Dasbor)
+    'ahzizsaputra@gmail.com',           // Ahmad Aziz (Perancang Antarmuka & Visualisasi Data)
+    'rezatriwardana7@gmail.com',        // Reza Tri Wardana (Penguji Mutu, Pengujian & Dokumentasi)
+
+    // Shift 1 • Pagi (07.00 - 16.00 WIB)
+    'damarmunajad7@gmail.com',          // Damar Munajad (Koordinator Proyek & Analis Sistem)
+    'rzafahmi351@gmail.com',            // Ahmad Reza Fahmi (Pengembang Sistem Backend & API)
+    'faidatrismaamelia@gmail.com',      // Faida Trisma Amelia (Perekayasa Basis Data & Manajemen Aset)
+    'ilfnamufarika4@gmail.com',         // Ilvina Muvarika (Perekayasa Integrasi IoT & Perangkat)
+    'c11anandadwisusanti@gmail.com',    // Ananda Dwi Susanti (Perekayasa Pemantauan Jaringan & Perangkat)
+    
+    // Central NOC Inbox
+    'noc-alerts@teknolab.id'
+];
+
+/**
  * Service Pengirim Notifikasi Email Resmi T-AIMS
  * Sesuai Dokumen PKL Hal. 11 & Integration Checklist 5.5
  */
@@ -26,14 +50,16 @@ function createTransporter() {
 
 /**
  * Kirim Email Notifikasi Insiden / Warning / Recovery Resmi T-AIMS
- * Mendukung Multi-Recipient (Banyak Email Rekan Tim & PIC Sekaligus)
+ * Mendukung Multi-Recipient (Seluruh 11 Anggota Tim Teknolab & PIC Sekaligus)
  */
 async function sendIncidentAlertEmail({ asset_code, asset_name, category, location, ip_address, severity, message, type, recipient_email, pic_email, pic_name }) {
     // 1. Ekstraksi seluruh target penerima (Multi-Email dipisah koma/titik koma dari .env)
-    const envRaw = process.env.ALERT_EMAIL || 'noc-alerts@teknolab.id';
+    const envRaw = process.env.ALERT_EMAIL || '';
     const envTargets = envRaw.split(/[,;]+/).map(e => e.trim()).filter(e => e && e.includes('@'));
 
-    const recipientsSet = new Set(envTargets);
+    // Jika .env berisi daftar khusus gunakan itu; jika tidak, gunakan default 11 anggota tim
+    const baseList = envTargets.length > 0 ? envTargets : DEFAULT_TEAM_ALERT_EMAILS;
+    const recipientsSet = new Set(baseList);
 
     // Tambahkan custom recipient jika ada yang di-input manual saat testing / dashboard
     if (recipient_email) {
@@ -55,7 +81,7 @@ async function sendIncidentAlertEmail({ asset_code, asset_name, category, locati
     const transporter = createTransporter();
     if (!transporter) {
         console.log(`[SMTP Alert] Kredensial SMTP belum diset di .env. Simulasi email alert tercatat untuk: ${alertTarget}`);
-        return { success: true, simulated: true, target: alertTarget };
+        return { success: true, simulated: true, target: alertTarget, count: recipientsSet.size };
     }
 
     const nowStr = new Date().toLocaleString('id-ID') + ' WIB';
@@ -81,7 +107,7 @@ async function sendIncidentAlertEmail({ asset_code, asset_name, category, locati
     }
 
     const htmlContent = `
-    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; border: 1px solid #1E293B; border-radius: 8px; overflow: hidden; background: #0F172A; color: #F8FAFC;">
+    <div style="font-family: Arial, sans-serif; max-width: 620px; margin: auto; border: 1px solid #1E293B; border-radius: 8px; overflow: hidden; background: #0F172A; color: #F8FAFC;">
         <div style="background: ${badgeColor}; padding: 16px 20px; color: #FFFFFF;">
             <h2 style="margin: 0; font-size: 18px; font-weight: bold;">T-AIMS NOC ALERT GATEWAY</h2>
             <span style="font-size: 12px; opacity: 0.9;">PT Teknolab Caraka Internasional • Enterprise Monitoring</span>
@@ -91,14 +117,14 @@ async function sendIncidentAlertEmail({ asset_code, asset_name, category, locati
                 ${statusText}
             </div>
             <table style="width: 100%; border-collapse: collapse; font-size: 13px; color: #CBD5E1; margin-bottom: 20px;">
-                <tr><td style="padding: 6px 0; width: 120px; font-weight: bold; color: #94A3B8;">Kode Aset:</td><td style="color: #38BDF8; font-weight: bold;">${asset_code}</td></tr>
+                <tr><td style="padding: 6px 0; width: 130px; font-weight: bold; color: #94A3B8;">Kode Aset:</td><td style="color: #38BDF8; font-weight: bold;">${asset_code}</td></tr>
                 <tr><td style="padding: 6px 0; font-weight: bold; color: #94A3B8;">Nama Perangkat:</td><td>${asset_name}</td></tr>
                 <tr><td style="padding: 6px 0; font-weight: bold; color: #94A3B8;">Kategori:</td><td>${category}</td></tr>
                 <tr><td style="padding: 6px 0; font-weight: bold; color: #94A3B8;">IP Address:</td><td style="font-family: monospace;">${ip_address}</td></tr>
                 <tr><td style="padding: 6px 0; font-weight: bold; color: #94A3B8;">Lokasi:</td><td>${location}</td></tr>
                 ${pic_name ? `<tr><td style="padding: 6px 0; font-weight: bold; color: #94A3B8;">PIC Terkait:</td><td>${pic_name} ${pic_email ? '(' + pic_email + ')' : ''}</td></tr>` : ''}
                 <tr><td style="padding: 6px 0; font-weight: bold; color: #94A3B8;">Waktu Kejadian:</td><td>${nowStr}</td></tr>
-                <tr><td style="padding: 6px 0; font-weight: bold; color: #94A3B8;">Tembusan Alert:</td><td style="font-size: 11px; color: #38BDF8;">${alertTarget}</td></tr>
+                <tr><td style="padding: 6px 0; font-weight: bold; color: #94A3B8;">Daftar Penerima:</td><td style="font-size: 11px; color: #38BDF8; line-height: 1.4;">${alertTarget}</td></tr>
             </table>
             <div style="background: #1E293B; border-left: 4px solid #38BDF8; padding: 12px 14px; border-radius: 4px; font-size: 12.5px; line-height: 1.5; color: #E2E8F0; margin-bottom: 20px;">
                 <strong>Ringkasan Insiden:</strong><br>
@@ -106,6 +132,7 @@ async function sendIncidentAlertEmail({ asset_code, asset_name, category, locati
             </div>
             <div style="text-align: center; margin-top: 25px; padding-top: 15px; border-top: 1px solid #334155; font-size: 11px; color: #64748B;">
                 Email otomatis dari T-AIMS Alert Engine (Arik & Dzakwan) • Multi-Channel NOC Notification.<br>
+                Tembusan disiarkan ke 11 Anggota Tim Pengembang Teknolab.<br>
                 Akses Dashboard: <a href="https://t-aims.teknolab.biz.id" style="color: #38BDF8; text-decoration: none;">https://t-aims.teknolab.biz.id</a>
             </div>
         </div>
@@ -120,11 +147,11 @@ async function sendIncidentAlertEmail({ asset_code, asset_name, category, locati
             html: htmlContent
         });
         console.log(`[SMTP Alert] Email terkirim ke [${alertTarget}] (MessageId: ${info.messageId})`);
-        return { success: true, messageId: info.messageId, target: alertTarget };
+        return { success: true, messageId: info.messageId, target: alertTarget, count: recipientsSet.size };
     } catch (err) {
         console.warn(`[SMTP Alert] Gagal kirim email via SMTP ke [${alertTarget}]:`, err.message);
-        return { success: false, error: err.message, target: alertTarget };
+        return { success: false, error: err.message, target: alertTarget, count: recipientsSet.size };
     }
 }
 
-module.exports = { sendIncidentAlertEmail };
+module.exports = { sendIncidentAlertEmail, DEFAULT_TEAM_ALERT_EMAILS };
