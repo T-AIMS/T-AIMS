@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../config/db');
-const { authenticate } = require('../middleware/auth');
+const { authenticate, authorize } = require('../middleware/auth');
 const { apiKeyAuth } = require('../middleware/apiKeyAuth');
 const { triggerTelegramAlert } = require('../services/offline-checker');
 
@@ -531,7 +531,7 @@ router.get('/summary', authenticate, async (req, res) => {
 // POST /api/monitoring/clean-logs
 // Housekeeping: Pengarsipan & pembersihan log pemantauan > 30 hari
 // ============================================================
-router.post('/clean-logs', authenticate, async (req, res) => {
+router.post('/clean-logs', authenticate, authorize('super_admin'), async (req, res) => {
     try {
         const { archiveOldLogs, deleteOldLogs } = require('../services/log-cleaner');
         await archiveOldLogs();
@@ -696,7 +696,7 @@ router.get('/server-metrics', authenticate, async (req, res) => {
 });
 // POST /api/monitoring/server-telemetry
 // Endpoint untuk server eksternal / agent mengirim metrik CPU, RAM, Disk
-router.post('/server-telemetry', async (req, res) => {
+router.post('/server-telemetry', apiKeyAuth, async (req, res) => {
     try {
         const { asset_id, cpu_usage, ram_usage, disk_usage, temperature, uptime_seconds } = req.body;
         if (!asset_id) {

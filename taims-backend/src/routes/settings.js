@@ -3,7 +3,7 @@ const router = express.Router();
 const fs = require('fs');
 const path = require('path');
 const db = require('../config/db');
-const { authenticate } = require('../middleware/auth');
+const { authenticate, authorize } = require('../middleware/auth');
 const { apiKeyAuth } = require('../middleware/apiKeyAuth');
 
 const SETTINGS_FILE = path.join(__dirname, '../config/system_settings.json');
@@ -15,9 +15,9 @@ const DEFAULT_SETTINGS = {
     tempThreshold: 22,
     heartbeatTimeout: 60,
     timezone: 'Asia/Jakarta (WIB - UTC+7)',
-    telegramToken: '8944593836:AAEP2bDCO53srpWR3gdKXY6CHQ13Ni8OtPA',
-    telegramChat: '',
-    n8nUrl: 'http://192.168.1.49:5678/webhook/taims-alert',
+    telegramToken: process.env.TELEGRAM_BOT_TOKEN || '',
+    telegramChat: process.env.TELEGRAM_CHAT_ID || '',
+    n8nUrl: process.env.N8N_ALERT_WEBHOOK || 'http://127.0.0.1:5678/webhook/taims-alert',
     debounceTimer: 5,
     smtpHost: '',
     alertEmail: ''
@@ -45,13 +45,18 @@ function writeSettings(cfg) {
     }
 }
 
-// Flexible auth: accepts JWT Bearer or X-API-Key
+// Flexible auth: accepts JWT Bearer (Role-Restricted on write) or X-API-Key
 function flexibleAuth(req, res, next) {
     const authHeader = req.headers.authorization;
     const apiKey = req.headers['x-api-key'] || req.headers['x-device-api-key'];
 
     if (authHeader && authHeader.startsWith('Bearer ')) {
-        return authenticate(req, res, next);
+        return authenticate(req, res, () => {
+            if (req.method === 'POST') {
+                return authorize('super_admin', 'admin')(req, res, next);
+            }
+            next();
+        });
     }
     if (apiKey) {
         return apiKeyAuth(req, res, next);

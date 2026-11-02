@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../config/db');
-const { authenticate, can } = require('../middleware/auth');
+const { authenticate, authorize, can } = require('../middleware/auth');
 const { sendIncidentAlertEmail } = require('../services/email-service');
 
 // ============================================================
@@ -383,7 +383,7 @@ async function dispatchTelegramAlert(text, type = 'info', metadata = {}) {
 // GET /api/notifications/telegram/status
 // Cek status kesiapan integrasi Telegram & n8n
 // ============================================================
-router.get('/telegram/status', async (req, res) => {
+router.get('/telegram/status', authenticate, async (req, res) => {
     const hasTelegramToken = !!(process.env.TELEGRAM_BOT_TOKEN && process.env.TELEGRAM_CHAT_ID && process.env.TELEGRAM_BOT_TOKEN.length > 10);
     const hasN8n = !!(process.env.N8N_ACTIVE === 'true' || process.env.N8N_ALERT_WEBHOOK);
     // SMTP Gateway Aktif jika daftar penerima ALERT_EMAIL (11 anggota tim) sudah terkonfigurasi atau host terpasang
@@ -425,7 +425,7 @@ router.get('/telegram/status', async (req, res) => {
 // POST /api/notifications/telegram/send
 // Kirim pesan kustom ke bot Telegram / n8n webhook
 // ============================================================
-router.post('/telegram/send', authenticate, async (req, res) => {
+router.post('/telegram/send', authenticate, authorize('super_admin', 'admin'), async (req, res) => {
     try {
         const { message, type = 'info', asset_code } = req.body;
         if (!message) {
@@ -475,7 +475,7 @@ router.post('/telegram/send', authenticate, async (req, res) => {
 // POST /api/notifications/telegram/test-alert
 // Menguji pengiriman notifikasi Offline / Recovery (Dokumen PKL Hal. 11)
 // ============================================================
-router.post('/telegram/test-alert', authenticate, async (req, res) => {
+router.post('/telegram/test-alert', authenticate, authorize('super_admin', 'admin'), async (req, res) => {
     try {
         const { type = 'offline', asset_code = 'MKRT-02', severity } = req.body;
         const nowStr = new Date().toLocaleString('id-ID') + ' WIB';
@@ -587,7 +587,7 @@ router.post('/telegram/test-alert', authenticate, async (req, res) => {
 // POST /api/notifications/telegram/report
 // Mengirimkan Rekap Diagnostik AI Terkini ke Telegram (Dokumen PKL Hal. 17)
 // ============================================================
-router.post('/telegram/report', authenticate, async (req, res) => {
+router.post('/telegram/report', authenticate, authorize('super_admin', 'admin'), async (req, res) => {
     try {
         // Ambil data rekomendasi AI terkini dari database
         const [rows] = await db.query(
