@@ -197,12 +197,14 @@ router.get('/trend', authenticate, async (req, res) => {
 
             const [rows] = await db.query(`
                 SELECT 
-                    DATE_FORMAT(check_time, '%Y-%m-%d %H:00') AS hour_key,
-                    COUNT(DISTINCT CASE WHEN status = 'online' THEN asset_id END) AS online_devs,
-                    COUNT(DISTINCT CASE WHEN status = 'offline' THEN asset_id END) AS offline_devs,
-                    COUNT(DISTINCT CASE WHEN status = 'warning' THEN asset_id END) AS warning_devs
-                FROM monitoring_logs
-                WHERE check_time >= NOW() - INTERVAL 24 HOUR
+                    DATE_FORMAT(ml.check_time, '%Y-%m-%d %H:00') AS hour_key,
+                    COUNT(DISTINCT CASE WHEN ml.status = 'online' THEN ml.asset_id END) AS online_devs,
+                    COUNT(DISTINCT CASE WHEN ml.status = 'offline' THEN ml.asset_id END) AS offline_devs,
+                    COUNT(DISTINCT CASE WHEN ml.status = 'warning' THEN ml.asset_id END) AS warning_devs
+                FROM monitoring_logs ml
+                JOIN assets a ON ml.asset_id = a.asset_id
+                WHERE ml.check_time >= NOW() - INTERVAL 24 HOUR
+                  AND a.current_status NOT IN ('unknown', 'maintenance')
                 GROUP BY hour_key
             `);
 
@@ -292,12 +294,14 @@ router.get('/trend', authenticate, async (req, res) => {
 
             const [logRows] = await db.query(`
                 SELECT 
-                    DATE_FORMAT(check_time, '%Y-%m-%d') AS tgl_str,
-                    COUNT(DISTINCT CASE WHEN status = 'online' THEN asset_id END) AS online_devs,
-                    COUNT(DISTINCT CASE WHEN status = 'warning' THEN asset_id END) AS warning_devs,
-                    COUNT(DISTINCT CASE WHEN status = 'offline' THEN asset_id END) AS offline_devs
-                FROM monitoring_logs
-                WHERE check_time >= NOW() - INTERVAL ? DAY
+                    DATE_FORMAT(ml.check_time, '%Y-%m-%d') AS tgl_str,
+                    COUNT(DISTINCT CASE WHEN ml.status = 'online' THEN ml.asset_id END) AS online_devs,
+                    COUNT(DISTINCT CASE WHEN ml.status = 'warning' THEN ml.asset_id END) AS warning_devs,
+                    COUNT(DISTINCT CASE WHEN ml.status = 'offline' THEN ml.asset_id END) AS offline_devs
+                FROM monitoring_logs ml
+                JOIN assets a ON ml.asset_id = a.asset_id
+                WHERE ml.check_time >= NOW() - INTERVAL ? DAY
+                  AND a.current_status NOT IN ('unknown', 'maintenance')
                 GROUP BY tgl_str
             `, [days + 1]);
 
