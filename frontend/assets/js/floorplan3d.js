@@ -2662,7 +2662,8 @@
         
         const sKey = (pin.site === 'mentor' || pin.site === 'server' || pin.site === 'hs') ? 'hs' : (pin.site === 'mo' ? 'mo' : 'ho');
         document.getElementById('fp3d-form-site').value = sKey;
-        document.getElementById('btn-fp3d-delete-pin').style.display = 'inline-flex';
+        const isSuper = (typeof isSuperAdmin === 'function') ? isSuperAdmin() : (typeof APP_STATE !== 'undefined' && APP_STATE.currentUser && (APP_STATE.currentUser.role === 'superadmin' || APP_STATE.currentUser.role === 'super_admin'));
+        document.getElementById('btn-fp3d-delete-pin').style.display = isSuper ? 'inline-flex' : 'none';
 
         populate3DAssetSelect(code);
 
@@ -2871,10 +2872,10 @@
     }
 
     function handleDelete3DPin() {
-        const isAdmin = (typeof isAdminUser === 'function') ? isAdminUser() : (typeof isSuperAdmin === 'function' ? isSuperAdmin() : false);
-        if (!isAdmin) {
+        const isSuper = (typeof isSuperAdmin === 'function') ? isSuperAdmin() : (typeof APP_STATE !== 'undefined' && APP_STATE.currentUser && (APP_STATE.currentUser.role === 'superadmin' || APP_STATE.currentUser.role === 'super_admin'));
+        if (!isSuper) {
             if (typeof window.showToast === 'function') {
-                window.showToast('Akses Dibatasi', 'Hanya Administrator yang memiliki hak akses menghapus titik 3D.', 'warning');
+                window.showToast('Akses Dibatasi', 'Hanya Superadministrator yang memiliki hak akses menghapus titik 3D.', 'warning');
             }
             return;
         }
