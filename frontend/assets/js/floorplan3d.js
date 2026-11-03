@@ -3612,6 +3612,11 @@
         if (!grid) return;
 
         const sData = FP3D.siteData[FP3D.currentSite] || FP3D.siteData.ho;
+        const btnAddPinEl = document.getElementById('btn-fp3d-add-pin') || document.querySelector('.btn-fp3d-add-pin');
+        const isUserAdminNow = (typeof isAdminUser === 'function') ? isAdminUser() : (typeof isSuperAdmin === 'function' ? isSuperAdmin() : false);
+        if (btnAddPinEl) {
+            btnAddPinEl.style.display = isUserAdminNow ? '' : 'none';
+        }
         grid.innerHTML = sData.devices.map(dev => {
             const isOnline = Boolean(getDeviceLiveStatus(dev));
             let devIp = dev.ip;
@@ -3628,7 +3633,7 @@
             const statusText = isOnline ? 'ONLINE' : 'OFFLINE';
 
             return `
-                <div class="fp3d-device-card ${isOnline ? 'online' : 'offline'}">
+                <div class="fp3d-device-card ${isOnline ? 'online' : 'offline'}" style="border: 1.5px solid ${isOnline ? '#10B981' : '#EF4444'} !important; box-shadow: 0 4px 16px rgba(0,0,0,0.7), 0 0 14px ${isOnline ? 'rgba(16,185,129,0.35)' : 'rgba(239,68,68,0.35)'} !important;">
                     <div class="fp3d-dev-header">
                         <div class="fp3d-dev-info">
                             <div class="fp3d-dev-icon"><i class="fa-solid ${dev.icon}"></i></div>

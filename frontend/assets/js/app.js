@@ -2244,6 +2244,7 @@ function enforceRbacUI() {
 
     if (document.body) {
         document.body.classList.toggle('role-user', !isAdmin);
+        document.body.classList.toggle('role-guest', !isAdmin);
         document.body.classList.toggle('role-admin', isAdmin);
         document.body.classList.toggle('role-superadmin', isSuper);
     }
@@ -2284,6 +2285,8 @@ function enforceRbacUI() {
             'button[onclick*="openQuickStatusModal"]',
             'i[onclick*="openQuickStatusModal"]',
             '#btn-bp-edit-pins',
+            '#btn-fp3d-add-pin',
+            '.btn-fp3d-add-pin',
             '#floorplan-edit-banner',
             '#btn-fp3d-delete-pin',
             '#btn-fp3d-save-pin',
@@ -2304,6 +2307,8 @@ function enforceRbacUI() {
     }
 
     // Sembunyikan tombol header/action secara eksplisit jika bukan admin
+    const btnAdd3DPin = document.getElementById('btn-fp3d-add-pin') || document.querySelector('.btn-fp3d-add-pin');
+    if (btnAdd3DPin) btnAdd3DPin.style.display = isAdmin ? '' : 'none';
     const btnAddDev = document.querySelector('button[onclick="openAddDeviceModal()"]');
     if (btnAddDev) btnAddDev.style.display = isAdmin ? '' : 'none';
 
