@@ -90,6 +90,7 @@ if mysqldump -h "$DB_HOST" -P "$DB_PORT" -u "$DB_USER" \
     --single-transaction \
     --quick \
     --skip-lock-tables \
+    --no-tablespaces \
     --routines \
     --triggers \
     "$DB_NAME" | gzip -9 > "$BACKUP_FILEPATH"; then
