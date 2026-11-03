@@ -4439,10 +4439,11 @@
             }
         }
 
-        // 2b. Toleransi Sentuhan Mobile Pintar: Jika jari tidak persis mengenai titik (meleset sedikit di HP), deteksi perangkat terdekat dalam radius 45px
-        if (!hitDev && FP3D.camera && FP3D.stage) {
+        // 2b. Toleransi Sentuhan Mobile Pintar: Hanya berlaku di layar sentuh HP/Tablet (bukan mouse desktop)
+        const isTouchDevice = (typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
+        if (!hitDev && isTouchDevice && FP3D.camera && FP3D.stage) {
             const activeDevs = (FP3D.siteData[FP3D.currentSite] || FP3D.siteData.ho).devices || [];
-            let closestDist = 45; // radius sentuhan 45px di layar
+            let closestDist = 22; // radius sentuhan 22px presisi di HP
             for (const dev of activeDevs) {
                 if (!dev.pos) continue;
                 const v = new THREE.Vector3(dev.pos[0], dev.pos[1] || 0.2, dev.pos[2]);
@@ -4462,22 +4463,12 @@
         const tooltip = document.getElementById('fp3d-tooltip');
         if (tooltip) tooltip.style.display = 'none';
 
-        // ---- MODE KELOLA TITIK (EDIT) DI 3D ----
-        if (editMode) {
-            closeDeviceInspectorCard();
-
-            if (hitDev) {
-                openEdit3DPinModal(hitDev.code);
-                return;
-            }
-
-            // PERBAIKAN BUG SPAM MODAL:
-            // Mengklik / menyentuh lantai kosong TIDAK BOLEH memunculkan modal tambah titik secara otomatis.
-            // Penambahan titik baru di 3D HANYA dilakukan melalui tombol resmi "+ Titik Baru" (#btn-fp3d-add-pin).
-            return;
-        }
-
-        // ---- MODE NORMAL: kartu inspektur telemetri ----
+        // PERBAIKAN DEFINITIF BUG MODAL SPAM:
+        // Mengklik kanvas / pin 3D (baik saat Mode Normal maupun Mode Kelola Titik)
+        // TIDAK PERNAH membuka modal editor secara otomatis!
+        // Jika pin perangkat diklik -> tampilkan kartu inspektur telemetri di pojok bawah.
+        // Modal edit titik (openEdit3DPinModal) HANYA terbuka jika user secara sadar
+        // menekan tombol 'Ubah Titik 3D' pada kartu inspektur atau di drawer daftar aset.
         if (hitDev) {
             showDeviceInspectorCard(hitDev);
         } else {
