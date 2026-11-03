@@ -1515,7 +1515,7 @@ async function loadRealDataFromApi() {
                             const bannerBadge = document.getElementById('banner-role-badge');
                             if (topRole) topRole.textContent = mappedTitle;
                             if (dropRole) dropRole.textContent = mappedTitle;
-                            const adminBtns = document.querySelectorAll('.admin-only');
+                            const adminBtns = document.querySelectorAll('.admin-only:not(.modal-backdrop):not(.modal-overlay)');
                             if (mappedRole === 'user') {
                                 if (bannerBadge) {
                                     bannerBadge.innerHTML = '<i class="fa-solid fa-eye text-yellow"></i> Mode User (Hanya Melihat)';
@@ -2251,6 +2251,13 @@ function enforceRbacUI() {
 
     // Sembunyikan seluruh elemen bertanda .admin-only jika mode User (Read-Only)
     document.querySelectorAll('.admin-only').forEach(el => {
+        if (el.classList.contains('modal-backdrop') || el.classList.contains('modal-overlay') || el.id.startsWith('modal-')) {
+            if (!isAdmin) {
+                el.classList.add('hidden');
+                el.style.display = 'none';
+            }
+            return;
+        }
         if (isAdmin) {
             el.classList.remove('hidden');
             el.style.display = '';
@@ -2663,7 +2670,7 @@ function loginSuccess(user, isAutoRestore = false) {
     if (dropRole) dropRole.textContent = user.title;
 
     // Batasi tombol jika mode Tamu atau peran User (Read-Only)
-    const adminBtns = document.querySelectorAll('.admin-only');
+    const adminBtns = document.querySelectorAll('.admin-only:not(.modal-backdrop):not(.modal-overlay)');
     if (typeof enforceRbacUI === 'function') enforceRbacUI();
     if (user.role === 'guest' || user.role === 'user') {
         if (bannerBadge) {
