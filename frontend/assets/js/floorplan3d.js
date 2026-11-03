@@ -2677,11 +2677,20 @@
         modal.classList.add('show');
     }
 
-    function close3DPinModal() {
+    let _last3DModalCloseTime = 0;
+
+    function close3DPinModal(isPicking = false) {
+        _last3DModalCloseTime = performance.now();
         const modal = document.getElementById('modal-3d-pin-editor');
         if (modal) {
             modal.classList.remove('show');
             modal.classList.add('hidden');
+        }
+        if (!isPicking && window.__picking3DPin) {
+            window.__picking3DPin = null;
+            if (typeof hideGhostMarker === 'function') hideGhostMarker();
+            const banner = document.getElementById('fp3d-floor-pick-banner');
+            if (banner) banner.style.display = 'none';
         }
     }
 
@@ -2918,7 +2927,7 @@
             origCode: document.getElementById('fp3d-form-orig-code').value
         };
 
-        close3DPinModal();
+        close3DPinModal(true);
 
         if (FP3D.currentSite !== site && FP3D.currentSite !== 'all') {
             switchSite(site, false);
@@ -3778,9 +3787,20 @@
         const domTarget = FP3D.renderer.domElement;
 
         function safeHandleCanvasInteraction(cx, cy) {
+            // Guard 1: Jangan proses interaksi jika modal editor 3D sedang tampil
+            const modal = document.getElementById('modal-3d-pin-editor');
+            if (modal && !modal.classList.contains('hidden') && (modal.classList.contains('show') || modal.style.display === 'flex' || modal.style.display === 'block')) {
+                return;
+            }
+
+            // Guard 2: Debounce cooldown setelah modal ditutup (mencegah ghost click / bubbling mouseup)
             const now = performance.now();
+            if (now - _last3DModalCloseTime < 450) return;
+
+            // Guard 3: Throttle interval antar interaksi kanvas
             if (now - _lastInteractionTime < 120) return;
             _lastInteractionTime = now;
+
             handleCanvasInteraction(cx, cy);
         }
 
@@ -3815,14 +3835,6 @@
         domTarget.addEventListener('mouseup', function (ev) {
             const dist = (typeof FP3D._downX === 'number') ? Math.hypot(ev.clientX - FP3D._downX, ev.clientY - FP3D._downY) : 0;
             // Jika dalam mode penempatan titik (picking), toleransi hingga 45px agar klik selalu berhasil!
-            const maxAllowedDist = window.__picking3DPin ? 45 : 25;
-            if (dist < maxAllowedDist) {
-                safeHandleCanvasInteraction(ev.clientX, ev.clientY);
-            }
-        });
-
-        FP3D.stage.addEventListener('click', function (ev) {
-            const dist = (typeof FP3D._downX === 'number') ? Math.hypot(ev.clientX - FP3D._downX, ev.clientY - FP3D._downY) : 0;
             const maxAllowedDist = window.__picking3DPin ? 45 : 25;
             if (dist < maxAllowedDist) {
                 safeHandleCanvasInteraction(ev.clientX, ev.clientY);
@@ -4458,29 +4470,9 @@
                 return;
             }
 
-            // Klik / sentuh lantai gedung saat Mode Kelola -> buka modal tambah titik di posisi lantai tersebut
-            const target = new THREE.Vector3();
-            const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
-            if (!FP3D.raycaster.ray.intersectPlane(plane, target)) return;
-
-            let bKey = FP3D.currentSite;
-            let lx = target.x;
-            let lz = target.z;
-            if (bKey === 'all' || !FP3D_SCALE[bKey]) {
-                if (target.x < -13) { bKey = 'mo'; lx = target.x + 26; }
-                else if (target.x > 13) { bKey = 'hs'; lx = target.x - 26; lz = target.z + 2; }
-                else { bKey = 'ho'; }
-            }
-            const broadBound = {
-                ho: { xr: [-35.0, 35.0], zr: [-35.0, 35.0] },
-                mo: { xr: [-25.0, 25.0], zr: [-25.0, 25.0] },
-                hs: { xr: [-25.0, 25.0], zr: [-25.0, 25.0] }
-            };
-            const sc = broadBound[bKey] || { xr: [-40.0, 40.0], zr: [-40.0, 40.0] };
-            lx = Math.max(sc.xr[0], Math.min(sc.xr[1], lx));
-            lz = Math.max(sc.zr[0], Math.min(sc.zr[1], lz));
-
-            openAdd3DPinModal(bKey, lx, lz);
+            // PERBAIKAN BUG SPAM MODAL:
+            // Mengklik / menyentuh lantai kosong TIDAK BOLEH memunculkan modal tambah titik secara otomatis.
+            // Penambahan titik baru di 3D HANYA dilakukan melalui tombol resmi "+ Titik Baru" (#btn-fp3d-add-pin).
             return;
         }
 

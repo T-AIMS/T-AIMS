@@ -70,8 +70,8 @@
  document.write('<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"><\/script>');
  }
  </script>
- <link rel="stylesheet" href="assets/css/floorplan3d.css?v=20261103_04_LIVE">
- <link rel="stylesheet" href="assets/css/style.css?v=20261103_04_LIVE">
+ <link rel="stylesheet" href="assets/css/floorplan3d.css?v=20261103_05_NO_SPAM">
+ <link rel="stylesheet" href="assets/css/style.css?v=20261103_05_NO_SPAM">
 
 </head>
 
@@ -5816,11 +5816,11 @@ if (typeof QRCode === 'undefined') {
     document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"><\/script>');
 }
 </script>
-<script src="assets/js/apiService.js?v=20261103_04_LIVE"></script>
+<script src="assets/js/apiService.js?v=20261103_05_NO_SPAM"></script>
 
- <script src="assets/js/app.js?v=20261103_04_LIVE"></script>
+ <script src="assets/js/app.js?v=20261103_05_NO_SPAM"></script>
 
- <script src="assets/js/floorplan3d.js?v=20261103_04_LIVE"></script>
+ <script src="assets/js/floorplan3d.js?v=20261103_05_NO_SPAM"></script>
 
 
  <!-- Modal Pemulihan Kata Sandi (2-Step Verification: OTP & Reset Password) -->
@@ -5993,7 +5993,7 @@ if (typeof QRCode === 'undefined') {
  <!-- ============================================================= -->
  <!-- Modal Kelola & Pasang Titik Perangkat di Digital Twin 3D -->
  <!-- ============================================================= -->
- <div class="modal-backdrop hidden admin-only" id="modal-3d-pin-editor" style="z-index: 10060;" onclick="if(event.target===this)close3DPinModal()">
+ <div class="modal-backdrop hidden admin-only" id="modal-3d-pin-editor" style="z-index: 10060;" onclick="if(event.target===this){ event.stopPropagation(); event.preventDefault(); close3DPinModal(); }">
      <div class="modal-card modal-sm" style="max-width: 500px; border-color: rgba(16, 185, 129, 0.4); box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 25px rgba(16, 185, 129, 0.15);">
          <div class="modal-header" style="border-bottom: 1px solid rgba(255,255,255,0.08); padding: 14px 18px;">
              <div class="modal-title-wrap">
@@ -6002,7 +6002,7 @@ if (typeof QRCode === 'undefined') {
                      <span>Pasang Titik Perangkat di 3D</span>
                  </h5>
              </div>
-             <button class="modal-close-btn" onclick="close3DPinModal()" style="background:none; border:none; color:#94A3B8; font-size:1.1rem; cursor:pointer;">
+             <button type="button" class="modal-close-btn" onclick="event.stopPropagation(); event.preventDefault(); close3DPinModal();" style="background:none; border:none; color:#94A3B8; font-size:1.1rem; cursor:pointer;">
                  <i class="fa-solid fa-xmark"></i>
              </button>
          </div>
@@ -6115,7 +6115,7 @@ if (typeof QRCode === 'undefined') {
                  <button type="button" id="btn-fp3d-delete-pin" class="btn btn-outline-cyber btn-sm" onclick="handleDelete3DPin()" style="border: 1.2px solid rgba(239, 68, 68, 0.6); color: #FCA5A5; background: rgba(239, 68, 68, 0.12); display: none; height: 40px; min-height: 40px; max-height: 40px; padding: 0 8px; font-size: 0.80rem; font-weight: 700; border-radius: 8px; flex: 1 1 0%; min-width: 0; width: 100%; align-items: center; justify-content: center; gap: 6px; white-space: nowrap; box-sizing: border-box; line-height: 1;">
                      <i class="fa-solid fa-trash"></i> <span class="text-desktop">Hapus dari 3D</span><span class="text-mobile">Hapus</span>
                  </button>
-                 <button type="button" id="btn-fp3d-cancel-pin" class="btn btn-outline-cyber btn-sm" onclick="close3DPinModal()" style="border: 1.2px solid rgba(255, 255, 255, 0.15); color: #E2E8F0; background: rgba(30, 41, 59, 0.7); height: 40px; min-height: 40px; max-height: 40px; padding: 0 8px; font-size: 0.80rem; font-weight: 700; border-radius: 8px; flex: 1 1 0%; min-width: 0; width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 6px; white-space: nowrap; box-sizing: border-box; line-height: 1;">
+                 <button type="button" id="btn-fp3d-cancel-pin" class="btn btn-outline-cyber btn-sm" onclick="event.stopPropagation(); event.preventDefault(); close3DPinModal()" style="border: 1.2px solid rgba(255, 255, 255, 0.15); color: #E2E8F0; background: rgba(30, 41, 59, 0.7); height: 40px; min-height: 40px; max-height: 40px; padding: 0 8px; font-size: 0.80rem; font-weight: 700; border-radius: 8px; flex: 1 1 0%; min-width: 0; width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 6px; white-space: nowrap; box-sizing: border-box; line-height: 1;">
                      <i class="fa-solid fa-xmark"></i> <span>Batal</span>
                  </button>
                  <button type="submit" id="btn-fp3d-save-pin" class="btn btn-primary-cyber btn-sm" style="height: 40px; min-height: 40px; max-height: 40px; padding: 0 8px; font-size: 0.80rem; font-weight: 700; border-radius: 8px; flex: 1 1 0%; min-width: 0; width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 6px; white-space: nowrap; box-sizing: border-box; line-height: 1;">
