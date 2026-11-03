@@ -63241,3 +63241,22 @@ body.role-guest [data-role="superadmin"] {
     visibility: hidden !important;
     pointer-events: none !important;
 }
+
+/* ==========================================================================
+   STRICT RBAC TIERS UNTUK MODAL TITIK DENAH (3D & 2D):
+   - User / Guest: Read Only (Hanya Lihat, CUD Dilarang Total)
+   - Admin: CRU (Bisa Create & Update, DILARANG DELETE)
+   - Superadmin: CRUD (Bisa Create, Read, Update, Delete)
+   ========================================================================== */
+body:not(.role-superadmin) #btn-fp3d-delete-pin,
+body:not(.role-superadmin) #btn-fp-delete-pin,
+body.role-admin #btn-fp3d-delete-pin,
+body.role-admin #btn-fp-delete-pin,
+body.role-user #btn-fp3d-delete-pin,
+body.role-user #btn-fp-delete-pin,
+body.role-guest #btn-fp3d-delete-pin,
+body.role-guest #btn-fp-delete-pin,
+body:not(.role-superadmin) button[onclick*="handleDelete3DPin"],
+body.role-admin button[onclick*="handleDelete3DPin"] {
+    display: none !important;
+}

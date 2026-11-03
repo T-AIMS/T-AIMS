@@ -2639,6 +2639,23 @@
         modal.classList.add('show');
     }
 
+    // Helper verifikasi apakah pengguna memiliki otoritas tertinggi Superadmin
+    function checkIsSuperAdminUser() {
+        if (typeof window.isSuperAdmin === 'function') {
+            try { if (window.isSuperAdmin()) return true; } catch (e) {}
+        }
+        if (typeof APP_STATE !== 'undefined' && APP_STATE.currentUser) {
+            const role = String(APP_STATE.currentUser.role || '').toLowerCase().replace(/[_\s-]/g, '');
+            if (role === 'superadmin') return true;
+        }
+        try {
+            const sess = JSON.parse(sessionStorage.getItem('taims_session') || localStorage.getItem('taims_active_session') || '{}');
+            const role = String(sess.role || '').toLowerCase().replace(/[_\s-]/g, '');
+            if (role === 'superadmin') return true;
+        } catch (e) {}
+        return false;
+    }
+
     function openEdit3DPinModal(code) {
         const isAdmin = (typeof isAdminUser === 'function') ? isAdminUser() : (typeof isSuperAdmin === 'function' ? isSuperAdmin() : false);
         if (!isAdmin) {
@@ -2662,8 +2679,17 @@
         
         const sKey = (pin.site === 'mentor' || pin.site === 'server' || pin.site === 'hs') ? 'hs' : (pin.site === 'mo' ? 'mo' : 'ho');
         document.getElementById('fp3d-form-site').value = sKey;
-        const isSuper = (typeof isSuperAdmin === 'function') ? isSuperAdmin() : (typeof APP_STATE !== 'undefined' && APP_STATE.currentUser && (APP_STATE.currentUser.role === 'superadmin' || APP_STATE.currentUser.role === 'super_admin'));
-        document.getElementById('btn-fp3d-delete-pin').style.display = isSuper ? 'inline-flex' : 'none';
+        const isSuper = checkIsSuperAdminUser();
+        const delBtn = document.getElementById('btn-fp3d-delete-pin');
+        if (delBtn) {
+            if (isSuper) {
+                delBtn.classList.remove('hidden');
+                delBtn.style.setProperty('display', 'inline-flex');
+            } else {
+                delBtn.classList.add('hidden');
+                delBtn.style.setProperty('display', 'none', 'important');
+            }
+        }
 
         populate3DAssetSelect(code);
 
@@ -2872,10 +2898,10 @@
     }
 
     function handleDelete3DPin() {
-        const isSuper = (typeof isSuperAdmin === 'function') ? isSuperAdmin() : (typeof APP_STATE !== 'undefined' && APP_STATE.currentUser && (APP_STATE.currentUser.role === 'superadmin' || APP_STATE.currentUser.role === 'super_admin'));
+        const isSuper = checkIsSuperAdminUser();
         if (!isSuper) {
             if (typeof window.showToast === 'function') {
-                window.showToast('Akses Dibatasi', 'Hanya Superadministrator yang memiliki hak akses menghapus titik 3D.', 'warning');
+                window.showToast('Akses Ditolak', 'Akses Hapus Dibatasi: Administrator hanya memiliki izin CRU (Tambah & Ubah). Hanya Superadministrator yang dapat menghapus titik dari denah 3D.', 'error');
             }
             return;
         }

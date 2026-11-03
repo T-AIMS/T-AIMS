@@ -70,8 +70,8 @@
  document.write('<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"><\/script>');
  }
  </script>
- <link rel="stylesheet" href="assets/css/floorplan3d.css?v=20261103_06_FINAL">
- <link rel="stylesheet" href="assets/css/style.css?v=20261103_06_FINAL">
+ <link rel="stylesheet" href="assets/css/floorplan3d.css?v=20261103_07_RBAC_CRU">
+ <link rel="stylesheet" href="assets/css/style.css?v=20261103_07_RBAC_CRU">
 
 </head>
 
@@ -5816,11 +5816,11 @@ if (typeof QRCode === 'undefined') {
     document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"><\/script>');
 }
 </script>
-<script src="assets/js/apiService.js?v=20261103_06_FINAL"></script>
+<script src="assets/js/apiService.js?v=20261103_07_RBAC_CRU"></script>
 
- <script src="assets/js/app.js?v=20261103_06_FINAL"></script>
+ <script src="assets/js/app.js?v=20261103_07_RBAC_CRU"></script>
 
- <script src="assets/js/floorplan3d.js?v=20261103_06_FINAL"></script>
+ <script src="assets/js/floorplan3d.js?v=20261103_07_RBAC_CRU"></script>
 
 
  <!-- Modal Pemulihan Kata Sandi (2-Step Verification: OTP & Reset Password) -->
@@ -6112,7 +6112,7 @@ if (typeof QRCode === 'undefined') {
              </div>
 
              <div class="modal-footer" id="modal-3d-pin-footer" style="display: flex; flex-direction: row; flex-wrap: nowrap; align-items: center; justify-content: space-between; gap: 8px; padding: 12px 16px; border-top: 1px solid rgba(255,255,255,0.08); background: rgba(15, 23, 42, 0.7); box-sizing: border-box; width: 100%;">
-                 <button type="button" id="btn-fp3d-delete-pin" class="btn btn-outline-cyber btn-sm" onclick="handleDelete3DPin()" style="border: 1.2px solid rgba(239, 68, 68, 0.6); color: #FCA5A5; background: rgba(239, 68, 68, 0.12); display: none; height: 40px; min-height: 40px; max-height: 40px; padding: 0 8px; font-size: 0.80rem; font-weight: 700; border-radius: 8px; flex: 1 1 0%; min-width: 0; width: 100%; align-items: center; justify-content: center; gap: 6px; white-space: nowrap; box-sizing: border-box; line-height: 1;">
+                 <button type="button" id="btn-fp3d-delete-pin" class="btn btn-outline-cyber btn-sm superadmin-only" onclick="handleDelete3DPin()" style="border: 1.2px solid rgba(239, 68, 68, 0.6); color: #FCA5A5; background: rgba(239, 68, 68, 0.12); display: none; height: 40px; min-height: 40px; max-height: 40px; padding: 0 8px; font-size: 0.80rem; font-weight: 700; border-radius: 8px; flex: 1 1 0%; min-width: 0; width: 100%; align-items: center; justify-content: center; gap: 6px; white-space: nowrap; box-sizing: border-box; line-height: 1;">
                      <i class="fa-solid fa-trash"></i> <span class="text-desktop">Hapus dari 3D</span><span class="text-mobile">Hapus</span>
                  </button>
                  <button type="button" id="btn-fp3d-cancel-pin" class="btn btn-outline-cyber btn-sm" onclick="event.stopPropagation(); event.preventDefault(); close3DPinModal()" style="border: 1.2px solid rgba(255, 255, 255, 0.15); color: #E2E8F0; background: rgba(30, 41, 59, 0.7); height: 40px; min-height: 40px; max-height: 40px; padding: 0 8px; font-size: 0.80rem; font-weight: 700; border-radius: 8px; flex: 1 1 0%; min-width: 0; width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 6px; white-space: nowrap; box-sizing: border-box; line-height: 1;">

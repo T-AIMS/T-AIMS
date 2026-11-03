@@ -2245,7 +2245,7 @@ function enforceRbacUI() {
     if (document.body) {
         document.body.classList.toggle('role-user', !isAdmin);
         document.body.classList.toggle('role-guest', !isAdmin);
-        document.body.classList.toggle('role-admin', isAdmin);
+        document.body.classList.toggle('role-admin', isAdmin && !isSuper);
         document.body.classList.toggle('role-superadmin', isSuper);
     }
 
@@ -2274,9 +2274,34 @@ function enforceRbacUI() {
             el.style.display = el.classList.contains('superadmin-actions-row') ? 'flex' : '';
         } else {
             el.classList.add('hidden');
-            el.style.display = 'none';
+            el.style.setProperty('display', 'none', 'important');
         }
     });
+
+    // RBAC Ketat Tombol Hapus Titik (3D & 2D):
+    // Superadmin: CRUD (Tampil Tombol Hapus)
+    // Admin: CRU (Tombol Hapus DISEMBUNYIKAN TOTAL)
+    // User / Guest: Read Only (Seluruh CUD disembunyikan)
+    const btnFp3dDel = document.getElementById('btn-fp3d-delete-pin');
+    if (btnFp3dDel) {
+        if (isSuper) {
+            btnFp3dDel.classList.remove('hidden');
+            const mMode = document.getElementById('fp3d-form-mode');
+            btnFp3dDel.style.display = (mMode && mMode.value === 'edit') ? 'inline-flex' : 'none';
+        } else {
+            btnFp3dDel.classList.add('hidden');
+            btnFp3dDel.style.setProperty('display', 'none', 'important');
+        }
+    }
+    const btnFp2dDel = document.getElementById('btn-fp-delete-pin');
+    if (btnFp2dDel) {
+        if (isSuper) {
+            btnFp2dDel.classList.remove('hidden');
+        } else {
+            btnFp2dDel.classList.add('hidden');
+            btnFp2dDel.style.setProperty('display', 'none', 'important');
+        }
+    }
 
     if (!isAdmin) {
         // Mode Read-Only (User): Hilangkan seluruh tombol Tambah, Edit, Hapus tanpa terkecuali
