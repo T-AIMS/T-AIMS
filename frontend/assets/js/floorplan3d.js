@@ -2607,6 +2607,13 @@
     // MODAL & INTERAKSI KELOLA TITIK 3D (TAMBAH / PINDAH / HAPUS)
     // -------------------------------------------------------------------------
     function openAdd3DPinModal(siteKey, initialX = null, initialZ = null) {
+        const isAdmin = (typeof isAdminUser === 'function') ? isAdminUser() : (typeof isSuperAdmin === 'function' ? isSuperAdmin() : false);
+        if (!isAdmin) {
+            if (typeof window.showToast === 'function') {
+                window.showToast('Akses Dibatasi', 'Hanya Administrator yang memiliki hak akses menambah titik 3D.', 'warning');
+            }
+            return;
+        }
         const modal = document.getElementById('modal-3d-pin-editor');
         if (!modal) return;
         const targetSite = siteKey || (FP3D.currentSite !== 'all' ? FP3D.currentSite : 'ho');
@@ -2633,6 +2640,13 @@
     }
 
     function openEdit3DPinModal(code) {
+        const isAdmin = (typeof isAdminUser === 'function') ? isAdminUser() : (typeof isSuperAdmin === 'function' ? isSuperAdmin() : false);
+        if (!isAdmin) {
+            if (typeof window.showToast === 'function') {
+                window.showToast('Akses Dibatasi', 'Hanya Administrator yang memiliki hak akses mengubah titik 3D.', 'warning');
+            }
+            return;
+        }
         const modal = document.getElementById('modal-3d-pin-editor');
         if (!modal) return;
         const pinsMap = get3DPinsMap();
@@ -2848,6 +2862,13 @@
     }
 
     function handleDelete3DPin() {
+        const isAdmin = (typeof isAdminUser === 'function') ? isAdminUser() : (typeof isSuperAdmin === 'function' ? isSuperAdmin() : false);
+        if (!isAdmin) {
+            if (typeof window.showToast === 'function') {
+                window.showToast('Akses Dibatasi', 'Hanya Administrator yang memiliki hak akses menghapus titik 3D.', 'warning');
+            }
+            return;
+        }
         const origCode = document.getElementById('fp3d-form-orig-code').value;
         if (!origCode) return;
         if (!confirm('Hapus titik perangkat 3D untuk ' + origCode + '? Denah 2D CAD tidak akan terpengaruh.')) return;
@@ -3607,7 +3628,7 @@
             const statusText = isOnline ? 'ONLINE' : 'OFFLINE';
 
             return `
-                <div class="fp3d-device-card">
+                <div class="fp3d-device-card ${isOnline ? 'online' : 'offline'}">
                     <div class="fp3d-dev-header">
                         <div class="fp3d-dev-info">
                             <div class="fp3d-dev-icon"><i class="fa-solid ${dev.icon}"></i></div>
@@ -3621,9 +3642,11 @@
                     <div class="fp3d-dev-meta">
                         <span class="fp3d-dev-ip"><i class="fa-solid fa-network-wired"></i> ${devIp}</span>
                         <div class="d-flex gap-1">
-                            <button type="button" class="btn-fp3d-focus" onclick="openEdit3DPinModal('${dev.code}')" style="background:rgba(225,29,72,0.15); border:1px solid #E11D48; color:#FDA4AF; padding:3px 8px; border-radius:4px; font-size:0.70rem; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:4px;" title="Ubah Posisi Titik di 3D">
+                            ${((typeof isAdminUser === 'function' ? isAdminUser() : (typeof isSuperAdmin === 'function' ? isSuperAdmin() : false))) ? `
+                            <button type="button" class="btn-fp3d-focus admin-only" onclick="openEdit3DPinModal('${dev.code}')" style="background:rgba(16,185,129,0.15); border:1px solid rgba(16,185,129,0.4); color:#A7F3D0; padding:3px 8px; border-radius:4px; font-size:0.70rem; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:4px;" title="Ubah Posisi Titik di 3D">
                                 <i class="fa-solid fa-pen-to-square"></i> Ubah Titik 3D
                             </button>
+                            ` : ''}
                             <button type="button" class="btn-fp3d-focus" onclick="if(window.openDeviceDetailModal) window.openDeviceDetailModal('${dev.code}')" title="Buka Detail Aset">
                                 <i class="fa-solid fa-eye"></i> Detail
                             </button>
@@ -4187,9 +4210,11 @@
                 <button class="fp3d-card-btn fp3d-card-btn-focus" onclick="focusDevice3D('${dev.code}')">
                     <i class="fa-solid fa-crosshairs"></i> Fokus Titik
                 </button>
-                <button class="fp3d-card-btn fp3d-card-btn-edit" onclick="openEdit3DPinModal('${dev.code}'); closeDeviceInspectorCard();" title="Ubah Posisi Titik di 3D">
+                ${((typeof isAdminUser === 'function' ? isAdminUser() : (typeof isSuperAdmin === 'function' ? isSuperAdmin() : false))) ? `
+                <button class="fp3d-card-btn fp3d-card-btn-edit admin-only" onclick="openEdit3DPinModal('${dev.code}'); closeDeviceInspectorCard();" title="Ubah Posisi Titik di 3D">
                     <i class="fa-solid fa-pen-to-square"></i> Ubah Titik 3D
                 </button>
+                ` : ''}
                 <button class="fp3d-card-btn fp3d-card-btn-detail" onclick="if(typeof openDeviceDetailModal==='function')openDeviceDetailModal('${dev.code}')">
                     <i class="fa-solid fa-arrow-up-right-from-square"></i> Detail
                 </button>

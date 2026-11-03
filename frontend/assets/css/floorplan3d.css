@@ -352,14 +352,29 @@
 }
 .fp3d-device-card {
     background: linear-gradient(180deg, #141722 0%, #0B0D13 100%) !important;
-    border: 1.5px solid #E11D48 !important;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.7), 0 0 14px rgba(225, 29, 72, 0.32) !important;
     border-radius: 8px !important;
     transition: all 0.2s ease !important;
 }
-.fp3d-device-card:hover {
-    border-color: #FF1744 !important;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.8), 0 0 18px rgba(255, 23, 68, 0.5) !important;
+/* Kotak Hijau jika ONLINE */
+.fp3d-device-card.online,
+.fp3d-device-card:not(.offline) {
+    border: 1.5px solid #10B981 !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.7), 0 0 14px rgba(16, 185, 129, 0.35) !important;
+}
+.fp3d-device-card.online:hover,
+.fp3d-device-card:not(.offline):hover {
+    border-color: #34D399 !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.8), 0 0 18px rgba(16, 185, 129, 0.55) !important;
+    transform: translateY(-2px) !important;
+}
+/* Kotak Merah jika OFFLINE */
+.fp3d-device-card.offline {
+    border: 1.5px solid #EF4444 !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.7), 0 0 14px rgba(239, 68, 68, 0.35) !important;
+}
+.fp3d-device-card.offline:hover {
+    border-color: #F87171 !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.8), 0 0 18px rgba(239, 68, 68, 0.55) !important;
     transform: translateY(-2px) !important;
 }
 .fp3d-dev-header {

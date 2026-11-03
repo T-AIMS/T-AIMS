@@ -2242,7 +2242,13 @@ function enforceRbacUI() {
     const isAdmin = typeof isAdminUser === 'function' ? isAdminUser() : false;
     const isSuper = typeof isSuperAdmin === 'function' ? isSuperAdmin() : false;
 
-    // Sembunyikan total seluruh tombol Tambah/Edit/Hapus bertanda .admin-only jika mode User (Read-Only)
+    if (document.body) {
+        document.body.classList.toggle('role-user', !isAdmin);
+        document.body.classList.toggle('role-admin', isAdmin);
+        document.body.classList.toggle('role-superadmin', isSuper);
+    }
+
+    // Sembunyikan seluruh elemen bertanda .admin-only jika mode User (Read-Only)
     document.querySelectorAll('.admin-only').forEach(el => {
         if (isAdmin) {
             el.classList.remove('hidden');
@@ -2264,7 +2270,40 @@ function enforceRbacUI() {
         }
     });
 
-    // Sembunyikan tombol header/action secara eksplisit
+    if (!isAdmin) {
+        // Mode Read-Only (User): Hilangkan seluruh tombol Tambah, Edit, Hapus tanpa terkecuali
+        const userForbiddenSelectors = [
+            'button[onclick*="openAdd"]',
+            'button[onclick*="openEdit"]',
+            'button[onclick*="handleDelete"]',
+            'button[onclick*="delete"]',
+            'button[onclick*="openEdit3DPinModal"]',
+            'button[onclick*="openAdd3DPinModal"]',
+            'button[onclick*="handleDelete3DPin"]',
+            'button[onclick*="toggleFloorplanEditMode"]',
+            'button[onclick*="openQuickStatusModal"]',
+            'i[onclick*="openQuickStatusModal"]',
+            '#btn-bp-edit-pins',
+            '#floorplan-edit-banner',
+            '#btn-fp3d-delete-pin',
+            '#btn-fp3d-save-pin',
+            '.fp3d-card-btn-edit',
+            '.btn-bp-pin-manager',
+            '.btn-add',
+            '.btn-edit',
+            '.btn-delete'
+        ];
+        userForbiddenSelectors.forEach(sel => {
+            try {
+                document.querySelectorAll(sel).forEach(el => {
+                    el.classList.add('hidden');
+                    el.style.setProperty('display', 'none', 'important');
+                });
+            } catch (e) {}
+        });
+    }
+
+    // Sembunyikan tombol header/action secara eksplisit jika bukan admin
     const btnAddDev = document.querySelector('button[onclick="openAddDeviceModal()"]');
     if (btnAddDev) btnAddDev.style.display = isAdmin ? '' : 'none';
 
@@ -2620,6 +2659,7 @@ function loginSuccess(user, isAutoRestore = false) {
 
     // Batasi tombol jika mode Tamu atau peran User (Read-Only)
     const adminBtns = document.querySelectorAll('.admin-only');
+    if (typeof enforceRbacUI === 'function') enforceRbacUI();
     if (user.role === 'guest' || user.role === 'user') {
         if (bannerBadge) {
             bannerBadge.innerHTML = '<i class="fa-solid fa-eye text-yellow"></i> Mode User (Hanya Melihat)';
@@ -3679,6 +3719,10 @@ window.resetCategoriesAndSubcategoriesToDefault = resetCategoriesAndSubcategorie
 
 function openEditDeviceModal(deviceId) {
     if (typeof isAdminUser === 'function' && !isAdminUser()) {
+        if (typeof showToast === 'function') showToast('Akses Dibatasi', 'Hanya Administrator yang memiliki hak akses mengubah data aset.', 'warning');
+        return;
+    }
+    if (typeof isAdminUser === 'function' && !isAdminUser()) {
         showToast('Akses Dibatasi', 'Mode Tamu tidak dapat mengubah data aset. Silakan login sebagai Admin.', 'error');
         return;
     }
@@ -3788,6 +3832,10 @@ function openEditDeviceModal(deviceId) {
 }
 
 function openAddDeviceModal() {
+    if (typeof isAdminUser === 'function' && !isAdminUser()) {
+        if (typeof showToast === 'function') showToast('Akses Dibatasi', 'Hanya Administrator yang memiliki hak akses menambah data aset.', 'warning');
+        return;
+    }
     if (!isAdminUser()) {
         showToast('Akses Dibatasi', 'Mode User (Read-Only) tidak dapat menambah perangkat. Silakan login sebagai Admin.', 'error');
         return;
@@ -4276,6 +4324,10 @@ function showCyberConfirmModal(title, message, onConfirm, confirmBtnText = 'Ya, 
 window.showCyberConfirmModal = showCyberConfirmModal;
 
 function handleDeleteDevice(deviceId) {
+    if (typeof isAdminUser === 'function' && !isAdminUser()) {
+        if (typeof showToast === 'function') showToast('Akses Dibatasi', 'Hanya Administrator yang memiliki hak akses menghapus data aset.', 'warning');
+        return;
+    }
     if (!deviceId) return;
     const isSuperadmin = APP_STATE.currentUser && (APP_STATE.currentUser.role === 'superadmin' || APP_STATE.currentUser.role === 'super_admin');
     if (!isSuperadmin) {
@@ -6215,11 +6267,16 @@ async function updateTrendChartTimeframe(val, showNotification = true) {
             for (let i = 23; i >= 0; i--) {
                 const h = new Date(now.getTime() - i * 3600000);
                 const hourStr = String(h.getHours()).padStart(2, '0') + ':00';
-                hourLabels.push(i === 0 ? 'Sekarang' : hourStr);
-                const onVal = (i < 3) ? counts.online : (i > 16 ? 0 : 0);
-                dataOn.push(onVal);
-                dataOff.push(Math.max(0, counts.total - onVal));
-                dataWarn.push(counts.warning);
+                hourLabels.push(hourStr);
+                if (i === 0) {
+                    dataOn.push(counts.online);
+                    dataOff.push(counts.offline);
+                    dataWarn.push(counts.warning);
+                } else {
+                    dataOn.push(0);
+                    dataOff.push(0);
+                    dataWarn.push(0);
+                }
             }
 
             chart.data.labels = hourLabels;
@@ -6230,13 +6287,13 @@ async function updateTrendChartTimeframe(val, showNotification = true) {
                 chart.options.scales.y.max = Math.max(16, counts.total + 2);
             }
             chart.update();
-            if (showNotification) showToast('Mode 24 Jam', 'Grafik telemetri menampilkan data 24 jam (diperbarui per 1 jam).', 'info');
+            if (showNotification) showToast('Mode 24 Jam', 'Grafik telemetri 24 jam (rentang per 1 jam real-time).', 'info');
         }
 
         trendIntervalTimer = setInterval(() => {
             if (!APP_STATE.charts.trendChart || currentTrendTimeframe !== '24') return;
             updateTrendChartTimeframe('24', false);
-        }, 3600000);
+        }, 60000);
 
     } else {
         // MODE 3: 7 Hari atau 30 Hari
@@ -6280,10 +6337,15 @@ async function updateTrendChartTimeframe(val, showNotification = true) {
                 const d = new Date(now.getTime() - i * 86400000);
                 const dayStr = `${d.getDate()} ${monthNames[d.getMonth()]}`;
                 dayLabels.push(i === 0 ? 'Hari Ini' : dayStr);
-                const onVal = (i === 0) ? counts.online : counts.online;
-                dataOn.push(onVal);
-                dataOff.push(Math.max(0, (counts.total || 16) - onVal));
-                dataWarn.push(counts.warning || 0);
+                if (i === 0) {
+                    dataOn.push(counts.online);
+                    dataOff.push(counts.offline);
+                    dataWarn.push(counts.warning || 0);
+                } else {
+                    dataOn.push(0);
+                    dataOff.push(0);
+                    dataWarn.push(0);
+                }
             }
 
             chart.data.labels = dayLabels;
@@ -6294,13 +6356,13 @@ async function updateTrendChartTimeframe(val, showNotification = true) {
                 chart.options.scales.y.max = Math.max(16, counts.total + 2);
             }
             chart.update();
-            if (showNotification) showToast(modeTitle, `Grafik riwayat status ${daysCount} hari (diperbarui per 1 hari).`, 'info');
+            if (showNotification) showToast(modeTitle, `Grafik riwayat status ${daysCount} hari (rentang 1 hari real-time).`, 'info');
         }
 
         trendIntervalTimer = setInterval(() => {
             if (!APP_STATE.charts.trendChart || currentTrendTimeframe !== val) return;
             updateTrendChartTimeframe(val, false);
-        }, 86400000);
+        }, 120000);
     }
 }
 
@@ -8223,6 +8285,10 @@ function renderMaintenanceTable() {
 }
 
 function openAddMaintenanceModal() {
+    if (typeof isAdminUser === 'function' && !isAdminUser()) {
+        if (typeof showToast === 'function') showToast('Akses Dibatasi', 'Hanya Administrator yang dapat menambah jadwal pemeliharaan.', 'warning');
+        return;
+    }
     if (!isAdminUser()) {
         showToast('Akses Dibatasi', 'Hanya Admin atau Superadmin yang dapat menjadwalkan pemeliharaan perangkat.', 'error');
         return;
@@ -9459,6 +9525,10 @@ function applyUserModalRbacLock(isSuperadmin) {
 }
 
 function openAddUserModal() {
+    if (typeof isAdminUser === 'function' && !isAdminUser()) {
+        if (typeof showToast === 'function') showToast('Akses Dibatasi', 'Hanya Administrator yang dapat menambah pengguna baru.', 'warning');
+        return;
+    }
     if (!APP_STATE.currentUser || APP_STATE.currentUser.role === 'guest' || APP_STATE.currentUser.role === 'user') {
         showToast('Akses Ditolak', 'Hanya Admin atau Superadmin yang dapat menambah user baru.', 'error');
         return;
@@ -9490,6 +9560,10 @@ function openAddUserModal() {
 }
 
 function openEditUserModal(userId) {
+    if (typeof isAdminUser === 'function' && !isAdminUser()) {
+        if (typeof showToast === 'function') showToast('Akses Dibatasi', 'Hanya Administrator yang dapat mengedit data pengguna.', 'warning');
+        return;
+    }
     if (!APP_STATE.currentUser || APP_STATE.currentUser.role === 'guest' || APP_STATE.currentUser.role === 'user') {
         showToast('Akses Ditolak', 'Hanya Admin atau Superadmin yang dapat mengedit data user.', 'error');
         return;
@@ -9746,6 +9820,10 @@ function handleSaveUser() {
 }
 
 function handleDeleteUser(userId) {
+    if (typeof isAdminUser === 'function' && !isAdminUser()) {
+        if (typeof showToast === 'function') showToast('Akses Dibatasi', 'Hanya Administrator yang dapat menghapus pengguna.', 'warning');
+        return;
+    }
     const isSuperadmin = APP_STATE.currentUser && (
         APP_STATE.currentUser.role === 'superadmin' || 
         APP_STATE.currentUser.role === 'Superadmin'

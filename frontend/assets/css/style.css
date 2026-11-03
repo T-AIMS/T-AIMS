@@ -62819,19 +62819,49 @@ body:has(#auth-screen:not(.hidden)) #main-dashboard {
     }
 }
 
-/* POINT 2: PERJELAS GARIS MERAH PADA KARTU PERANGKAT 3D & REDAM KUNING */
+/* KARTU PERANGKAT 3D: WARNA DINAMIS HIJAU ONLINE & MERAH OFFLINE */
 .fp3d-device-card {
-    border: 1.5px solid #E11D48 !important;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.7), 0 0 14px rgba(225, 29, 72, 0.32) !important;
+    border-radius: 8px !important;
+    transition: all 0.2s ease !important;
 }
-.fp3d-device-card .btn-fp3d-focus {
-    background: rgba(225, 29, 72, 0.15) !important;
-    border: 1px solid #E11D48 !important;
-    color: #FDA4AF !important;
+.fp3d-device-card.online,
+.fp3d-device-card:not(.offline) {
+    border: 1.5px solid #10B981 !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.7), 0 0 14px rgba(16, 185, 129, 0.35) !important;
 }
-.fp3d-device-card .btn-fp3d-focus:hover {
-    background: rgba(225, 29, 72, 0.28) !important;
-    border-color: #FF1744 !important;
+.fp3d-device-card.online:hover,
+.fp3d-device-card:not(.offline):hover {
+    border-color: #34D399 !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.8), 0 0 18px rgba(16, 185, 129, 0.55) !important;
+    transform: translateY(-2px) !important;
+}
+.fp3d-device-card.offline {
+    border: 1.5px solid #EF4444 !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.7), 0 0 14px rgba(239, 68, 68, 0.35) !important;
+}
+.fp3d-device-card.offline:hover {
+    border-color: #F87171 !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.8), 0 0 18px rgba(239, 68, 68, 0.55) !important;
+    transform: translateY(-2px) !important;
+}
+.fp3d-device-card.online .btn-fp3d-focus {
+    background: rgba(16, 185, 129, 0.12) !important;
+    border: 1px solid rgba(16, 185, 129, 0.45) !important;
+    color: #6EE7B7 !important;
+}
+.fp3d-device-card.online .btn-fp3d-focus:hover {
+    background: rgba(16, 185, 129, 0.25) !important;
+    border-color: #10B981 !important;
+    color: #FFFFFF !important;
+}
+.fp3d-device-card.offline .btn-fp3d-focus {
+    background: rgba(239, 68, 68, 0.12) !important;
+    border: 1px solid rgba(239, 68, 68, 0.45) !important;
+    color: #FCA5A5 !important;
+}
+.fp3d-device-card.offline .btn-fp3d-focus:hover {
+    background: rgba(239, 68, 68, 0.25) !important;
+    border-color: #EF4444 !important;
     color: #FFFFFF !important;
 }
 
@@ -63146,4 +63176,38 @@ body:has(#auth-screen:not(.hidden)) #main-dashboard {
         color: #111827 !important;
         font-family: Arial, Helvetica, sans-serif !important;
     }
+}
+
+/* ========================================================================== */
+/* RBAC STRICT: USER ROLE READ-ONLY - HIDE ALL ADD, EDIT, DELETE BUTTONS      */
+/* ========================================================================== */
+body.role-user .admin-only,
+body.role-user .superadmin-only,
+body.role-user .btn-bp-pin-manager,
+body.role-user #btn-bp-edit-pins,
+body.role-user #floorplan-edit-banner,
+body.role-user #modal-3d-pin-editor,
+body.role-user #btn-fp3d-delete-pin,
+body.role-user #btn-fp3d-save-pin,
+body.role-user .fp3d-card-btn-edit,
+body.role-user button[onclick*="openEdit3DPinModal"],
+body.role-user button[onclick*="openAdd3DPinModal"],
+body.role-user button[onclick*="handleDelete3DPin"],
+body.role-user button[onclick*="toggleFloorplanEditMode"],
+body.role-user button[onclick*="openAddDeviceModal"],
+body.role-user button[onclick*="openEditDeviceModal"],
+body.role-user button[onclick*="handleDeleteDevice"],
+body.role-user button[onclick*="openAddUserModal"],
+body.role-user button[onclick*="openEditUserModal"],
+body.role-user button[onclick*="handleDeleteUser"],
+body.role-user button[onclick*="openAddMaintenanceModal"],
+body.role-user button[onclick*="openEditMaintenanceModal"],
+body.role-user button[onclick*="handleDeleteMaintenance"],
+body.role-user button[onclick*="openQuickStatusModal"],
+body.role-user i[onclick*="openQuickStatusModal"],
+body.role-user [data-role="admin"],
+body.role-user [data-role="superadmin"] {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
 }

@@ -182,7 +182,7 @@ router.get('/trend', authenticate, async (req, res) => {
 
         } else if (period === '24h' || period === '24') {
             const [assetRows] = await db.query('SELECT COUNT(*) AS total FROM assets');
-            const totalAssets = assetRows[0]?.total || 15;
+            const totalAssets = assetRows[0]?.total || 18;
 
             const [currentStatusRows] = await db.query(`
                 SELECT 
@@ -192,7 +192,7 @@ router.get('/trend', authenticate, async (req, res) => {
                 FROM assets
             `);
             const curOnline = parseInt(currentStatusRows[0]?.online, 10) || 0;
-            const curOffline = parseInt(currentStatusRows[0]?.offline, 10) || totalAssets;
+            const curOffline = parseInt(currentStatusRows[0]?.offline, 10) || 0;
             const curWarning = parseInt(currentStatusRows[0]?.warning, 10) || 0;
 
             const [rows] = await db.query(`
@@ -200,10 +200,7 @@ router.get('/trend', authenticate, async (req, res) => {
                     DATE_FORMAT(check_time, '%Y-%m-%d %H:00') AS hour_key,
                     COUNT(DISTINCT CASE WHEN status = 'online' THEN asset_id END) AS online_devs,
                     COUNT(DISTINCT CASE WHEN status = 'offline' THEN asset_id END) AS offline_devs,
-                    COUNT(DISTINCT CASE WHEN status = 'warning' THEN asset_id END) AS warning_devs,
-                    SUM(CASE WHEN status = 'online' THEN 1 ELSE 0 END) AS online_pings,
-                    SUM(CASE WHEN status = 'offline' THEN 1 ELSE 0 END) AS offline_pings,
-                    COUNT(*) AS total_pings
+                    COUNT(DISTINCT CASE WHEN status = 'warning' THEN asset_id END) AS warning_devs
                 FROM monitoring_logs
                 WHERE check_time >= NOW() - INTERVAL 24 HOUR
                 GROUP BY hour_key
@@ -211,12 +208,10 @@ router.get('/trend', authenticate, async (req, res) => {
 
             const hourMap = {};
             rows.forEach(r => {
-                const ratio = r.total_pings > 0 ? (r.online_pings / r.total_pings) : 0;
-                const estOnline = Math.max(r.online_devs, Math.round(ratio * totalAssets));
                 hourMap[r.hour_key] = {
-                    online: Math.min(totalAssets, estOnline),
-                    offline: Math.max(0, totalAssets - estOnline),
-                    warning: r.warning_devs || 0
+                    online: Number(r.online_devs) || 0,
+                    offline: Number(r.offline_devs) || 0,
+                    warning: Number(r.warning_devs) || 0
                 };
             });
 
@@ -235,14 +230,10 @@ router.get('/trend', authenticate, async (req, res) => {
                     const hour = String(h.getHours()).padStart(2, '0');
                     labels.push(`${hour}:00`);
                     online.push(0);
-                    offline.push(totalAssets);
+                    offline.push(curOffline || totalAssets);
                     warning.push(0);
                 }
             } else {
-                let lastKnownOnline = curOnline;
-                let lastKnownOffline = curOffline;
-                let lastKnownWarning = curWarning;
-
                 for (let i = 23; i >= 0; i--) {
                     const h = new Date(now.getTime() - i * 3600000);
                     const year = h.getFullYear();
@@ -255,20 +246,20 @@ router.get('/trend', authenticate, async (req, res) => {
                     labels.push(label);
 
                     if (i === 0) {
+                        // Titik paling kanan: Jam sekarang (real-time snapshot)
                         online.push(curOnline);
                         offline.push(curOffline);
                         warning.push(curWarning);
                     } else if (hourMap[key]) {
+                        // Titik riil dari monitoring_logs pada jam tersebut
                         online.push(hourMap[key].online);
                         offline.push(hourMap[key].offline);
                         warning.push(hourMap[key].warning);
-                        lastKnownOnline = hourMap[key].online;
-                        lastKnownOffline = hourMap[key].offline;
-                        lastKnownWarning = hourMap[key].warning;
                     } else {
-                        online.push(lastKnownOnline);
-                        offline.push(lastKnownOffline);
-                        warning.push(lastKnownWarning);
+                        // Tidak ada log pada jam lampau ini (tidak menduplikasi angka palsu hari ini)
+                        online.push(0);
+                        offline.push(0);
+                        warning.push(0);
                     }
                 }
             }
@@ -282,11 +273,11 @@ router.get('/trend', authenticate, async (req, res) => {
                 } 
             });
 
-        } else if (period === '30d' || period === '30') {
-            const days = 30;
+        } else if (period === '30d' || period === '30' || period === '7d' || period === '7') {
+            const days = (period === '7d' || period === '7') ? 7 : 30;
 
             const [assetRows] = await db.query('SELECT COUNT(*) AS total FROM assets');
-            const totalAssets = assetRows[0]?.total || 15;
+            const totalAssets = assetRows[0]?.total || 18;
 
             const [currentStatusRows] = await db.query(`
                 SELECT 
@@ -296,32 +287,26 @@ router.get('/trend', authenticate, async (req, res) => {
                 FROM assets
             `);
             const curOnline = parseInt(currentStatusRows[0]?.online, 10) || 0;
-            const curOffline = parseInt(currentStatusRows[0]?.offline, 10) || totalAssets;
+            const curOffline = parseInt(currentStatusRows[0]?.offline, 10) || 0;
             const curWarning = parseInt(currentStatusRows[0]?.warning, 10) || 0;
 
             const [logRows] = await db.query(`
                 SELECT 
-                    DATE(check_time) AS tgl,
+                    DATE_FORMAT(check_time, '%Y-%m-%d') AS tgl_str,
                     COUNT(DISTINCT CASE WHEN status = 'online' THEN asset_id END) AS online_devs,
                     COUNT(DISTINCT CASE WHEN status = 'warning' THEN asset_id END) AS warning_devs,
-                    COUNT(DISTINCT CASE WHEN status = 'offline' THEN asset_id END) AS offline_devs,
-                    SUM(CASE WHEN status = 'online' THEN 1 ELSE 0 END) AS online_pings,
-                    SUM(CASE WHEN status = 'offline' THEN 1 ELSE 0 END) AS offline_pings,
-                    COUNT(*) AS total_pings
+                    COUNT(DISTINCT CASE WHEN status = 'offline' THEN asset_id END) AS offline_devs
                 FROM monitoring_logs
                 WHERE check_time >= NOW() - INTERVAL ? DAY
-                GROUP BY tgl
+                GROUP BY tgl_str
             `, [days + 1]);
 
             const logMap = {};
             logRows.forEach(r => {
-                const dStr = new Date(r.tgl).toISOString().slice(0, 10);
-                const ratio = r.total_pings > 0 ? (r.online_pings / r.total_pings) : 0;
-                const estOnline = Math.max(r.online_devs, Math.round(ratio * totalAssets));
-                logMap[dStr] = {
-                    online: Math.min(totalAssets, estOnline),
-                    offline: Math.max(0, totalAssets - estOnline),
-                    warning: r.warning_devs || 0
+                logMap[r.tgl_str] = {
+                    online: Number(r.online_devs) || 0,
+                    offline: Number(r.offline_devs) || 0,
+                    warning: Number(r.warning_devs) || 0
                 };
             });
 
@@ -340,28 +325,34 @@ router.get('/trend', authenticate, async (req, res) => {
                     const label = (i === 0) ? 'Hari Ini' : `${d.getDate()} ${months[d.getMonth()]}`;
                     labels.push(label);
                     online.push(0);
-                    offline.push(totalAssets);
+                    offline.push(curOffline || totalAssets);
                     warning.push(0);
                 }
             } else {
                 for (let i = days - 1; i >= 0; i--) {
                     const d = new Date(now.getTime() - i * 86400000);
-                    const isoDate = d.toISOString().slice(0, 10);
+                    const year = d.getFullYear();
+                    const month = String(d.getMonth() + 1).padStart(2, '0');
+                    const date = String(d.getDate()).padStart(2, '0');
+                    const isoDate = `${year}-${month}-${date}`;
                     const label = (i === 0) ? 'Hari Ini' : `${d.getDate()} ${months[d.getMonth()]}`;
                     labels.push(label);
 
                     if (i === 0) {
+                        // Titik paling kanan: Hari ini (status riil saat ini)
                         online.push(curOnline);
                         offline.push(curOffline);
                         warning.push(curWarning);
                     } else if (logMap[isoDate]) {
+                        // Riwayat log asli hari tersebut (tanpa rumus asumsi totalAssets - estOnline)
                         online.push(logMap[isoDate].online);
                         offline.push(logMap[isoDate].offline);
                         warning.push(logMap[isoDate].warning);
                     } else {
-                        online.push(curOnline);
-                        offline.push(curOffline);
-                        warning.push(curWarning);
+                        // Hari lampau tanpa log (0)
+                        online.push(0);
+                        offline.push(0);
+                        warning.push(0);
                     }
                 }
             }
