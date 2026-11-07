@@ -112,6 +112,51 @@ def send_telegram(text):
         print(f"[-] Telegram Send Error: {e}")
         return False
 
+
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+
+SMTP_HOST = env_vars.get("SMTP_HOST", "smtp.gmail.com")
+SMTP_PORT = int(env_vars.get("SMTP_PORT", 587))
+SMTP_USER = env_vars.get("SMTP_USER", "taims.automation@gmail.com")
+SMTP_PASS = env_vars.get("SMTP_PASS", "eokdzkaveauxyntv")
+
+BCC_EMAILS = [
+    "damarmunajad7@gmail.com", "rzafahmi351@gmail.com", "faidatrismaamelia@gmail.com",
+    "ilfinamufarika4@gmail.com", "c11anandadwisusanti@gmail.com", "awangtgprofesional@gmail.com",
+    "dikayogapratama18@gmail.com", "ahzizsaputra@gmail.com", "arickferdiansyah@gmail.com",
+    "wafianzaidan@gmail.com", "rezatriwardana7@gmail.com"
+]
+
+def send_smtp_alert(subject, text_body):
+    if not SMTP_PASS or not SMTP_USER:
+        print("[-] SMTP Password belum dikonfigurasi di .env, lewati pengiriman email.")
+        return False
+    try:
+        msg = MIMEMultipart()
+        msg["Subject"] = subject
+        msg["From"] = SMTP_USER
+        msg["To"] = SMTP_USER
+        msg["Bcc"] = ", ".join(BCC_EMAILS)
+        msg.attach(MIMEText(text_body, "plain", "utf-8"))
+
+        all_recipients = [SMTP_USER] + BCC_EMAILS
+        if SMTP_PORT == 465:
+            with smtplib.SMTP_SSL(SMTP_HOST, SMTP_PORT, timeout=10) as server:
+                server.login(SMTP_USER, SMTP_PASS)
+                server.sendmail(SMTP_USER, all_recipients, msg.as_string())
+        else:
+            with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=10) as server:
+                server.starttls()
+                server.login(SMTP_USER, SMTP_PASS)
+                server.sendmail(SMTP_USER, all_recipients, msg.as_string())
+        print(f"[+] Sukses mengirimkan email insiden dari {SMTP_USER} via port {SMTP_PORT} ke {len(all_recipients)} penerima.")
+        return True
+    except Exception as e:
+        print(f"[-] Gagal mengirimkan email SMTP: {e}")
+        return False
+
 class ArikWorkflowHandler(BaseHTTPRequestHandler):
     def _is_authorized(self):
         # 1. IP Whitelisting: Izinkan hanya traffic lokal (Loopback / Private Subnet)
@@ -298,6 +343,7 @@ class ArikWorkflowHandler(BaseHTTPRequestHandler):
 
             print("    -> Meneruskan ke Bot Telegram Arik...")
             send_telegram(ai_text)
+            send_smtp_alert(f"[T-AIMS] Offline: {asset_name}", ai_text)
             self._send_json(200, {"success": True, "message": "Alert diproses"})
 
         # -------------------------------------------------------------
@@ -360,6 +406,7 @@ class ArikWorkflowHandler(BaseHTTPRequestHandler):
                 ai_text = fallback_recovery
 
             send_telegram(ai_text)
+            send_smtp_alert(f"[T-AIMS] Offline: {asset_name}", ai_text)
             self._send_json(200, {"success": True, "message": "Recovery diproses"})
 
         else:
