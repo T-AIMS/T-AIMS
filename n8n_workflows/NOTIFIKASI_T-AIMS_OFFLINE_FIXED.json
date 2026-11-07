@@ -1,0 +1,199 @@
+{
+  "name": "NOTIFIKASI T-AIMS OFFLINE",
+  "nodes": [
+    {
+      "parameters": {
+        "chatId": "-5383419523",
+        "text": "={{ $json.candidates ? $json.candidates[0].content.parts[0].text : $('Code in JavaScript').item.json.message }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        800,
+        16
+      ],
+      "id": "232400a7-53a1-4e9f-b576-249e2e7f6e70",
+      "name": "Send a text message",
+      "webhookId": "73c9d919-9c76-493f-8520-30d5b03f994b",
+      "credentials": {
+        "telegramApi": {
+          "id": "tI7uRQG2569tSNWn",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. Ambil payload dari Webhook\nconst raw = $input.first().json;\nconst payload = raw.body || raw;\n\nconst assetCode = payload.asset_code || '-';\nconst assetName = payload.asset_name || '-';\nconst location = payload.location || '-';\nconst ipAddress = payload.ip_address || '-';\nconst type = (payload.type || 'offline').toLowerCase();\nconst severity = (payload.severity || 'critical').toUpperCase();\n\n// 2. Logika Anti-Spam (Intelligent Cooldown Buffer)\n// Mencegah flooding / spamming di grup Telegram & Email saat perangkat mengalami pemadaman persisten (mati lama),\n// tanpa menyebabkan bug permanent lockout (status terkunci mati selamanya).\nconst staticData = $getWorkflowStaticData('global');\nconst COOLDOWN_MS = 10 * 60 * 1000; // Cooldown 10 menit per aset\nconst now = Date.now();\nconst lastSent = staticData[`last_sent_${assetCode}`] || 0;\n\n// Jika payload bukan manual force-test dan pengiriman terakhir belum lewat 10 menit, hentikan alur\nif (!payload.force && (now - lastSent < COOLDOWN_MS)) {\n  return []; // Hentikan eksekusi secara graceful (anti-spam)\n}\n\n// Catat waktu pengiriman sukses dan status terakhir\nstaticData[`last_sent_${assetCode}`] = now;\nstaticData[`last_status_${assetCode}`] = type;\n\n// 3. Format Waktu Indonesia (WIB)\nlet timeFormatted = payload.timestamp || payload.last_seen || '-';\nif (timeFormatted !== '-') {\n  try {\n    timeFormatted = new Date(timeFormatted).toLocaleString('id-ID', {\n      timeZone: 'Asia/Jakarta', dateStyle: 'medium', timeStyle: 'short'\n    }) + ' WIB';\n  } catch (e) {}\n}\n\n// 4. Ekstrak Symptoms\nlet symptomText = \"Tidak ada data gejala spesifik.\";\nif (payload.symptoms) {\n  if (typeof payload.symptoms === 'object') {\n    const ping = payload.symptoms.ping_latency ? `Latensi ${payload.symptoms.ping_latency}` : '';\n    const loss = payload.symptoms.packet_loss ? `Packet Loss ${payload.symptoms.packet_loss}` : '';\n    symptomText = [ping, loss].filter(Boolean).join(' | ') || JSON.stringify(payload.symptoms);\n  } else {\n    symptomText = String(payload.symptoms);\n  }\n}\n\n// 5. Knowledge Base SOP 19 Aset T-AIMS\nconst sopDatabase = {\n  \"SRV-01\": \"Server Utama Data Center. Cek iDRAC/IPMI port 443, utilisasi RAM/CPU, disk root (/), dan restart daemon mariadb/taims-backend. SLA < 15 Menit.\",\n  \"SWM-01\": \"Core Switch Cisco Catalyst. Cek kabel uplink trunking SFP, modul PoE overheat, dan indikator loop broadcast storm. SLA < 15 Menit.\",\n  \"MKRT-02\": \"Core Router Data Center. Akses Winbox via MAC, cek route BGP/OSPF, dan beban CPU RouterOS. SLA < 20 Menit.\",\n  \"CLOUD-01\": \"Cloud VPS Instance. Cek reverse proxy Nginx, daemon PM2, dan akses SSH port 2222. SLA < 15 Menit.\",\n  \"CAS-01\": \"Server Otentikasi RADIUS. Cek daemon auth port 1812/UDP dan sertifikat TLS internal. SLA < 30 Menit.\",\n  \"RTR-04\": \"Router Backup Failover. Cek link ISP cadangan dan interface SFP transceiver. SLA < 1 Jam.\",\n  \"RPI-02\": \"Sensor Suhu Rak Server. Cek adaptor Type-C 5V, microSD, dan sensor DHT ruangan data center. SLA < 30 Menit.\",\n  \"PC-03\": \"PC Konsol Operator NOC Data Center. Cek tombol power fisik dan kabel LAN meja kontrol. SLA < 4 Jam.\",\n  \"RTR-01\": \"Router Utama Head Office. Cek lampu LOS/PON pada modem ISP dan adaptor 12V Mikrotik CCR. SLA < 20 Menit.\",\n  \"RPI-01\": \"Edge Gateway Head Office. Cek status daemon 'systemctl status taims-monitoring' dan kartu microSD. SLA < 30 Menit.\",\n  \"CCTV-01\": \"CCTV Gerbang Head Office. Cek kabel UTP outdoor, injektor PoE switch, dan lampu infra merah malam. SLA < 45 Menit.\",\n  \"ESP-01\": \"Sensor Panel Surya & UPS HO. Cek tegangan baterai (< 3.3V) dan sinyal Wi-Fi 2.4GHz. SLA < 1 Jam.\",\n  \"PC-01\": \"PC Staff Operasional 01. Konfirmasi ke user ruangan apakah PC dimatikan setelah jam kerja. SLA < 4 Jam.\",\n  \"PC-02\": \"Workstation NOC 02 Control Room. Cek port ethernet belakang casing PC ruang kontrol. SLA < 1 Jam.\",\n  \"SMTV-01\": \"Smart TV Display Signage. Nyalakan TV via remote dan pastikan koneksi Wi-Fi display aktif. SLA < 4 Jam.\",\n  \"RTR-03\": \"Core Router TP-Link Multi-WAN Marketing. Cek link WAN ISP dan tunnel VPN ke Head Office. SLA < 20 Menit.\",\n  \"MKRT-01\": \"Mikrotik Bandwidth Marketing. Akses Winbox, cek CPU load akibat streaming/antrean bandwidth. SLA < 30 Menit.\",\n  \"RTR-02\": \"Sub-Router Wi-Fi Lt 2 Marketing. Cek kabel LAN uplink dari lantai 1 ke lantai 2. SLA < 1 Jam.\",\n  \"CCTV-02\": \"CCTV Lobby Marketing. Cek jack adaptor 12V dan link port switch kamera depan. SLA < 45 Menit.\"\n};\n\nconst sopSpesifik = sopDatabase[assetCode] || \"Lakukan pengecekan konektivitas kabel jaringan dan status catu daya perangkat.\";\n\n// 6. Susun Prompt AI\nlet promptAI = \"\";\nlet emoji = \"🔴\";\nlet headerFallback = \"ALERT\";\n\nif (type === 'warning') {\n  emoji = \"🟡\";\n  headerFallback = \"WARNING: POTENSI GANGGUAN\";\n  promptAI = `Kamu adalah AI Network Analyst untuk T-AIMS.\nPerangkat: ${assetName} (${assetCode})\nLokasi: ${location} | IP: ${ipAddress}\nStatus: WARNING (Early Warning)\nGejala: ${symptomText}\nSOP Acuan: ${sopSpesifik}\n\nTugasmu: Berikan analisis prediktif dan tindakan pencegahan.\nGunakan format WAJIB ini (teks biasa, bukan JSON):\n🟡 [T-AIMS WARNING] POTENSI GANGGUAN TERDETEKSI\n━━━━━━━━━━━━━━━━━━━━\n📌 Aset: ${assetName} (${assetCode})\n🏢 Lokasi: ${location} | 🌐 IP: ${ipAddress}\n⚠️ Severity: WARNING (Early Warning)\n📊 Gejala: ${symptomText}\n\n🔍 Analisis Prediktif AI (Gemini):\n[Jelaskan potensi penyebab sebelum alat mati total]\n\n🛠️ Tindakan Pencegahan Teknisi:\n[1 langkah preventif sebelum down total]\n━━━━━━━━━━━━━━━━━━━━\nBot: @taims_alert_arik_bot • n8n Early Warning Engine`;\n\n} else {\n  emoji = \"🔴\";\n  headerFallback = \"OFFLINE ALERT\";\n  promptAI = `Kamu adalah AI Network Analyst untuk T-AIMS.\nPerangkat: ${assetName} (${assetCode})\nLokasi: ${location} | IP: ${ipAddress}\nStatus: CRITICAL (Offline)\nSOP Acuan: ${sopSpesifik}\n\nTugasmu: Berikan analisis root cause dan SOP penanganan.\nGunakan format WAJIB ini (teks biasa, bukan JSON):\n🔴 [T-AIMS ALERT] PERANGKAT DOWN / OFFLINE\n━━━━━━━━━━━━━━━━━━━━\n📌 Aset: ${assetName} (${assetCode})\n🏢 Lokasi: ${location} | 🌐 IP: ${ipAddress}\n⚠️ Severity: CRITICAL | SLA MTTR: < 30 Menit\n\n🔍 Analisis Root Cause & Dampak:\n[Jelaskan akar masalah teknis & dampak operasional kantor]\n\n🛠️ SOP Penanganan Teknisi:\n1. Verifikasi: [Langkah remote/ping]\n2. Fisik: [Langkah cek kabel/PoE/LED]\n3. Solusi: [Tindakan eskalasi/recovery]\n━━━━━━━━━━━━━━━━━━━━\nBot: @taims_alert_arik_bot • n8n Incident Engine`;\n}\n\n// 7. Pesan Fallback (Jika AI Timeout / Graceful Degradation)\nconst messageFallback = `${emoji} [T-AIMS ${headerFallback}]\n━━━━━━━━━━━━━━━━━━━━\n📌 Aset: ${assetName} (${assetCode})\n🏢 Lokasi: ${location} | 🌐 IP: ${ipAddress}\n⚠️ Severity: ${severity}\n⏰ Waktu: ${timeFormatted}\n\nℹ️ Notifikasi Standar (AI sedang limit/down)\n━━━━━━━━━━━━━━━━━━━━\nBot: @taims_alert_arik_bot • n8n Engine`;\n\n// 8. Return Data Lengkap (Semua Properti Termasuk asset_name)\nreturn {\n  json: {\n    asset_code: assetCode,\n    asset_name: assetName,\n    category: payload.category || '-',\n    location: location,\n    ip_address: ipAddress,\n    severity: severity,\n    type: type,\n    timestamp: timeFormatted,\n    symptoms: symptomText,\n    message: messageFallback,\n    prompt_ai: promptAI\n  }\n};\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        192,
+        96
+      ],
+      "id": "b1044d59-d6bb-404b-9227-44576e96c7e6",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "fromEmail": "taims.automation@gmail.com",
+        "toEmail": "taims.automation@gmail.com",
+        "subject": "=[T-AIMS] Offline: {{ $('Code in JavaScript').item.json.asset_name }}",
+        "emailFormat": "text",
+        "text": "={{ $json.candidates ? $json.candidates[0].content.parts[0].text : $('Code in JavaScript').item.json.message }}",
+        "options": {
+          "bccEmail": "damarmunajad7@gmail.com,rzafahmi351@gmail.com,faidatrismaamelia@gmail.com,ilfinamufarika4@gmail.com,c11anandadwisusanti@gmail.com,awangtgprofesional@gmail.com,dikayogapratama18@gmail.com,ahzizsaputra@gmail.com,arickferdiansyah@gmail.com,wafianzaidan@gmail.com,rezatriwardana7@gmail.com"
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        800,
+        160
+      ],
+      "id": "caa3db59-56ad-4d1e-b7e0-5fe3c2a6e0fc",
+      "name": "Send an Email",
+      "webhookId": "0a095b43-e337-46f8-bb61-1d4ee4f77744",
+      "credentials": {
+        "smtp": {
+          "id": "mAhG8aKnfX4tsLda",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=GEMINI_API_KEY_NOTIF_PLACEHOLDER",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "=contents",
+              "value": "={{ [ { parts: [ { text: $json.prompt_ai } ] } ] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        416,
+        96
+      ],
+      "id": "c6acf242-9bcf-427d-8d6f-940357f584c8",
+      "name": "AI analisis",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "maxTries": 2,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "taims-alert",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.2,
+      "position": [
+        -48,
+        96
+      ],
+      "id": "ec6a79fa-ef00-41ee-a06f-b03ce9c7e177",
+      "name": "Webhook",
+      "webhookId": "77c87108-5040-4d36-b12d-5e30b7cd0209"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        608,
+        96
+      ],
+      "id": "1945ae69-120b-4e8e-af9c-22e560b1d1d9",
+      "name": "percabangan"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Send a text message": {
+      "main": [
+        []
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "AI analisis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI analisis": {
+      "main": [
+        [
+          {
+            "node": "percabangan",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "percabangan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "percabangan": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send an Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "0be2256c-8f24-4e74-885f-61e7452d4ccb",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "60113387f61802f17dc2fd3f15b35737541fe36f121c623ede03d8255443795e"
+  },
+  "nodeGroups": [],
+  "id": "am8SlJl3ukufuIhy",
+  "tags": []
+}
