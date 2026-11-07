@@ -27,15 +27,22 @@ import os
 PORT = 5678
 
 # Kredensial Resmi dari Workflow Arik (dibaca dinamis dari .env)
-env_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'taims-backend', '.env')
+candidate_paths = [
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'taims-backend', '.env'),
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), 'taims-backend', '.env'),
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), '.env'),
+    '/home/taims-teknolab/taims-backend/.env'
+]
 env_vars = {}
-if os.path.exists(env_path):
-    with open(env_path, 'r', encoding='utf-8', errors='ignore') as fp:
-        for line in fp:
-            line = line.strip()
-            if line and not line.startswith('#') and '=' in line:
-                parts = line.split('=', 1)
-                env_vars[parts[0].strip()] = parts[1].strip().strip('"').strip("'")
+for env_path in candidate_paths:
+    if os.path.exists(env_path):
+        with open(env_path, 'r', encoding='utf-8', errors='ignore') as fp:
+            for line in fp:
+                line = line.strip()
+                if line and not line.startswith('#') and '=' in line:
+                    parts = line.split('=', 1)
+                    env_vars[parts[0].strip()] = parts[1].strip().strip('"').strip("'")
+        break
 
 GEMINI_KEY_DASHBOARD = env_vars.get("GEMINI_KEY_DASHBOARD", os.environ.get("GEMINI_KEY_DASHBOARD", ""))
 GEMINI_KEY_NOTIF     = env_vars.get("GEMINI_KEY_NOTIF", os.environ.get("GEMINI_KEY_NOTIF", ""))
