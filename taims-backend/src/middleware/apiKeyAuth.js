@@ -25,7 +25,7 @@ function apiKeyAuth(req, res, next) {
         }
     }
 
-    const validKey = process.env.DEVICE_API_KEY ? String(process.env.DEVICE_API_KEY).trim() : '';
+    const validKey = (process.env.TAIMS_API_KEY || process.env.DEVICE_API_KEY) ? String(process.env.TAIMS_API_KEY || process.env.DEVICE_API_KEY).trim() : '';
 
     if (!validKey) {
         console.error("❌ CRITICAL: DEVICE_API_KEY belum di-set di file .env!");
