@@ -345,7 +345,7 @@ async function dispatchTelegramAlert(text, type = 'info', metadata = {}) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-TAIMS-WEBHOOK-SECRET': process.env.N8N_WEBHOOK_SECRET || 'taims_sec_n8n_8f92c10a4b3e6d5e7a1b'
+                'X-TAIMS-WEBHOOK-SECRET': process.env.N8N_WEBHOOK_SECRET || ''
             },
             body: JSON.stringify(payloadData),
             signal: controller.signal
@@ -362,7 +362,10 @@ async function dispatchTelegramAlert(text, type = 'info', metadata = {}) {
 
     // 3. Dispatch Email Alert (SMTP Integration - Dokumen PKL Hal. 11 & Checklist 5.5)
     // Otomatis terkirim ke multi-recipient (rekan tim di .env + PIC aset + custom email)
-    sendIncidentAlertEmail({
+    // 3. Direct SMTP Email Alert DINONAKTIFKAN SESUAI INSTRUKSI ARIK & DZAKWAN:
+    // Pengiriman email insiden/warning/recovery kini 1 PINTU murni lewat n8n (taims.automation@gmail.com)
+    // agar tidak terjadi duplikasi email (double email dari education8420 & taims.automation).
+    if (process.env.ENABLE_DIRECT_BACKEND_SMTP === 'true') sendIncidentAlertEmail({
         asset_code: metadata.asset_code || 'RPI-01',
         asset_name: metadata.asset_name || 'Raspberry Pi Head Office',
         category: metadata.category || 'Infrastruktur',

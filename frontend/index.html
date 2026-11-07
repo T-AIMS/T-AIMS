@@ -70,8 +70,8 @@
  document.write('<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"><\/script>');
  }
  </script>
- <link rel="stylesheet" href="assets/css/floorplan3d.css?v=20261103_07_RBAC_CRU">
- <link rel="stylesheet" href="assets/css/style.css?v=20261103_07_RBAC_CRU">
+ <link rel="stylesheet" href="assets/css/floorplan3d.css?v=20261107_14_AUDIT_PKL">
+ <link rel="stylesheet" href="assets/css/style.css?v=20261107_14_AUDIT_PKL">
 
 </head>
 
@@ -290,6 +290,7 @@
 
  </li>
 
+ <li class="nav-item" data-page="page-assets"><a href="javascript:void(0)" class="nav-link" onclick="switchPage('page-assets')"><i class="fa-solid fa-cube"></i><span>Aset</span></a></li>
  <li class="nav-item" data-page="page-devices">
 
  <a href="javascript:void(0)" class="nav-link" onclick="switchPage('page-devices')">
@@ -352,7 +353,7 @@
 
  </li>
 
- <li class="nav-item" data-page="page-project-info">
+ <li class="nav-item hidden" data-page="page-project-info" style="display:none !important;">
 
  <a href="javascript:void(0)" class="nav-link" onclick="switchPage('page-project-info')">
 
@@ -399,6 +400,7 @@
  <!-- Status Sistem di Bagian Bawah Sidebar -->
 
  <div class="sidebar-footer">
+ <a href="javascript:void(0)" onclick="switchPage('page-project-info')" title="Informasi Pengembang &amp; Struktur Tim PKL 2 Shift" style="display:flex; align-items:center; justify-content:center; gap:6px; font-size:0.74rem; color:#94A3B8; text-decoration:none; padding:5px 10px; margin-bottom:6px; border-radius:6px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.07); transition:all 0.2s;"><i class="fa-solid fa-circle-info text-cyan"></i> <span>Informasi Proyek &amp; Tim PKL</span></a>
 
  <!-- Tulisan Status Sistem Berjalan di Bagian Tengah -->
 
@@ -406,7 +408,7 @@
 
  <span class="dot green pulse" id="footer-status-dot"></span>
 
- <span class="status-online-text" id="footer-status-text">Sistem Berjalan</span>
+ <span class="status-online-text" id="footer-status-text">Sistem Berjalan Normal</span>
 
  </div>
 
@@ -444,7 +446,7 @@
 
  <span class="title-code">T-AIMS</span>
 
- <span class="title-sub">Ringkasan Sistem Pemantauan</span>
+ <span class="title-sub">Teknolab Asset &amp; Infrastructure Monitoring System</span>
 
  </div>
 
@@ -656,9 +658,9 @@
 
  <div class="banner-left">
 
- <h2 class="banner-title">Dashboard T-AIMS</h2>
+ <h2 class="banner-title">T-AIMS Dashboard</h2>
 
- <p class="banner-desc">Ringkasan pemantauan aset dan infrastruktur Teknolab secara waktu-nyata</p>
+ <p class="banner-desc">Ringkasan monitoring aset dan infrastruktur Teknolab secara real-time</p>
 
  </div>
 
@@ -668,9 +670,9 @@
 
  <span class="slogan-line">TECHNOLOGY</span>
 
- <span class="slogan-line">MONITORING BETTER</span>
+ <span class="slogan-line">MONITORING A BETTER</span>
 
- <span class="slogan-line">FUTURE</span>
+ <span class="slogan-line">TOMORROW</span>
 
  </div>
 
@@ -696,7 +698,7 @@
 
  <div class="kpi-meta">
 
- <span class="kpi-title">Total Devices</span>
+ <span class="kpi-title">Total Aset</span>
 
  <h3 class="kpi-value" id="kpi-total-dev">0</h3>
 
@@ -706,7 +708,7 @@
 
  <div class="kpi-bottom">
 
- <span class="kpi-subtext"><span class="text-white font-semibold">15 Unit</span> Registered in lab</span>
+ <span class="kpi-subtext"><span class="text-white font-semibold" id="kpi-total-sub-count">17 Unit</span> Terdaftar di lab &amp; site</span>
 
  <div class="mini-sparkline"><span class="bar-fill" style="width: 100%; background: #E2E8F0;"></span></div>
 
@@ -730,7 +732,7 @@
 
  <div class="kpi-meta">
 
- <span class="kpi-title">Connected Devices</span>
+ <span class="kpi-title">Perangkat Online</span>
 
  <h3 class="kpi-value" id="kpi-online">0</h3>
 
@@ -740,7 +742,7 @@
 
  <div class="kpi-bottom">
 
- <span class="kpi-subtext"><span class="text-muted" id="kpi-online-pct">0.0%</span> of 0 active devices</span>
+ <span class="kpi-subtext"><span class="text-muted" id="kpi-online-pct">0.0%</span> dari 0 perangkat</span>
 
  <div class="mini-sparkline"><span class="bar-fill" id="kpi-spark-online" style="width: 0%; background: #10B981;"></span></div>
 
@@ -764,7 +766,7 @@
 
  <div class="kpi-meta">
 
- <span class="kpi-title">Disconnected Devices</span>
+ <span class="kpi-title">Perangkat Offline</span>
 
  <h3 class="kpi-value" id="kpi-offline">0</h3>
 
@@ -774,7 +776,7 @@
 
  <div class="kpi-bottom">
 
- <span class="kpi-subtext"><span class="text-red font-bold" id="kpi-offline-pct">0.0%</span> of 0 active devices</span>
+ <span class="kpi-subtext"><span class="text-red font-bold" id="kpi-offline-pct">0.0%</span> dari 0 perangkat</span>
 
  <div class="mini-sparkline"><span class="bar-fill" id="kpi-spark-offline" style="width: 100%; background: #EF4444;"></span></div>
 
@@ -798,7 +800,7 @@
 
  <div class="kpi-meta">
 
- <span class="kpi-title">Warning Devices</span>
+ <span class="kpi-title">Peringatan Aktif</span>
 
  <h3 class="kpi-value" id="kpi-warning">0</h3>
 
@@ -808,7 +810,7 @@
 
  <div class="kpi-bottom">
 
- <span class="kpi-subtext"><span class="text-yellow font-bold" id="kpi-warning-pct">0.0%</span> terancam &bull; <strong id="kpi-unknown-count" style="color:#CBD5E1;">0</strong> unknown</span>
+ <span class="kpi-subtext"><span class="text-yellow font-bold" id="kpi-warning-pct">0.0%</span> perlu perhatian &bull; <strong id="kpi-unknown-count" style="color:#CBD5E1;">0</strong> unknown</span>
 
  <div class="mini-sparkline"><span class="bar-fill" id="kpi-spark-warning" style="width: 0%; background: #F59E0B;"></span></div>
 
@@ -832,7 +834,7 @@
 
  <div class="kpi-meta">
 
- <span class="kpi-title">Active Locations</span>
+ <span class="kpi-title">Lokasi Aktif</span>
 
  <h3 class="kpi-value" id="kpi-lokasi">3</h3>
 
@@ -866,7 +868,7 @@
 
  <div class="kpi-meta">
 
- <span class="kpi-title">System Uptime</span>
+ <span class="kpi-title">Uptime Sistem</span>
 
  <h3 class="kpi-value" id="kpi-uptime">0.0%</h3>
 
@@ -876,7 +878,7 @@
 
  <div class="kpi-bottom">
 
- <span class="kpi-subtext"><span class="text-purple font-bold" style="color: #C084FC !important;">46.2%</span> SLA 30 hari riil</span>
+ <span class="kpi-subtext"><span class="text-purple font-bold" id="kpi-uptime-sla30" style="color: #C084FC !important;">0.0%</span> 30 hari terakhir</span>
 
  <div class="mini-sparkline"><span class="bar-fill" id="kpi-spark-uptime" style="width: 0%; background: #A855F7;"></span></div>
 
@@ -954,9 +956,11 @@
 
  <i class="fa-solid fa-chart-pie text-crimson"></i>
 
- <h4>Distribusi Kategori Perangkat</h4>
+ <h4 id="donut-card-title">Distribusi Kategori Perangkat</h4>
 
  </div>
+ <button type="button" id="btn-toggle-top-issues" onclick="toggleDashboardDonutOrTopIssues()" style="background:rgba(255,23,68,0.14); border:1px solid rgba(255,23,68,0.45); color:#FDA4AF; font-size:0.70rem; font-weight:700; padding:3px 8px; border-radius:6px; cursor:pointer; margin-right:6px;" title="Tampilkan Top Device Bermasalah (Dokumen PKL Hal. 11)"><i class="fa-solid fa-fire-flame-curved"></i> <span id="btn-toggle-top-issues-lbl">Top Bermasalah</span></button>
+
 
  <a href="javascript:void(0)" class="card-link" onclick="switchPage('page-devices')">
 
@@ -966,7 +970,10 @@
 
  </div>
 
- <div class="card-body donut-body">
+ <div class="card-body hidden" id="dashboard-top-issues-body" style="padding:10px 14px; overflow-y:auto; max-height:195px;">
+ <div id="dashboard-top-issues-list" style="display:flex; flex-direction:column; gap:6px;"></div>
+ </div>
+ <div class="card-body donut-body" id="dashboard-donut-body">
 
  <div class="donut-visual-wrap">
 
@@ -1045,6 +1052,7 @@
 
  </div>
 
+
  <a href="javascript:void(0)" class="card-link" onclick="switchPage('page-devices')">
 
  Lihat Semua &rarr;
@@ -1063,15 +1071,15 @@
 
  <tr>
 
- <th>Device Name</th>
+ <th>Nama Perangkat</th>
 
- <th>Location</th>
+ <th>Lokasi</th>
 
  <th>IP Address</th>
 
  <th>Status</th>
 
- <th style="min-width: 155px; white-space: nowrap;">Last Seen</th>
+ <th style="min-width: 155px; white-space: nowrap;">Terakhir Online</th>
 
  <th></th>
 
@@ -1165,11 +1173,11 @@
 
  <div class="map-legend-bar">
 
- <span><span class="dot red"></span> Head Office (HO)</span>
+ <span><span class="dot green"></span> Online</span>
 
- <span><span class="dot yellow"></span> Marketing Office (MO)</span>
+ <span><span class="dot yellow"></span> Peringatan</span>
 
- <span><span class="dot green"></span> House of Server</span>
+ <span><span class="dot red"></span> Offline</span>
 
  </div>
 
@@ -1311,6 +1319,78 @@
 
  <!-- ============================================================= -->
 
+ <div id="page-assets" class="page-view">
+ <div class="page-title-row">
+ <div class="page-title-left">
+ <div class="d-flex align-center gap-2 mb-1">
+ <span class="badge-pill-green"><i class="fa-solid fa-cube"></i> DELIVERABLE #1 &bull; WEB ASSET MANAGEMENT &amp; REGISTRY</span>
+ </div>
+ <h2 class="section-heading"><i class="fa-solid fa-boxes-stacked text-crimson"></i> Manajemen Registri Aset Infrastruktur &amp; Non-Network</h2>
+ <p class="section-subheading">Pusat inventarisasi 12 data wajib aset Teknolab (Kode Aset, Nama, Kategori, IP, MAC, Lokasi, PIC, Metode Monitoring, Status, Last Seen, Tanggal Instalasi/Pengadaan, Deskripsi) untuk perangkat jaringan maupun non-network.</p>
+ </div>
+ <div class="page-title-right d-flex gap-2 align-center flex-wrap">
+ <button class="btn btn-outline-cyber btn-sm" onclick="exportAssetsCsv()"><i class="fa-solid fa-file-csv text-green"></i> Ekspor CSV</button>
+ <button class="btn btn-primary-cyber btn-sm admin-only" onclick="openAddDeviceModal()"><i class="fa-solid fa-plus"></i> Tambah Aset Baru</button>
+ </div>
+ </div>
+
+ <div class="dashboard-card mb-3">
+ <div class="card-header d-flex justify-between align-center flex-wrap gap-2">
+ <div class="card-title-group">
+ <i class="fa-solid fa-table-list text-cyan"></i>
+ <h4>Daftar Inventaris Aset Terdaftar (<span id="assets-total-badge">0</span> Unit)</h4>
+ </div>
+ <div class="d-flex gap-2 align-center flex-wrap">
+ <input type="text" id="assets-search-input" class="cyber-input-sm" placeholder="Cari kode, nama, lokasi, PIC..." oninput="filterAssetsTable()" style="padding:6px 12px; border-radius:6px; background:rgba(15,23,42,0.8); border:1px solid rgba(255,255,255,0.15); color:#fff; font-size:0.8rem;">
+ <select id="assets-cat-select" class="cyber-select" onchange="filterAssetsTable()">
+ <option value="all">Semua Kategori</option>
+ <option value="Router">Router / MikroTik</option>
+ <option value="Server">Server &amp; Mini PC</option>
+ <option value="Switch">Switch Manageable</option>
+ <option value="Access Point">Access Point</option>
+ <option value="Raspberry Pi">Raspberry Pi</option>
+ <option value="IoT Node">ESP32 / IoT Node</option>
+ <option value="CCTV">CCTV</option>
+ <option value="PC">PC / Workstation</option>
+ <option value="Smart TV">Smart TV</option>
+ <option value="Website / API">Website / API Service</option>
+ <option value="MQTT Broker">MQTT Broker</option>
+ <option value="Non-network Asset">Non-network Asset (Registry)</option>
+ </select>
+ <select id="assets-cond-select" class="cyber-select" onchange="filterAssetsTable()">
+ <option value="all">Semua Status / Kondisi</option>
+ <option value="online">🟢 Online / Aktif</option>
+ <option value="warning">🟡 Warning / Perlu Perhatian</option>
+ <option value="offline">🔴 Offline / Terputus</option>
+ <option value="unknown">⚪ Unknown / Registry Manual</option>
+ </select>
+ </div>
+ </div>
+ <div class="card-body p-0">
+ <div class="table-responsive">
+ <table class="mockup-table" style="width:100%;">
+ <thead>
+ <tr>
+ <th>No</th>
+ <th>Kode Aset</th>
+ <th>Nama Aset &amp; MAC</th>
+ <th>Kategori</th>
+ <th>Lokasi &amp; Lantai</th>
+ <th>IP / Endpoint &amp; Metode</th>
+ <th>Status</th>
+ <th>Tanggal Instalasi</th>
+ <th>PIC Teknisi</th>
+ <th>Deskripsi</th>
+ <th class="text-right">Aksi</th>
+ </tr>
+ </thead>
+ <tbody id="assets-tbody"></tbody>
+ </table>
+ </div>
+ </div>
+ </div>
+ </div>
+
  <div id="page-devices" class="page-view">
 
  <div class="page-title-row">
@@ -1325,7 +1405,7 @@
 
  <h2 class="section-heading"><i class="fa-solid fa-server text-crimson"></i> Inventarisasi Aset & Pemantauan Perangkat</h2>
 
- <p class="section-subheading">Kelola 12 atribut standar aset Teknolab (Kode Aset, Nama, Kategori, IP, MAC, Lokasi, PIC, Metode Pemantauan, Status, Terakhir Terlihat, Garansi, Deskripsi) secara terpusat.</p>
+ <p class="section-subheading">Kelola 12 atribut standar aset Teknolab (Kode Aset, Nama, Kategori, IP, MAC, Lokasi, PIC, Metode Pemantauan, Status, Terakhir Terlihat, Tanggal Instalasi/Pengadaan, Deskripsi) secara terpusat.</p>
 
  </div>
 
@@ -1430,6 +1510,9 @@
  <option value="Smart TV">Smart TV</option>
 
  <option value="Printer">Printer</option>
+ <option value="Website / API">Website / API</option>
+ <option value="MQTT Broker">MQTT Broker</option>
+ <option value="Non-network Asset">Non-network Asset</option>
 
  </select>
 
@@ -3285,7 +3368,7 @@
                             <div class="ai-badge-group" style="display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important; align-items: center !important; gap: 12px !important; width: 100% !important;">
                                 <div class="ai-badge-pulse"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
                                 <div>
-                                    <h3 class="ai-hero-title">ASISTEN INFRASTRUKTUR AI TEKNOLAB</h3>
+                                    <h3 class="ai-hero-title">TEKNOLAB INFRASTRUCTURE REPORT (AI ASSISTANT)</h3>
                                     <span class="ai-hero-sub">Mesin Analisis Otomatis & Rekomendasi Mitigasi Kerusakan</span>
                                 </div>
                             </div>
@@ -3318,7 +3401,7 @@
                             <!-- Top Problematic Devices -->
                             <div class="ai-diagnosis-grid mt-3">
                                 <div class="ai-problem-box">
-                                    <strong class="text-red"><i class="fa-solid fa-triangle-exclamation"></i> Analisis Status Perangkat:</strong>
+                                    <strong class="text-red"><i class="fa-solid fa-triangle-exclamation"></i> Device dengan gangguan tertinggi:</strong>
                                     <div class="top-problem-list mt-2" id="ai-top-problem-list">
                                         <div class="problem-row">
                                             <span>Memuat data perangkat riil...</span>
@@ -3327,7 +3410,7 @@
                                 </div>
 
                                 <div class="ai-recommendation-box">
-                                    <strong class="text-yellow" style="color: #FBBF24 !important;"><i class="fa-solid fa-lightbulb text-yellow"></i> Rekomendasi Diagnostik AI:</strong>
+                                    <strong class="text-yellow" style="color: #FBBF24 !important;"><i class="fa-solid fa-lightbulb text-yellow"></i> AI Recommendation:</strong>
                                     <p class="ai-rec-text mt-2" id="ai-rec-text">
                                         Memuat analisis otomatis infrastruktur...
                                     </p>
@@ -3368,6 +3451,27 @@
                                 <div class="sla-bar-item">
                                     <div class="sbi-label"><span>House Of Server</span><strong class="text-green" id="sla-site-hos-val">--% Uptime</strong></div>
                                     <div class="sbi-track"><div class="sbi-prog green" id="sla-site-hos-bar" style="width: 100%;"></div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Grafik & Peringkat Top Device Bermasalah (Tugas UI/UX & Backend - Dokumen PKL Hal. 11 & 12) -->
+                    <div class="dashboard-card mb-3" id="reports-top-issues-card">
+                        <div class="card-header d-flex justify-between align-center">
+                            <div class="card-title-group">
+                                <i class="fa-solid fa-fire-flame-curved text-red"></i>
+                                <h4>Top Device Bermasalah &bull; Frekuensi Gangguan Tertinggi (30 Hari Terakhir)</h4>
+                            </div>
+                            <span class="badge-pill-yellow"><i class="fa-solid fa-chart-bar"></i> Prioritas Mitigasi</span>
+                        </div>
+                        <div class="card-body">
+                            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:18px; align-items:center;">
+                                <div style="height:190px; position:relative;">
+                                    <canvas id="topIssuesBarChart"></canvas>
+                                </div>
+                                <div id="reports-top-issues-list" style="display:flex; flex-direction:column; gap:8px;">
+                                    <!-- Diisi dinamis oleh renderTopProblematicDevicesUI() -->
                                 </div>
                             </div>
                         </div>
@@ -3979,7 +4083,7 @@
 
  <label>Telegram Bot Token API</label>
 
- <input type="text" id="set-telegram-token" value="8944593836:AAEP2bDCO53srpWR3gdKXY6CHQ13Ni8OtPA">
+ <input type="password" id="set-telegram-token" value="" placeholder="•••••••••••••••••••••••••••••••••••• (Terenkripsi via .env Server)" autocomplete="off">
 
  <span class="text-xs text-muted">Bot ID resmi @taims_alert_arik_bot</span>
 
@@ -3989,7 +4093,7 @@
 
  <label>ID Obrolan / Saluran Sasaran Telegram</label>
 
- <input type="text" id="set-telegram-chat" value="-5383419523">
+ <input type="text" id="set-telegram-chat" value="" placeholder="••••••••••• (Dikelola via .env Server)" autocomplete="off">
 
  <span class="text-xs text-muted">Grup pemantauan tim teknisi Teknolab</span>
 
@@ -3999,7 +4103,7 @@
 
  <label>URL Webhook Mesin Otomasi n8n</label>
 
- <input type="text" id="set-n8n-url" value="http://192.168.1.49:5678/webhook/taims-alert">
+ <input type="text" id="set-n8n-url" value="" placeholder="Dikelola otomatis via N8N_WEBHOOK_URL (.env Server)">
 
  <span class="text-xs text-muted">Alur kerja n8n penerima muatan insiden terputus & pemulihan</span>
 
@@ -4712,6 +4816,9 @@
  <option value="PC">PC / Workstation</option>
  <option value="Smart TV">Smart TV</option>
  <option value="Printer">Printer</option>
+ <option value="Website / API">Website / API</option>
+ <option value="MQTT Broker">MQTT Broker</option>
+ <option value="Non-network Asset">Non-network Asset</option>
  <option value="Cloud Panel">Cloud Panel (Cloud VPS)</option>
  <option value="__custom__" style="color: #10B981; font-weight: 700;">+ Tambah Kategori Baru (Ketik Manual)...</option>
  </select>
@@ -4764,8 +4871,8 @@
 
  <div class="form-row-2">
  <div class="form-group">
- <label>IP Address *</label>
- <input type="text" id="dev-ip" placeholder="192.168.1.50" pattern="^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?).){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$" title="Format IPv4 valid, contoh: 192.168.1.50" required>
+ <label>IP Address / Endpoint URL <span class="text-xs text-muted">(Isi "-" untuk Non-Network)</span></label>
+ <input type="text" id="dev-ip" placeholder="Contoh: 192.168.1.50, https://t-aims.teknolab.biz.id, atau - (Non-Network)" title="Masukkan IPv4 standar, URL/Domain (Website/API), atau '-' untuk Non-network Asset">
  </div>
  <div class="form-group">
  <label>MAC Address</label>
@@ -4807,6 +4914,8 @@
  <option value="Ping + SNMP">Ping / SNMP (MikroTik, Switch, Access Point)</option>
  <option value="HTTP / MQTT Heartbeat">HTTP / MQTT Heartbeat (ESP32 IoT Node)</option>
  <option value="Ping + Agent">Ping + Agent (PC / Mini PC)</option>
+ <option value="HTTP Health Check">HTTP Health Check (Website / API Service)</option>
+ <option value="TCP / MQTT Health Check">TCP / MQTT Health Check (MQTT Broker)</option>
  <option value="Manual Registry">Asset Registry / Manual Status (Non-network)</option>
  </optgroup>
  </select>
@@ -5000,9 +5109,9 @@
 
  <!-- Superadmin role is strictly locked to Dzakwan Miftahussobirin -->
 
- <option value="Admin" selected>Admin (CRU: Create, Read, Update)</option>
+ <option value="Admin" selected>Administrator / Admin (CRU: Create, Read, Update)</option>
 
- <option value="User">User (Read-Only: Pengamat)</option>
+ <option value="User">Viewer / User (Read-Only: Pengamat)</option>
 
  </select>
 
@@ -5376,158 +5485,6 @@
 
 
 
- <!-- Modal 5: Tambah Aset Inventaris Baru -->
-
- <div class="modal-backdrop hidden" id="asset-modal">
-
- <div class="modal-card">
-
- <div class="modal-header">
-
- <div class="modal-title-wrap">
-
- <i class="fa-solid fa-cubes text-crimson"></i>
-
- <h5>Tambah Aset IT Baru</h5>
-
- </div>
-
- <button class="modal-close-btn" onclick="closeAssetModal()"><i class="fa-solid fa-xmark"></i></button>
-
- </div>
-
- <form id="asset-form" onsubmit="event.preventDefault(); handleSaveAsset();">
-
- <div class="modal-body">
-
- <div class="form-row-2">
-
- <div class="form-group">
-
- <label>Kode Aset (Register) *</label>
-
- <input type="text" id="ast-code" placeholder="Misal: AST-SRV-007" required>
-
- </div>
-
- <div class="form-group">
-
- <label>Nama Aset / Perangkat Keras *</label>
-
- <input type="text" id="ast-name" placeholder="Misal: Dell PowerEdge R740" required>
-
- </div>
-
- </div>
-
-
-
- <div class="form-row-2">
-
- <div class="form-group">
-
- <label>Kategori Aset *</label>
-
- <select id="ast-category" required>
-
- <option value="Peladen">Peladen</option>
-
- <option value="Perangkat Jaringan">Perangkat Jaringan</option>
-
- <option value="CCTV & Keamanan">CCTV & Keamanan</option>
-
- <option value="Sensor IoT">Sensor IoT</option>
-
- <option value="Stasiun Kerja">Stasiun Kerja</option>
-
- </select>
-
- </div>
-
- <div class="form-group">
-
- <label>Lokasi Wilayah Blitar *</label>
-
- <input type="text" id="ast-location" placeholder="Kepanjenkidul / Kanigoro / Wlingi..." required>
-
- </div>
-
- </div>
-
-
-
- <div class="form-row-2">
-
- <div class="form-group">
-
- <label>Estimasi Nilai Perolehan (Rp)</label>
-
- <input type="text" id="ast-value" placeholder="Rp 15.000.000">
-
- </div>
-
- <div class="form-group">
-
- <label>Kondisi Fisik *</label>
-
- <select id="ast-condition">
-
- <option value="Baik">🟢 Sangat Baik (Prima)</option>
-
- <option value="Perlu Servis">🟡 Perlu Servis</option>
-
- <option value="Rusak">🔴 Rusak</option>
-
- </select>
-
- </div>
-
- </div>
-
-
-
- <div class="form-row-2">
-
- <div class="form-group">
-
- <label>Masa Garansi</label>
-
- <input type="text" id="ast-warranty" placeholder="Hingga Des 2026">
-
- </div>
-
- <div class="form-group">
-
- <label>PIC Penanggung Jawab</label>
-
- <input type="text" id="ast-pic" placeholder="Nama teknisi / anggota tim...">
-
- </div>
-
- </div>
-
- </div>
-
- <div class="modal-footer">
-
- <button type="button" class="btn btn-outline-cyber" onclick="closeAssetModal()">Batal</button>
-
- <button type="submit" class="btn btn-primary-cyber">
-
- <i class="fa-solid fa-floppy-disk"></i> Daftarkan Aset
-
- </button>
-
- </div>
-
- </form>
-
- </div>
-
- </div>
-
-
-
  <!-- Modal 6: Detail Aset & Cetak Label QR Tag -->
 
  <div class="modal-backdrop hidden" id="asset-qr-modal">
@@ -5816,11 +5773,11 @@ if (typeof QRCode === 'undefined') {
     document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"><\/script>');
 }
 </script>
-<script src="assets/js/apiService.js?v=20261103_07_RBAC_CRU"></script>
+<script src="assets/js/apiService.js?v=20261107_14_AUDIT_PKL"></script>
 
- <script src="assets/js/app.js?v=20261103_07_RBAC_CRU"></script>
+ <script src="assets/js/app.js?v=20261107_14_AUDIT_PKL"></script>
 
- <script src="assets/js/floorplan3d.js?v=20261103_07_RBAC_CRU"></script>
+ <script src="assets/js/floorplan3d.js?v=20261107_14_AUDIT_PKL"></script>
 
 
  <!-- Modal Pemulihan Kata Sandi (2-Step Verification: OTP & Reset Password) -->

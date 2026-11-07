@@ -690,7 +690,7 @@ async function createUser(userData) {
     full_name: userData.full_name || userData.name || 'Pengguna Baru',
     username: userData.username,
     email: userData.email,
-    password: userData.password || 'password123',
+    password: userData.password || '',
     role: normalizedRole,
     status: userData.status,
     pic_task: userData.pic_task,
@@ -748,9 +748,12 @@ async function createAsset(assetData) {
     asset_code: assetData.asset_code || assetData.code,
     asset_name: assetData.asset_name || assetData.name,
     category: assetData.category || 'Router',
+    sub_category: assetData.sub_category || assetData.subCategory || null,
     ip_address: assetData.ip_address || assetData.ip || null,
     mac_address: assetData.mac_address || assetData.mac || null,
     location_id: locId || 2,
+    floor: assetData.floor || 'Lantai 1',
+    is_active: assetData.is_active !== undefined ? Number(assetData.is_active) : 1,
     pic_user_id: picId || 1,
     monitoring_method: assetData.monitoring_method || assetData.method || 'Ping',
     monitoring_config: assetData.monitoring_config || { timeout_seconds: 5, retry_count: 3, check_interval_seconds: 60 },
@@ -845,7 +848,7 @@ async function sendHeartbeat(deviceId, status = 'online', extra = {}) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-API-Key': 'taims_dev_5bee447416b0fac135fcb60e4a6b84621ec75fdb132549f1'
+        ...(localStorage.getItem('taims_jwt_token') ? { 'Authorization': `Bearer ${localStorage.getItem('taims_jwt_token')}` } : {})
       },
       body: JSON.stringify({
         device_id: deviceId,
@@ -869,7 +872,7 @@ async function sendPing(assetId, status = 'online', responseTimeMs = 15, details
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-API-Key': 'taims_dev_5bee447416b0fac135fcb60e4a6b84621ec75fdb132549f1'
+        ...(localStorage.getItem('taims_jwt_token') ? { 'Authorization': `Bearer ${localStorage.getItem('taims_jwt_token')}` } : {})
       },
       body: JSON.stringify({
         asset_id: assetId,
@@ -1319,7 +1322,7 @@ async function sendHttpCheck(assetId, status = 'online', responseTimeMs = 50, de
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-API-Key': 'taims_dev_5bee447416b0fac135fcb60e4a6b84621ec75fdb132549f1'
+        ...(localStorage.getItem('taims_jwt_token') ? { 'Authorization': `Bearer ${localStorage.getItem('taims_jwt_token')}` } : {})
       },
       body: JSON.stringify({ asset_id: assetId, status, response_time_ms: responseTimeMs, details })
     });
@@ -1339,7 +1342,7 @@ async function sendTcpCheck(assetId, status = 'online', responseTimeMs = 20, det
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-API-Key': 'taims_dev_5bee447416b0fac135fcb60e4a6b84621ec75fdb132549f1'
+        ...(localStorage.getItem('taims_jwt_token') ? { 'Authorization': `Bearer ${localStorage.getItem('taims_jwt_token')}` } : {})
       },
       body: JSON.stringify({ asset_id: assetId, status, response_time_ms: responseTimeMs, details })
     });
@@ -1708,7 +1711,7 @@ async function triggerRealPing(assetId, ip) {
     const token = localStorage.getItem('taims_jwt_token');
     const headers = {
       'Content-Type': 'application/json',
-      'X-API-Key': 'taims_dev_5bee447416b0fac135fcb60e4a6b84621ec75fdb132549f1'
+      ...(token ? { 'Authorization': `Bearer ${token}` } : {})
     };
     if (token) headers['Authorization'] = `Bearer ${token}`;
     const res = await fetch(`${BASE_URL}/monitoring/real-ping`, {

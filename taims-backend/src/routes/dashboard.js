@@ -15,8 +15,9 @@ router.get('/stats', authenticate, async (req, res) => {
                 COUNT(*) AS total_devices,
                 SUM(CASE WHEN LOWER(TRIM(COALESCE(current_status, ''))) = 'online' THEN 1 ELSE 0 END) AS online,
                 SUM(CASE WHEN LOWER(TRIM(COALESCE(current_status, ''))) = 'offline' THEN 1 ELSE 0 END) AS offline,
+                SUM(CASE WHEN LOWER(TRIM(COALESCE(current_status, ''))) = 'warning' THEN 1 ELSE 0 END) AS warning,
                 SUM(CASE WHEN LOWER(TRIM(COALESCE(current_status, ''))) = 'maintenance' THEN 1 ELSE 0 END) AS maintenance,
-                SUM(CASE WHEN LOWER(TRIM(COALESCE(current_status, ''))) NOT IN ('online', 'offline', 'maintenance') THEN 1 ELSE 0 END) AS unknown
+                SUM(CASE WHEN LOWER(TRIM(COALESCE(current_status, ''))) NOT IN ('online', 'offline', 'warning', 'maintenance') THEN 1 ELSE 0 END) AS unknown
             FROM assets
         `);
 
@@ -32,6 +33,7 @@ router.get('/stats', authenticate, async (req, res) => {
         const total = parseInt(statusCount[0].total_devices, 10) || 0;
         const online = parseInt(statusCount[0].online, 10) || 0;
         const offline = parseInt(statusCount[0].offline, 10) || 0;
+        const warning = parseInt(statusCount[0].warning, 10) || 0;
         const unknown = parseInt(statusCount[0].unknown, 10) || 0;
         const maintenance = parseInt(statusCount[0].maintenance, 10) || 0;
         const availability = total > 0 ? parseFloat(((online / total) * 100).toFixed(2)) : 0;
@@ -112,7 +114,7 @@ router.get('/stats', authenticate, async (req, res) => {
                 total_devices: total,
                 online: online,
                 offline: offline,
-                warning: unknown,
+                warning: warning,
                 unknown: unknown,
                 maintenance: maintenance,
                 availability_percent: availability,

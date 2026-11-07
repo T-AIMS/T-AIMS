@@ -3,6 +3,16 @@ const router = express.Router();
 const db = require('../config/db');
 const { authenticate, can } = require('../middleware/auth');
 
+// Auto-ensure schema columns & ENUM (Migration 004 & 005 safety guard)
+(async function ensureAssetsSchemaSync() {
+    try {
+        await db.query("ALTER TABLE `assets` ADD COLUMN `floor` VARCHAR(50) DEFAULT 'Lantai 1' AFTER `location_id`").catch(() => {});
+        await db.query("ALTER TABLE `assets` ADD COLUMN `is_active` TINYINT(1) NOT NULL DEFAULT 1 AFTER `current_status`").catch(() => {});
+        await db.query("ALTER TABLE `assets` MODIFY COLUMN `current_status` ENUM('unknown','online','offline','warning','maintenance') NOT NULL DEFAULT 'unknown'").catch(() => {});
+        await db.query("ALTER TABLE `monitoring_logs` MODIFY COLUMN `status` ENUM('unknown','online','offline','error','warning') NOT NULL DEFAULT 'unknown'").catch(() => {});
+    } catch (e) {}
+})();
+
 // ============================================================
 // GET /api/assets
 // List semua aset dengan filter, search, pagination
@@ -24,7 +34,7 @@ router.get('/', authenticate, async (req, res) => {
             SELECT 
                 a.asset_id, a.asset_code, a.asset_name, a.category, a.sub_category,
                 a.ip_address, a.mac_address,
-                a.location_id, l.location_name,
+                a.location_id, l.location_name, COALESCE(a.floor, 'Lantai 1') AS floor, COALESCE(a.is_active, 1) AS is_active,
                 a.pic_user_id, COALESCE(u.full_name, 'Tim Teknolab') AS pic_name,
                 a.monitoring_method, a.monitoring_config,
                 a.current_status, a.priority, a.last_seen,
@@ -191,7 +201,7 @@ router.post('/', authenticate, can('create'), async (req, res) => {
         console.log('[POST /api/assets] Incoming body:', req.body);
         const {
             asset_code, asset_name, category, sub_category,
-            ip_address, mac_address, location_id, pic_user_id,
+            ip_address, mac_address, location_id, floor = 'Lantai 1', is_active = 1, pic_user_id,
             monitoring_method, monitoring_config,
             priority = 2, installation_date, description,
             check_interval_seconds = 60,
@@ -241,14 +251,14 @@ router.post('/', authenticate, can('create'), async (req, res) => {
         const [result] = await db.query(
             `INSERT INTO assets 
                 (asset_code, asset_name, category, sub_category, ip_address, mac_address,
-                 location_id, pic_user_id, monitoring_method, monitoring_config,
+                 location_id, floor, is_active, pic_user_id, monitoring_method, monitoring_config,
                  current_status, priority, installation_date, description,
                  check_interval_seconds, timeout_seconds, retry_count)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'unknown', ?, ?, ?, ?, ?, ?)`,
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'unknown', ?, ?, ?, ?, ?, ?)`,
             [
                 asset_code, asset_name, category, sub_category || null,
                 ip_address || null, mac_address || null,
-                location_id || null, effectivePicUserId || null,
+                location_id || null, floor || 'Lantai 1', is_active !== undefined ? Number(is_active) : 1, effectivePicUserId || null,
                 monitoring_method,
                 monitoring_config ? JSON.stringify(monitoring_config) : null,
                 priority, installation_date || null, description || null,
@@ -329,7 +339,7 @@ router.put('/:id', authenticate, can('update'), async (req, res) => {
         // Field yang boleh diupdate
         const allowedFields = [
             'asset_code', 'asset_name', 'category', 'sub_category', 'ip_address', 'mac_address',
-            'location_id', 'pic_user_id', 'monitoring_method', 'monitoring_config',
+            'location_id', 'floor', 'is_active', 'pic_user_id', 'monitoring_method', 'monitoring_config',
             'current_status', 'priority', 'installation_date', 'description',
             'check_interval_seconds', 'timeout_seconds', 'retry_count'
         ];
@@ -352,7 +362,7 @@ router.put('/:id', authenticate, can('update'), async (req, res) => {
             }
         }
 
-        if (statusChangedTo === 'online') {
+        if (statusChangedTo === 'online' || statusChangedTo === 'warning') {
             updates.push('last_seen = NOW()', 'offline_since = NULL');
         } else if (statusChangedTo === 'offline') {
             updates.push('offline_since = COALESCE(offline_since, NOW())');
@@ -374,7 +384,7 @@ router.put('/:id', authenticate, can('update'), async (req, res) => {
             params
         );
 
-        if (statusChangedTo === 'online') {
+        if (statusChangedTo === 'online' || statusChangedTo === 'warning') {
             await db.query(
                 `UPDATE incidents 
                  SET incident_status = 'resolved'

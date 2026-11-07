@@ -12,7 +12,7 @@ require('dotenv').config();
 // Proxy ke n8n webhook (Arik) + agregasi data riil dari DB
 // ============================================================
 router.get('/recommendation', authenticate, async (req, res) => {
-    let stats = [{ total_devices: 15, online: 0, offline: 15, unknown: 0, maintenance: 0 }];
+    let stats = [{ total_devices: 15, online: 0, offline: 15, warning: 0, unknown: 0, maintenance: 0 }];
     let offlineAssets = [];
     let topIssues = [];
     let incidents = [];
@@ -24,6 +24,7 @@ router.get('/recommendation', authenticate, async (req, res) => {
                 COUNT(*) AS total_devices,
                 SUM(CASE WHEN current_status = 'online' THEN 1 ELSE 0 END) AS online,
                 SUM(CASE WHEN current_status = 'offline' THEN 1 ELSE 0 END) AS offline,
+                SUM(CASE WHEN current_status = 'warning' THEN 1 ELSE 0 END) AS warning,
                 SUM(CASE WHEN current_status = 'unknown' THEN 1 ELSE 0 END) AS unknown,
                 SUM(CASE WHEN current_status = 'maintenance' THEN 1 ELSE 0 END) AS maintenance
             FROM assets
@@ -106,7 +107,7 @@ router.get('/recommendation', authenticate, async (req, res) => {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-TAIMS-WEBHOOK-SECRET': process.env.N8N_WEBHOOK_SECRET || 'taims_sec_n8n_8f92c10a4b3e6d5e7a1b'
+                        'X-TAIMS-WEBHOOK-SECRET': process.env.N8N_WEBHOOK_SECRET || ''
                     },
                     body: JSON.stringify(payload),
                     signal: controller.signal
